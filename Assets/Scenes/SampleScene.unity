@@ -336,7 +336,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42e4bbe263e343f43900c9be7b8317bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gridSize: 2
+  _cellSize: 2
+  _tilePrefabs:
+  - {fileID: 6038121322800877140, guid: 5b03b8371ee4bb64b8dfd46296b02483, type: 3}
+  - {fileID: 2138368630046441095, guid: 9acd9cea035601949bccca81d300e3bd, type: 3}
+  - {fileID: 3766882269052970790, guid: 01e6a6e6b18da44469db0e83efd19665, type: 3}
 --- !u!1 &913855423
 GameObject:
   m_ObjectHideFlags: 0
@@ -427,7 +431,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 913855423}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.334429, y: 0.52, z: 9.233074}
+  m_LocalPosition: {x: 18.69, y: 0.52, z: 19.91}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -445,6 +449,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc0f5886fe4c32f4a89d939fa699b9cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _moveSpeed: 10
 --- !u!1 &1228203889
 GameObject:
   m_ObjectHideFlags: 0
