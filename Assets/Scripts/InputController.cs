@@ -13,10 +13,16 @@ public class InputController : MonoBehaviour
         {
             var hitTile = hitData.transform.GetComponent<TileComponent>();
             var hitUnit = hitData.transform.GetComponent<GridBasedUnit>();
-            if (hitTile != null && Input.GetMouseButtonUp(0))
+
+            bool clicked = Input.GetMouseButtonUp(0);
+
+            if (hitUnit != null && clicked)
             {
-                print("clicked tile : " + hitTile.Tile.Coords);
-                GameManager.Instance.currentUnit.ChoosePathTo(hitTile.Tile.Coords);
+                GameManager.Instance.SelectControllableUnit(hitUnit);
+            }
+            else if (hitTile != null && clicked)
+            {
+                GameManager.Instance.CurrentUnit.ChoosePathTo(hitTile.Tile.Coords);
             }
         }
     }

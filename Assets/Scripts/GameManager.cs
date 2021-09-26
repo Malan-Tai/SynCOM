@@ -24,10 +24,33 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     public GridMap gridMap;
 
-    public GridBasedUnit currentUnit;
+    [SerializeField]
+    private MoveableCamera _camera;
+
+    [SerializeField]
+    private List<GridBasedUnit> _controllableUnits;
+    private int _currentUnitIndex;
+    public GridBasedUnit CurrentUnit { get { return _controllableUnits[_currentUnitIndex]; } }
 
     private void Start()
     {
-        currentUnit = FindObjectOfType<GridBasedUnit>();
+        _currentUnitIndex = 0;
+    }
+
+    public void NextControllableUnit()
+    {
+        _currentUnitIndex++;
+        if (_currentUnitIndex >= _controllableUnits.Count) _currentUnitIndex = 0;
+        _camera.SwitchParenthood(CurrentUnit);
+    }
+
+    public void SelectControllableUnit(GridBasedUnit unit)
+    {
+        int index = _controllableUnits.IndexOf(unit);
+        if (index >= 0 && index < _controllableUnits.Count)
+        {
+            _currentUnitIndex = index;
+            _camera.SwitchParenthood(unit);
+        }
     }
 }
