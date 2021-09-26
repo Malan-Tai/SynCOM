@@ -64,6 +64,8 @@ public class GridBasedUnit : MonoBehaviour
 
     public void ChoosePathTo(Vector2Int cell)
     {
+        if (_followingPath) return;
+
         _pathToFollow = _pathfinder.GetPathToTile(cell);
         _followingPath = true;
     }
