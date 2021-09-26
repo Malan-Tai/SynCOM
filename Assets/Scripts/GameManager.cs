@@ -23,4 +23,11 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     public GridMap gridMap;
+
+    public GridBasedUnit currentUnit;
+
+    private void Start()
+    {
+        currentUnit = FindObjectOfType<GridBasedUnit>();
+    }
 }

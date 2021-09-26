@@ -7,6 +7,9 @@ public class Pathfinder
 {
     private List<Tile> _reachable { get; set; }
     //public Dictionary<Tile, bool[]> Edges { get; set; }
+
+    // paths contains, for every tile in reachable, a list of cell positions leading to said tile.
+    // The first tile in the list is the first tile on the path, the last tile in the list is the target reachable tile.
     private Dictionary<Tile, List<Vector2Int>> _paths { get; set; }
     private Dictionary<Tile, float> _costs { get; set; }
 
@@ -30,7 +33,7 @@ public class Pathfinder
 
         if (startTile == null || goalTile == null) return new Vector2Int[0];
 
-        FastPriorityQueue<Tile> frontier = new FastPriorityQueue<Tile>(50); //50 should be enough
+        FastPriorityQueue<Tile> frontier = new FastPriorityQueue<Tile>(50); //50 probably won't be enough
         frontier.Enqueue(startTile, 0.0f);
 
         Dictionary<Tile, Tile> cameFrom = new Dictionary<Tile, Tile>();
@@ -95,7 +98,7 @@ public class Pathfinder
 
         if (startTile == null) return;
 
-        FastPriorityQueue<Tile> frontier = new FastPriorityQueue<Tile>(50); //50 should be enough
+        FastPriorityQueue<Tile> frontier = new FastPriorityQueue<Tile>((int)moves); //50 is not enough, (int)moves might be ?
         frontier.Enqueue(startTile, 0.0f);
 
         Dictionary<Tile, Tile> cameFrom = new Dictionary<Tile, Tile>();

@@ -51,7 +51,11 @@ public class GridMap : MonoBehaviour
         {
             for (int y = 0; y < _maxY; y++)
             {
-                int cover = Random.Range(0, 3);
+                int cover = 0;
+                if (x == 0 || x == _maxX - 1 || y == 0 || y == _maxY - 1 || (x <= 9 && y == 13)) cover = 2;
+                else if (x == 10 || y == 10 || y == _maxY - 2) cover = 1;
+
+                //int cover = Random.Range(0, 3);
                 _map[x, y] = new Tile(x, y, (Cover)cover);
 
                 if (cover < _tilePrefabs.Length)
@@ -59,6 +63,8 @@ public class GridMap : MonoBehaviour
                     GameObject obj = Instantiate(_tilePrefabs[cover], this.transform);
                     obj.transform.position = GridToWorld(new Vector2Int(x, y), 0);
                     obj.transform.localScale = new Vector3(_cellSize, obj.transform.localScale.y, _cellSize);
+                    var tileComp = obj.GetComponent<TileComponent>();
+                    tileComp.SetTile(_map[x, y]);
                 }
             }
         }
