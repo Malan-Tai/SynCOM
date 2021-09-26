@@ -9,6 +9,8 @@ public class InputController : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitData;
 
+        bool changedUnitThisFrame = false;
+
         if (Physics.Raycast(ray, out hitData, 1000))
         {
             var hitTile = hitData.transform.GetComponent<TileComponent>();
@@ -19,11 +21,17 @@ public class InputController : MonoBehaviour
             if (hitUnit != null && clicked)
             {
                 GameManager.Instance.SelectControllableUnit(hitUnit);
+                changedUnitThisFrame = true;
             }
             else if (hitTile != null && clicked)
             {
                 GameManager.Instance.CurrentUnit.ChoosePathTo(hitTile.Tile.Coords);
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Tab) && !changedUnitThisFrame)
+        {
+            GameManager.Instance.NextControllableUnit();
         }
     }
 }
