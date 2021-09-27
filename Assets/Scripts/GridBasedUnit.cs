@@ -17,7 +17,7 @@ public class GridBasedUnit : MonoBehaviour
     private List<Vector2Int> _pathToFollow;
     private bool _followingPath;
 
-    private Dictionary<GridBasedUnit, Cover> _linesOfSight;
+    private Dictionary<GridBasedUnit, LineOfSight> _linesOfSight;
     private float _sightDistance;
 
     public delegate void FinishedMoving(GridBasedUnit movedUnit, Vector2Int finalPos);
@@ -34,7 +34,7 @@ public class GridBasedUnit : MonoBehaviour
         _movesLeft = 20;
         _sightDistance = 20;
 
-        _linesOfSight = new Dictionary<GridBasedUnit, Cover>();
+        _linesOfSight = new Dictionary<GridBasedUnit, LineOfSight>();
     }
 
     private void Update()
@@ -102,7 +102,7 @@ public class GridBasedUnit : MonoBehaviour
     public void UpdateLineOfSights(bool targetEnemies = true)
     {
         GridMap map = GameManager.Instance.gridMap;
-        _linesOfSight = new Dictionary<GridBasedUnit, Cover>();
+        _linesOfSight = new Dictionary<GridBasedUnit, LineOfSight>();
 
         List<GridBasedUnit> listToCycle;
         if (targetEnemies)
@@ -114,38 +114,86 @@ public class GridBasedUnit : MonoBehaviour
             listToCycle = GameManager.Instance.ControllableUnits;
         }
 
-        LayerMask layerMask = 1 << 6;
+        List<Vector2Int> shooterSidesteps = map.SidestepPositions(_gridPosition);
+        shooterSidesteps.Insert(0, _gridPosition);
+
         foreach (GridBasedUnit unit in listToCycle)
         {
-            Vector3 line = unit.transform.position - this.transform.position;
-            if (Physics.Raycast(this.transform.position, line, Mathf.Min(line.magnitude, _sightDistance), layerMask))
-            {
-                print("not seen");
-                continue;
-            }
-
-            Vector3 lineEnd = unit.transform.position;
             List<CoverPlane> planes = map.GetCoverPlanes(unit._gridPosition);
+            List<Vector2Int> targetSidesteps = map.SidestepPositions(unit._gridPosition);
+            targetSidesteps.Insert(0, unit._gridPosition);
 
-            Cover bestCover = Cover.None;
-            foreach (CoverPlane plane in planes)
+            LineOfSight bestLine = new LineOfSight();
+            bestLine.seen = false;
+            bestLine.cover = Cover.Full; // worst case for the shooter
+
+            foreach (Vector2Int shooterSidestep in shooterSidesteps)
             {
-                if (plane.IntersectsSegment(this.transform.position, lineEnd))
+                foreach (Vector2Int targetSidestep in targetSidesteps)
                 {
-                    if (plane.cover == Cover.Full)
+                    LineOfSight newLine = ComputeLineOfSight(planes, shooterSidestep, targetSidestep, unit.transform.position.y);
+
+                    if (newLine.seen && (!bestLine.seen || (int)newLine.cover < (int)bestLine.cover))
                     {
-                        bestCover = Cover.Full;
-                        break;
-                    }
-                    else if (plane.cover == Cover.Half && bestCover == Cover.None)
-                    {
-                        bestCover = Cover.Half;
+                        bestLine = newLine;
                     }
                 }
             }
 
-            _linesOfSight.Add(unit, bestCover);
-            print("i see unit at " + unit._gridPosition + " with cover = " + (int)bestCover);
+            if (bestLine.seen)
+            {
+                _linesOfSight.Add(unit, bestLine);
+                print("i see unit at " + unit._gridPosition + " with cover " + (int)bestLine.cover + " by sidestepping by " + (bestLine.sidestepCell - _gridPosition));
+            }
         }
     }
+
+    private LineOfSight ComputeLineOfSight(List<CoverPlane> targetCoverPlanes, Vector2Int shooterPosition, Vector2Int targetPosition, float targetY)
+    {
+        GridMap map = GameManager.Instance.gridMap;
+        LayerMask layerMask = 1 << 6;
+
+        LineOfSight lineOfSight = new LineOfSight();
+
+        Vector3 lineEnd = map.GridToWorld(targetPosition, targetY);
+        Vector3 lineStart = map.GridToWorld(shooterPosition, this.transform.position.y);
+        Vector3 line = lineEnd - lineStart;
+        bool seen = !Physics.Raycast(lineStart, line, Mathf.Min(line.magnitude, _sightDistance), layerMask);
+
+        lineOfSight.seen = seen;
+
+        if (!seen)
+        {
+            return lineOfSight;
+        }
+
+        Cover bestCover = Cover.None; // best cover for the target
+        foreach (CoverPlane plane in targetCoverPlanes)
+        {
+            if (plane.IntersectsSegment(lineStart, lineEnd))
+            {
+                if (plane.cover == Cover.Full)
+                {
+                    bestCover = Cover.Full;
+                    break;
+                }
+                else if (plane.cover == Cover.Half && bestCover == Cover.None)
+                {
+                    bestCover = Cover.Half;
+                }
+            }
+        }
+
+        lineOfSight.cover = bestCover;
+        lineOfSight.sidestepCell = shooterPosition;
+
+        return lineOfSight;
+    }
+}
+
+public struct LineOfSight
+{
+    public bool seen;
+    public Cover cover;
+    public Vector2Int sidestepCell;
 }

@@ -66,7 +66,7 @@ public class GridMap : MonoBehaviour
             {
                 int cover = 0;
                 if (x == 0 || x == _maxX - 1 || y == 0 || y == _maxY - 1 || (x <= 9 && y == 13)) cover = 2;
-                else if (x == 10 || y == 10 || y == _maxY - 2) cover = 1;
+                else if (y == 10 || y == _maxY - 2) cover = 1;
 
                 //int cover = Random.Range(0, 3);
                 _map[x, y] = new Tile(x, y, (Cover)cover);
@@ -88,6 +88,11 @@ public class GridMap : MonoBehaviour
     public Vector3 GridToWorld(Vector2Int grid, float y)
     {
         return new Vector3(grid.x * _cellSize + _cellSize / 2, y, grid.y * _cellSize + _cellSize / 2);
+    }
+
+    public Vector3 GridToWorld(int gridX, int gridY, float y)
+    {
+        return new Vector3(gridX * _cellSize + _cellSize / 2, y, gridY * _cellSize + _cellSize / 2);
     }
 
     public Vector2Int WorldToGrid(Vector3 world, bool addToOccupiedTiles = false)
@@ -176,6 +181,40 @@ public class GridMap : MonoBehaviour
         }
 
         return finalNeigh;
+    }
+
+    public List<Vector2Int> SidestepPositions(Vector2Int centerCell)
+    {
+        List<Vector2Int> positions = new List<Vector2Int>();
+
+        int x = centerCell.x;
+        int y = centerCell.y;
+
+        if ((CellIsValid(x + 1, y) && this[x + 1, y].Cover != Cover.None) || (CellIsValid(x - 1, y) && this[x - 1, y].Cover != Cover.None))
+        {
+            if (CellIsValid(x, y + 1) && this[x, y + 1].Cover == Cover.None)
+            {
+                positions.Add(new Vector2Int(x, y + 1));
+            }
+            if (CellIsValid(x, y - 1) && this[x, y - 1].Cover == Cover.None)
+            {
+                positions.Add(new Vector2Int(x, y - 1));
+            }
+        }
+
+        if ((CellIsValid(x, y + 1) && this[x, y + 1].Cover != Cover.None) || (CellIsValid(x, y - 1) && this[x, y - 1].Cover != Cover.None))
+        {
+            if (CellIsValid(x + 1, y) && this[x + 1, y].Cover == Cover.None)
+            {
+                positions.Add(new Vector2Int(x + 1, y));
+            }
+            if (CellIsValid(x - 1, y) && this[x - 1, y].Cover == Cover.None)
+            {
+                positions.Add(new Vector2Int(x - 1, y));
+            }
+        }
+
+        return positions;
     }
 
     public bool CanMoveFromCellToCell(Vector2Int cellA, Vector2Int cellB)
