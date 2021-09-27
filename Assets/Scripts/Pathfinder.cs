@@ -13,10 +13,16 @@ public class Pathfinder
     private Dictionary<Tile, List<Vector2Int>> _paths { get; set; }
     private Dictionary<Tile, float> _costs { get; set; }
 
-    public List<Vector2Int> GetPathToTile(Vector2Int cell)
+    public List<Vector2Int> GetPathToTile(Vector2Int cell, out float cost)
     {
         Tile tile = GameManager.Instance.gridMap[cell];
-        if (!_reachable.Contains(tile)) return new List<Vector2Int>();
+        if (!_reachable.Contains(tile))
+        {
+            cost = 0f;
+            return new List<Vector2Int>();
+        }
+
+        cost = _costs[tile];
         return _paths[tile];
     }
 
@@ -101,9 +107,9 @@ public class Pathfinder
         _paths = new Dictionary<Tile, List<Vector2Int>>();
         _costs = new Dictionary<Tile, float>();
 
-        if (startTile == null) return;
+        if (startTile == null || moves < 1f) return;
 
-        FastPriorityQueue<Tile> frontier = new FastPriorityQueue<Tile>((int)moves); //50 is not enough, (int)moves might be ?
+        FastPriorityQueue<Tile> frontier = new FastPriorityQueue<Tile>(10 * (int)moves); //50 is not enough, (int)moves * 10 might be ?
         frontier.Enqueue(startTile, 0.0f);
 
         Dictionary<Tile, Tile> cameFrom = new Dictionary<Tile, Tile>();

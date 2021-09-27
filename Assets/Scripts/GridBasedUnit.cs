@@ -10,6 +10,8 @@ public class GridBasedUnit : MonoBehaviour
     [SerializeField]
     private float _moveSpeed;
 
+    private float _movesLeft;
+
     private Pathfinder _pathfinder = new Pathfinder();
     private bool _updatePathfinder = true;
     private List<Vector2Int> _pathToFollow;
@@ -25,13 +27,15 @@ public class GridBasedUnit : MonoBehaviour
         _gridPosition = gridMap.WorldToGrid(this.transform.position, true);
         this.transform.position = gridMap.GridToWorld(_gridPosition, this.transform.position.y);
         _targetWorldPosition = this.transform.position;
+
+        _movesLeft = 12;
     }
 
     private void Update()
     {
         if (_updatePathfinder)
         {
-            _pathfinder.Dijkstra(120, _gridPosition);
+            _pathfinder.Dijkstra(_movesLeft, _gridPosition);
             _pathToFollow = new List<Vector2Int>();
             _updatePathfinder = false;
             _followingPath = false;
@@ -71,7 +75,10 @@ public class GridBasedUnit : MonoBehaviour
     {
         if (_followingPath) return;
 
-        _pathToFollow = _pathfinder.GetPathToTile(cell);
+        float cost;
+        _pathToFollow = _pathfinder.GetPathToTile(cell, out cost);
+        _movesLeft -= cost;
+        print(_movesLeft);
 
         if (_pathToFollow.Count > 0)
         {

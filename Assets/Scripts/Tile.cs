@@ -28,7 +28,7 @@ public class Tile : FastPriorityQueueNode
     {
         Vector2Int difference = next - _coords;
 
-        if (difference.x == 0 || difference.y == 0) return 10f; // straight
-        return 14f; // diagonal ~= sqrt(2) * 10
+        if (difference.x == 0 || difference.y == 0) return 1f; // straight
+        return 1.4f; // diagonal ~= sqrt(2)
     }
 }
