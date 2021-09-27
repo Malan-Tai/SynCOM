@@ -18,6 +18,7 @@ public class GridBasedUnit : MonoBehaviour
     private bool _followingPath;
 
     private Dictionary<GridBasedUnit, Cover> _linesOfSight;
+    private float _sightDistance;
 
     public delegate void FinishedMoving(GridBasedUnit movedUnit, Vector2Int finalPos);
     public static event FinishedMoving OnMoveFinish;
@@ -31,6 +32,7 @@ public class GridBasedUnit : MonoBehaviour
         _targetWorldPosition = this.transform.position;
 
         _movesLeft = 20;
+        _sightDistance = 20;
 
         _linesOfSight = new Dictionary<GridBasedUnit, Cover>();
     }
@@ -112,8 +114,16 @@ public class GridBasedUnit : MonoBehaviour
             listToCycle = GameManager.Instance.ControllableUnits;
         }
 
+        LayerMask layerMask = 1 << 6;
         foreach (GridBasedUnit unit in listToCycle)
         {
+            Vector3 line = unit.transform.position - this.transform.position;
+            if (Physics.Raycast(this.transform.position, line, Mathf.Min(line.magnitude, _sightDistance), layerMask))
+            {
+                print("not seen");
+                continue;
+            }
+
             Vector3 lineEnd = unit.transform.position;
             List<CoverPlane> planes = map.GetCoverPlanes(unit._gridPosition);
 
