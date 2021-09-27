@@ -6,6 +6,7 @@ public class GridBasedUnit : MonoBehaviour
 {
     private Vector2Int _gridPosition;
     private Vector3 _targetWorldPosition;
+
     [SerializeField]
     private float _moveSpeed;
 
@@ -14,11 +15,14 @@ public class GridBasedUnit : MonoBehaviour
     private List<Vector2Int> _pathToFollow;
     private bool _followingPath;
 
+    public delegate void FinishedMoving(GridBasedUnit movedUnit, Vector2Int finalPos);
+    public static event FinishedMoving OnMoveFinish;
+
     private void Start()
     {
         GridMap gridMap = GameManager.Instance.gridMap;
 
-        _gridPosition = gridMap.WorldToGrid(this.transform.position);
+        _gridPosition = gridMap.WorldToGrid(this.transform.position, true);
         this.transform.position = gridMap.GridToWorld(_gridPosition, this.transform.position.y);
         _targetWorldPosition = this.transform.position;
     }
@@ -47,6 +51,7 @@ public class GridBasedUnit : MonoBehaviour
         else if (_followingPath)
         {
             _updatePathfinder = true;
+            if (OnMoveFinish != null) OnMoveFinish(this, _gridPosition);
         }
     }
 
@@ -67,6 +72,16 @@ public class GridBasedUnit : MonoBehaviour
         if (_followingPath) return;
 
         _pathToFollow = _pathfinder.GetPathToTile(cell);
-        _followingPath = true;
+
+        if (_pathToFollow.Count > 0)
+        {
+            _followingPath = true;
+            GameManager.Instance.gridMap.UpdateOccupiedTiles(_gridPosition, cell);
+        }
+    }
+
+    public void NeedsPathfinderUpdateIfCellReachable(Vector2Int cell)
+    {
+        _updatePathfinder = _updatePathfinder || _pathfinder.CanReachCell(cell);
     }
 }

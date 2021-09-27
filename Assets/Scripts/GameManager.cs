@@ -37,6 +37,16 @@ public class GameManager : MonoBehaviour
         _currentUnitIndex = 0;
     }
 
+    private void OnEnable()
+    {
+        GridBasedUnit.OnMoveFinish += UpdatePathfinders;
+    }
+
+    private void OnDisable()
+    {
+        GridBasedUnit.OnMoveFinish -= UpdatePathfinders;
+    }
+
     public void NextControllableUnit()
     {
         _currentUnitIndex++;
@@ -51,6 +61,17 @@ public class GameManager : MonoBehaviour
         {
             _currentUnitIndex = index;
             _camera.SwitchParenthood(unit);
+        }
+    }
+
+    public void UpdatePathfinders(GridBasedUnit movedUnit, Vector2Int finalPos)
+    {
+        foreach (GridBasedUnit unit in _controllableUnits)
+        {
+            if (unit != movedUnit)
+            {
+                unit.NeedsPathfinderUpdateIfCellReachable(finalPos);
+            }
         }
     }
 }

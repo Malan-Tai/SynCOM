@@ -20,6 +20,11 @@ public class Pathfinder
         return _paths[tile];
     }
 
+    public bool CanReachCell(Vector2Int cell)
+    {
+        return _reachable.Contains(GameManager.Instance.gridMap[cell]);
+    }
+
     private float Heuristic(Vector2Int u, Vector2Int v)
     {
         return Mathf.Abs(u.x - v.x) + Mathf.Abs(u.y - v.y);

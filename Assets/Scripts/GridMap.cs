@@ -17,6 +17,8 @@ public class GridMap : MonoBehaviour
     // max y coordinate (exclusive)
     private int _maxY;
 
+    private List<Vector2Int> _occupiedTiles;
+
     public Tile this[Vector2Int u]
     {
         get
@@ -68,6 +70,8 @@ public class GridMap : MonoBehaviour
                 }
             }
         }
+
+        _occupiedTiles = new List<Vector2Int>();
     }
 
     public Vector3 GridToWorld(Vector2Int grid, float y)
@@ -75,11 +79,17 @@ public class GridMap : MonoBehaviour
         return new Vector3(grid.x * _cellSize + _cellSize / 2, y, grid.y * _cellSize + _cellSize / 2);
     }
 
-    public Vector2Int WorldToGrid(Vector3 world)
+    public Vector2Int WorldToGrid(Vector3 world, bool addToOccupiedTiles = false)
     {
         Vector2Int gridPos = new Vector2Int();
         gridPos.x = (int)Mathf.Floor(world.x / _cellSize - 0.5f);
         gridPos.y = (int)Mathf.Floor(world.z / _cellSize - 0.5f);
+
+        if (addToOccupiedTiles)
+        {
+            _occupiedTiles.Add(gridPos);
+        }
+
         return gridPos;
     }
 
@@ -179,7 +189,6 @@ public class GridMap : MonoBehaviour
         return finalNeigh;
     }
 
-    // must add detection of units
     public bool CanMoveFromCellToCell(Vector2Int cellA, Vector2Int cellB)
     {
         if (!CellIsValid(cellA) || !CellIsValid(cellB))
@@ -190,8 +199,9 @@ public class GridMap : MonoBehaviour
         Tile tileA = _map[cellA.x, cellA.y];
         Tile tileB = _map[cellB.x, cellB.y];
 
-        return (tileA.Cover == Cover.None && (tileB.Cover == Cover.Half || tileB.Cover == Cover.None)) ||
-            (tileA.Cover == Cover.Half && tileB.Cover == Cover.None);
+        return ((tileA.Cover == Cover.None && (tileB.Cover == Cover.Half || tileB.Cover == Cover.None)) ||
+                (tileA.Cover == Cover.Half && tileB.Cover == Cover.None)) &&
+                !_occupiedTiles.Contains(cellB);
     }
 
     public bool CellIsValid(Vector2Int u)
@@ -202,5 +212,11 @@ public class GridMap : MonoBehaviour
     public bool CellIsValid(int x, int y)
     {
         return x >= 0 && x < _maxX && y >= 0 && y < _maxY;
+    }
+
+    public void UpdateOccupiedTiles(Vector2Int from, Vector2Int to)
+    {
+        _occupiedTiles.Remove(from);
+        _occupiedTiles.Add(to);
     }
 }
