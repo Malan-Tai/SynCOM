@@ -10,20 +10,20 @@ public class MoveableCamera : MonoBehaviour
 
     private void Start()
     {
-        _startingOffset = this.transform.position;
+        _startingOffset = this.transform.localPosition;
         _camera = GetComponentInChildren<Camera>();
         _startingCamSize = _camera.orthographicSize;
     }
 
     public void ResetCamera()
     {
-        this.transform.position = _startingOffset;
+        this.transform.localPosition = _startingOffset;
         _camera.orthographicSize = _startingCamSize;
     }
 
     public void SwitchParenthood(GridBasedUnit newUnit)
     {
-        this.transform.position = _startingOffset;
-        this.transform.SetParent(newUnit.transform);
+        this.transform.localPosition = _startingOffset;
+        this.transform.SetParent(newUnit.transform, false);
     }
 }
