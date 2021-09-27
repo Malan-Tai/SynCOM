@@ -17,6 +17,8 @@ public class GridBasedUnit : MonoBehaviour
     private List<Vector2Int> _pathToFollow;
     private bool _followingPath;
 
+    private Dictionary<GridBasedUnit, Cover> _linesOfSight;
+
     public delegate void FinishedMoving(GridBasedUnit movedUnit, Vector2Int finalPos);
     public static event FinishedMoving OnMoveFinish;
 
@@ -28,7 +30,9 @@ public class GridBasedUnit : MonoBehaviour
         this.transform.position = gridMap.GridToWorld(_gridPosition, this.transform.position.y);
         _targetWorldPosition = this.transform.position;
 
-        _movesLeft = 12;
+        _movesLeft = 20;
+
+        _linesOfSight = new Dictionary<GridBasedUnit, Cover>();
     }
 
     private void Update()
@@ -56,6 +60,7 @@ public class GridBasedUnit : MonoBehaviour
         {
             _updatePathfinder = true;
             if (OnMoveFinish != null) OnMoveFinish(this, _gridPosition);
+            UpdateLineOfSights();
         }
     }
 
@@ -78,7 +83,6 @@ public class GridBasedUnit : MonoBehaviour
         float cost;
         _pathToFollow = _pathfinder.GetPathToTile(cell, out cost);
         _movesLeft -= cost;
-        print(_movesLeft);
 
         if (_pathToFollow.Count > 0)
         {
@@ -90,5 +94,48 @@ public class GridBasedUnit : MonoBehaviour
     public void NeedsPathfinderUpdateIfCellReachable(Vector2Int cell)
     {
         _updatePathfinder = _updatePathfinder || _pathfinder.CanReachCell(cell);
+    }
+
+    // needs to check for visibility too
+    public void UpdateLineOfSights(bool targetEnemies = true)
+    {
+        GridMap map = GameManager.Instance.gridMap;
+        _linesOfSight = new Dictionary<GridBasedUnit, Cover>();
+
+        List<GridBasedUnit> listToCycle;
+        if (targetEnemies)
+        {
+            listToCycle = GameManager.Instance.EnemyUnits;
+        }
+        else
+        {
+            listToCycle = GameManager.Instance.ControllableUnits;
+        }
+
+        foreach (GridBasedUnit unit in listToCycle)
+        {
+            Vector3 lineEnd = unit.transform.position;
+            List<CoverPlane> planes = map.GetCoverPlanes(unit._gridPosition);
+
+            Cover bestCover = Cover.None;
+            foreach (CoverPlane plane in planes)
+            {
+                if (plane.IntersectsSegment(this.transform.position, lineEnd))
+                {
+                    if (plane.cover == Cover.Full)
+                    {
+                        bestCover = Cover.Full;
+                        break;
+                    }
+                    else if (plane.cover == Cover.Half && bestCover == Cover.None)
+                    {
+                        bestCover = Cover.Half;
+                    }
+                }
+            }
+
+            _linesOfSight.Add(unit, bestCover);
+            print("i see unit at " + unit._gridPosition + " with cover = " + (int)bestCover);
+        }
     }
 }

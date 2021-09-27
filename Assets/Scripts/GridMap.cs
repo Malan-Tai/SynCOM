@@ -2,6 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public struct CoverPlane
+{
+    public Plane plane;
+    public Cover cover;
+
+    public bool IntersectsSegment(Vector3 start, Vector3 end)
+    {
+        return !plane.SameSide(start, end);
+    }
+}
+
 public class GridMap : MonoBehaviour
 {
     [SerializeField]
@@ -93,7 +104,7 @@ public class GridMap : MonoBehaviour
         return gridPos;
     }
 
-    public Tile[] Neighbors(Vector2Int centerCell)
+    public Tile[] MovementNeighbors(Vector2Int centerCell)
     {
         Tile[] neighbors = new Tile[8];
         int i = 0;
@@ -101,80 +112,58 @@ public class GridMap : MonoBehaviour
         int x = centerCell.x;
         int y = centerCell.y;
 
-        bool canUp = (centerCell.y > 0);
-        bool canDown = (centerCell.y < _maxY - 1);
-        bool canLeft = (centerCell.x > 0);
-        bool canRight = (centerCell.x < _maxX - 1);
+        Vector2Int[] neighborCoords = new Vector2Int[]
+        {
+            new Vector2Int(x - 1, y - 1),
+            new Vector2Int(x - 1, y    ),
+            new Vector2Int(x - 1, y + 1),
+            new Vector2Int(x    , y - 1),
+            new Vector2Int(x    , y + 1),
+            new Vector2Int(x + 1, y - 1),
+            new Vector2Int(x + 1, y    ),
+            new Vector2Int(x + 1, y + 1)
+        };
 
-        if (canUp)
+        foreach (Vector2Int coords in neighborCoords)
         {
-            Vector2Int nextCell = new Vector2Int(x, y - 1);
-            if (CanMoveFromCellToCell(centerCell, nextCell))
+            if (CanMoveFromCellToCell(centerCell, coords))
             {
-                neighbors[i] = this[nextCell];
+                neighbors[i] = this[coords];
                 i++;
             }
         }
-        if (canDown)
+
+        Tile[] finalNeigh = new Tile[i];
+        int j;
+        for (j = 0; j < i; j++)
         {
-            Vector2Int nextCell = new Vector2Int(x, y + 1);
-            if (CanMoveFromCellToCell(centerCell, nextCell))
-            {
-                neighbors[i] = this[nextCell];
-                i++;
-            }
+            finalNeigh[j] = neighbors[j];
         }
-        if (canLeft)
+
+        return finalNeigh;
+    }
+
+    public Tile[] CoverNeighbors(Vector2Int centerCell)
+    {
+        Tile[] neighbors = new Tile[8];
+        int i = 0;
+
+        int x = centerCell.x;
+        int y = centerCell.y;
+
+        Vector2Int[] neighborCoords = new Vector2Int[]
         {
-            Vector2Int nextCell = new Vector2Int(x - 1, y);
-            if (CanMoveFromCellToCell(centerCell, nextCell))
-            {
-                neighbors[i] = this[nextCell];
-                i++;
-            }
-        }
-        if (canRight)
+            new Vector2Int(x - 1, y    ),
+            new Vector2Int(x    , y - 1),
+            new Vector2Int(x    , y + 1),
+            new Vector2Int(x + 1, y    ),
+        };
+
+        foreach (Vector2Int coords in neighborCoords)
         {
-            Vector2Int nextCell = new Vector2Int(x + 1, y);
-            if (CanMoveFromCellToCell(centerCell, nextCell))
+            if (CellIsValid(coords))
             {
-                neighbors[i] = this[nextCell];
-                i++;
-            }
-        }
-        if (canUp && canLeft)
-        {
-            Vector2Int nextCell = new Vector2Int(x - 1, y - 1);
-            if (CanMoveFromCellToCell(centerCell, nextCell))
-            {
-                neighbors[i] = this[nextCell];
-                i++;
-            }
-        }
-        if (canUp && canRight)
-        {
-            Vector2Int nextCell = new Vector2Int(x + 1, y - 1);
-            if (CanMoveFromCellToCell(centerCell, nextCell))
-            {
-                neighbors[i] = this[nextCell];
-                i++;
-            }
-        }
-        if (canDown && canLeft)
-        {
-            Vector2Int nextCell = new Vector2Int(x - 1, y + 1);
-            if (CanMoveFromCellToCell(centerCell, nextCell))
-            {
-                neighbors[i] = this[nextCell];
-                i++;
-            }
-        }
-        if (canDown && canRight)
-        {
-            Vector2Int nextCell = new Vector2Int(x + 1, y + 1);
-            if (CanMoveFromCellToCell(centerCell, nextCell))
-            {
-                neighbors[i] = this[nextCell];
+                neighbors[i] = this[coords];
                 i++;
             }
         }
@@ -218,5 +207,29 @@ public class GridMap : MonoBehaviour
     {
         _occupiedTiles.Remove(from);
         _occupiedTiles.Add(to);
+    }
+
+    public List<CoverPlane> GetCoverPlanes(Vector2Int cell)
+    {
+        Tile[] neighbors = CoverNeighbors(cell);
+        var planes = new List<CoverPlane>();
+        
+        foreach (Tile tile in neighbors)
+        {
+            if (tile.Cover != Cover.None)
+            {
+                var plane = new CoverPlane();
+                plane.cover = tile.Cover;
+
+                Vector3 normal = GridToWorld(tile.Coords, 0) - GridToWorld(cell, 0);
+                Vector3 point = GridToWorld(cell, 0f) + normal / 2;
+
+                plane.plane = new Plane(normal, point);
+
+                planes.Add(plane);
+            }
+        }
+
+        return planes;
     }
 }

@@ -62,7 +62,7 @@ public class Pathfinder
                 break;
             }
 
-            foreach (Tile next in map.Neighbors(current.Coords))
+            foreach (Tile next in map.MovementNeighbors(current.Coords))
             {
                 float newCost = costSoFar[current] + next.MoveCost(current.Coords);
                 if (!costSoFar.ContainsKey(next) || newCost < costSoFar[next])
@@ -121,7 +121,7 @@ public class Pathfinder
         while (frontier.Count > 0)
         {
             Tile current = frontier.Dequeue();
-            foreach (Tile next in map.Neighbors(current.Coords))
+            foreach (Tile next in map.MovementNeighbors(current.Coords))
             {
                 float newCost = costSoFar[current] + next.MoveCost(current.Coords);
                 if (newCost > moves) continue;

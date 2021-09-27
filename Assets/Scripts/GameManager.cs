@@ -32,6 +32,12 @@ public class GameManager : MonoBehaviour
     private int _currentUnitIndex;
     public GridBasedUnit CurrentUnit { get { return _controllableUnits[_currentUnitIndex]; } }
 
+    [SerializeField]
+    private List<GridBasedUnit> _enemyUnits;
+
+    public List<GridBasedUnit> ControllableUnits { get { return _controllableUnits; } }
+    public List<GridBasedUnit> EnemyUnits { get { return _enemyUnits; } }
+
     private void Start()
     {
         _currentUnitIndex = 0;
