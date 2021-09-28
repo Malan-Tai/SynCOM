@@ -76,8 +76,10 @@ public class GridMap : MonoBehaviour
                     GameObject obj = Instantiate(_tilePrefabs[cover], this.transform);
                     obj.transform.position = GridToWorld(new Vector2Int(x, y), 0);
                     obj.transform.localScale = new Vector3(_cellSize, obj.transform.localScale.y, _cellSize);
+
                     var tileComp = obj.GetComponent<TileComponent>();
                     tileComp.SetTile(_map[x, y]);
+                    _map[x, y].SetTileComponent(tileComp);
                 }
             }
         }

@@ -31,7 +31,7 @@ public class GridBasedUnit : MonoBehaviour
         this.transform.position = gridMap.GridToWorld(_gridPosition, this.transform.position.y);
         _targetWorldPosition = this.transform.position;
 
-        _movesLeft = 20;
+        _movesLeft = 10;
         _sightDistance = 20;
 
         _linesOfSight = new Dictionary<GridBasedUnit, LineOfSight>();
@@ -188,6 +188,11 @@ public class GridBasedUnit : MonoBehaviour
         lineOfSight.sidestepCell = shooterPosition;
 
         return lineOfSight;
+    }
+
+    public List<Tile> GetReachableTiles()
+    {
+        return _pathfinder.GetReachableTiles();
     }
 }
 

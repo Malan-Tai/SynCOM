@@ -38,9 +38,12 @@ public class GameManager : MonoBehaviour
     public List<GridBasedUnit> ControllableUnits { get { return _controllableUnits; } }
     public List<GridBasedUnit> EnemyUnits { get { return _enemyUnits; } }
 
+    private List<Tile> _previousReachableTiles;
+
     private void Start()
     {
         _currentUnitIndex = 0;
+        _previousReachableTiles = new List<Tile>();
     }
 
     private void OnEnable()
@@ -58,6 +61,7 @@ public class GameManager : MonoBehaviour
         _currentUnitIndex++;
         if (_currentUnitIndex >= _controllableUnits.Count) _currentUnitIndex = 0;
         _camera.SwitchParenthood(CurrentUnit);
+        UpdateReachableTiles();
     }
 
     public void SelectControllableUnit(GridBasedUnit unit)
@@ -67,7 +71,25 @@ public class GameManager : MonoBehaviour
         {
             _currentUnitIndex = index;
             _camera.SwitchParenthood(unit);
+            UpdateReachableTiles();
         }
+    }
+
+    public void UpdateReachableTiles()
+    {
+        List<Tile> newReachable = CurrentUnit.GetReachableTiles();
+
+        foreach (Tile tile in _previousReachableTiles)
+        {
+            tile.BecomeUnreachable();
+        }
+
+        foreach (Tile tile in newReachable)
+        {
+            tile.BecomeReachable();
+        }
+
+        _previousReachableTiles = newReachable;
     }
 
     public void UpdatePathfinders(GridBasedUnit movedUnit, Vector2Int finalPos)
@@ -79,5 +101,7 @@ public class GameManager : MonoBehaviour
                 unit.NeedsPathfinderUpdateIfCellReachable(finalPos);
             }
         }
+
+        UpdateReachableTiles();
     }
 }

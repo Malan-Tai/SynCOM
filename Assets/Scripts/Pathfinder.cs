@@ -5,13 +5,13 @@ using Priority_Queue;
 
 public class Pathfinder
 {
-    private List<Tile> _reachable { get; set; }
+    private List<Tile> _reachable;
     //public Dictionary<Tile, bool[]> Edges { get; set; }
 
     // paths contains, for every tile in reachable, a list of cell positions leading to said tile.
     // The first tile in the list is the first tile on the path, the last tile in the list is the target reachable tile.
-    private Dictionary<Tile, List<Vector2Int>> _paths { get; set; }
-    private Dictionary<Tile, float> _costs { get; set; }
+    private Dictionary<Tile, List<Vector2Int>> _paths;
+    private Dictionary<Tile, float> _costs;
 
     public List<Vector2Int> GetPathToTile(Vector2Int cell, out float cost)
     {
@@ -165,5 +165,10 @@ public class Pathfinder
 
             //if (!notInEdge) Edges.Add(tile, edge);
         }
+    }
+
+    public List<Tile> GetReachableTiles()
+    {
+        return _reachable;
     }
 }
