@@ -20,8 +20,8 @@ public class GridBasedUnit : MonoBehaviour
     private Dictionary<GridBasedUnit, LineOfSight> _linesOfSight;
     private float _sightDistance;
 
-    public delegate void FinishedMoving(GridBasedUnit movedUnit, Vector2Int finalPos);
-    public static event FinishedMoving OnMoveFinish;
+    public delegate void StartedMoving(GridBasedUnit movedUnit, Vector2Int finalPos);
+    public static event StartedMoving OnMoveStart;
 
     private void Start()
     {
@@ -63,7 +63,6 @@ public class GridBasedUnit : MonoBehaviour
         else if (_followingPath)
         {
             _updatePathfinder = true;
-            if (OnMoveFinish != null) OnMoveFinish(this, _gridPosition);
             UpdateLineOfSights();
         }
     }
@@ -92,6 +91,8 @@ public class GridBasedUnit : MonoBehaviour
         {
             _followingPath = true;
             GameManager.Instance.gridMap.UpdateOccupiedTiles(_gridPosition, cell);
+
+            if (OnMoveStart != null) OnMoveStart(this, cell);
         }
     }
 
@@ -100,7 +101,6 @@ public class GridBasedUnit : MonoBehaviour
         _updatePathfinder = true;
     }
 
-    // needs to check for visibility too
     public void UpdateLineOfSights(bool targetEnemies = true)
     {
         GridMap map = GameManager.Instance.gridMap;

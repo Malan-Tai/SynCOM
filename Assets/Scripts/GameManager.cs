@@ -48,12 +48,12 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable()
     {
-        GridBasedUnit.OnMoveFinish += UpdatePathfinders;
+        GridBasedUnit.OnMoveStart += UpdatePathfinders;
     }
 
     private void OnDisable()
     {
-        GridBasedUnit.OnMoveFinish -= UpdatePathfinders;
+        GridBasedUnit.OnMoveStart -= UpdatePathfinders;
     }
 
     public void NextControllableUnit()
