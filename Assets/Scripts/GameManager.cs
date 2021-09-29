@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private MoveableCamera _camera;
+    public MoveableCamera Camera { get { return _camera; } }
 
     [SerializeField]
     private List<GridBasedUnit> _controllableUnits;

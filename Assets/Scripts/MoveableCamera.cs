@@ -26,4 +26,10 @@ public class MoveableCamera : MonoBehaviour
         this.transform.localPosition = _startingOffset;
         this.transform.SetParent(newUnit.transform, false);
     }
+
+    public void RotateCamera(float sign)
+    {
+        Vector3 euler = this.transform.localEulerAngles + new Vector3(0, sign * 90, 0);
+        this.transform.localRotation = Quaternion.Euler(euler);
+    }
 }
