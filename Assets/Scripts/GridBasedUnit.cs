@@ -95,9 +95,9 @@ public class GridBasedUnit : MonoBehaviour
         }
     }
 
-    public void NeedsPathfinderUpdateIfCellReachable(Vector2Int cell)
+    public void NeedsPathfinderUpdate()
     {
-        _updatePathfinder = _updatePathfinder || _pathfinder.CanReachCell(cell);
+        _updatePathfinder = true;
     }
 
     // needs to check for visibility too

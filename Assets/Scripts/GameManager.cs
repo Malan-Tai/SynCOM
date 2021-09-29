@@ -98,7 +98,7 @@ public class GameManager : MonoBehaviour
         {
             if (unit != movedUnit)
             {
-                unit.NeedsPathfinderUpdateIfCellReachable(finalPos);
+                unit.NeedsPathfinderUpdate();
             }
         }
     }
