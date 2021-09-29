@@ -33,5 +33,15 @@ public class InputController : MonoBehaviour
         {
             GameManager.Instance.NextControllableUnit();
         }
+
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            GameManager.Instance.Camera.RotateCamera(1);
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            GameManager.Instance.Camera.RotateCamera(-1);
+        }
     }
 }
