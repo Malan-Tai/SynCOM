@@ -1,0 +1,21 @@
+public enum EnumEmotions
+{
+    Scorn,
+    Esteem,
+    Prejudice,
+    Submission,
+    Terror,
+    ConflictedFeelings,
+    Faith,
+    Respect,
+    Condescension,
+    Recognition,
+    Hate,
+    ReluctantTrust,
+    Hostility,
+    Pity,
+    Devotion,
+    Apprehension,
+    Friendship,
+    Empathy
+}

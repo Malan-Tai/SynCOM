@@ -3,11 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Character : MonoBehaviour
-    
-   
-
-
-   
 {
     //Character's archetype
 
@@ -22,6 +17,7 @@ public class Character : MonoBehaviour
     [SerializeField] private int _movementPoints;
     [SerializeField] private int _weigth;
 
+    Dictionary<Character, Relationship> _relationships;
     
     void Start()
     {
