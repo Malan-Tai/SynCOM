@@ -45,6 +45,8 @@ public class GridBasedUnit : MonoBehaviour
             _pathToFollow = new List<Vector2Int>();
             _updatePathfinder = false;
             _followingPath = false;
+
+            if (GameManager.Instance.CurrentUnit == this) GameManager.Instance.UpdateReachableTiles();
         }
 
         Vector3 difference = _targetWorldPosition - this.transform.position;
@@ -93,9 +95,9 @@ public class GridBasedUnit : MonoBehaviour
         }
     }
 
-    public void NeedsPathfinderUpdateIfCellReachable(Vector2Int cell)
+    public void NeedsPathfinderUpdate()
     {
-        _updatePathfinder = _updatePathfinder || _pathfinder.CanReachCell(cell);
+        _updatePathfinder = true;
     }
 
     // needs to check for visibility too
