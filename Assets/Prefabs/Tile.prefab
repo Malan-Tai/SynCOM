@@ -108,4 +108,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08cb1824ce2f90144b4edef264eb0c70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _reachableMat: {fileID: 2100000, guid: ef8d7075c1213ed438a801f44f926e25, type: 2}
+  _reachableColor: {r: 0.19339621, g: 1, b: 0.406909, a: 0}

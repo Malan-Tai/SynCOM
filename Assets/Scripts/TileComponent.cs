@@ -10,13 +10,13 @@ public class TileComponent : MonoBehaviour
     private MeshRenderer _renderer;
 
     [SerializeField]
-    private Material _reachableMat;
-    private Material _originalMat;
+    private Color _reachableColor;
+    private Color _originalColor;
 
     private void Start()
     {
         _renderer = GetComponent<MeshRenderer>();
-        _originalMat = _renderer.material;
+        _originalColor = _renderer.material.GetColor("_Color");
     }
 
     public void SetTile(Tile tile)
@@ -26,13 +26,11 @@ public class TileComponent : MonoBehaviour
 
     public void BecomeReachable()
     {
-        if (_reachableMat == null) return;
-
-        _renderer.material = _reachableMat;
+        _renderer.material.SetColor("_Color", _reachableColor);
     }
 
     public void BecomeUnreachable()
     {
-        _renderer.material = _originalMat;
+        _renderer.material.SetColor("_Color", _originalColor);
     }
 }
