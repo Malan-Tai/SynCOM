@@ -101,7 +101,5 @@ public class GameManager : MonoBehaviour
                 unit.NeedsPathfinderUpdateIfCellReachable(finalPos);
             }
         }
-
-        UpdateReachableTiles();
     }
 }

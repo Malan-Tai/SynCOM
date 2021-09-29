@@ -45,6 +45,8 @@ public class GridBasedUnit : MonoBehaviour
             _pathToFollow = new List<Vector2Int>();
             _updatePathfinder = false;
             _followingPath = false;
+
+            if (GameManager.Instance.CurrentUnit == this) GameManager.Instance.UpdateReachableTiles();
         }
 
         Vector3 difference = _targetWorldPosition - this.transform.position;
