@@ -3,24 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using Priority_Queue;
 
-public enum Cover
-{
-    None,
-    Half,
-    Full
-}
-
 public class Tile : FastPriorityQueueNode
 {
-    private Cover _cover;
-    public Cover Cover { get { return _cover; } }
+    private EnumCover _cover;
+    public EnumCover Cover { get { return _cover; } }
 
     private Vector2Int _coords;
     public Vector2Int Coords { get { return _coords; } }
 
     private TileComponent _tileComponent;
 
-    public Tile(int x, int y, Cover cover)
+    public Tile(int x, int y, EnumCover cover)
     {
         _coords = new Vector2Int(x, y);
         _cover = cover;

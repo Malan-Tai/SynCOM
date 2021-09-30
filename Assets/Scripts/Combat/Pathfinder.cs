@@ -15,7 +15,7 @@ public class Pathfinder
 
     public List<Vector2Int> GetPathToTile(Vector2Int cell, out float cost)
     {
-        Tile tile = GameManager.Instance.gridMap[cell];
+        Tile tile = CombatGameManager.Instance.gridMap[cell];
         if (!_reachable.Contains(tile))
         {
             cost = 0f;
@@ -28,7 +28,7 @@ public class Pathfinder
 
     public bool CanReachCell(Vector2Int cell)
     {
-        return _reachable.Contains(GameManager.Instance.gridMap[cell]);
+        return _reachable.Contains(CombatGameManager.Instance.gridMap[cell]);
     }
 
     private float Heuristic(Vector2Int u, Vector2Int v)
@@ -38,7 +38,7 @@ public class Pathfinder
 
     public Vector2Int[] AstarPath(Vector2Int start, Vector2Int goal)
     {
-        GridMap map = GameManager.Instance.gridMap;
+        GridMap map = CombatGameManager.Instance.gridMap;
         Tile startTile = map[start];
         Tile goalTile = map[goal];
 
@@ -78,7 +78,7 @@ public class Pathfinder
         }
 
         Stack<Vector2Int> path = new Stack<Vector2Int>();
-        if (current.Cover != Cover.None)
+        if (current.Cover != EnumCover.None)
         {
             current = cameFrom[current];
         }
@@ -99,7 +99,7 @@ public class Pathfinder
 
     public void Dijkstra(float moves, Vector2Int start)
     {
-        GridMap map = GameManager.Instance.gridMap;
+        GridMap map = CombatGameManager.Instance.gridMap;
         Tile startTile = map[start];
 
         _reachable = new List<Tile> { startTile };
@@ -133,7 +133,7 @@ public class Pathfinder
                     frontier.Enqueue(next, prio);
                     cameFrom[next] = current;
 
-                    if (!_reachable.Contains(next) && next.Cover == Cover.None) _reachable.Add(next);
+                    if (!_reachable.Contains(next) && next.Cover == EnumCover.None) _reachable.Add(next);
                 }
             }
         }

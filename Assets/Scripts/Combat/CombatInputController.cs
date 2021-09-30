@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InputController : MonoBehaviour
+public class CombatInputController : MonoBehaviour
 {
     void Update()
     {
@@ -20,28 +20,28 @@ public class InputController : MonoBehaviour
 
             if (hitUnit != null && clicked)
             {
-                GameManager.Instance.SelectControllableUnit(hitUnit);
+                CombatGameManager.Instance.SelectControllableUnit(hitUnit);
                 changedUnitThisFrame = true;
             }
             else if (hitTile != null && clicked)
             {
-                GameManager.Instance.CurrentUnit.ChoosePathTo(hitTile.Tile.Coords);
+                CombatGameManager.Instance.CurrentUnit.ChoosePathTo(hitTile.Tile.Coords);
             }
         }
 
         if (Input.GetKeyDown(KeyCode.Tab) && !changedUnitThisFrame)
         {
-            GameManager.Instance.NextControllableUnit();
+            CombatGameManager.Instance.NextControllableUnit();
         }
 
         if (Input.GetKeyDown(KeyCode.A))
         {
-            GameManager.Instance.Camera.RotateCamera(1);
+            CombatGameManager.Instance.Camera.RotateCamera(1);
         }
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            GameManager.Instance.Camera.RotateCamera(-1);
+            CombatGameManager.Instance.Camera.RotateCamera(-1);
         }
     }
 }

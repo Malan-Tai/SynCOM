@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class CombatGameManager : MonoBehaviour
 {
     #region Singleton
-    private static GameManager instance;
-    public static GameManager Instance { get { return instance; } }
+    private static CombatGameManager instance;
+    public static CombatGameManager Instance { get { return instance; } }
 
     private void Awake()
     {

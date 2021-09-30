@@ -2,17 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct CoverPlane
-{
-    public Plane plane;
-    public Cover cover;
-
-    public bool IntersectsSegment(Vector3 start, Vector3 end)
-    {
-        return !plane.SameSide(start, end);
-    }
-}
-
 public class GridMap : MonoBehaviour
 {
     [SerializeField]
@@ -69,7 +58,7 @@ public class GridMap : MonoBehaviour
                 else if (y == 10 || y == _maxY - 2) cover = 1;
 
                 //int cover = Random.Range(0, 3);
-                _map[x, y] = new Tile(x, y, (Cover)cover);
+                _map[x, y] = new Tile(x, y, (EnumCover)cover);
 
                 if (cover < _tilePrefabs.Length)
                 {
@@ -192,25 +181,25 @@ public class GridMap : MonoBehaviour
         int x = centerCell.x;
         int y = centerCell.y;
 
-        if ((CellIsValid(x + 1, y) && this[x + 1, y].Cover != Cover.None) || (CellIsValid(x - 1, y) && this[x - 1, y].Cover != Cover.None))
+        if ((CellIsValid(x + 1, y) && this[x + 1, y].Cover != EnumCover.None) || (CellIsValid(x - 1, y) && this[x - 1, y].Cover != EnumCover.None))
         {
-            if (CellIsValid(x, y + 1) && this[x, y + 1].Cover == Cover.None)
+            if (CellIsValid(x, y + 1) && this[x, y + 1].Cover == EnumCover.None)
             {
                 positions.Add(new Vector2Int(x, y + 1));
             }
-            if (CellIsValid(x, y - 1) && this[x, y - 1].Cover == Cover.None)
+            if (CellIsValid(x, y - 1) && this[x, y - 1].Cover == EnumCover.None)
             {
                 positions.Add(new Vector2Int(x, y - 1));
             }
         }
 
-        if ((CellIsValid(x, y + 1) && this[x, y + 1].Cover != Cover.None) || (CellIsValid(x, y - 1) && this[x, y - 1].Cover != Cover.None))
+        if ((CellIsValid(x, y + 1) && this[x, y + 1].Cover != EnumCover.None) || (CellIsValid(x, y - 1) && this[x, y - 1].Cover != EnumCover.None))
         {
-            if (CellIsValid(x + 1, y) && this[x + 1, y].Cover == Cover.None)
+            if (CellIsValid(x + 1, y) && this[x + 1, y].Cover == EnumCover.None)
             {
                 positions.Add(new Vector2Int(x + 1, y));
             }
-            if (CellIsValid(x - 1, y) && this[x - 1, y].Cover == Cover.None)
+            if (CellIsValid(x - 1, y) && this[x - 1, y].Cover == EnumCover.None)
             {
                 positions.Add(new Vector2Int(x - 1, y));
             }
@@ -229,8 +218,8 @@ public class GridMap : MonoBehaviour
         Tile tileA = _map[cellA.x, cellA.y];
         Tile tileB = _map[cellB.x, cellB.y];
 
-        return ((tileA.Cover == Cover.None && (tileB.Cover == Cover.Half || tileB.Cover == Cover.None)) ||
-                (tileA.Cover == Cover.Half && tileB.Cover == Cover.None)) &&
+        return ((tileA.Cover == EnumCover.None && (tileB.Cover == EnumCover.Half || tileB.Cover == EnumCover.None)) ||
+                (tileA.Cover == EnumCover.Half && tileB.Cover == EnumCover.None)) &&
                 !_occupiedTiles.Contains(cellB);
     }
 
@@ -257,7 +246,7 @@ public class GridMap : MonoBehaviour
         
         foreach (Tile tile in neighbors)
         {
-            if (tile.Cover != Cover.None)
+            if (tile.Cover != EnumCover.None)
             {
                 var plane = new CoverPlane();
                 plane.cover = tile.Cover;
