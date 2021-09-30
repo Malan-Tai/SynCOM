@@ -23,7 +23,7 @@ public class GridBasedUnit : MonoBehaviour
     public delegate void StartedMoving(GridBasedUnit movedUnit, Vector2Int finalPos);
     public static event StartedMoving OnMoveStart;
 
-    private void Start()
+    protected void Start()
     {
         GridMap gridMap = CombatGameManager.Instance.gridMap;
 
@@ -145,7 +145,17 @@ public class GridBasedUnit : MonoBehaviour
             if (bestLine.seen)
             {
                 _linesOfSight.Add(unit, bestLine);
-                print("i see unit at " + unit._gridPosition + " with cover " + (int)bestLine.cover + " by sidestepping by " + (bestLine.sidestepCell - _gridPosition));
+                //print("i see unit at " + unit._gridPosition + " with cover " + (int)bestLine.cover + " by sidestepping by " + (bestLine.sidestepCell - _gridPosition));
+                if (targetEnemies)
+                {
+                    var enemy = (EnemyUnit)unit;
+                    enemy.UpdateVisibility(true, bestLine.cover);
+                }
+            }
+            else if (targetEnemies)
+            {
+                var enemy = (EnemyUnit)unit;
+                enemy.UpdateVisibility(false, EnumCover.Full);
             }
         }
     }
