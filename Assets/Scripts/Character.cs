@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Character : MonoBehaviour
+public class Character
 {
     //Character's archetype
 
-    [SerializeField] private EnumClasses _class;
+    private EnumClasses _class;
+    private List<EnumTraits> _traits;
 
     //Character's statistics
 
@@ -20,6 +21,37 @@ public class Character : MonoBehaviour
 
     Dictionary<Character, Relationship> _relationships;
 
+    private static Dictionary<EnumClasses, List<EnumTraits>> s_mandatoryTraits = new Dictionary<EnumClasses, List<EnumTraits>>(){
+        {EnumClasses.Berserker, new List<EnumTraits> {EnumTraits.Stocky}},
+        {EnumClasses.Engineer, new List<EnumTraits> {EnumTraits.Stocky}},
+        {EnumClasses.Hitman, new List<EnumTraits> {EnumTraits.Racist}},
+        {EnumClasses.Sniper, new List<EnumTraits> {EnumTraits.Racist}},
+        {EnumClasses.HoundMaster, new List<EnumTraits> {EnumTraits.Ugly}},
+        {EnumClasses.Smuggler, new List<EnumTraits> {EnumTraits.Ugly}}
+    };
+
+    //constructor 
+
+    public Character()
+    {
+        _traits.Add(GetRandomTraitsFromClass(_class));
+    }
+
+    public Character(EnumClasses characterClass,float maxHealth,float damage, float accuracy, float dodge, float movementPoints, float weight)
+    {
+        _class = characterClass;
+        _traits.Add(GetRandomTraitsFromClass(characterClass));
+
+        _maxHealth = maxHealth;
+        _damage = damage;
+        _accuracy = accuracy;
+        _dodge = dodge;
+        _movementPoints = movementPoints;
+        _weigth = weight;
+
+    }
+
+
     //Getters and setters
     public float MaxHealth
     {
@@ -29,7 +61,7 @@ public class Character : MonoBehaviour
     public float HealthPoints
     {
         get { return this._healthPoints; }
-        private set { this._healthPoints= value; }
+        private set { this._healthPoints = value; }
     }
 
     public float Damages
@@ -52,7 +84,7 @@ public class Character : MonoBehaviour
 
     public float MovementPoints
     {
-        get { return this._movementPoints ; }
+        get { return this._movementPoints; }
         private set { this._movementPoints = value; }
     }
 
@@ -62,11 +94,13 @@ public class Character : MonoBehaviour
         private set { this._weigth = value; }
     }
 
-    void Start()    
+    public EnumTraits GetRandomTraitsFromClass(EnumClasses characterClass)
     {
-        
-    }
 
+        int indice = Random.Range(0,s_mandatoryTraits[characterClass].Count);
+        EnumTraits newTrait = s_mandatoryTraits[characterClass][indice];
+        return newTrait;
+    }
     public void TakeDamages(float damages)
     {
         _healthPoints -= damages;
@@ -79,11 +113,5 @@ public class Character : MonoBehaviour
     public void Die()
     {
 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
