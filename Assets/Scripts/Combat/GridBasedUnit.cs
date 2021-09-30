@@ -25,7 +25,7 @@ public class GridBasedUnit : MonoBehaviour
 
     private void Start()
     {
-        GridMap gridMap = GameManager.Instance.gridMap;
+        GridMap gridMap = CombatGameManager.Instance.gridMap;
 
         _gridPosition = gridMap.WorldToGrid(this.transform.position, true);
         this.transform.position = gridMap.GridToWorld(_gridPosition, this.transform.position.y);
@@ -46,11 +46,11 @@ public class GridBasedUnit : MonoBehaviour
             _updatePathfinder = false;
             _followingPath = false;
 
-            if (GameManager.Instance.CurrentUnit == this) GameManager.Instance.UpdateReachableTiles();
+            if (CombatGameManager.Instance.CurrentUnit == this) CombatGameManager.Instance.UpdateReachableTiles();
         }
 
         Vector3 difference = _targetWorldPosition - this.transform.position;
-        if (difference.sqrMagnitude > GameManager.Instance.gridMap.CellSize / 100f)
+        if (difference.sqrMagnitude > CombatGameManager.Instance.gridMap.CellSize / 100f)
         {
             Vector3 movement = difference.normalized * _moveSpeed * Time.deltaTime;
             this.transform.position += movement;
@@ -70,13 +70,13 @@ public class GridBasedUnit : MonoBehaviour
     public void MoveToNeighbor(Vector2Int deltaGrid)
     {
         _gridPosition += deltaGrid;
-        _targetWorldPosition = GameManager.Instance.gridMap.GridToWorld(_gridPosition, this.transform.position.y);
+        _targetWorldPosition = CombatGameManager.Instance.gridMap.GridToWorld(_gridPosition, this.transform.position.y);
     }
 
     public void MoveToCell(Vector2Int cell)
     {
         _gridPosition = cell;
-        _targetWorldPosition = GameManager.Instance.gridMap.GridToWorld(_gridPosition, this.transform.position.y);
+        _targetWorldPosition = CombatGameManager.Instance.gridMap.GridToWorld(_gridPosition, this.transform.position.y);
     }
 
     public void ChoosePathTo(Vector2Int cell)
@@ -90,7 +90,7 @@ public class GridBasedUnit : MonoBehaviour
         if (_pathToFollow.Count > 0)
         {
             _followingPath = true;
-            GameManager.Instance.gridMap.UpdateOccupiedTiles(_gridPosition, cell);
+            CombatGameManager.Instance.gridMap.UpdateOccupiedTiles(_gridPosition, cell);
 
             if (OnMoveStart != null) OnMoveStart(this, cell);
         }
@@ -103,17 +103,17 @@ public class GridBasedUnit : MonoBehaviour
 
     public void UpdateLineOfSights(bool targetEnemies = true)
     {
-        GridMap map = GameManager.Instance.gridMap;
+        GridMap map = CombatGameManager.Instance.gridMap;
         _linesOfSight = new Dictionary<GridBasedUnit, LineOfSight>();
 
         List<GridBasedUnit> listToCycle;
         if (targetEnemies)
         {
-            listToCycle = GameManager.Instance.EnemyUnits;
+            listToCycle = CombatGameManager.Instance.EnemyUnits;
         }
         else
         {
-            listToCycle = GameManager.Instance.ControllableUnits;
+            listToCycle = CombatGameManager.Instance.ControllableUnits;
         }
 
         List<Vector2Int> shooterSidesteps = map.SidestepPositions(_gridPosition);
@@ -127,7 +127,7 @@ public class GridBasedUnit : MonoBehaviour
 
             LineOfSight bestLine = new LineOfSight();
             bestLine.seen = false;
-            bestLine.cover = Cover.Full; // worst case for the shooter
+            bestLine.cover = EnumCover.Full; // worst case for the shooter
 
             foreach (Vector2Int shooterSidestep in shooterSidesteps)
             {
@@ -152,7 +152,7 @@ public class GridBasedUnit : MonoBehaviour
 
     private LineOfSight ComputeLineOfSight(List<CoverPlane> targetCoverPlanes, Vector2Int shooterPosition, Vector2Int targetPosition, float targetY)
     {
-        GridMap map = GameManager.Instance.gridMap;
+        GridMap map = CombatGameManager.Instance.gridMap;
         LayerMask layerMask = 1 << 6;
 
         LineOfSight lineOfSight = new LineOfSight();
@@ -169,19 +169,19 @@ public class GridBasedUnit : MonoBehaviour
             return lineOfSight;
         }
 
-        Cover bestCover = Cover.None; // best cover for the target
+        EnumCover bestCover = EnumCover.None; // best cover for the target
         foreach (CoverPlane plane in targetCoverPlanes)
         {
             if (plane.IntersectsSegment(lineStart, lineEnd))
             {
-                if (plane.cover == Cover.Full)
+                if (plane.cover == EnumCover.Full)
                 {
-                    bestCover = Cover.Full;
+                    bestCover = EnumCover.Full;
                     break;
                 }
-                else if (plane.cover == Cover.Half && bestCover == Cover.None)
+                else if (plane.cover == EnumCover.Half && bestCover == EnumCover.None)
                 {
-                    bestCover = Cover.Half;
+                    bestCover = EnumCover.Half;
                 }
             }
         }
@@ -196,11 +196,4 @@ public class GridBasedUnit : MonoBehaviour
     {
         return _pathfinder.GetReachableTiles();
     }
-}
-
-public struct LineOfSight
-{
-    public bool seen;
-    public Cover cover;
-    public Vector2Int sidestepCell;
 }

@@ -3,13 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public enum Sentiment
-{
-    Admiration,
-    Trust,
-    Sympathy
-}
-
 public class Relationship
 {
     private Character _target;
@@ -31,24 +24,24 @@ public class Relationship
         }
     }
 
-    private Dictionary<Sentiment, Gauge> _gauges;
-    private Gauge _admirationGauge { get { return _gauges[Sentiment.Admiration]; } }
-    private Gauge _trustGauge { get { return _gauges[Sentiment.Trust]; } }
-    private Gauge _sympathyGauge { get { return _gauges[Sentiment.Sympathy]; } }
+    private Dictionary<EnumSentiment, Gauge> _gauges;
+    private Gauge _admirationGauge { get { return _gauges[EnumSentiment.Admiration]; } }
+    private Gauge _trustGauge { get { return _gauges[EnumSentiment.Trust]; } }
+    private Gauge _sympathyGauge { get { return _gauges[EnumSentiment.Sympathy]; } }
 
     private List<EnumEmotions> _listEmotions;
 
     public Relationship()
     {
         _listEmotions = new List<EnumEmotions>();
-        _gauges = new Dictionary<Sentiment, Gauge>();
-        foreach (Sentiment sentiment in Enum.GetValues(typeof(Sentiment)))
+        _gauges = new Dictionary<EnumSentiment, Gauge>();
+        foreach (EnumSentiment sentiment in Enum.GetValues(typeof(EnumSentiment)))
         {
             _gauges.Add(sentiment, new Gauge());
         }
     }
 
-    public void IncreaseSentiment(Sentiment sentiment, int gain)
+    public void IncreaseSentiment(EnumSentiment sentiment, int gain)
     {
         Gauge gauge = _gauges[sentiment];
         int sentimentTotal = gauge.value + gain;
