@@ -429,7 +429,7 @@ GameObject:
   - component: {fileID: 913855426}
   - component: {fileID: 913855425}
   - component: {fileID: 913855424}
-  - component: {fileID: 913855428}
+  - component: {fileID: 913855429}
   m_Layer: 0
   m_Name: Unit1
   m_TagString: Untagged
@@ -514,7 +514,7 @@ Transform:
   m_Father: {fileID: 2055147474}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &913855428
+--- !u!114 &913855429
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -523,10 +523,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 913855423}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc0f5886fe4c32f4a89d939fa699b9cc, type: 3}
+  m_Script: {fileID: 11500000, guid: 8bd95b7b1534b0a4892024f09a98793b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 10
+  _character: {fileID: 0}
 --- !u!1 &1022324724
 GameObject:
   m_ObjectHideFlags: 0
@@ -588,10 +589,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1038333944}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc0f5886fe4c32f4a89d939fa699b9cc, type: 3}
+  m_Script: {fileID: 11500000, guid: 8bd95b7b1534b0a4892024f09a98793b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 10
+  _character: {fileID: 0}
 --- !u!65 &1038333946
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -893,7 +895,7 @@ MonoBehaviour:
   gridMap: {fileID: 265176686}
   _camera: {fileID: 94974299}
   _controllableUnits:
-  - {fileID: 913855428}
+  - {fileID: 913855429}
   - {fileID: 1038333945}
   _enemyUnits:
   - {fileID: 1164300361}

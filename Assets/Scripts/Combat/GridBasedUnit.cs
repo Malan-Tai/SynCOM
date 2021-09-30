@@ -17,11 +17,14 @@ public class GridBasedUnit : MonoBehaviour
     private List<Vector2Int> _pathToFollow;
     private bool _followingPath;
 
-    private Dictionary<GridBasedUnit, LineOfSight> _linesOfSight;
+    protected Dictionary<GridBasedUnit, LineOfSight> _linesOfSight;
     private float _sightDistance;
 
     public delegate void StartedMoving(GridBasedUnit movedUnit, Vector2Int finalPos);
     public static event StartedMoving OnMoveStart;
+
+    public delegate void FinishedMoving(GridBasedUnit movedUnit);
+    public static event FinishedMoving OnMoveFinish;
 
     protected void Start()
     {
@@ -64,6 +67,7 @@ public class GridBasedUnit : MonoBehaviour
         {
             _updatePathfinder = true;
             UpdateLineOfSights();
+            if (OnMoveFinish != null) OnMoveFinish(this);
         }
     }
 
@@ -145,17 +149,7 @@ public class GridBasedUnit : MonoBehaviour
             if (bestLine.seen)
             {
                 _linesOfSight.Add(unit, bestLine);
-                //print("i see unit at " + unit._gridPosition + " with cover " + (int)bestLine.cover + " by sidestepping by " + (bestLine.sidestepCell - _gridPosition));
-                if (targetEnemies)
-                {
-                    var enemy = (EnemyUnit)unit;
-                    enemy.UpdateVisibility(true, bestLine.cover);
-                }
-            }
-            else if (targetEnemies)
-            {
-                var enemy = (EnemyUnit)unit;
-                enemy.UpdateVisibility(false, EnumCover.Full);
+                print("i see unit at " + unit._gridPosition + " with cover " + (int)bestLine.cover + " by sidestepping by " + (bestLine.sidestepCell - _gridPosition));
             }
         }
     }

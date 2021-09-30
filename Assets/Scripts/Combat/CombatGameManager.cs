@@ -50,11 +50,13 @@ public class CombatGameManager : MonoBehaviour
     private void OnEnable()
     {
         GridBasedUnit.OnMoveStart += UpdatePathfinders;
+        GridBasedUnit.OnMoveFinish += UpdateVisibilities;
     }
 
     private void OnDisable()
     {
         GridBasedUnit.OnMoveStart -= UpdatePathfinders;
+        GridBasedUnit.OnMoveFinish -= UpdateVisibilities;
     }
 
     public void NextControllableUnit()
@@ -63,6 +65,7 @@ public class CombatGameManager : MonoBehaviour
         if (_currentUnitIndex >= _controllableUnits.Count) _currentUnitIndex = 0;
         _camera.SwitchParenthood(CurrentUnit);
         UpdateReachableTiles();
+        UpdateVisibilities();
     }
 
     public void SelectControllableUnit(GridBasedUnit unit)
@@ -73,6 +76,7 @@ public class CombatGameManager : MonoBehaviour
             _currentUnitIndex = index;
             _camera.SwitchParenthood(unit);
             UpdateReachableTiles();
+            UpdateVisibilities();
         }
     }
 
@@ -102,5 +106,28 @@ public class CombatGameManager : MonoBehaviour
                 unit.NeedsPathfinderUpdate();
             }
         }
+    }
+
+    public void UpdateVisibilities(GridBasedUnit movedUnit)
+    {
+        if (movedUnit == CurrentUnit)
+        {
+            foreach (GridBasedUnit unit in _enemyUnits)
+            {
+                ((EnemyUnit)unit).UpdateVisibility(false);
+            }
+
+            ((AllyUnit)movedUnit).UpdateEnemyVisibilities();
+        }
+    }
+
+    public void UpdateVisibilities()
+    {
+        foreach (GridBasedUnit unit in _enemyUnits)
+        {
+            ((EnemyUnit)unit).UpdateVisibility(false);
+        }
+
+        ((AllyUnit)CurrentUnit).UpdateEnemyVisibilities();
     }
 }
