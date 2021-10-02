@@ -8,6 +8,13 @@ public class MoveableCamera : MonoBehaviour
     private Camera _camera;
     private float _startingCamSize;
 
+    [SerializeField]
+    private float _minCameraSize;
+    [SerializeField]
+    private float _maxCameraSize;
+    [SerializeField]
+    private float _zoomSpeed;
+
     private void Start()
     {
         _startingOffset = this.transform.localPosition;
@@ -31,5 +38,11 @@ public class MoveableCamera : MonoBehaviour
     {
         Vector3 euler = this.transform.localEulerAngles + new Vector3(0, sign * 90, 0);
         this.transform.localRotation = Quaternion.Euler(euler);
+    }
+
+    public void ZoomCamera(float delta)
+    {
+        float newSize = _camera.orthographicSize + delta * _zoomSpeed;
+        _camera.orthographicSize = Mathf.Clamp(newSize, _minCameraSize, _maxCameraSize);
     }
 }

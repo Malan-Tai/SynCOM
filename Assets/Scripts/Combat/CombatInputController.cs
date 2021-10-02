@@ -43,5 +43,11 @@ public class CombatInputController : MonoBehaviour
         {
             CombatGameManager.Instance.Camera.RotateCamera(-1);
         }
+
+        float scrollY = Input.mouseScrollDelta.y;
+        if (scrollY != 0)
+        {
+            CombatGameManager.Instance.Camera.ZoomCamera(- scrollY);
+        }
     }
 }
