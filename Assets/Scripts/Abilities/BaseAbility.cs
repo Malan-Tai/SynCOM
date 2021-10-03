@@ -36,6 +36,12 @@ public abstract class BaseAbility
             Debug.Log("cant use this ability");
             FinalizeAbility(false);
         }
+        else if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Debug.Log("cancelled ability");
+            CombatGameManager.Instance.Camera.SwitchParenthood(_effector);
+            FinalizeAbility(false);
+        }
     }
 }
 
