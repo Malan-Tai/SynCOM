@@ -141,7 +141,7 @@ public class GridMap : MonoBehaviour
 
     public Tile[] CoverNeighbors(Vector2Int centerCell)
     {
-        Tile[] neighbors = new Tile[8];
+        Tile[] neighbors = new Tile[4];
         int i = 0;
 
         int x = centerCell.x;
@@ -261,5 +261,19 @@ public class GridMap : MonoBehaviour
         }
 
         return planes;
+    }
+
+    public EnumCover GetBestCoverAt(Vector2Int cell)
+    {
+        EnumCover best = EnumCover.None;
+        foreach (Tile tile in CoverNeighbors(cell))
+        {
+            if ((int)tile.Cover > (int)best)
+            {
+                best = tile.Cover;
+            }
+        }
+
+        return best;
     }
 }

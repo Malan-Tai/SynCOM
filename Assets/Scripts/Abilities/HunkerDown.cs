@@ -6,7 +6,7 @@ public class HunkerDown : BaseAbility
 {
     protected override bool CanExecute()
     {
-        return true;
+        return CombatGameManager.Instance.gridMap.GetBestCoverAt(_effector.GridPosition) != EnumCover.None;
     }
 
     protected override void EnemyTargetingInput()

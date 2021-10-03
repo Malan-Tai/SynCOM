@@ -64,9 +64,13 @@ public class CombatInputController : MonoBehaviour
             CombatGameManager.Instance.NextControllableUnit();
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha0))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             CombatGameManager.Instance.CurrentUnit.UseAbility(new HunkerDown());
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            CombatGameManager.Instance.CurrentUnit.UseAbility(new BasicShot());
         }
     }
 }

@@ -7,6 +7,8 @@ public class GridBasedUnit : MonoBehaviour
     private Vector2Int _gridPosition;
     private Vector3 _targetWorldPosition;
 
+    public Vector2Int GridPosition { get { return _gridPosition; } }
+
     [SerializeField]
     private float _moveSpeed;
 
@@ -19,6 +21,8 @@ public class GridBasedUnit : MonoBehaviour
 
     protected Dictionary<GridBasedUnit, LineOfSight> _linesOfSight;
     private float _sightDistance;
+
+    public Dictionary<GridBasedUnit, LineOfSight> LinesOfSight { get { return _linesOfSight; } }
 
     public delegate void StartedMoving(GridBasedUnit movedUnit, Vector2Int finalPos);
     public static event StartedMoving OnMoveStart;

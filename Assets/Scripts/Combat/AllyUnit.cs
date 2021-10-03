@@ -26,6 +26,7 @@ public class AllyUnit : GridBasedUnit
     public void UseAbility(BaseAbility ability)
     {
         _currentAbility = ability;
+        ability.SetEffector(this);
         ability.OnAbilityEnded += StopUsingAbility;
     }
 
