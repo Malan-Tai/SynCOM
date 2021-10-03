@@ -66,9 +66,14 @@ public class GridBasedUnit : MonoBehaviour
         else if (_followingPath)
         {
             _updatePathfinder = true;
-            UpdateLineOfSights();
+            UpdateLineOfSights(!IsEnemy());
             if (OnMoveFinish != null) OnMoveFinish(this);
         }
+    }
+
+    protected virtual bool IsEnemy()
+    {
+        return false;
     }
 
     public void MoveToNeighbor(Vector2Int deltaGrid)
@@ -110,14 +115,20 @@ public class GridBasedUnit : MonoBehaviour
         GridMap map = CombatGameManager.Instance.gridMap;
         _linesOfSight = new Dictionary<GridBasedUnit, LineOfSight>();
 
-        List<GridBasedUnit> listToCycle;
+        List<GridBasedUnit> listToCycle = new List<GridBasedUnit>();
         if (targetEnemies)
         {
-            listToCycle = CombatGameManager.Instance.EnemyUnits;
+            foreach (GridBasedUnit enemy in CombatGameManager.Instance.EnemyUnits)
+            {
+                listToCycle.Add(enemy);
+            }
         }
         else
         {
-            listToCycle = CombatGameManager.Instance.ControllableUnits;
+            foreach (GridBasedUnit ally in CombatGameManager.Instance.ControllableUnits)
+            {
+                listToCycle.Add(ally);
+            }
         }
 
         List<Vector2Int> shooterSidesteps = map.SidestepPositions(_gridPosition);

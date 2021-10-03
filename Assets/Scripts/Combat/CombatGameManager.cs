@@ -29,15 +29,18 @@ public class CombatGameManager : MonoBehaviour
     public MoveableCamera Camera { get { return _camera; } }
 
     [SerializeField]
-    private List<GridBasedUnit> _controllableUnits;
+    private List<AllyUnit> _controllableUnits;
     private int _currentUnitIndex;
-    public GridBasedUnit CurrentUnit { get { return _controllableUnits[_currentUnitIndex]; } }
+
+    public AllyUnit CurrentUnit { get { return _controllableUnits[_currentUnitIndex]; } }
+
+    public BaseAbility CurrentAbility { get { return _controllableUnits[_currentUnitIndex].CurrentAbility; } }
 
     [SerializeField]
-    private List<GridBasedUnit> _enemyUnits;
+    private List<EnemyUnit> _enemyUnits;
 
-    public List<GridBasedUnit> ControllableUnits { get { return _controllableUnits; } }
-    public List<GridBasedUnit> EnemyUnits { get { return _enemyUnits; } }
+    public List<AllyUnit> ControllableUnits { get { return _controllableUnits; } }
+    public List<EnemyUnit> EnemyUnits { get { return _enemyUnits; } }
 
     private List<Tile> _previousReachableTiles;
 
@@ -68,7 +71,7 @@ public class CombatGameManager : MonoBehaviour
         UpdateVisibilities();
     }
 
-    public void SelectControllableUnit(GridBasedUnit unit)
+    public void SelectControllableUnit(AllyUnit unit)
     {
         int index = _controllableUnits.IndexOf(unit);
         if (index >= 0 && index < _controllableUnits.Count)
@@ -128,6 +131,6 @@ public class CombatGameManager : MonoBehaviour
             ((EnemyUnit)unit).UpdateVisibility(false);
         }
 
-        ((AllyUnit)CurrentUnit).UpdateEnemyVisibilities();
+        CurrentUnit.UpdateEnemyVisibilities();
     }
 }

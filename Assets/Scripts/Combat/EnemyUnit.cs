@@ -15,6 +15,11 @@ public class EnemyUnit : GridBasedUnit
         _originalColor = _renderer.material.GetColor("_Color");
     }
 
+    protected override bool IsEnemy()
+    {
+        return true;
+    }
+
     public void UpdateVisibility(bool seen, EnumCover cover = EnumCover.Full)
     {
         if (!seen)
