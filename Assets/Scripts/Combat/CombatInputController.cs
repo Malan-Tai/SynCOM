@@ -6,6 +6,8 @@ public class CombatInputController : MonoBehaviour
 {
     void Update()
     {
+        if (CombatGameManager.Instance.ControllableUnits.Count <= 0) return;
+
         if (CombatGameManager.Instance.CurrentAbility != null)
         {
             CombatGameManager.Instance.CurrentAbility.InputControl();

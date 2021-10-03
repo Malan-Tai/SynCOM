@@ -32,6 +32,8 @@ public class CombatGameManager : MonoBehaviour
     private List<AllyUnit> _controllableUnits;
     private int _currentUnitIndex;
 
+    private AllyUnit[] _allAllyUnits;
+
     public AllyUnit CurrentUnit { get { return _controllableUnits[_currentUnitIndex]; } }
 
     public BaseAbility CurrentAbility { get { return _controllableUnits[_currentUnitIndex].CurrentAbility; } }
@@ -48,6 +50,9 @@ public class CombatGameManager : MonoBehaviour
     {
         _currentUnitIndex = 0;
         _previousReachableTiles = new List<Tile>();
+
+        _allAllyUnits = new AllyUnit[_controllableUnits.Count];
+        _controllableUnits.CopyTo(_allAllyUnits);
     }
 
     private void OnEnable()
@@ -132,5 +137,26 @@ public class CombatGameManager : MonoBehaviour
         }
 
         CurrentUnit.UpdateEnemyVisibilities();
+    }
+
+    public void FinishAllyUnitTurn(AllyUnit unit)
+    {
+        int index = _controllableUnits.IndexOf(unit);
+        if (index < 0) return;
+
+        _controllableUnits.Remove(unit);
+
+        if (_controllableUnits.Count <= 0)
+        {
+            print("end turn");
+            return;
+        }
+
+        if (_currentUnitIndex > index) _currentUnitIndex--;
+        if (_currentUnitIndex >= _controllableUnits.Count) _currentUnitIndex = 0;
+
+        _camera.SwitchParenthood(CurrentUnit);
+        UpdateReachableTiles();
+        UpdateVisibilities();
     }
 }

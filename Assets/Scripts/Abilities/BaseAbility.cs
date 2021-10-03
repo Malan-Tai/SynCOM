@@ -4,16 +4,16 @@ using UnityEngine;
 
 public abstract class BaseAbility
 {
-    public delegate void EndAbility();
+    public delegate void EndAbility(bool executed);
     public event EndAbility OnAbilityEnded;
 
     protected abstract void EnemyTargetingInput();
     protected abstract bool CanExecute();
     protected abstract void Execute();
 
-    protected void FinalizeAbility()
+    protected void FinalizeAbility(bool executed)
     {
-        if (OnAbilityEnded != null) OnAbilityEnded();
+        if (OnAbilityEnded != null) OnAbilityEnded(executed);
     }
 
     public void InputControl()
@@ -23,7 +23,7 @@ public abstract class BaseAbility
         if (Input.GetKeyDown(KeyCode.Return) && CanExecute())
         {
             Execute();
-            FinalizeAbility();
+            FinalizeAbility(true);
         }
     }
 }
@@ -34,10 +34,10 @@ public abstract class BaseDuoAbility : BaseAbility
 
     protected abstract void AllyTargetingInput();
 
-    protected new void FinalizeAbility()
+    protected new void FinalizeAbility(bool executed)
     {
         _choseAlly = false;
-        base.FinalizeAbility();
+        base.FinalizeAbility(executed);
     }
 
     public new void InputControl()
@@ -54,7 +54,7 @@ public abstract class BaseDuoAbility : BaseAbility
         if (Input.GetKeyDown(KeyCode.Return) && CanExecute())
         {
             Execute();
-            FinalizeAbility();
+            FinalizeAbility(true);
         }
     }
 }

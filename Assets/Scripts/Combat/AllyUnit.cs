@@ -29,9 +29,14 @@ public class AllyUnit : GridBasedUnit
         ability.OnAbilityEnded += StopUsingAbility;
     }
 
-    private void StopUsingAbility()
+    private void StopUsingAbility(bool executed)
     {
         _currentAbility.OnAbilityEnded -= StopUsingAbility;
         _currentAbility = null;
+
+        if (executed)
+        {
+            CombatGameManager.Instance.FinishAllyUnitTurn(this);
+        }
     }
 }
