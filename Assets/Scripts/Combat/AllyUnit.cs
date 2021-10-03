@@ -30,6 +30,12 @@ public class AllyUnit : GridBasedUnit
         ability.OnAbilityEnded += StopUsingAbility;
     }
 
+    public void UseAbilityAsAlly(BaseAbility ability)
+    {
+        _currentAbility = ability;
+        ability.OnAbilityEnded += StopUsingAbility;
+    }
+
     private void StopUsingAbility(bool executed)
     {
         _currentAbility.OnAbilityEnded -= StopUsingAbility;
@@ -39,12 +45,6 @@ public class AllyUnit : GridBasedUnit
         {
             CombatGameManager.Instance.FinishAllyUnitTurn(this);
         }
-    }
-
-    public void UseAbilityAsAlly(BaseAbility ability)
-    {
-        _currentAbility = ability;
-        ability.OnAbilityEnded += StopUsingAbility;
     }
 
     public void NewTurn()
