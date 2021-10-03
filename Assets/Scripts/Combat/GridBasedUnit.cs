@@ -10,7 +10,7 @@ public class GridBasedUnit : MonoBehaviour
     [SerializeField]
     private float _moveSpeed;
 
-    private float _movesLeft;
+    protected float _movesLeft;
 
     private Pathfinder _pathfinder = new Pathfinder();
     private bool _updatePathfinder = true;
@@ -160,7 +160,6 @@ public class GridBasedUnit : MonoBehaviour
             if (bestLine.seen)
             {
                 _linesOfSight.Add(unit, bestLine);
-                print("i see unit at " + unit._gridPosition + " with cover " + (int)bestLine.cover + " by sidestepping by " + (bestLine.sidestepCell - _gridPosition));
             }
         }
     }

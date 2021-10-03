@@ -39,4 +39,11 @@ public class AllyUnit : GridBasedUnit
             CombatGameManager.Instance.FinishAllyUnitTurn(this);
         }
     }
+
+    public void NewTurn()
+    {
+        _movesLeft = 10f;
+        NeedsPathfinderUpdate();
+        UpdateLineOfSights(!IsEnemy());
+    }
 }

@@ -88,6 +88,17 @@ public class CombatGameManager : MonoBehaviour
         }
     }
 
+    public void SelectControllableUnit(int index)
+    {
+        if (index >= 0 && index < _controllableUnits.Count)
+        {
+            _currentUnitIndex = index;
+            _camera.SwitchParenthood(_controllableUnits[index]);
+            UpdateReachableTiles();
+            UpdateVisibilities();
+        }
+    }
+
     public void UpdateReachableTiles()
     {
         List<Tile> newReachable = CurrentUnit.GetReachableTiles();
@@ -149,14 +160,26 @@ public class CombatGameManager : MonoBehaviour
         if (_controllableUnits.Count <= 0)
         {
             print("end turn");
+            NewAllyTurn();
             return;
         }
 
         if (_currentUnitIndex > index) _currentUnitIndex--;
         if (_currentUnitIndex >= _controllableUnits.Count) _currentUnitIndex = 0;
 
-        _camera.SwitchParenthood(CurrentUnit);
-        UpdateReachableTiles();
-        UpdateVisibilities();
+        SelectControllableUnit(_currentUnitIndex);
+    }
+
+    public void NewAllyTurn()
+    {
+        print("new turn");
+
+        foreach (AllyUnit unit in _allAllyUnits)
+        {
+            unit.NewTurn();
+            _controllableUnits.Add(unit);
+        }
+
+        SelectControllableUnit(0);
     }
 }
