@@ -72,5 +72,9 @@ public class CombatInputController : MonoBehaviour
         {
             CombatGameManager.Instance.CurrentUnit.UseAbility(new BasicShot());
         }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            CombatGameManager.Instance.CurrentUnit.UseAbility(new BasicDuoShot());
+        }
     }
 }

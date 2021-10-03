@@ -41,6 +41,12 @@ public class AllyUnit : GridBasedUnit
         }
     }
 
+    public void UseAbilityAsAlly(BaseAbility ability)
+    {
+        _currentAbility = ability;
+        ability.OnAbilityEnded += StopUsingAbility;
+    }
+
     public void NewTurn()
     {
         _movesLeft = 10f;

@@ -1,35 +1,41 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
-public class BasicShot : BaseAbility
+public class BasicDuoShot : BaseDuoAbility
 {
-    private GridBasedUnit[] _possibleTargets;
+    private List<GridBasedUnit> _possibleTargets;
     private int _targetIndex = -1;
 
-    public override void SetEffector(GridBasedUnit effector)
+    protected override void ChooseAlly()
     {
-        _possibleTargets = new GridBasedUnit[effector.LinesOfSight.Count];
-        effector.LinesOfSight.Keys.CopyTo(_possibleTargets, 0);
+        _possibleTargets = new List<GridBasedUnit>();
+        var tempTargets = new GridBasedUnit[_effector.LinesOfSight.Count];
+        _effector.LinesOfSight.Keys.CopyTo(tempTargets, 0);
 
-        if (_possibleTargets.Length > 0)
+        foreach (GridBasedUnit unit in tempTargets)
+        {
+            if (_chosenAlly.LinesOfSight.ContainsKey(unit))
+            {
+                _possibleTargets.Add(unit);
+            }
+        }
+
+        if (_possibleTargets.Count > 0)
         {
             _targetIndex = 0;
             CombatGameManager.Instance.Camera.SwitchParenthood(_possibleTargets[_targetIndex]);
         }
-
-        base.SetEffector(effector);
     }
 
     protected override bool CanExecute()
     {
-        return _targetIndex >= 0;
+        return _chosenAlly != null && _targetIndex >= 0;
     }
 
     protected override void EnemyTargetingInput()
     {
-        if (_possibleTargets.Length <= 0) return;
+        if (_possibleTargets.Count <= 0) return;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitData;
@@ -44,7 +50,7 @@ public class BasicShot : BaseAbility
 
             if (hitUnit != null && clicked)
             {
-                int newIndex = Array.IndexOf(_possibleTargets, hitUnit);
+                int newIndex = _possibleTargets.IndexOf(hitUnit);
                 if (newIndex >= 0)
                 {
                     _targetIndex = newIndex;
@@ -56,7 +62,7 @@ public class BasicShot : BaseAbility
         if (Input.GetKeyDown(KeyCode.Tab) && !changedUnitThisFrame)
         {
             _targetIndex++;
-            if (_targetIndex >= _possibleTargets.Length) _targetIndex = 0;
+            if (_targetIndex >= _possibleTargets.Count) _targetIndex = 0;
             changedUnitThisFrame = true;
         }
 
@@ -65,13 +71,11 @@ public class BasicShot : BaseAbility
 
     protected override void Execute()
     {
-        Debug.Log("i am shooting at " + _possibleTargets[_targetIndex].GridPosition + " with cover " + (int)_effector.LinesOfSight[_possibleTargets[_targetIndex]].cover);
+        Debug.Log("we are shooting at " + _possibleTargets[_targetIndex].GridPosition + " with cover " + (int)_effector.LinesOfSight[_possibleTargets[_targetIndex]].cover);
     }
 
-    protected override void FinalizeAbility(bool executed)
+    protected override bool IsAllyCompatible(AllyUnit unit)
     {
-        _targetIndex = -1;
-        _possibleTargets = null;
-        base.FinalizeAbility(executed);
+        return true;
     }
 }
