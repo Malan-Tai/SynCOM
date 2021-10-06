@@ -69,7 +69,8 @@ public abstract class BaseDuoAbility : BaseAbility
 
         if (_possibleAllies.Count > 0)
         {
-            CombatGameManager.Instance.Camera.SwitchParenthood(_possibleAllies[0]);
+            _temporaryChosenAlly = _possibleAllies[0];
+            CombatGameManager.Instance.Camera.SwitchParenthood(_temporaryChosenAlly);
         }
     }
 
