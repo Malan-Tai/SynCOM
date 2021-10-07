@@ -70,6 +70,11 @@ public class MoveableCamera : MonoBehaviour
         }
     }
 
+    public float GetRotationY()
+    {
+        return this.transform.eulerAngles.y;
+    }
+
     public void ResetCamera()
     {
         this.transform.localPosition = _startingOffset;
