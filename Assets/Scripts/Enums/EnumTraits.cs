@@ -4,8 +4,9 @@ public enum EnumTraits
 
     //common
     Lovely,
-    Ugly,
+    Fearful,
     Sprinter,
+    Brave,
 
     //dwarf
     Stocky,
@@ -19,9 +20,9 @@ public enum EnumTraits
     //sniper
     Accurate,
     //hitman
-    StrongFist
+    StrongFist,
 
     //orc
-
+    Ugly
 
 }
