@@ -150,7 +150,7 @@ public class CombatGameManager : MonoBehaviour
         CurrentUnit.UpdateEnemyVisibilities();
     }
 
-    public void FinishAllyUnitTurn(AllyUnit unit)
+    public void FinishAllyUnitTurn(AllyUnit unit, bool wasAllyForDuo = false)
     {
         int index = _controllableUnits.IndexOf(unit);
         if (index < 0) return;
@@ -167,7 +167,7 @@ public class CombatGameManager : MonoBehaviour
         if (_currentUnitIndex > index) _currentUnitIndex--;
         if (_currentUnitIndex >= _controllableUnits.Count) _currentUnitIndex = 0;
 
-        SelectControllableUnit(_currentUnitIndex);
+        if (!wasAllyForDuo) SelectControllableUnit(_currentUnitIndex);
     }
 
     public void NewAllyTurn()
@@ -180,6 +180,7 @@ public class CombatGameManager : MonoBehaviour
             _controllableUnits.Add(unit);
         }
 
+        _currentUnitIndex = 0;
         SelectControllableUnit(0);
     }
 }

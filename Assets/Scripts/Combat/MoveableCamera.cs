@@ -32,7 +32,6 @@ public class MoveableCamera : MonoBehaviour
         _camera = GetComponentInChildren<Camera>();
         _startingCamSize = _camera.orthographicSize;
         _targetRotationY = this.transform.localEulerAngles.y;
-        print(_targetRotationY);
     }
 
     private void Update()
@@ -41,14 +40,13 @@ public class MoveableCamera : MonoBehaviour
         {
             float currentY = this.transform.localEulerAngles.y;
             float sign = Mathf.Sign(_targetRotationY - currentY) * _rotationSign;
-            // float difference = Mathf.Abs(_targetRotationY - currentY);
 
             if (_targetRotationY - currentY != 0f)
             {
                 currentY += _rotationSign * _rotationSpeed * Time.deltaTime;
             }
 
-            if (_targetRotationY - currentY == 0f || Mathf.Sign(_targetRotationY - currentY) * _rotationSign != sign) // Mathf.Abs(_targetRotationY - currentY) > difference || 
+            if (_targetRotationY - currentY == 0f || Mathf.Sign(_targetRotationY - currentY) * _rotationSign != sign)
             {
                 currentY = _targetRotationY;
                 _followRotation = false;

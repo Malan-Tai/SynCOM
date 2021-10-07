@@ -30,11 +30,11 @@ public class AllyUnit : GridBasedUnit
         ability.OnAbilityEnded += StopUsingAbility;
     }
 
-    public void UseAbilityAsAlly(BaseAbility ability)
-    {
-        _currentAbility = ability;
-        ability.OnAbilityEnded += StopUsingAbility;
-    }
+    //public void UseAbilityAsAlly(BaseAbility ability)
+    //{
+    //    _currentAbility = ability;
+    //    ability.OnAbilityEnded += StopUsingAbility;
+    //}
 
     private void StopUsingAbility(bool executed)
     {
@@ -44,6 +44,17 @@ public class AllyUnit : GridBasedUnit
         if (executed)
         {
             CombatGameManager.Instance.FinishAllyUnitTurn(this);
+        }
+    }
+
+    public void StopUsingAbilityAsAlly(bool executed)
+    {
+        //_currentAbility.OnAbilityEnded -= StopUsingAbility;
+        //_currentAbility = null;
+
+        if (executed)
+        {
+            CombatGameManager.Instance.FinishAllyUnitTurn(this, true);
         }
     }
 
