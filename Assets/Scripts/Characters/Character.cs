@@ -19,8 +19,6 @@ public class Character
     [SerializeField] private float _movementPoints; // how far can a charcater move in one turn
     [SerializeField] private float _weigth; //can be a condition for some actions
 
-    Dictionary<Character, Relationship> _relationships;
-
     private static Dictionary<EnumClasses, List<EnumTraits>> s_mandatoryTraits = new Dictionary<EnumClasses, List<EnumTraits>>(){
         {EnumClasses.Berserker, new List<EnumTraits> {EnumTraits.Stocky}},
         {EnumClasses.Engineer, new List<EnumTraits> {EnumTraits.Stocky}},
