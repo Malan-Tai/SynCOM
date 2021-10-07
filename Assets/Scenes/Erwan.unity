@@ -436,7 +436,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _minCameraSize: 3
   _maxCameraSize: 25
-  _zoomSpeed: 5
+  _zoomSpeed: 2
+  _moveSpeed: 5
+  _rotationSpeed: 180
 --- !u!1 &1060837718
 GameObject:
   m_ObjectHideFlags: 0
