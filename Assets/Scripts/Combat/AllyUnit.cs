@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class AllyUnit : GridBasedUnit
-{
-    [SerializeField] private Character _character;
-
+{ 
     private BaseAbility _currentAbility = null;
     public BaseAbility CurrentAbility { get { return _currentAbility; } }
-
     protected override bool IsEnemy()
     {
         return false;

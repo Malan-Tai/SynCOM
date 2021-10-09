@@ -65,7 +65,15 @@ public class BasicShot : BaseAbility
 
     protected override void Execute()
     {
-        Debug.Log("i am shooting at " + _possibleTargets[_targetIndex].GridPosition + " with cover " + (int)_effector.LinesOfSight[_possibleTargets[_targetIndex]].cover);
+        int randShot = UnityEngine.Random.Range(0,100);
+
+        if (_effector.Character.Accuracy - _possibleTargets[_targetIndex].Character.Dodge < randShot) {
+            Debug.Log("i am shooting at " + _possibleTargets[_targetIndex].GridPosition + " with cover " + (int)_effector.LinesOfSight[_possibleTargets[_targetIndex]].cover);
+        }
+        else
+        {
+            Debug.Log("Dice got " + randShot +"and had to be lower than " + (_effector.Character.Accuracy - _possibleTargets[_targetIndex].Character.Dodge) + ": Missed");
+        }
     }
 
     protected override void FinalizeAbility(bool executed)
