@@ -7,8 +7,8 @@ public abstract class BaseAbility
     public delegate void EndAbility(bool executed);
     public event EndAbility OnAbilityEnded;
 
-    protected GridBasedUnit _effector;
-    public virtual void SetEffector(GridBasedUnit effector)
+    protected AllyUnit _effector;
+    public virtual void SetEffector(AllyUnit effector)
     {
         _effector = effector;
     }
@@ -54,7 +54,7 @@ public abstract class BaseDuoAbility : BaseAbility
     protected abstract bool IsAllyCompatible(AllyUnit unit);
     protected abstract void ChooseAlly();
 
-    public override void SetEffector(GridBasedUnit effector)
+    public override void SetEffector(AllyUnit effector)
     {
         base.SetEffector(effector);
 

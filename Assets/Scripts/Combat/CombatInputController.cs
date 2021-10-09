@@ -76,5 +76,13 @@ public class CombatInputController : MonoBehaviour
         {
             CombatGameManager.Instance.CurrentUnit.UseAbility(new BasicDuoShot());
         }
+        else if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            CombatGameManager.Instance.CurrentUnit.UseAbility(new FirstAid());
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            CombatGameManager.Instance.CurrentUnit.UseAbility(new Slap());
+        }
     }
 }

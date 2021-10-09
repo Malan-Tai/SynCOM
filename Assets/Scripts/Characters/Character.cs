@@ -7,7 +7,7 @@ public class Character
     //Character's archetype
 
     private EnumClasses _class;
-    private List<EnumTraits> _traits;
+    private List<EnumTraits> _traits = new List<EnumTraits>();
 
     //Character's statistics
 
@@ -19,7 +19,8 @@ public class Character
     [SerializeField] private float _movementPoints; // how far can a charcater move in one turn
     [SerializeField] private float _weigth; //can be a condition for some actions
 
-    Dictionary<Character, Relationship> _relationships;
+    Dictionary<Character, Relationship> _relationships = new Dictionary<Character, Relationship>();
+    public Dictionary<Character, Relationship> Relationships { get { return _relationships; } }
 
     private static Dictionary<EnumClasses, List<EnumTraits>> s_mandatoryTraits = new Dictionary<EnumClasses, List<EnumTraits>>(){
         {EnumClasses.Berserker, new List<EnumTraits> {EnumTraits.Stocky}},
@@ -113,5 +114,16 @@ public class Character
     public void Die()
     {
 
+    }
+
+    public void InitializeRelationships()
+    {
+        foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
+        {
+            if (ally.Character != this)
+            {
+                _relationships.Add(ally.Character, new Relationship());
+            }
+        }
     }
 }

@@ -8,7 +8,7 @@ public class BasicShot : BaseAbility
     private GridBasedUnit[] _possibleTargets;
     private int _targetIndex = -1;
 
-    public override void SetEffector(GridBasedUnit effector)
+    public override void SetEffector(AllyUnit effector)
     {
         _possibleTargets = new GridBasedUnit[effector.LinesOfSight.Count];
         effector.LinesOfSight.Keys.CopyTo(_possibleTargets, 0);

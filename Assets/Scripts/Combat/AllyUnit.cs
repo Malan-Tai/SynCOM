@@ -5,6 +5,8 @@ using UnityEngine;
 public class AllyUnit : GridBasedUnit
 {
     [SerializeField] private Character _character;
+    public Character Character { get { return _character; }
+                                 set { _character = value; } }
 
     private BaseAbility _currentAbility = null;
     public BaseAbility CurrentAbility { get { return _currentAbility; } }

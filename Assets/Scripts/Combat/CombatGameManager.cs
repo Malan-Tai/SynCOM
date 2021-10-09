@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,6 +34,7 @@ public class CombatGameManager : MonoBehaviour
     private int _currentUnitIndex;
 
     private AllyUnit[] _allAllyUnits;
+    public AllyUnit[] AllAllyUnits { get { return _allAllyUnits; } }
 
     public AllyUnit CurrentUnit { get { return _controllableUnits[_currentUnitIndex]; } }
 
@@ -53,6 +55,20 @@ public class CombatGameManager : MonoBehaviour
 
         _allAllyUnits = new AllyUnit[_controllableUnits.Count];
         _controllableUnits.CopyTo(_allAllyUnits);
+
+        InitCharacters();
+    }
+
+    private void InitCharacters()
+    {
+        foreach (AllyUnit ally in _allAllyUnits)
+        {
+            ally.Character = new Character(EnumClasses.Sniper, 20, 2, 5, 5, 4, 60);
+        }
+        foreach (AllyUnit ally in _allAllyUnits)
+        {
+            ally.Character.InitializeRelationships();
+        }
     }
 
     private void OnEnable()
