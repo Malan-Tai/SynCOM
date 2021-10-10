@@ -16,15 +16,7 @@ public class GridMap : MonoBehaviour
     public bool ShowCoversGizmos = true;
 #endif
 
-    /*[SerializeField]
-    private GameObject[] _tilePrefabs;*/
-
     private Tile[,] _map;
-    // max x coordinate (exclusive)
-    /*private int _maxX;
-    // max y coordinate (exclusive)
-    private int _maxY;*/
-
     private List<Vector2Int> _occupiedTiles = new List<Vector2Int>();
 
     public Tile this[Vector2Int u]
@@ -57,34 +49,6 @@ public class GridMap : MonoBehaviour
         _occupiedTiles = new List<Vector2Int>();
         Vector2 minimums = _gridInitializer.GetMinimums();
         transform.position = new Vector3(minimums.x, 0f, minimums.y);
-
-        /*_maxX = 20;
-        _maxY = 20;
-        _map = new Tile[_maxX, _maxY];
-
-        for (int x = 0; x < _maxX; x++)
-        {
-            for (int y = 0; y < _maxY; y++)
-            {
-                int cover = 0;
-                if (x == 0 || x == _maxX - 1 || y == 0 || y == _maxY - 1 || (x <= 9 && y == 13)) cover = 2;
-                else if (y == 10 || y == _maxY - 2) cover = 1;
-
-                //int cover = Random.Range(0, 3);
-                _map[x, y] = new Tile(x, y, (EnumCover)cover);
-
-                if (cover < _tilePrefabs.Length)
-                {
-                    GameObject obj = Instantiate(_tilePrefabs[cover], this.transform);
-                    obj.transform.position = GridToWorld(new Vector2Int(x, y), 0);
-                    obj.transform.localScale = new Vector3(CellSize, obj.transform.localScale.y, CellSize);
-
-                    var tileComp = obj.GetComponent<TileComponent>();
-                    tileComp.SetTile(_map[x, y]);
-                    _map[x, y].SetTileComponent(tileComp);
-                }
-            }
-        }*/
     }
 
     public Vector3 GridToWorld(Vector2Int grid, float y)
@@ -314,7 +278,6 @@ public class GridMap : MonoBehaviour
             for (int z = 0; z < _map.GetLength(1); z++)
             {
                 Vector3 cellPosition = GridToWorld(x, z, 0f);
-                //Vector3 cellPosition = new Vector3(_minX + x + _cellSize / 2f, 0f, _minZ + z + _cellSize / 2f);
 
                 if (ShowGridGizmos)
                 {
@@ -326,8 +289,6 @@ public class GridMap : MonoBehaviour
                     Vector3 maxZ = GridToWorld(x, _map.GetLength(1), 0.5f) - displacement;
                     Gizmos.DrawLine(minX, maxX);
                     Gizmos.DrawLine(minZ, maxZ);
-                    /*Gizmos.DrawLine(new Vector3(_minX, 0.5f, z + _minZ), new Vector3(_maxX, 0.5f, z + _minZ));
-                    Gizmos.DrawLine(new Vector3(x + _minX, 0.5f, _minZ), new Vector3(x + _minX, 0.5f, _maxZ));*/
                 }
 
                 if (_map != null && ShowWalkableGizmos)
@@ -352,11 +313,9 @@ public class GridMap : MonoBehaviour
                             break;
                         case EnumCover.Half:
                             Gizmos.DrawIcon(cellPosition + Vector3.up * 4f, "half_cover_icon.png", true, Color.yellow);
-                            //Gizmos.DrawWireCube(cellPosition, new Vector3(gizmosSize.x * 0.5f, gizmosSize.y * 1.5f, gizmosSize.z * 0.5f));
                             break;
                         case EnumCover.Full:
                             Gizmos.DrawIcon(cellPosition + Vector3.up * 4f, "full_cover_icon.png", true, Color.green);
-                            //Gizmos.DrawWireCube(cellPosition, new Vector3(gizmosSize.x * 0.5f, gizmosSize.y * 2f, gizmosSize.z * 0.5f));
                             break;
                     }
                 }
