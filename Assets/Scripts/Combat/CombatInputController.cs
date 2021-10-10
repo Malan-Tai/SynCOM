@@ -43,7 +43,7 @@ public class CombatInputController : MonoBehaviour
 
         if (Physics.Raycast(ray, out hitData, 1000))
         {
-            var hitTile = hitData.transform.GetComponent<TileComponent>();
+            //var hitTile = hitData.transform.GetComponent<TileComponent>();
             var hitUnit = hitData.transform.GetComponent<AllyUnit>();
 
             bool clicked = Input.GetMouseButtonUp(0);
@@ -53,9 +53,9 @@ public class CombatInputController : MonoBehaviour
                 CombatGameManager.Instance.SelectControllableUnit(hitUnit);
                 changedUnitThisFrame = true;
             }
-            else if (hitTile != null && clicked)
+            else if (hitData.transform.CompareTag("Ground") && clicked)
             {
-                CombatGameManager.Instance.CurrentUnit.ChoosePathTo(hitTile.Tile.Coords);
+                CombatGameManager.Instance.CurrentUnit.ChoosePathTo(CombatGameManager.Instance.GridMap.WorldToGrid(hitData.point));
             }
         }
 

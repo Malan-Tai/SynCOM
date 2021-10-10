@@ -32,7 +32,7 @@ public class GridBasedUnit : MonoBehaviour
 
     protected void Start()
     {
-        GridMap gridMap = CombatGameManager.Instance.gridMap;
+        GridMap gridMap = CombatGameManager.Instance.GridMap;
 
         _gridPosition = gridMap.WorldToGrid(this.transform.position, true);
         this.transform.position = gridMap.GridToWorld(_gridPosition, this.transform.position.y);
@@ -57,7 +57,7 @@ public class GridBasedUnit : MonoBehaviour
         }
 
         Vector3 difference = _targetWorldPosition - this.transform.position;
-        if (difference.sqrMagnitude > CombatGameManager.Instance.gridMap.CellSize / 100f)
+        if (difference.sqrMagnitude > CombatGameManager.Instance.GridMap.CellSize / 100f)
         {
             Vector3 movement = difference.normalized * _moveSpeed * Time.deltaTime;
             this.transform.position += movement;
@@ -83,13 +83,13 @@ public class GridBasedUnit : MonoBehaviour
     public void MoveToNeighbor(Vector2Int deltaGrid)
     {
         _gridPosition += deltaGrid;
-        _targetWorldPosition = CombatGameManager.Instance.gridMap.GridToWorld(_gridPosition, this.transform.position.y);
+        _targetWorldPosition = CombatGameManager.Instance.GridMap.GridToWorld(_gridPosition, this.transform.position.y);
     }
 
     public void MoveToCell(Vector2Int cell)
     {
         _gridPosition = cell;
-        _targetWorldPosition = CombatGameManager.Instance.gridMap.GridToWorld(_gridPosition, this.transform.position.y);
+        _targetWorldPosition = CombatGameManager.Instance.GridMap.GridToWorld(_gridPosition, this.transform.position.y);
     }
 
     public void ChoosePathTo(Vector2Int cell)
@@ -103,7 +103,7 @@ public class GridBasedUnit : MonoBehaviour
         if (_pathToFollow.Count > 0)
         {
             _followingPath = true;
-            CombatGameManager.Instance.gridMap.UpdateOccupiedTiles(_gridPosition, cell);
+            CombatGameManager.Instance.GridMap.UpdateOccupiedTiles(_gridPosition, cell);
 
             if (OnMoveStart != null) OnMoveStart(this, cell);
         }
@@ -116,7 +116,7 @@ public class GridBasedUnit : MonoBehaviour
 
     public void UpdateLineOfSights(bool targetEnemies = true)
     {
-        GridMap map = CombatGameManager.Instance.gridMap;
+        GridMap map = CombatGameManager.Instance.GridMap;
         _linesOfSight = new Dictionary<GridBasedUnit, LineOfSight>();
 
         List<GridBasedUnit> listToCycle = new List<GridBasedUnit>();
@@ -170,7 +170,7 @@ public class GridBasedUnit : MonoBehaviour
 
     private LineOfSight ComputeLineOfSight(List<CoverPlane> targetCoverPlanes, Vector2Int shooterPosition, Vector2Int targetPosition, float targetY)
     {
-        GridMap map = CombatGameManager.Instance.gridMap;
+        GridMap map = CombatGameManager.Instance.GridMap;
         LayerMask layerMask = 1 << 6;
 
         LineOfSight lineOfSight = new LineOfSight();

@@ -15,7 +15,7 @@ public class Pathfinder
 
     public List<Vector2Int> GetPathToTile(Vector2Int cell, out float cost)
     {
-        Tile tile = CombatGameManager.Instance.gridMap[cell];
+        Tile tile = CombatGameManager.Instance.GridMap[cell];
         if (!_reachable.Contains(tile))
         {
             cost = 0f;
@@ -28,7 +28,7 @@ public class Pathfinder
 
     public bool CanReachCell(Vector2Int cell)
     {
-        return _reachable.Contains(CombatGameManager.Instance.gridMap[cell]);
+        return _reachable.Contains(CombatGameManager.Instance.GridMap[cell]);
     }
 
     private float Heuristic(Vector2Int u, Vector2Int v)
@@ -38,7 +38,7 @@ public class Pathfinder
 
     public Vector2Int[] AstarPath(Vector2Int start, Vector2Int goal)
     {
-        GridMap map = CombatGameManager.Instance.gridMap;
+        GridMap map = CombatGameManager.Instance.GridMap;
         Tile startTile = map[start];
         Tile goalTile = map[goal];
 
@@ -99,7 +99,7 @@ public class Pathfinder
 
     public void Dijkstra(float moves, Vector2Int start)
     {
-        GridMap map = CombatGameManager.Instance.gridMap;
+        GridMap map = CombatGameManager.Instance.GridMap;
         Tile startTile = map[start];
 
         _reachable = new List<Tile> { startTile };
