@@ -43,7 +43,6 @@ public class CombatInputController : MonoBehaviour
 
         if (Physics.Raycast(ray, out hitData, 1000))
         {
-            //var hitTile = hitData.transform.GetComponent<TileComponent>();
             var hitUnit = hitData.transform.GetComponent<AllyUnit>();
 
             bool clicked = Input.GetMouseButtonUp(0);

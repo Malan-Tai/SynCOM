@@ -106,18 +106,7 @@ public class CombatGameManager : MonoBehaviour
     public void UpdateReachableTiles()
     {
         List<Tile> newReachable = CurrentUnit.GetReachableTiles();
-
         _unitMoveDisplayer.DisplayTileZone(newReachable, TileZoneDisplayEnum.MoveZoneDisplay);
-        /*foreach (Tile tile in _previousReachableTiles)
-        {
-            tile.BecomeUnreachable();
-        }
-
-        foreach (Tile tile in newReachable)
-        {
-            tile.BecomeReachable();
-        }*/
-
         _previousReachableTiles = newReachable;
     }
 
