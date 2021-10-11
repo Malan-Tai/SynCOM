@@ -1617,7 +1617,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gridInitializer: {fileID: 376024464}
-  _cellSize: 1
+  CellSize: 1
   ShowGridGizmos: 1
   ShowWalkableGizmos: 0
   ShowCoversGizmos: 0
@@ -2669,7 +2669,7 @@ SpriteRenderer:
   m_Size: {x: 8, y: 6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1314595901

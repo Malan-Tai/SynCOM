@@ -6,8 +6,8 @@ public class GridMap : MonoBehaviour
 {
     [SerializeField]
     private GridInitializer _gridInitializer;
-    public float CellSize { get => _cellSize; }
-    [SerializeField, Range(1, 25)] private float _cellSize = 1f;
+
+    [Range(0.2f, 10f)] public float CellSize = 1f;
 
 #if UNITY_EDITOR
     [Header("Gizmos")]
@@ -46,7 +46,7 @@ public class GridMap : MonoBehaviour
 
     private void Awake()
     {
-        _map = _gridInitializer.CreateGrid(_cellSize);
+        _map = _gridInitializer.CreateGrid(CellSize);
         _occupiedTiles = new List<Vector2Int>();
         Vector2 minimums = _gridInitializer.GetMinimums();
         transform.position = new Vector3(minimums.x, 0f, minimums.y);
@@ -54,19 +54,19 @@ public class GridMap : MonoBehaviour
 
     public Vector3 GridToWorld(Vector2Int grid, float y)
     {
-        return new Vector3(transform.position.x + grid.x * _cellSize + _cellSize / 2, y, transform.position.z + grid.y * _cellSize + _cellSize / 2);
+        return new Vector3(transform.position.x + grid.x * CellSize + CellSize / 2, y, transform.position.z + grid.y * CellSize + CellSize / 2);
     }
 
     public Vector3 GridToWorld(int gridX, int gridY, float y)
     {
-        return new Vector3(transform.position.x + gridX * _cellSize + _cellSize / 2, y, transform.position.z + gridY * _cellSize + _cellSize / 2);
+        return new Vector3(transform.position.x + gridX * CellSize + CellSize / 2, y, transform.position.z + gridY * CellSize + CellSize / 2);
     }
 
     public Vector2Int WorldToGrid(Vector3 world, bool addToOccupiedTiles = false)
     {
         Vector2Int gridPos = new Vector2Int();
-        gridPos.x = (int)Mathf.Floor((world.x - transform.position.x) / _cellSize - 0.5f);
-        gridPos.y = (int)Mathf.Floor((world.z - transform.position.z) / _cellSize - 0.5f);
+        gridPos.x = (int)Mathf.Floor((world.x - transform.position.x) / CellSize - 0.5f);
+        gridPos.y = (int)Mathf.Floor((world.z - transform.position.z) / CellSize - 0.5f);
 
         if (addToOccupiedTiles)
         {
@@ -265,13 +265,13 @@ public class GridMap : MonoBehaviour
             return;
         }
 
-        _map = _gridInitializer.CreateGrid(_cellSize);
+        _map = _gridInitializer.CreateGrid(CellSize);
         if (_map is null || RequireGizmosUpdate)
         {
             RequireGizmosUpdate = false;
         }
 
-        _gridInitializer.DetermineGridSize(_cellSize);
+        _gridInitializer.DetermineGridSize(CellSize);
         Vector2 minimums = _gridInitializer.GetMinimums();
         transform.position = new Vector3(minimums.x, 0f, minimums.y);
 
@@ -284,7 +284,7 @@ public class GridMap : MonoBehaviour
                 if (ShowGridGizmos)
                 {
                     Gizmos.color = Color.gray;
-                    Vector3 displacement = new Vector3(_cellSize / 2f, 0f, _cellSize / 2f);
+                    Vector3 displacement = new Vector3(CellSize / 2f, 0f, CellSize / 2f);
                     Vector3 minX = GridToWorld(0, z, 0.5f) - displacement;
                     Vector3 maxX = GridToWorld(_map.GetLength(0), z, 0.5f) - displacement;
                     Vector3 minZ = GridToWorld(x, 0, 0.5f) - displacement;
@@ -303,7 +303,7 @@ public class GridMap : MonoBehaviour
                     {
                         Gizmos.color = Color.red;
                     }
-                    Gizmos.DrawCube(cellPosition + Vector3.up * 3f, new Vector3(_cellSize, 0.01f, _cellSize));
+                    Gizmos.DrawCube(cellPosition + Vector3.up * 3f, new Vector3(CellSize, 0.01f, CellSize));
                 }
 
                 if (_map[x, z] != null && ShowCoversGizmos)

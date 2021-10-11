@@ -6,6 +6,8 @@ public class GridMapEditor : Editor
 {
     private GridMap _gridMap;
 
+    private float _previousCellSize;
+
     private void OnSceneGUI()
     {
         _gridMap = (GridMap) target;
@@ -34,6 +36,10 @@ public class GridMapEditor : Editor
             _gridMap.ShowCoversGizmos = !_gridMap.ShowCoversGizmos;
             _gridMap.RequireGizmosUpdate = true;
         }
+
+        GUI.backgroundColor = Color.blue;
+        _gridMap.CellSize = GUI.HorizontalSlider(new Rect(60, 7.5f, 100, 20), _gridMap.CellSize, 0.2f, 10f);
+        _gridMap.CellSize = float.Parse(GUI.TextField(new Rect(75, 30, 70, 20), _gridMap.CellSize.ToString()));
 
         Handles.EndGUI();
     }
