@@ -1621,7 +1621,6 @@ MonoBehaviour:
   ShowGridGizmos: 1
   ShowWalkableGizmos: 0
   ShowCoversGizmos: 0
-  RequireGizmosUpdate: 0
 --- !u!4 &1083061955
 Transform:
   m_ObjectHideFlags: 0

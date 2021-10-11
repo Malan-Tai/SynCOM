@@ -14,7 +14,6 @@ public class GridMap : MonoBehaviour
     public bool ShowGridGizmos = true;
     public bool ShowWalkableGizmos = true;
     public bool ShowCoversGizmos = true;
-    public bool RequireGizmosUpdate = true;
 #endif
 
     private Tile[,] _map;
@@ -257,6 +256,11 @@ public class GridMap : MonoBehaviour
 #if UNITY_EDITOR
 
 #region Gizmos
+    public void RecalculateGrid()
+    {
+        _map = _gridInitializer.CreateGrid(CellSize);
+    }
+
     private void OnDrawGizmos()
     {
         if (_gridInitializer is null)
@@ -265,10 +269,9 @@ public class GridMap : MonoBehaviour
             return;
         }
 
-        _map = _gridInitializer.CreateGrid(CellSize);
-        if (_map is null || RequireGizmosUpdate)
+        if (_map is null)
         {
-            RequireGizmosUpdate = false;
+            _map = _gridInitializer.CreateGrid(CellSize);
         }
 
         _gridInitializer.DetermineGridSize(CellSize);
