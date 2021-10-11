@@ -14,6 +14,7 @@ public class GridMap : MonoBehaviour
     public bool ShowGridGizmos = true;
     public bool ShowWalkableGizmos = true;
     public bool ShowCoversGizmos = true;
+    public bool RequireGizmosUpdate = true;
 #endif
 
     private Tile[,] _map;
@@ -264,12 +265,13 @@ public class GridMap : MonoBehaviour
             return;
         }
 
-        if (_map is null)
+        _map = _gridInitializer.CreateGrid(_cellSize);
+        if (_map is null || RequireGizmosUpdate)
         {
-            _map = _gridInitializer.CreateGrid(_cellSize);
+            RequireGizmosUpdate = false;
         }
 
-        _gridInitializer.DetermineGridSize();
+        _gridInitializer.DetermineGridSize(_cellSize);
         Vector2 minimums = _gridInitializer.GetMinimums();
         transform.position = new Vector3(minimums.x, 0f, minimums.y);
 
@@ -291,7 +293,7 @@ public class GridMap : MonoBehaviour
                     Gizmos.DrawLine(minZ, maxZ);
                 }
 
-                if (_map != null && ShowWalkableGizmos)
+                if (_map[x, z] != null && ShowWalkableGizmos)
                 {
                     if (_map[x, z].IsWalkable)
                     {
@@ -304,7 +306,7 @@ public class GridMap : MonoBehaviour
                     Gizmos.DrawCube(cellPosition + Vector3.up * 3f, new Vector3(_cellSize, 0.01f, _cellSize));
                 }
 
-                if (_map != null && ShowCoversGizmos)
+                if (_map[x, z] != null && ShowCoversGizmos)
                 {
                     switch (_map[x, z].Cover)
                     {

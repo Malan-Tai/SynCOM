@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Priority_Queue;
@@ -109,7 +109,8 @@ public class Pathfinder
 
         if (startTile == null || moves < 1f) return;
 
-        FastPriorityQueue<Tile> frontier = new FastPriorityQueue<Tile>(10 * (int)moves); //50 is not enough, (int)moves * 10 might be ?
+        //50 is not enough, (int)moves * 10 might be ? -> It wasn't enough so I increased it to (int)moves * 11
+        FastPriorityQueue<Tile> frontier = new FastPriorityQueue<Tile>(11 * (int)moves);
         frontier.Enqueue(startTile, 0.0f);
 
         Dictionary<Tile, Tile> cameFrom = new Dictionary<Tile, Tile>();

@@ -26,6 +26,9 @@ public class CombatGameManager : MonoBehaviour
     public GridMap GridMap { get => _gridMap; }
 
     [SerializeField]
+    private TileDisplay _unitMoveDisplayer;
+
+    [SerializeField]
     private MoveableCamera _camera;
     public MoveableCamera Camera { get { return _camera; } }
 
@@ -104,6 +107,7 @@ public class CombatGameManager : MonoBehaviour
     {
         List<Tile> newReachable = CurrentUnit.GetReachableTiles();
 
+        _unitMoveDisplayer.DisplayTileZone(newReachable, TileZoneDisplayEnum.MoveZoneDisplay);
         /*foreach (Tile tile in _previousReachableTiles)
         {
             tile.BecomeUnreachable();

@@ -13,7 +13,7 @@ public class GridInitializer : MonoBehaviour
     private int _maxX = int.MinValue;
     private int _maxZ = int.MinValue;
 
-    public Vector2Int DetermineGridSize()
+    public Vector2Int DetermineGridSize(float cellSize)
     {
         _minX = int.MaxValue;
         _minZ = int.MaxValue;
@@ -28,27 +28,25 @@ public class GridInitializer : MonoBehaviour
             _maxZ = Mathf.Max(_maxZ, Mathf.FloorToInt(_gridPos[i].position.z));
         }
 
-        return new Vector2Int(_maxX - _minX, _maxZ - _minZ);
+        return new Vector2Int(Mathf.RoundToInt((_maxX - _minX) / cellSize), Mathf.RoundToInt((_maxZ - _minZ) / cellSize));
     }
 
     public Tile[,] CreateGrid(float cellSize)
     {
-        Vector2Int size = DetermineGridSize();
+        Vector2Int size = DetermineGridSize(cellSize);
 
         _grid = new Tile[size.x, size.y];
         Vector3 overlapSize = new Vector3(cellSize * 0.45f, cellSize * 2f, cellSize * 0.45f);
         Collider[] overlap;
 
-        for (float x = 0; x < size.x; x += cellSize)
+        for (int x = 0; x < size.x; x++)
         {
-            for (float z = 0; z < size.y; z += cellSize)
+            for (int z = 0; z < size.y; z++)
             {
-                int coordX = (int) (x / cellSize);
-                int coordY = (int) (z / cellSize);
                 bool walkable = true;
                 EnumCover coverValue = EnumCover.None;
 
-                overlap = Physics.OverlapBox(new Vector3(_minX + x + cellSize / 2f, 0f, _minZ + z + cellSize / 2f), overlapSize, Quaternion.identity, _mapElementLayer);
+                overlap = Physics.OverlapBox(new Vector3(_minX + x * cellSize + cellSize / 2f, 0f, _minZ + z * cellSize + cellSize / 2f), overlapSize, Quaternion.identity, _mapElementLayer);
 
                 for (int i = 0; i < overlap.Length; i++)
                 {
@@ -62,7 +60,7 @@ public class GridInitializer : MonoBehaviour
                     }
                 }
 
-                _grid[coordX, coordY] = new Tile(coordX, coordY, coverValue, walkable);
+                _grid[x, z] = new Tile(x, z, coverValue, walkable);
             }
         }
 

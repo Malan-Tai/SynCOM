@@ -18,18 +18,21 @@ public class GridMapEditor : Editor
         if (GUI.Button(new Rect(5, 5, 50, 25), "Grid"))
         {
             _gridMap.ShowGridGizmos = !_gridMap.ShowGridGizmos;
+            _gridMap.RequireGizmosUpdate = true;
         }
 
         GUI.backgroundColor = _gridMap.ShowWalkableGizmos ? Color.green : Color.red;
         if (GUI.Button(new Rect(5, 35, 50, 25), "Tiles"))
         {
             _gridMap.ShowWalkableGizmos = !_gridMap.ShowWalkableGizmos;
+            _gridMap.RequireGizmosUpdate = true;
         }
 
         GUI.backgroundColor = _gridMap.ShowCoversGizmos ? Color.green : Color.red;
         if (GUI.Button(new Rect(5, 65, 50, 25), "Covers"))
         {
             _gridMap.ShowCoversGizmos = !_gridMap.ShowCoversGizmos;
+            _gridMap.RequireGizmosUpdate = true;
         }
 
         Handles.EndGUI();
