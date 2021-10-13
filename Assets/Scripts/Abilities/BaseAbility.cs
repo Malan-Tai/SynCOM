@@ -92,6 +92,8 @@ public abstract class BaseDuoAbility : BaseAbility
 
     protected override void FinalizeAbility(bool executed)
     {
+        _chosenAlly.StopUsingAbilityAsAlly(executed);
+
         _temporaryChosenAlly = null;
         _chosenAlly = null;
         _possibleAllies = null;
@@ -117,7 +119,7 @@ public abstract class BaseDuoAbility : BaseAbility
         else if (Input.GetKeyDown(KeyCode.Return) && _temporaryChosenAlly != null && _chosenAlly == null)
         {
             _chosenAlly = _temporaryChosenAlly;
-            _chosenAlly.UseAbilityAsAlly(this);
+            // _chosenAlly.UseAbilityAsAlly(this);
             ChooseAlly();
         }
         else if (Input.GetKeyDown(KeyCode.Return))

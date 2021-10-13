@@ -54,7 +54,7 @@ public class GridMap : MonoBehaviour
             for (int y = 0; y < _maxY; y++)
             {
                 int cover = 0;
-                if (x == 0 || x == _maxX - 1 || y == 0 || y == _maxY - 1 || (x <= 9 && y == 13)) cover = 2;
+                if (x == 0 || x == _maxX - 1 || y == 0 || y == _maxY - 1 || (x > 6 && x <= 9 && y == 13) || (x > 9 && x < 13 && y == 12)) cover = 2;
                 else if (y == 10 || y == _maxY - 2) cover = 1;
 
                 //int cover = Random.Range(0, 3);
@@ -218,8 +218,12 @@ public class GridMap : MonoBehaviour
         Tile tileA = _map[cellA.x, cellA.y];
         Tile tileB = _map[cellB.x, cellB.y];
 
+        Tile sideTileA = _map[cellA.x, cellB.y];
+        Tile sideTileB = _map[cellB.x, cellA.y];
+
         return ((tileA.Cover == EnumCover.None && (tileB.Cover == EnumCover.Half || tileB.Cover == EnumCover.None)) ||
                 (tileA.Cover == EnumCover.Half && tileB.Cover == EnumCover.None)) &&
+                (sideTileA.Cover != EnumCover.Full || sideTileB.Cover != EnumCover.Full) &&
                 !_occupiedTiles.Contains(cellB);
     }
 

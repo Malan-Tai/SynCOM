@@ -4,14 +4,13 @@ using UnityEngine;
 
 public class EnemyUnit : GridBasedUnit
 {
-    private MeshRenderer _renderer;
+    private GeneralRenderer _renderer;
     private Color _originalColor;
     private new void Start()
     {
         base.Start();
 
-        _renderer = GetComponent<MeshRenderer>();
-        _originalColor = _renderer.material.GetColor("_Color");
+        _renderer = GetComponentInChildren<GeneralRenderer>();
     }
 
     protected override bool IsEnemy()
@@ -23,23 +22,23 @@ public class EnemyUnit : GridBasedUnit
     {
         if (!seen)
         {
-            _renderer.material.SetColor("_Color", Color.black);
+            _renderer.SetColor(Color.black);
         }
         else
         {
             switch (cover)
             {
                 case EnumCover.None:
-                    _renderer.material.SetColor("_Color", Color.green);
+                    _renderer.SetColor(Color.green);
                     break;
                 case EnumCover.Half:
-                    _renderer.material.SetColor("_Color", Color.yellow);
+                    _renderer.SetColor(Color.yellow);
                     break;
                 case EnumCover.Full:
-                    _renderer.material.SetColor("_Color", Color.red);
+                    _renderer.SetColor(Color.red);
                     break;
                 default:
-                    _renderer.material.SetColor("_Color", _originalColor);
+                    _renderer.RevertToOriginalColor();
                     break;
             }
         }

@@ -14,12 +14,65 @@ public class MoveableCamera : MonoBehaviour
     private float _maxCameraSize;
     [SerializeField]
     private float _zoomSpeed;
+    [SerializeField]
+    private float _moveSpeed;
+    [SerializeField]
+    private float _rotationSpeed;
+
+    private Vector3 _targetPosition;
+    private bool _followTarget = false;
+
+    private float _rotationSign;
+    private float _targetRotationY;
+    private bool _followRotation = false;
 
     private void Start()
     {
         _startingOffset = this.transform.localPosition;
         _camera = GetComponentInChildren<Camera>();
         _startingCamSize = _camera.orthographicSize;
+        _targetRotationY = this.transform.localEulerAngles.y;
+    }
+
+    private void Update()
+    {
+        if (_followRotation)
+        {
+            float currentY = this.transform.localEulerAngles.y;
+            float sign = Mathf.Sign(_targetRotationY - currentY) * _rotationSign;
+
+            if (_targetRotationY - currentY != 0f)
+            {
+                currentY += _rotationSign * _rotationSpeed * Time.deltaTime;
+            }
+
+            if (_targetRotationY - currentY == 0f || Mathf.Sign(_targetRotationY - currentY) * _rotationSign != sign)
+            {
+                currentY = _targetRotationY;
+                _followRotation = false;
+            }
+
+            Vector3 oldEuler = this.transform.localEulerAngles;
+            Vector3 euler = new Vector3(oldEuler.x, currentY, oldEuler.z);
+            this.transform.localRotation = Quaternion.Euler(euler);
+        }
+
+        if (_followTarget)
+        {
+            Vector3 delta = (_targetPosition - this.transform.localPosition) * _moveSpeed * Time.deltaTime;
+            this.transform.localPosition += delta;
+
+            if ((_targetPosition - this.transform.localPosition).magnitude <= 0.1f)
+            {
+                this.transform.localPosition = _targetPosition;
+                _followTarget = false;
+            }
+        }
+    }
+
+    public float GetRotationY()
+    {
+        return this.transform.eulerAngles.y;
     }
 
     public void ResetCamera()
@@ -30,14 +83,23 @@ public class MoveableCamera : MonoBehaviour
 
     public void SwitchParenthood(GridBasedUnit newUnit)
     {
-        this.transform.localPosition = _startingOffset;
+        Vector3 delta = newUnit.transform.position - this.transform.position;
+        this.transform.localPosition -= delta;
+        _targetPosition = _startingOffset;
+        _followTarget = true;
+
         this.transform.SetParent(newUnit.transform, false);
     }
 
     public void RotateCamera(float sign)
     {
-        Vector3 euler = this.transform.localEulerAngles + new Vector3(0, sign * 90, 0);
-        this.transform.localRotation = Quaternion.Euler(euler);
+        _targetRotationY += sign * 90f;
+        _rotationSign = sign;
+
+        if (_targetRotationY == -45f) _targetRotationY = 315f;
+        else if (_targetRotationY == 405) _targetRotationY = 45f;
+
+        _followRotation = true;
     }
 
     public void ZoomCamera(float delta)
