@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Character
+public class Character
 {
     //Character's archetype
 
     private EnumClasses _class;
-    private List<EnumTraits> _traits;
+    private List<EnumTraits> _traits = new List<EnumTraits>();
 
     //Character's statistics
 

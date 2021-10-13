@@ -10,8 +10,18 @@ public class GridBasedUnit : MonoBehaviour
     public Vector2Int GridPosition { get { return _gridPosition; } }
 
 
-    private Character _character;
-    public Character Character { get { return _character; } }
+    protected Character _character;
+    public Character Character
+    { 
+        get
+        {
+            return _character;
+        }
+        set
+        {
+            _character = value;
+        }
+    }
 
     [SerializeField]
     private float _moveSpeed;

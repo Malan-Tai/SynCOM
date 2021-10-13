@@ -5,6 +5,9 @@ using System;
 
 public class Relationship
 {
+    /// <summary>
+    /// The <c>Character</c> towards which the sentiments and emotions are felt.
+    /// </summary>
     private Character _target;
     public Character Target
     {
@@ -14,7 +17,15 @@ public class Relationship
 
     private class Gauge
     {
+        /// <summary>
+        /// The level of the gauge increase or decrease if the value
+        /// becomes high or low enough. The levels of each gauge determines the emotions.
+        /// </summary>
         public int level;
+        /// <summary>
+        /// The value increases or decreases depending on the Duo Abilities
+        /// performed with the target.
+        /// </summary>
         public int value;
 
         public Gauge()
@@ -30,6 +41,23 @@ public class Relationship
     private Gauge _sympathyGauge { get { return _gauges[EnumSentiment.Sympathy]; } }
 
     private List<EnumEmotions> _listEmotions;
+    public List<EnumEmotions> ListEmotions { get { return _listEmotions; } }
+
+    /// <summary>
+    /// Returns the current value of the gauge representing the <c>sentiment</c>.
+    /// </summary>
+    public int GetGaugeValue(EnumSentiment sentiment)
+    {
+        return _gauges[sentiment].value;
+    }
+
+    /// <summary>
+    /// Returns the current level of the gauge representing the <c>sentiment</c>.
+    /// </summary>
+    public int GetGaugeLevel(EnumSentiment sentiment)
+    {
+        return _gauges[sentiment].level;
+    }
 
     public Relationship()
     {
@@ -41,6 +69,11 @@ public class Relationship
         }
     }
 
+    /// <summary>
+    /// Increases the gauge representing the <c>sentiment</c> by the amount
+    /// indicated by <c>gain</c>, and updates the level of the gauge
+    /// if necessary.
+    /// </summary>
     public void IncreaseSentiment(EnumSentiment sentiment, int gain)
     {
         Gauge gauge = _gauges[sentiment];
@@ -76,6 +109,10 @@ public class Relationship
         }
     }
 
+    /// <summary>
+    /// Return the limit of the value of a gauge, depdning on the gauge level.
+    /// If the value reaches the limit, the level is increased of decreased accordingly.
+    /// </summary>
     private int GetGaugeLimit(int level)
     {
         int result = 0;
@@ -106,6 +143,10 @@ public class Relationship
         return _listEmotions.Contains(emotion);
     }
 
+    /// <summary>
+    /// Updates the Emotions felt towards the target according to the
+    /// current level of each sentiment gauge.
+    /// </summary>
     private void UpdateEmotions()
     {
         _listEmotions.Clear();

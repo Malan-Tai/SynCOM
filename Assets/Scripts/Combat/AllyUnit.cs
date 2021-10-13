@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class AllyUnit : GridBasedUnit
-{ 
+{
     private BaseAbility _currentAbility = null;
     public BaseAbility CurrentAbility { get { return _currentAbility; } }
+
+    public AllyCharacter AllyCharacter { get => (AllyCharacter)_character; }
+
     protected override bool IsEnemy()
     {
         return false;
