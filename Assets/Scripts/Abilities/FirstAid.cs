@@ -28,15 +28,15 @@ public class FirstAid : BaseDuoAbility
         // Impact on the sentiments
 
         // Self -> Ally relationship
-        Relationship relationshipSelfToAlly = this._effector.Character.Relationships[_chosenAlly.Character];
-        relationshipSelfToAlly.IncreaseSentiment(EnumSentiment.Sympathy, 5);
+        SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
         
         // Ally -> Self relationship
-        Relationship relationshipAllyToSelf = _chosenAlly.Character.Relationships[this._effector.Character];
-        relationshipAllyToSelf.IncreaseSentiment(EnumSentiment.Trust, 5);
+        AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, 5);
 
         // Actual effect of the ability
         // TODO : implementing heal
+        Relationship relationshipAllyToSelf = _chosenAlly.Character.Relationships[this._effector.Character];
+        Relationship relationshipSelfToAlly = this._effector.Character.Relationships[_chosenAlly.Character];
         Debug.Log(  "i am healing ally" +
                     "\nally -> self : TRU" + relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Trust) + " = " + relationshipAllyToSelf.GetGaugeValue(EnumSentiment.Trust) +
                     " | self -> ally : SYM" + relationshipSelfToAlly.GetGaugeLevel(EnumSentiment.Sympathy) + " = " + relationshipSelfToAlly.GetGaugeValue(EnumSentiment.Sympathy));

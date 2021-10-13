@@ -28,16 +28,15 @@ public class Slap : BaseDuoAbility
         // Impact on the sentiments
 
         // Self -> Ally relationship
-        
+
 
         // Ally -> Self relationship
-        Relationship relationshipAllyToSelf = _chosenAlly.Character.Relationships[this._effector.Character];
-        relationshipAllyToSelf.IncreaseSentiment(EnumSentiment.Trust, -3);
-        relationshipAllyToSelf.IncreaseSentiment(EnumSentiment.Sympathy, -3);
-        relationshipAllyToSelf.IncreaseSentiment(EnumSentiment.Admiration, -3);
+        AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, -3);
+        AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Sympathy, -3);
+        AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, -3);
 
         // Actual effect of the ability
-        // TODO : implementing heal
+        Relationship relationshipAllyToSelf = _chosenAlly.Character.Relationships[this._effector.Character];
         Debug.Log("take that you idiot" +
             "\nally -> self : ADM" + relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Admiration) + " = " + relationshipAllyToSelf.GetGaugeValue(EnumSentiment.Admiration) +
             " | ally -> self : TRU" + relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Trust) + " = " + relationshipAllyToSelf.GetGaugeValue(EnumSentiment.Trust) +

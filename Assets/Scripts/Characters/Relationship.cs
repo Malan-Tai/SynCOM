@@ -41,6 +41,7 @@ public class Relationship
     private Gauge _sympathyGauge { get { return _gauges[EnumSentiment.Sympathy]; } }
 
     private List<EnumEmotions> _listEmotions;
+    public List<EnumEmotions> ListEmotions { get { return _listEmotions; } }
 
     /// <summary>
     /// Returns the current value of the gauge representing the <c>sentiment</c>.
