@@ -23,7 +23,11 @@ public class CombatGameManager : MonoBehaviour
     #endregion
 
     [SerializeField]
-    public GridMap gridMap;
+    private GridMap _gridMap;
+    public GridMap GridMap { get => _gridMap; }
+
+    [SerializeField]
+    private TileDisplay _unitMoveDisplayer;
 
     [SerializeField]
     private MoveableCamera _camera;
@@ -124,17 +128,7 @@ public class CombatGameManager : MonoBehaviour
     public void UpdateReachableTiles()
     {
         List<Tile> newReachable = CurrentUnit.GetReachableTiles();
-
-        foreach (Tile tile in _previousReachableTiles)
-        {
-            tile.BecomeUnreachable();
-        }
-
-        foreach (Tile tile in newReachable)
-        {
-            tile.BecomeReachable();
-        }
-
+        _unitMoveDisplayer.DisplayTileZone(newReachable, TileZoneDisplayEnum.MoveZoneDisplay);
         _previousReachableTiles = newReachable;
     }
 

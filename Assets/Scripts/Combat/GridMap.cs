@@ -5,19 +5,19 @@ using UnityEngine;
 public class GridMap : MonoBehaviour
 {
     [SerializeField]
-    private float _cellSize;
-    public float CellSize { get { return _cellSize; } }
+    private GridInitializer _gridInitializer;
 
-    [SerializeField]
-    private GameObject[] _tilePrefabs;
+    [Range(0.2f, 10f)] public float CellSize = 1f;
+
+#if UNITY_EDITOR
+    [Header("Gizmos")]
+    public bool ShowGridGizmos = true;
+    public bool ShowWalkableGizmos = true;
+    public bool ShowCoversGizmos = true;
+#endif
 
     private Tile[,] _map;
-    // max x coordinate (exclusive)
-    private int _maxX;
-    // max y coordinate (exclusive)
-    private int _maxY;
-
-    private List<Vector2Int> _occupiedTiles;
+    private List<Vector2Int> _occupiedTiles = new List<Vector2Int>();
 
     public Tile this[Vector2Int u]
     {
@@ -45,52 +45,28 @@ public class GridMap : MonoBehaviour
 
     private void Awake()
     {
-        _maxX = 20;
-        _maxY = 20;
-        _map = new Tile[_maxX, _maxY];
-
-        for (int x = 0; x < _maxX; x++)
-        {
-            for (int y = 0; y < _maxY; y++)
-            {
-                int cover = 0;
-                if (x == 0 || x == _maxX - 1 || y == 0 || y == _maxY - 1 || (x > 6 && x <= 9 && y == 13) || (x > 9 && x < 13 && y == 12)) cover = 2;
-                else if (y == 10 || y == _maxY - 2) cover = 1;
-
-                //int cover = Random.Range(0, 3);
-                _map[x, y] = new Tile(x, y, (EnumCover)cover);
-
-                if (cover < _tilePrefabs.Length)
-                {
-                    GameObject obj = Instantiate(_tilePrefabs[cover], this.transform);
-                    obj.transform.position = GridToWorld(new Vector2Int(x, y), 0);
-                    obj.transform.localScale = new Vector3(_cellSize, obj.transform.localScale.y, _cellSize);
-
-                    var tileComp = obj.GetComponent<TileComponent>();
-                    tileComp.SetTile(_map[x, y]);
-                    _map[x, y].SetTileComponent(tileComp);
-                }
-            }
-        }
+        _map = _gridInitializer.CreateGrid(CellSize);
 
         _occupiedTiles = new List<Vector2Int>();
+        Vector2 minimums = _gridInitializer.GetMinimums();
+        transform.position = new Vector3(minimums.x, 0f, minimums.y);
     }
 
     public Vector3 GridToWorld(Vector2Int grid, float y)
     {
-        return new Vector3(grid.x * _cellSize + _cellSize / 2, y, grid.y * _cellSize + _cellSize / 2);
+        return new Vector3(transform.position.x + grid.x * CellSize + CellSize / 2, y, transform.position.z + grid.y * CellSize + CellSize / 2);
     }
 
     public Vector3 GridToWorld(int gridX, int gridY, float y)
     {
-        return new Vector3(gridX * _cellSize + _cellSize / 2, y, gridY * _cellSize + _cellSize / 2);
+        return new Vector3(transform.position.x + gridX * CellSize + CellSize / 2, y, transform.position.z + gridY * CellSize + CellSize / 2);
     }
 
     public Vector2Int WorldToGrid(Vector3 world, bool addToOccupiedTiles = false)
     {
         Vector2Int gridPos = new Vector2Int();
-        gridPos.x = (int)Mathf.Floor(world.x / _cellSize - 0.5f);
-        gridPos.y = (int)Mathf.Floor(world.z / _cellSize - 0.5f);
+        gridPos.x = (int)Mathf.Floor((world.x - transform.position.x) / CellSize - 0.5f);
+        gridPos.y = (int)Mathf.Floor((world.z - transform.position.z) / CellSize - 0.5f);
 
         if (addToOccupiedTiles)
         {
@@ -221,20 +197,20 @@ public class GridMap : MonoBehaviour
         Tile sideTileA = _map[cellA.x, cellB.y];
         Tile sideTileB = _map[cellB.x, cellA.y];
 
-        return ((tileA.Cover == EnumCover.None && (tileB.Cover == EnumCover.Half || tileB.Cover == EnumCover.None)) ||
+        return _map[cellB.x, cellB.y].IsWalkable && !_occupiedTiles.Contains(cellB) &&
+                ((tileA.Cover == EnumCover.None && (tileB.Cover == EnumCover.Half || tileB.Cover == EnumCover.None)) ||
                 (tileA.Cover == EnumCover.Half && tileB.Cover == EnumCover.None)) &&
-                (sideTileA.Cover != EnumCover.Full || sideTileB.Cover != EnumCover.Full) &&
-                !_occupiedTiles.Contains(cellB);
+                (sideTileA.Cover != EnumCover.Full || sideTileB.Cover != EnumCover.Full);
     }
 
     public bool CellIsValid(Vector2Int u)
     {
-        return u.x >= 0 && u.x < _maxX && u.y >= 0 && u.y < _maxY;
+        return CellIsValid(u.x, u.y);
     }
 
     public bool CellIsValid(int x, int y)
     {
-        return x >= 0 && x < _maxX && y >= 0 && y < _maxY;
+        return x >= 0 && x < _map.GetLength(0) && y >= 0 && y < _map.GetLength(1);
     }
 
     public void UpdateOccupiedTiles(Vector2Int from, Vector2Int to)
@@ -280,4 +256,83 @@ public class GridMap : MonoBehaviour
 
         return best;
     }
+
+
+#if UNITY_EDITOR
+
+#region Gizmos
+    public void RecalculateGrid()
+    {
+        _map = _gridInitializer.CreateGrid(CellSize);
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (_gridInitializer is null)
+        {
+            Debug.LogError("GridMap needs a GridInitializer to initialize the grid!");
+            return;
+        }
+
+        if (_map is null)
+        {
+            _map = _gridInitializer.CreateGrid(CellSize);
+        }
+
+        _gridInitializer.DetermineGridSize(CellSize);
+        Vector2 minimums = _gridInitializer.GetMinimums();
+        transform.position = new Vector3(minimums.x, 0f, minimums.y);
+
+        for (int x = 0; x < _map.GetLength(0); x++)
+        {
+            for (int z = 0; z < _map.GetLength(1); z++)
+            {
+                Vector3 cellPosition = GridToWorld(x, z, 0f);
+
+                if (ShowGridGizmos)
+                {
+                    Gizmos.color = Color.gray;
+                    Vector3 displacement = new Vector3(CellSize / 2f, 0f, CellSize / 2f);
+                    Vector3 minX = GridToWorld(0, z, 0.5f) - displacement;
+                    Vector3 maxX = GridToWorld(_map.GetLength(0), z, 0.5f) - displacement;
+                    Vector3 minZ = GridToWorld(x, 0, 0.5f) - displacement;
+                    Vector3 maxZ = GridToWorld(x, _map.GetLength(1), 0.5f) - displacement;
+                    Gizmos.DrawLine(minX, maxX);
+                    Gizmos.DrawLine(minZ, maxZ);
+                }
+
+                if (_map[x, z] != null && ShowWalkableGizmos)
+                {
+                    if (_map[x, z].IsWalkable)
+                    {
+                        Gizmos.color = Color.blue;
+                    }
+                    else
+                    {
+                        Gizmos.color = Color.red;
+                    }
+                    Gizmos.DrawCube(cellPosition + Vector3.up * 3f, new Vector3(CellSize, 0.01f, CellSize));
+                }
+
+                if (_map[x, z] != null && ShowCoversGizmos)
+                {
+                    switch (_map[x, z].Cover)
+                    {
+                        default:
+                        case EnumCover.None:
+                            break;
+                        case EnumCover.Half:
+                            Gizmos.DrawIcon(cellPosition + Vector3.up * 4f, "half_cover_icon.png", true, Color.yellow);
+                            break;
+                        case EnumCover.Full:
+                            Gizmos.DrawIcon(cellPosition + Vector3.up * 4f, "full_cover_icon.png", true, Color.green);
+                            break;
+                    }
+                }
+            }
+        }
+    }
+
+#endregion
+#endif
 }
