@@ -18,6 +18,7 @@ public abstract class Character
     [SerializeField] private float _dodge;     // value between 0 and 1. Probability of successful attack is accuracy-dodge
     [SerializeField] private float _movementPoints; // how far can a charcater move in one turn
     [SerializeField] private float _weigth; //can be a condition for some actions
+    [SerializeField] private float _critChances;
 
     private static Dictionary<EnumClasses, List<EnumTraits>> s_mandatoryTraits = new Dictionary<EnumClasses, List<EnumTraits>>(){
         {EnumClasses.Berserker, new List<EnumTraits> {EnumTraits.Stocky}},
@@ -45,7 +46,7 @@ public abstract class Character
         addRandomTrait(_class);
     }
 
-    public Character(EnumClasses characterClass,float maxHealth,float damage, float accuracy, float dodge, float movementPoints, float weight)
+    public Character(EnumClasses characterClass,float maxHealth,float damage, float accuracy, float dodge,float critChances, float movementPoints, float weight)
     {
         _class = characterClass;
         addMandatoryTraits(_class);
@@ -55,6 +56,7 @@ public abstract class Character
         _damage = damage;
         _accuracy = accuracy;
         _dodge = dodge;
+        _critChances = critChances;
         _movementPoints = movementPoints;
         _weigth = weight;
 
@@ -73,7 +75,7 @@ public abstract class Character
         private set { this._healthPoints = value; }
     }
 
-    public float Damages
+    public float Damage
     {
         get { return this._damage; }
         private set { this._damage = value; }
@@ -89,6 +91,12 @@ public abstract class Character
     {
         get { return this._dodge; }
         private set { this._dodge = value; }
+    }
+
+    public float CritChances
+    {
+        get { return this._critChances; }
+        private set { this._critChances = value; }
     }
 
     public float MovementPoints

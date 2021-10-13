@@ -7,7 +7,6 @@ public class BasicShot : BaseAbility
 {
     private GridBasedUnit[] _possibleTargets;
     private int _targetIndex = -1;
-
     public override void SetEffector(GridBasedUnit effector)
     {
         _possibleTargets = new GridBasedUnit[effector.LinesOfSight.Count];
@@ -65,10 +64,17 @@ public class BasicShot : BaseAbility
 
     protected override void Execute()
     {
-        int randShot = UnityEngine.Random.Range(0,100);
-
-        if (_effector.Character.Accuracy - _possibleTargets[_targetIndex].Character.Dodge < randShot) {
+        int randShot = UnityEngine.Random.Range(0, 100);
+        int randCrit = UnityEngine.Random.Range(0, 100);
+        if (_effector.Character.Accuracy - _possibleTargets[_targetIndex].Character.Dodge > randShot) {
             Debug.Log("i am shooting at " + _possibleTargets[_targetIndex].GridPosition + " with cover " + (int)_effector.LinesOfSight[_possibleTargets[_targetIndex]].cover);
+            if (_effector.Character.CritChances > randCrit) {
+                _possibleTargets[_targetIndex].Character.TakeDamages(_effector.Character.Damage*1.5f);
+            }
+            else
+            {
+                _possibleTargets[_targetIndex].Character.TakeDamages(_effector.Character.Damage);
+            }
         }
         else
         {
