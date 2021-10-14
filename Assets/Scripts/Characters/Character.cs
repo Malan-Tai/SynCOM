@@ -131,9 +131,9 @@ public class Character
     {
         _traits.Add(GetRandomTraitsFromClass(characterClass));
     }
-    public void TakeDamages(float damages)
+    public void TakeDamage(float damage)
     {
-        _healthPoints -= damages;
+        _healthPoints -= damage;
         if (_healthPoints <= 0)
         {
             Die();

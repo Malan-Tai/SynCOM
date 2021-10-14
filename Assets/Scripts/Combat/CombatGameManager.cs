@@ -67,7 +67,7 @@ public class CombatGameManager : MonoBehaviour
     {
         foreach (AllyUnit ally in _allAllyUnits)
         {
-            ally.Character = new AllyCharacter(EnumClasses.Sniper, 20, 2, 50, 50, 15, 4, 60);
+            ally.Character = new AllyCharacter(EnumClasses.Sniper, 20, 2, 65, 10, 15, 4, 60);
         }
 
         foreach (AllyUnit ally in _allAllyUnits)
@@ -77,7 +77,7 @@ public class CombatGameManager : MonoBehaviour
 
         foreach (EnemyUnit enemy in _enemyUnits)
         {
-            enemy.Character = new Character(EnumClasses.Sniper, 20, 2, 50, 50, 15, 4, 60);
+            enemy.Character = new Character(EnumClasses.Sniper, 20, 2, 65, 10, 15, 4, 60);
         }
     }
 
