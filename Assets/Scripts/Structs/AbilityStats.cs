@@ -4,36 +4,42 @@ using System.Collections.Generic;
 
 public struct AbilityStats
 {
-    public float accuracy;      // [5 ; 95]
-    public float crit;          // [5 ; 95]
-    public float damage;        // 
-    public float protection;    // [1 ; 2]
+    private float innateAccuracy;
+    private float innateCrit;
+    private float innateDamage;
+    private float innateProtection;
+    private AllyUnit unit;
 
     private float _selfSuccessModifier;
     private float _selfMissModifier;
     private float _selfCritSuccessModifier;
     private float _selfCritMissModifier;
     private float _selfDamageModifier;
+    private float _selfProtectionModifier;
 
-    public AbilityStats(float accuracy, float crit, float damage, float protection)
+    public AbilityStats(float innateAccuracy, float innateCrit, float innateDamage, float innateProtection, AllyUnit unit)
     {
-        this.accuracy = accuracy;
-        this.crit = crit;
-        this.damage = damage;
-        this.protection = protection;
+        this.innateAccuracy = innateAccuracy;
+        this.innateCrit = innateCrit;
+        this.innateDamage = innateDamage;
+        this.innateProtection = innateProtection;
+        this.unit = unit;
 
         _selfSuccessModifier = 1;
         _selfMissModifier = 1;
         _selfCritSuccessModifier = 1;
         _selfCritMissModifier = 1;
         _selfDamageModifier = 1;
+        _selfProtectionModifier = 1.6f;
     }
 
-    public void UpdateWithSelfToAllyRelationship(Relationship relationship)
+    /// <summary>
+    /// Updates the modifiers depending on the emotions of the relationship
+    /// </summary>
+    public void UpdateWithEmotionModifiers(AllyUnit ally)
     {
+        Relationship relationship = this.unit.AllyCharacter.Relationships[ally.AllyCharacter];
         List<EnumEmotions> listEmotions = relationship.ListEmotions;
-        //AbilityStats bestModifiers = new AbilityStats(0, 0, 0, 0); // modifiers to chance of missing [0.5, 1], chance of not critting [0.5, 1], damage, and protection [1.2, 2]
-        //AbilityStats worstModifiers = new AbilityStats(0, 0, 0, 0); // modifiers to chance of hitting [0.5, 1], chance of critting [0.5, 1], damage, and protection [1.2, 2]
 
         int protLevelPos = 0;
         int protLevelNeg = 0;
@@ -46,74 +52,6 @@ public struct AbilityStats
 
         foreach (EnumEmotions emotion in listEmotions)
         {
-            /*
-            switch (emotion)
-            {
-                case (EnumEmotions.Scorn):
-                    float protMod = -0.4f;
-                    break;
-                case (EnumEmotions.Esteem):
-                    protMod = 0.4f;
-                    break;
-                case (EnumEmotions.Prejudice):
-                    protMod = -0.4f;
-                    break;
-                case (EnumEmotions.Submission):
-                    protMod = 0.2f;
-                    float successMod = -0.25f;
-                    float critMod = -0.25f;
-                    break;
-                case (EnumEmotions.Terror):
-                    successMod = -0.25f;
-                    break;
-                case (EnumEmotions.ConflictedFeelings):
-                    break;
-                case (EnumEmotions.Faith):
-                    float missMod = -0.5f;
-                    protMod = 0.4f;
-                    break;
-                case (EnumEmotions.Respect):
-                    missMod = -0.5f;
-                    break;
-                case (EnumEmotions.Condescension):
-                    protMod = -0.6f;
-                    float dmgMod = -0.5f;
-                    break;
-                case (EnumEmotions.Recognition):
-                    missMod = -0.25f;
-                    protMod = 0.2f;
-                    dmgMod = -0.5f;
-                    break;
-                case (EnumEmotions.Hate):
-                    dmgMod = -0.25f;
-                    successMod = -0.75f;
-                    break;
-                case (EnumEmotions.ReluctantTrust):
-                    missMod = -0.5f;
-                    dmgMod = -0.5f;
-                    break;
-                case (EnumEmotions.Hostility):
-                    dmgMod = -0.5f;
-                    break;
-                case (EnumEmotions.Pity):
-                    protMod = 0.2f;
-                    break;
-                case (EnumEmotions.Devotion):
-                    protMod = 0.4f;
-                    break;
-                case (EnumEmotions.Apprehension):
-                    successMod = 0.25f;
-                    float failCritMod = -0.25f;
-                    break;
-                case (EnumEmotions.Friendship):
-                    missMod = -0.25f;
-                    break;
-                case (EnumEmotions.Empathy):
-                    // action gratuite, pas ici
-                    break;
-                default:
-                    break;
-            }*/
             switch (emotion)
             {
                 case (EnumEmotions.Scorn):
@@ -183,7 +121,7 @@ public struct AbilityStats
                     break;
             }
 
-            protection = 1.6f + 0.2f * (protLevelPos - protLevelNeg);
+            _selfProtectionModifier = 1.6f + 0.2f * (protLevelPos - protLevelNeg);
 
             _selfDamageModifier = 1 + 0.25f * (damageLevelPos - damageLevelNeg);
 
@@ -197,11 +135,49 @@ public struct AbilityStats
         }
     }
 
-    public void CalculateDamage(AllyUnit unit)
+    /// <summary>
+    /// Returns the damage dealt by the ability
+    /// </summary>
+    public float GetDamage()
     {
-        //damage = unit.Character.Damage * _selfDamageModifier;
+        // TODO: randomize the damage -> need implementing GetMaxDamage() and GetMinDamage() for display
+        return (this.unit.Character.Damage * _selfDamageModifier * innateDamage);
+    }
+    /// <summary>
+    /// Returns the chance to hit the target
+    /// </summary>
+    public float GetAccuracy(GridBasedUnit target)
+    {
+        // TODO: clamp the result
+        // TODO: take into consideration the target's cover
+        float finalAccuracy = (this.unit.Character.Accuracy - target.Character.Dodge);
+        finalAccuracy = 1 - ((1 - (_selfSuccessModifier * finalAccuracy)) * _selfMissModifier);
+        return finalAccuracy;
     }
 
+    /// <summary>
+    /// Returns the chance to get a critical hit, if the attack hits
+    /// </summary>
+    public float GetCritRate()
+    {
+        // TODO: clamp the result
+        float finalCritRate = this.unit.Character.CritChances;
+        finalCritRate = 1 - ((1 - (_selfCritSuccessModifier * finalCritRate)) * _selfCritMissModifier);
+        return finalCritRate;
+    }
+
+    /// <summary>
+    /// Returns the protection, the value by which incoming damage will be multiplied
+    /// </summary>
+    public float GetProtection()
+    {
+        float finalProtection = innateProtection / _selfProtectionModifier;
+        return finalProtection;
+    }
+
+    /// <summary>
+    /// Set the value of arg to the maximum between n and arg's current value
+    /// </summary>
     private void Up(ref int arg, int n)
     {
         arg = Math.Max(arg, n);
