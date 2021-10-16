@@ -34,7 +34,7 @@ public class TileDisplay : MonoBehaviour
 
     private Dictionary<TileZoneDisplayEnum, Color> _texturesTintDictionary = new Dictionary<TileZoneDisplayEnum, Color>();
 
-    private void Awake()
+    private void Start()
     {
         // Split blob tilesets
         for (int i = 0; i < _blobTilesets.Length; i++)
