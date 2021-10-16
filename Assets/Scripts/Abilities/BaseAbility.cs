@@ -121,6 +121,7 @@ public abstract class BaseDuoAbility : BaseAbility
             _chosenAlly = _temporaryChosenAlly;
             // _chosenAlly.UseAbilityAsAlly(this);
             ChooseAlly();
+            // TODO: check if 1) ally refuse to cooperate and 2) Emotion gives a free action
         }
         else if (Input.GetKeyDown(KeyCode.Return))
         {
@@ -228,7 +229,7 @@ public abstract class BaseDuoAbility : BaseAbility
                     break;
                 case (EnumEmotions.Hate):
                     selfEmotionDamageModifier -= 0.25f;
-                    selfEmotionSuccessModifier -= 0.75f;
+                    selfEmotionSuccessModifier -= 0.25f;
                     break;
                 case (EnumEmotions.ReluctantTrust):
                     selfEmotionMissModifier -= 0.5f;
