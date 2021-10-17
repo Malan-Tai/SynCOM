@@ -65,21 +65,23 @@ public class BasicShot : BaseAbility
 
     protected override void Execute()
     {
+        GridBasedUnit target = _possibleTargets[_targetIndex];
         int randShot = UnityEngine.Random.Range(0, 100);
         int randCrit = UnityEngine.Random.Range(0, 100);
-        if (_effector.Character.Accuracy - _possibleTargets[_targetIndex].Character.Dodge > randShot) {
-            Debug.Log("i am shooting at " + _possibleTargets[_targetIndex].GridPosition + " with cover " + (int)_effector.LinesOfSight[_possibleTargets[_targetIndex]].cover);
+
+        if (_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover) > randShot) {
+            Debug.Log("i am shooting at " + _possibleTargets[_targetIndex].GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
             if (_effector.Character.CritChances > randCrit) {
-                _possibleTargets[_targetIndex].Character.TakeDamage(_effector.Character.Damage*1.5f);
+                target.Character.TakeDamage(_effector.Character.Damage*1.5f);
             }
             else
             {
-                _possibleTargets[_targetIndex].Character.TakeDamage(_effector.Character.Damage);
+                target.Character.TakeDamage(_effector.Character.Damage);
             }
         }
         else
         {
-            Debug.Log("Dice got " + randShot + " and had to be lower than " + (_effector.Character.Accuracy - _possibleTargets[_targetIndex].Character.Dodge) + ": Missed");
+            Debug.Log("Dice got " + randShot + " and had to be lower than " + (_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover)) + ": Missed");
         }
     }
 

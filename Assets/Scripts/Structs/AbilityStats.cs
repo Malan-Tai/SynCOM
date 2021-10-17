@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 public struct AbilityStats
 {
-    private float innateAccuracy;
-    private float innateCrit;
-    private float innateDamage;
-    private float innateProtection;
-    private AllyUnit unit;
+    private float _innateAccuracy;
+    private float _innateCrit;
+    private float _innateDamage;
+    private float _innateProtection;
+    private AllyUnit _unit;
 
     private float _selfSuccessModifier;
     private float _selfMissModifier;
@@ -19,11 +19,11 @@ public struct AbilityStats
 
     public AbilityStats(float innateAccuracy, float innateCrit, float innateDamage, float innateProtection, AllyUnit unit)
     {
-        this.innateAccuracy = innateAccuracy;
-        this.innateCrit = innateCrit;
-        this.innateDamage = innateDamage;
-        this.innateProtection = innateProtection;
-        this.unit = unit;
+        this._innateAccuracy = innateAccuracy;
+        this._innateCrit = innateCrit;
+        this._innateDamage = innateDamage;
+        this._innateProtection = innateProtection;
+        this._unit = unit;
 
         _selfSuccessModifier = 1;
         _selfMissModifier = 1;
@@ -35,10 +35,11 @@ public struct AbilityStats
 
     /// <summary>
     /// Updates the modifiers depending on the emotions of the relationship
+    /// Emotions taken into account are self to ally
     /// </summary>
     public void UpdateWithEmotionModifiers(AllyUnit ally)
     {
-        Relationship relationship = this.unit.AllyCharacter.Relationships[ally.AllyCharacter];
+        Relationship relationship = this._unit.AllyCharacter.Relationships[ally.AllyCharacter];
         List<EnumEmotions> listEmotions = relationship.ListEmotions;
 
         int protLevelPos = 0;
@@ -55,10 +56,10 @@ public struct AbilityStats
             switch (emotion)
             {
                 case (EnumEmotions.Scorn):
-                    Up(ref protLevelPos, 2);
+                    Up(ref protLevelNeg, 2);
                     break;
                 case (EnumEmotions.Esteem):
-                    Up(ref protLevelNeg, 2);
+                    Up(ref protLevelPos, 2);
                     break;
                 case (EnumEmotions.Prejudice):
                     Up(ref protLevelNeg, 2);
@@ -121,7 +122,7 @@ public struct AbilityStats
                     break;
             }
 
-            _selfProtectionModifier = 1.6f + 0.2f * (protLevelPos - protLevelNeg);
+            _selfProtectionModifier = 1 + 0.2f * (protLevelPos - protLevelNeg);
 
             _selfDamageModifier = 1 + 0.25f * (damageLevelPos - damageLevelNeg);
 
@@ -141,17 +142,18 @@ public struct AbilityStats
     public float GetDamage()
     {
         // TODO: randomize the damage -> need implementing GetMaxDamage() and GetMinDamage() for display
-        return (this.unit.Character.Damage * _selfDamageModifier * innateDamage);
+        return (this._unit.Character.Damage * _selfDamageModifier * _innateDamage);
     }
+
     /// <summary>
     /// Returns the chance to hit the target
     /// </summary>
-    public float GetAccuracy(GridBasedUnit target)
+    public float GetAccuracy(GridBasedUnit target, EnumCover cover)
     {
         // TODO: clamp the result
         // TODO: take into consideration the target's cover
-        float finalAccuracy = (this.unit.Character.Accuracy - target.Character.Dodge);
-        finalAccuracy = 1 - ((1 - (_selfSuccessModifier * finalAccuracy)) * _selfMissModifier);
+        float finalAccuracy = this._unit.Character.Accuracy + _innateAccuracy - target.Character.GetDodge(cover);
+        finalAccuracy = 100 - ((100 - (_selfSuccessModifier * finalAccuracy)) * _selfMissModifier);
         return finalAccuracy;
     }
 
@@ -161,8 +163,8 @@ public struct AbilityStats
     public float GetCritRate()
     {
         // TODO: clamp the result
-        float finalCritRate = this.unit.Character.CritChances;
-        finalCritRate = 1 - ((1 - (_selfCritSuccessModifier * finalCritRate)) * _selfCritMissModifier);
+        float finalCritRate = this._unit.Character.CritChances + _innateCrit;
+        finalCritRate = 100 - ((100 - (_selfCritSuccessModifier * finalCritRate)) * _selfCritMissModifier);
         return finalCritRate;
     }
 
@@ -171,7 +173,7 @@ public struct AbilityStats
     /// </summary>
     public float GetProtection()
     {
-        float finalProtection = innateProtection / _selfProtectionModifier;
+        float finalProtection = _innateProtection * _selfProtectionModifier;
         return finalProtection;
     }
 

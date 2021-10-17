@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class Character
 {
-    //Character's statistics
+    protected const float _fullCoverDodgeBonus = 40f;
+    protected const float _halfCoverDodgeBonus = 20f;
 
+    //Character's statistics
     [SerializeField] private float _maxHealth;
     [SerializeField] private float _healthPoints;
     [SerializeField] private float _damage;    //amount of damages dealt
@@ -59,10 +61,28 @@ public class Character
         private set { this._accuracy = value; }
     }
 
-    public float Dodge
+    //public float Dodge
+    //{
+    //    get { return this._dodge; }
+    //    private set { this._dodge = value; }
+    //}
+
+    public float GetDodge(EnumCover cover)
     {
-        get { return this._dodge; }
-        private set { this._dodge = value; }
+        float dodge = _dodge;
+        switch (cover)
+        {
+            case EnumCover.Full:
+                dodge += _fullCoverDodgeBonus;
+                break;
+            case EnumCover.Half:
+                dodge += _halfCoverDodgeBonus;
+                break;
+            default:
+                break;
+        }
+
+        return dodge;
     }
 
     public float CritChances
