@@ -105,6 +105,7 @@ public class Character
 
     public void TakeDamage(float damage)
     {
+        Debug.Log("oof, took " + damage + " dmg");
         _healthPoints -= damage;
         if (_healthPoints <= 0)
         {
@@ -114,6 +115,5 @@ public class Character
 
     public void Die()
     {
-
     }
 }
