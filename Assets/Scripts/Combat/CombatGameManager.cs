@@ -77,7 +77,7 @@ public class CombatGameManager : MonoBehaviour
 
         foreach (EnemyUnit enemy in _enemyUnits)
         {
-            enemy.Character = new Character(EnumClasses.Sniper, 20, 2, 65, 10, 15, 4, 60);
+            enemy.Character = new Character(20, 2, 65, 10, 15, 4, 60);
         }
     }
 
