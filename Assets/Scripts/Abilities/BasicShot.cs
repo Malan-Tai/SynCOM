@@ -72,7 +72,7 @@ public class BasicShot : BaseAbility
         if (_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover) > randShot) {
             Debug.Log("i am shooting at " + _possibleTargets[_targetIndex].GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
             if (_effector.Character.CritChances > randCrit) {
-                target.Character.TakeDamage(_effector.Character.Damage*1.5f);
+                target.Character.TakeDamage(_effector.Character.Damage * 1.5f);
             }
             else
             {
