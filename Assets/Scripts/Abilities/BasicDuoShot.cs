@@ -101,9 +101,13 @@ public class BasicDuoShot : BaseDuoAbility
 
         if (randShot < _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
         {
+            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, 5);
+
             if (randCrit < _selfShotStats.GetCritRate())
             {
                 target.Character.TakeDamage(_selfShotStats.GetDamage() * 1.5f);
+                SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
+                AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
             }
             else
             {
@@ -113,6 +117,8 @@ public class BasicDuoShot : BaseDuoAbility
         else
         {
             Debug.Log("self missed");
+            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
+            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
         }
     }
 
@@ -125,9 +131,12 @@ public class BasicDuoShot : BaseDuoAbility
 
         if (randShot < _allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover))
         {
+            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, 5);
+
             if (randCrit < _allyShotStats.GetCritRate())
             {
                 target.Character.TakeDamage(_allyShotStats.GetDamage() * 1.5f);
+                SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
             }
             else
             {
@@ -137,6 +146,7 @@ public class BasicDuoShot : BaseDuoAbility
         else
         {
             Debug.Log("ally missed");
+            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
         }
     }
 }
