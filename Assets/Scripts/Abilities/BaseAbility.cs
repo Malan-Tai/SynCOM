@@ -76,7 +76,7 @@ public abstract class BaseDuoAbility : BaseAbility
 
     protected override void FinalizeAbility(bool executed)
     {
-        _chosenAlly.StopUsingAbilityAsAlly(executed);
+        if (_chosenAlly != null) _chosenAlly.StopUsingAbilityAsAlly(executed);
 
         _temporaryChosenAlly = null;
         _chosenAlly = null;
