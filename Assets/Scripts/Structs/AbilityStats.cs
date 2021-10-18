@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public struct AbilityStats
 {
@@ -150,11 +151,9 @@ public struct AbilityStats
     /// </summary>
     public float GetAccuracy(GridBasedUnit target, EnumCover cover)
     {
-        // TODO: clamp the result
-        // TODO: take into consideration the target's cover
         float finalAccuracy = this._unit.Character.Accuracy + _innateAccuracy - target.Character.GetDodge(cover);
         finalAccuracy = 100 - ((100 - (_selfSuccessModifier * finalAccuracy)) * _selfMissModifier);
-        return finalAccuracy;
+        return Mathf.Clamp(finalAccuracy, 5, 100);
     }
 
     /// <summary>
@@ -162,10 +161,9 @@ public struct AbilityStats
     /// </summary>
     public float GetCritRate()
     {
-        // TODO: clamp the result
         float finalCritRate = this._unit.Character.CritChances + _innateCrit;
         finalCritRate = 100 - ((100 - (_selfCritSuccessModifier * finalCritRate)) * _selfCritMissModifier);
-        return finalCritRate;
+        return Mathf.Clamp(finalCritRate, 0, 100);
     }
 
     /// <summary>
