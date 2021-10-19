@@ -8,6 +8,7 @@ public class TileDisplay : MonoBehaviour
 {
     [SerializeField] private float _displayHeight = 0.01f;
     [SerializeField] private BlobTilesetInfo[] _blobTilesets;
+    [SerializeField] private Sprite _mouseHoverTileSprite;
 
     [System.Serializable]
     public struct BlobTilesetInfo
@@ -28,6 +29,7 @@ public class TileDisplay : MonoBehaviour
 
 
     private List<SpriteRenderer> _spriteRenderersList = new List<SpriteRenderer>();
+    private SpriteRenderer _mouseHovertileSpriteRenderer;
 
     private Dictionary<TileZoneDisplayEnum, Dictionary<int, Sprite>> _splitBlobTilesetsDictionary =
         new Dictionary<TileZoneDisplayEnum, Dictionary<int, Sprite>>(System.Enum.GetValues(typeof(TileZoneDisplayEnum)).Length);
@@ -36,6 +38,12 @@ public class TileDisplay : MonoBehaviour
 
     private void Start()
     {
+        GameObject spriteRendererGO = new GameObject("MouseHoverTileSprite");
+        spriteRendererGO.transform.parent = transform;
+        _mouseHovertileSpriteRenderer = spriteRendererGO.AddComponent<SpriteRenderer>();
+        _mouseHovertileSpriteRenderer.sprite = _mouseHoverTileSprite;
+        _mouseHovertileSpriteRenderer.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+
         // Split blob tilesets
         for (int i = 0; i < _blobTilesets.Length; i++)
         {
@@ -60,6 +68,21 @@ public class TileDisplay : MonoBehaviour
             _texturesTintDictionary.Add(_blobTilesets[i].TileZoneDisplay, _blobTilesets[i].Tint);
         }
     }
+
+    #region Tile display
+
+    public void HideMouseHoverTile()
+    {
+        _mouseHovertileSpriteRenderer.enabled = false;
+    }
+
+    public void DisplayMouseHoverTileAt(Vector2Int coord)
+    {
+        _mouseHovertileSpriteRenderer.transform.position = CombatGameManager.Instance.GridMap.GridToWorld(coord, _displayHeight + 0.01f);
+        _mouseHovertileSpriteRenderer.enabled = true;
+    }
+
+    #endregion
 
 
     #region Tile zone display
