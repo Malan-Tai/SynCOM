@@ -8,6 +8,7 @@ public class TileDisplay : MonoBehaviour
 {
     [SerializeField] private float _displayHeight = 0.01f;
     [SerializeField] private BlobTilesetInfo[] _blobTilesets;
+    [SerializeField] private Sprite _mouseHoverTileSprite;
 
     [System.Serializable]
     public struct BlobTilesetInfo
@@ -28,6 +29,7 @@ public class TileDisplay : MonoBehaviour
 
 
     private List<SpriteRenderer> _spriteRenderersList = new List<SpriteRenderer>();
+    private SpriteRenderer _mouseHovertileSpriteRenderer;
 
     private Dictionary<TileZoneDisplayEnum, Dictionary<int, Sprite>> _splitBlobTilesetsDictionary =
         new Dictionary<TileZoneDisplayEnum, Dictionary<int, Sprite>>(System.Enum.GetValues(typeof(TileZoneDisplayEnum)).Length);
@@ -36,6 +38,12 @@ public class TileDisplay : MonoBehaviour
 
     private void Start()
     {
+        GameObject spriteRendererGO = new GameObject("MouseHoverTileSprite");
+        spriteRendererGO.transform.parent = transform;
+        _mouseHovertileSpriteRenderer = spriteRendererGO.AddComponent<SpriteRenderer>();
+        _mouseHovertileSpriteRenderer.sprite = _mouseHoverTileSprite;
+        _mouseHovertileSpriteRenderer.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+
         // Split blob tilesets
         for (int i = 0; i < _blobTilesets.Length; i++)
         {
@@ -61,6 +69,21 @@ public class TileDisplay : MonoBehaviour
         }
     }
 
+    #region Tile display
+
+    public void HideMouseHoverTile()
+    {
+        _mouseHovertileSpriteRenderer.enabled = false;
+    }
+
+    public void DisplayMouseHoverTileAt(Vector2Int coord)
+    {
+        _mouseHovertileSpriteRenderer.transform.position = CombatGameManager.Instance.GridMap.GridToWorld(coord, _displayHeight + 0.01f);
+        _mouseHovertileSpriteRenderer.enabled = true;
+    }
+
+    #endregion
+
 
     #region Tile zone display
 
@@ -70,7 +93,7 @@ public class TileDisplay : MonoBehaviour
         int i = 0;
         for (; i < tiles.Count; i++)
         {
-            Tile[] neighbourTiles = CombatGameManager.Instance.GridMap.MovementNeighbors(tiles[i].Coords);
+            Tile[] neighbourTiles = CombatGameManager.Instance.GridMap.TileNeighbors(tiles[i].Coords);
 
             bool[] coordPresent = { false, false, false, false, false, false, false, false };
             for (int j = 0; j < neighbourTiles.Length; j++)
@@ -84,7 +107,7 @@ public class TileDisplay : MonoBehaviour
 
             if (i >= _spriteRenderersList.Count)
             {
-                GameObject spriteRendererGO = new GameObject("MoveSprite");
+                GameObject spriteRendererGO = new GameObject("ZoneTileSprite " + tiles[i].Coords);
                 spriteRendererGO.transform.parent = transform;
                 SpriteRenderer spriteRenderer = spriteRendererGO.AddComponent<SpriteRenderer>();
                 spriteRenderer.transform.position = CombatGameManager.Instance.GridMap.GridToWorld(tiles[i].Coords, _displayHeight);

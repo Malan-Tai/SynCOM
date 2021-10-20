@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CombatInputController : MonoBehaviour
 {
+    [SerializeField] private LayerMask _groundLayerMask;
+
     void Update()
     {
         if (CombatGameManager.Instance.ControllableUnits.Count <= 0) return;
@@ -40,21 +42,26 @@ public class CombatInputController : MonoBehaviour
         RaycastHit hitData;
 
         bool changedUnitThisFrame = false;
+        bool clicked = Input.GetMouseButtonUp(0);
 
-        if (Physics.Raycast(ray, out hitData, 1000))
+        if (Physics.Raycast(ray, out hitData, 1000, _groundLayerMask))
+        {
+            Vector2Int tileCoord = CombatGameManager.Instance.GridMap.WorldToGrid(hitData.point);
+            CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(tileCoord);
+
+            if (hitData.transform.CompareTag("Ground") && clicked)
+            {
+                CombatGameManager.Instance.CurrentUnit.ChoosePathTo(tileCoord);
+            }
+        }
+        else if (Physics.Raycast(ray, out hitData, 1000))
         {
             var hitUnit = hitData.transform.GetComponent<AllyUnit>();
-
-            bool clicked = Input.GetMouseButtonUp(0);
 
             if (hitUnit != null && clicked)
             {
                 CombatGameManager.Instance.SelectControllableUnit(hitUnit);
                 changedUnitThisFrame = true;
-            }
-            else if (hitData.transform.CompareTag("Ground") && clicked)
-            {
-                CombatGameManager.Instance.CurrentUnit.ChoosePathTo(CombatGameManager.Instance.GridMap.WorldToGrid(hitData.point));
             }
         }
 
