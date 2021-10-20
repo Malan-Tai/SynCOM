@@ -65,8 +65,8 @@ public class GridMap : MonoBehaviour
     public Vector2Int WorldToGrid(Vector3 world, bool addToOccupiedTiles = false)
     {
         Vector2Int gridPos = new Vector2Int();
-        gridPos.x = (int)Mathf.Floor((world.x - transform.position.x) / CellSize - 0.5f);
-        gridPos.y = (int)Mathf.Floor((world.z - transform.position.z) / CellSize - 0.5f);
+        gridPos.x = (int)Mathf.Floor((world.x - transform.position.x) / CellSize);
+        gridPos.y = (int)Mathf.Floor((world.z - transform.position.z) / CellSize);
 
         if (addToOccupiedTiles)
         {
