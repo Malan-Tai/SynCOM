@@ -27,7 +27,8 @@ public class CombatGameManager : MonoBehaviour
     public GridMap GridMap { get => _gridMap; }
 
     [SerializeField]
-    private TileDisplay _unitMoveDisplayer;
+    private TileDisplay _tileDisplay;
+    public TileDisplay TileDisplay { get => _tileDisplay; }
 
     [SerializeField]
     private MoveableCamera _camera;
@@ -77,7 +78,7 @@ public class CombatGameManager : MonoBehaviour
 
         foreach (EnemyUnit enemy in _enemyUnits)
         {
-            enemy.Character = new Character(EnumClasses.Sniper, 3, 2, 65, 10, 15, 4, 60);
+            enemy.Character = new Character(20, 2, 65, 10, 15, 4, 60);
         }
     }
 
@@ -128,7 +129,7 @@ public class CombatGameManager : MonoBehaviour
     public void UpdateReachableTiles()
     {
         List<Tile> newReachable = CurrentUnit.GetReachableTiles();
-        _unitMoveDisplayer.DisplayTileZone(newReachable, TileZoneDisplayEnum.MoveZoneDisplay);
+        _tileDisplay.DisplayTileZone(newReachable, TileZoneDisplayEnum.MoveZoneDisplay);
         _previousReachableTiles = newReachable;
     }
 
