@@ -7,6 +7,9 @@ public class BasicDuoShot : BaseDuoAbility
     private List<GridBasedUnit> _possibleTargets;
     private int _targetIndex = -1;
 
+    private AbilityStats _selfShotStats;
+    private AbilityStats _allyShotStats;
+
     protected override void ChooseAlly()
     {
         _possibleTargets = new List<GridBasedUnit>();
@@ -26,6 +29,12 @@ public class BasicDuoShot : BaseDuoAbility
             _targetIndex = 0;
             CombatGameManager.Instance.Camera.SwitchParenthood(_possibleTargets[_targetIndex]);
         }
+
+        _selfShotStats = new AbilityStats(0, 0, 1.5f, 0, _effector);
+        _allyShotStats = new AbilityStats(0, 0, 1.5f, 0, _chosenAlly);
+
+        _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
+        _allyShotStats.UpdateWithEmotionModifiers(_effector);
     }
 
     protected override bool CanExecute()
@@ -71,11 +80,73 @@ public class BasicDuoShot : BaseDuoAbility
 
     protected override void Execute()
     {
-        Debug.Log("we are shooting at " + _possibleTargets[_targetIndex].GridPosition + " with cover " + (int)_effector.LinesOfSight[_possibleTargets[_targetIndex]].cover);
+        GridBasedUnit target = _possibleTargets[_targetIndex];
+
+        Debug.Log("we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
+        SelfShoot(target);
+        AllyShoot(target);
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)
     {
         return true;
+    }
+
+    private void SelfShoot(GridBasedUnit target)
+    {
+        int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
+        int randCrit = UnityEngine.Random.Range(0, 100);
+
+        Debug.Log("self to hit: " + randShot + " for " + _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover));
+
+        if (randShot < _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
+        {
+            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, 5);
+
+            if (randCrit < _selfShotStats.GetCritRate())
+            {
+                target.Character.TakeDamage(_selfShotStats.GetDamage() * 1.5f);
+                SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
+                AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
+            }
+            else
+            {
+                target.Character.TakeDamage(_selfShotStats.GetDamage());
+            }
+        }
+        else
+        {
+            Debug.Log("self missed");
+            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
+            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
+        }
+    }
+
+    private void AllyShoot(GridBasedUnit target)
+    {
+        int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
+        int randCrit = UnityEngine.Random.Range(0, 100);
+
+        Debug.Log("ally to hit: " + randShot + " for " + _allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover));
+
+        if (randShot < _allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover))
+        {
+            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, 5);
+
+            if (randCrit < _allyShotStats.GetCritRate())
+            {
+                target.Character.TakeDamage(_allyShotStats.GetDamage() * 1.5f);
+                SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
+            }
+            else
+            {
+                target.Character.TakeDamage(_allyShotStats.GetDamage());
+            }
+        }
+        else
+        {
+            Debug.Log("ally missed");
+            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
+        }
     }
 }

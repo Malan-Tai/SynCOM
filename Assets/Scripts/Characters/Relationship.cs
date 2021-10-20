@@ -147,7 +147,7 @@ public class Relationship
     /// Updates the Emotions felt towards the target according to the
     /// current level of each sentiment gauge.
     /// </summary>
-    private void UpdateEmotions()
+    public void UpdateEmotions()
     {
         _listEmotions.Clear();
 

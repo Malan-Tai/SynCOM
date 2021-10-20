@@ -51,22 +51,6 @@ public abstract class BaseDuoAbility : BaseAbility
     protected AllyUnit _chosenAlly = null;
     private List<AllyUnit> _possibleAllies = null;
 
-    // Modifiers used in damage, protection, aim, crit rate calculations
-    // that depends on the Emotions felt by me towards the chosenAlly...
-    protected float selfEmotionDamageModifier = 1;
-    protected float selfEmotionProtectionModifier = 1.6f;   // in [1.2, 2]
-    protected float selfEmotionSuccessModifier = 1;         // for debuffs only : in [0.5, 1]
-    protected float selfEmotionMissModifier = 1;            // for buffs only : in [0.5, 1]
-    protected float selfEmotionCritRateModifier = 1;        // for debuffs only : in [0.5, 1]
-    protected float selfEmotionCritFailModifier = 1;        // for buffs only : in [0.5, 1]
-    // ... and that depends on the Emotions felt by the chosenAlly towards me
-    protected float allyEmotionDamageModifier = 1;
-    protected float allyEmotionProtectionModifier = 1.6f;
-    protected float allyEmotionSuccessModifier = 1;
-    protected float allyEmotionMissModifier = 1;
-    protected float allyEmotionCritRateModifier = 1;
-    protected float allyEmotionCritFailModifier = 1;
-
     protected abstract bool IsAllyCompatible(AllyUnit unit);
     protected abstract void ChooseAlly();
 
@@ -92,7 +76,7 @@ public abstract class BaseDuoAbility : BaseAbility
 
     protected override void FinalizeAbility(bool executed)
     {
-        _chosenAlly.StopUsingAbilityAsAlly(executed);
+        if (_chosenAlly != null) _chosenAlly.StopUsingAbilityAsAlly(executed);
 
         _temporaryChosenAlly = null;
         _chosenAlly = null;
@@ -121,6 +105,7 @@ public abstract class BaseDuoAbility : BaseAbility
             _chosenAlly = _temporaryChosenAlly;
             // _chosenAlly.UseAbilityAsAlly(this);
             ChooseAlly();
+            // TODO: check if 1) ally refuse to cooperate and 2) Emotion gives a free action
         }
         else if (Input.GetKeyDown(KeyCode.Return))
         {
@@ -179,90 +164,5 @@ public abstract class BaseDuoAbility : BaseAbility
     {
         Relationship relationshipAllyToSelf = ally.AllyCharacter.Relationships[this._effector.AllyCharacter];
         relationshipAllyToSelf.IncreaseSentiment(sentiment, gain);
-    }
-
-    protected void UpdateSelfEmotionModifiers()
-    {
-        Relationship relationshipSelfToAlly = this._effector.AllyCharacter.Relationships[_chosenAlly.AllyCharacter];
-        List<EnumEmotions> listEmotions = relationshipSelfToAlly.ListEmotions;
-        // TODO: Stacking : highest buff - highest debuf; two buffs don't stack
-        // For the moment everything stacks
-        foreach (EnumEmotions emotion in listEmotions)
-        {
-            switch (emotion)
-            {
-                case (EnumEmotions.Scorn):
-                    selfEmotionProtectionModifier -= 0.4f;
-                    break;
-                case (EnumEmotions.Esteem):
-                    selfEmotionProtectionModifier += 0.4f;
-                    break;
-                case (EnumEmotions.Prejudice):
-                    selfEmotionProtectionModifier -= 0.4f;
-                    break;
-                case (EnumEmotions.Submission):
-                    selfEmotionProtectionModifier += 0.2f;
-                    selfEmotionSuccessModifier -= 0.25f;
-                    selfEmotionCritFailModifier -= 0.25f;
-                    break;
-                case (EnumEmotions.Terror):
-                    selfEmotionSuccessModifier -= 0.25f;
-                    break;
-                case (EnumEmotions.ConflictedFeelings):
-                    break;
-                case (EnumEmotions.Faith):
-                    selfEmotionMissModifier -= 0.5f;
-                    selfEmotionProtectionModifier += 0.4f;
-                    break;
-                case (EnumEmotions.Respect):
-                    selfEmotionMissModifier -= 0.5f;
-                    break;
-                case (EnumEmotions.Condescension):
-                    selfEmotionProtectionModifier -= 0.6f;
-                    selfEmotionDamageModifier -= 0.5f;
-                    break;
-                case (EnumEmotions.Recognition):
-                    selfEmotionMissModifier -= 0.25f;
-                    selfEmotionProtectionModifier += 0.2f;
-                    selfEmotionDamageModifier -= 0.5f;
-                    break;
-                case (EnumEmotions.Hate):
-                    selfEmotionDamageModifier -= 0.25f;
-                    selfEmotionSuccessModifier -= 0.75f;
-                    break;
-                case (EnumEmotions.ReluctantTrust):
-                    selfEmotionMissModifier -= 0.5f;
-                    selfEmotionDamageModifier -= 0.5f;
-                    break;
-                case (EnumEmotions.Hostility):
-                    selfEmotionDamageModifier -= 0.5f;
-                    break;
-                case (EnumEmotions.Pity):
-                    selfEmotionProtectionModifier += 0.2f;
-                    break;
-                case (EnumEmotions.Devotion):
-                    selfEmotionProtectionModifier += 0.4f;
-                    break;
-                case (EnumEmotions.Apprehension):
-                    selfEmotionSuccessModifier -= 0.25f;
-                    selfEmotionCritFailModifier -= 0.25f;
-                    break;
-                case (EnumEmotions.Friendship):
-                    selfEmotionMissModifier -= 0.25f;
-                    break;
-                case (EnumEmotions.Empathy):
-                    int test = Random.Range(0, 100);
-                    if (test < 50) { Debug.Log("Action gratuite !"); }
-                    else { Debug.Log("Pas d'action gratuite..."); }
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    protected void updateAllyEmotionModifiers()
-    {
-
     }
 }

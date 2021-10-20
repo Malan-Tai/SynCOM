@@ -4,13 +4,10 @@ using UnityEngine;
 
 public class Character
 {
-    //Character's archetype
-
-    private EnumClasses _class;
-    private List<EnumTraits> _traits = new List<EnumTraits>();
+    protected const float _fullCoverDodgeBonus = 40f;
+    protected const float _halfCoverDodgeBonus = 20f;
 
     //Character's statistics
-
     [SerializeField] private float _maxHealth;
     [SerializeField] private float _healthPoints;
     [SerializeField] private float _damage;    //amount of damages dealt
@@ -20,38 +17,14 @@ public class Character
     [SerializeField] private float _weigth; //can be a condition for some actions
     [SerializeField] private float _critChances;
 
-    private static Dictionary<EnumClasses, List<EnumTraits>> s_mandatoryTraits = new Dictionary<EnumClasses, List<EnumTraits>>(){
-        {EnumClasses.Berserker, new List<EnumTraits> {EnumTraits.Stocky}},
-        {EnumClasses.Engineer, new List<EnumTraits> {EnumTraits.Stocky}},
-        {EnumClasses.Hitman, new List<EnumTraits> {EnumTraits.Racist}},
-        {EnumClasses.Sniper, new List<EnumTraits> {EnumTraits.Racist}},
-        {EnumClasses.HoundMaster, new List<EnumTraits> {EnumTraits.Ugly}},
-        {EnumClasses.Smuggler, new List<EnumTraits> {EnumTraits.Ugly}}
-    };
-
-    private static Dictionary<EnumClasses, List<EnumTraits>> s_commonPossibleTraits = new Dictionary<EnumClasses, List<EnumTraits>>(){
-        {EnumClasses.Berserker, new List<EnumTraits> {EnumTraits.Fearful,EnumTraits.Brave}},
-        {EnumClasses.Engineer, new List<EnumTraits> {EnumTraits.Fearful,EnumTraits.Brave}},
-        {EnumClasses.Hitman, new List<EnumTraits> {EnumTraits.Lovely, EnumTraits.Sprinter}},
-        {EnumClasses.Sniper, new List<EnumTraits> {EnumTraits.Lovely,EnumTraits.Sprinter}},
-        {EnumClasses.HoundMaster, new List<EnumTraits> {EnumTraits.Brave,EnumTraits.Sprinter}},
-        {EnumClasses.Smuggler, new List<EnumTraits> {EnumTraits.Brave,EnumTraits.Sprinter}}
-    };
-
     //constructor 
 
     public Character()
     {
-        addMandatoryTraits(_class);
-        addRandomTrait(_class);
     }
 
-    public Character(EnumClasses characterClass,float maxHealth,float damage, float accuracy, float dodge,float critChances, float movementPoints, float weight)
+    public Character(float maxHealth,float damage, float accuracy, float dodge,float critChances, float movementPoints, float weight)
     {
-        _class = characterClass;
-        addMandatoryTraits(_class);
-        addRandomTrait(_class);
-
         _maxHealth = maxHealth;
         _damage = damage;
         _accuracy = accuracy;
@@ -69,6 +42,7 @@ public class Character
         get { return this._maxHealth; }
         private set { this._maxHealth = value; }
     }
+
     public float HealthPoints
     {
         get { return this._healthPoints; }
@@ -87,10 +61,28 @@ public class Character
         private set { this._accuracy = value; }
     }
 
-    public float Dodge
+    //public float Dodge
+    //{
+    //    get { return this._dodge; }
+    //    private set { this._dodge = value; }
+    //}
+
+    public float GetDodge(EnumCover cover)
     {
-        get { return this._dodge; }
-        private set { this._dodge = value; }
+        float dodge = _dodge;
+        switch (cover)
+        {
+            case EnumCover.Full:
+                dodge += _fullCoverDodgeBonus;
+                break;
+            case EnumCover.Half:
+                dodge += _halfCoverDodgeBonus;
+                break;
+            default:
+                break;
+        }
+
+        return dodge;
     }
 
     public float CritChances
@@ -111,28 +103,9 @@ public class Character
         private set { this._weigth = value; }
     }
 
-    private EnumTraits GetRandomTraitsFromClass(EnumClasses characterClass)
-    {
-
-        int indice = Random.Range(0,s_mandatoryTraits[characterClass].Count);
-        EnumTraits newTrait = s_mandatoryTraits[characterClass][indice];
-        return newTrait;
-    }
-
-    private void addMandatoryTraits(EnumClasses characterClass) 
-    {
-        for (int i = 0;i< s_mandatoryTraits[characterClass].Count;i++)
-        {
-            _traits.Add(s_mandatoryTraits[characterClass][i]);
-        }
-    }
-
-    public void addRandomTrait(EnumClasses characterClass)
-    {
-        _traits.Add(GetRandomTraitsFromClass(characterClass));
-    }
     public void TakeDamage(float damage)
     {
+        Debug.Log("oof, took " + damage + " dmg");
         _healthPoints -= damage;
         if (_healthPoints <= 0)
         {
@@ -142,6 +115,5 @@ public class Character
 
     public void Die()
     {
-
     }
 }
