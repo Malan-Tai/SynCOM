@@ -53,6 +53,7 @@ public class Character
         addRandomTrait(_class);
 
         _maxHealth = maxHealth;
+        _healthPoints = maxHealth;
         _damage = damage;
         _accuracy = accuracy;
         _dodge = dodge;
@@ -142,6 +143,6 @@ public class Character
 
     public void Die()
     {
-
+        Debug.Log("I am dead oh no!");
     }
 }

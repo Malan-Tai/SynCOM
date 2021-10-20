@@ -76,6 +76,7 @@ public class BasicShot : BaseAbility
             {
                 _possibleTargets[_targetIndex].Character.TakeDamage(_effector.Character.Damage);
             }
+            Debug.Log("Ennemy has" + _possibleTargets[_targetIndex].Character.HealthPoints + "HP left");
         }
         else
         {
