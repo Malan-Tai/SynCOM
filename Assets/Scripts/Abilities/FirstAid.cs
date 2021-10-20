@@ -47,4 +47,18 @@ public class FirstAid : BaseDuoAbility
     {
         return (unit.GridPosition - this._effector.GridPosition).magnitude <= 1;
     }
+
+    public override string GetAllyDescription()
+    {
+        string res = "First Aid\nHeal your ally.";
+
+        return res;
+    }
+
+    public override string GetDescription()
+    {
+        string res = "First Aid\nGet healed.";
+
+        return res;
+    }
 }

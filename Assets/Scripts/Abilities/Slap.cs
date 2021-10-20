@@ -48,4 +48,14 @@ public class Slap : BaseDuoAbility
     {
         return true;
     }
+
+    public override string GetDescription()
+    {
+        return "Slap\nSlap your ally, deteriorating the view they have of you.";
+    }
+
+    public override string GetAllyDescription()
+    {
+        return "Slap\nGet slapped, dislike your ally.";
+    }
 }

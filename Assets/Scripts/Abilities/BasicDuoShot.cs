@@ -149,4 +149,34 @@ public class BasicDuoShot : BaseDuoAbility
             SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
         }
     }
+
+    public override string GetDescription()
+    {
+        string res = "Duo Shot\nTake a shot at the target with augmented damage.";
+        if (_targetIndex >= 0 && _chosenAlly != null)
+        {
+            GridBasedUnit target = _possibleTargets[_targetIndex];
+
+            res += "\nAcc:" + _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover) +
+                    " | Crit:" + _selfShotStats.GetCritRate() +
+                    " | Dmg:" + _selfShotStats.GetDamage();
+        }
+
+        return res;
+    }
+
+    public override string GetAllyDescription()
+    {
+        string res = "Duo Shot\nTake a shot at the target with augmented damage.";
+        if (_targetIndex >= 0 && _chosenAlly != null)
+        {
+            GridBasedUnit target = _possibleTargets[_targetIndex];
+
+            res += "\nAcc:" + _allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover) +
+                    " | Crit:" + _allyShotStats.GetCritRate() +
+                    " | Dmg:" + _allyShotStats.GetDamage();
+        }
+
+        return res;
+    }
 }

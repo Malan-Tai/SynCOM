@@ -200,4 +200,20 @@ public class CombatGameManager : MonoBehaviour
         _currentUnitIndex = 0;
         SelectControllableUnit(0);
     }
+
+    public void UIConfirmAbility()
+    {
+        if (CurrentAbility != null)
+        {
+            CurrentAbility.UIConfirm();
+        }
+    }
+
+    public void UICancelAbility()
+    {
+        if (CurrentAbility != null)
+        {
+            CurrentAbility.UICancel();
+        }
+    }
 }
