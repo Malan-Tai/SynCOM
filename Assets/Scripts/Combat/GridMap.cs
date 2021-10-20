@@ -76,6 +76,47 @@ public class GridMap : MonoBehaviour
         return gridPos;
     }
 
+    // /!\ Just enumerate neighbors regardless of if they're empty or not!
+    // Still doesn't return out of grid tiles as they can't exist
+    public Tile[] TileNeighbors(Vector2Int centerCell)
+    {
+        Tile[] neighbors = new Tile[8];
+        int i = 0;
+
+        int x = centerCell.x;
+        int y = centerCell.y;
+
+        Vector2Int[] neighborCoords = new Vector2Int[]
+        {
+            new Vector2Int(x - 1, y - 1),
+            new Vector2Int(x - 1, y    ),
+            new Vector2Int(x - 1, y + 1),
+            new Vector2Int(x    , y - 1),
+            new Vector2Int(x    , y + 1),
+            new Vector2Int(x + 1, y - 1),
+            new Vector2Int(x + 1, y    ),
+            new Vector2Int(x + 1, y + 1)
+        };
+
+        foreach (Vector2Int coords in neighborCoords)
+        {
+            if (CellIsValid(coords))
+            {
+                neighbors[i] = this[coords];
+                i++;
+            }
+        }
+
+        Tile[] finalNeigh = new Tile[i];
+        int j;
+        for (j = 0; j < i; j++)
+        {
+            finalNeigh[j] = neighbors[j];
+        }
+
+        return finalNeigh;
+    }
+
     public Tile[] MovementNeighbors(Vector2Int centerCell)
     {
         Tile[] neighbors = new Tile[8];

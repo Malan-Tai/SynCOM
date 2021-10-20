@@ -93,7 +93,7 @@ public class TileDisplay : MonoBehaviour
         int i = 0;
         for (; i < tiles.Count; i++)
         {
-            Tile[] neighbourTiles = CombatGameManager.Instance.GridMap.MovementNeighbors(tiles[i].Coords);
+            Tile[] neighbourTiles = CombatGameManager.Instance.GridMap.TileNeighbors(tiles[i].Coords);
 
             bool[] coordPresent = { false, false, false, false, false, false, false, false };
             for (int j = 0; j < neighbourTiles.Length; j++)
@@ -107,7 +107,7 @@ public class TileDisplay : MonoBehaviour
 
             if (i >= _spriteRenderersList.Count)
             {
-                GameObject spriteRendererGO = new GameObject("MoveSprite");
+                GameObject spriteRendererGO = new GameObject("ZoneTileSprite " + tiles[i].Coords);
                 spriteRendererGO.transform.parent = transform;
                 SpriteRenderer spriteRenderer = spriteRendererGO.AddComponent<SpriteRenderer>();
                 spriteRenderer.transform.position = CombatGameManager.Instance.GridMap.GridToWorld(tiles[i].Coords, _displayHeight);
