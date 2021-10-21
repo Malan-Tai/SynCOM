@@ -81,6 +81,7 @@ public class TileDisplay : MonoBehaviour
             Vector3 p = CombatGameManager.Instance.GridMap.GridWorldCenter;
             _gridRenderer.transform.position = new Vector3(p.x, _displayHeight + 0.01f, p.z);
             _gridRenderer.transform.localScale = new Vector3(CombatGameManager.Instance.GridMap.GridWorldWidth, CombatGameManager.Instance.GridMap.GridWorldHeight, 1f);
+            _gridRenderer.material.SetFloat("_CellSize", CombatGameManager.Instance.GridMap.CellSize);
         }
 
         _gridRenderer.enabled = display;

@@ -13,7 +13,7 @@ Shader "Custom/GridShader"
 
 	SubShader
 	{
-		Tags {"Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent"}
+		Tags {"IgnoreProjector" = "True" "RenderType" = "Transparent"}
 		ZWrite Off
 		Blend SrcAlpha OneMinusSrcAlpha
 		LOD 100
