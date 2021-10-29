@@ -16,8 +16,16 @@ public class GridMap : MonoBehaviour
     public bool ShowCoversGizmos = true;
 #endif
 
+    public float GridWorldWidth { get => CellSize * _map.GetLength(0); }
+    public float GridWorldHeight { get => CellSize * _map.GetLength(1); }
+    public Vector3 GridWorldCenter
+    {
+        get => new Vector3(_gridOrigin.x + GridWorldWidth / 2f, 0f, _gridOrigin.z + GridWorldHeight / 2f);
+    }
+
     private Tile[,] _map;
     private List<Vector2Int> _occupiedTiles = new List<Vector2Int>();
+    private Vector3 _gridOrigin;
 
     public Tile this[Vector2Int u]
     {
@@ -49,24 +57,24 @@ public class GridMap : MonoBehaviour
 
         _occupiedTiles = new List<Vector2Int>();
         Vector2 minimums = _gridInitializer.GetMinimums();
-        transform.position = new Vector3(minimums.x, 0f, minimums.y);
+        _gridOrigin = new Vector3(minimums.x, 0f, minimums.y);
     }
 
     public Vector3 GridToWorld(Vector2Int grid, float y)
     {
-        return new Vector3(transform.position.x + grid.x * CellSize + CellSize / 2, y, transform.position.z + grid.y * CellSize + CellSize / 2);
+        return new Vector3(_gridOrigin.x + grid.x * CellSize + CellSize / 2, y, _gridOrigin.z + grid.y * CellSize + CellSize / 2);
     }
 
     public Vector3 GridToWorld(int gridX, int gridY, float y)
     {
-        return new Vector3(transform.position.x + gridX * CellSize + CellSize / 2, y, transform.position.z + gridY * CellSize + CellSize / 2);
+        return new Vector3(_gridOrigin.x + gridX * CellSize + CellSize / 2, y, _gridOrigin.z + gridY * CellSize + CellSize / 2);
     }
 
     public Vector2Int WorldToGrid(Vector3 world, bool addToOccupiedTiles = false)
     {
         Vector2Int gridPos = new Vector2Int();
-        gridPos.x = (int)Mathf.Floor((world.x - transform.position.x) / CellSize);
-        gridPos.y = (int)Mathf.Floor((world.z - transform.position.z) / CellSize);
+        gridPos.x = (int)Mathf.Floor((world.x - _gridOrigin.x) / CellSize);
+        gridPos.y = (int)Mathf.Floor((world.z - _gridOrigin.z) / CellSize);
 
         if (addToOccupiedTiles)
         {
@@ -298,14 +306,15 @@ public class GridMap : MonoBehaviour
         return best;
     }
 
-
-#if UNITY_EDITOR
-
-#region Gizmos
     public void RecalculateGrid()
     {
         _map = _gridInitializer.CreateGrid(CellSize);
     }
+
+
+#if UNITY_EDITOR
+
+    #region Gizmos
 
     private void OnDrawGizmos()
     {
@@ -322,7 +331,7 @@ public class GridMap : MonoBehaviour
 
         _gridInitializer.DetermineGridSize(CellSize);
         Vector2 minimums = _gridInitializer.GetMinimums();
-        transform.position = new Vector3(minimums.x, 0f, minimums.y);
+        _gridOrigin = new Vector3(minimums.x, 0f, minimums.y);
 
         for (int x = 0; x < _map.GetLength(0); x++)
         {
