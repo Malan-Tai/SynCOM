@@ -24,7 +24,9 @@ public class BasicShot : BaseAbility
 
     protected override bool CanExecute()
     {
-        return _targetIndex >= 0;
+        float distance = Vector2.Distance(_possibleTargets[_targetIndex].GridPosition, _effector.GridPosition);
+        Debug.Log("Distance between shot and shooted =" + distance);
+        return _targetIndex >= 0 && distance < _effector.Character.RangeShot;
     }
 
     protected override void EnemyTargetingInput()
@@ -78,6 +80,7 @@ public class BasicShot : BaseAbility
             {
                 target.Character.TakeDamage(_effector.Character.Damage);
             }
+            Debug.Log("Ennemy has" + _possibleTargets[_targetIndex].Character.HealthPoints + "HP left");
         }
         else
         {

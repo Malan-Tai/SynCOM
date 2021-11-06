@@ -35,6 +35,9 @@ public class FirstAid : BaseDuoAbility
 
         // Actual effect of the ability
         // TODO : implementing heal
+
+        _chosenAlly.Character.HealthPoints += 5;
+
         Relationship relationshipAllyToSelf = _chosenAlly.AllyCharacter.Relationships[this._effector.AllyCharacter];
         Relationship relationshipSelfToAlly = this._effector.AllyCharacter.Relationships[_chosenAlly.AllyCharacter];
         Debug.Log(  "i am healing ally" +

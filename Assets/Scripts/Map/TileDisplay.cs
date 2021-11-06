@@ -9,6 +9,7 @@ public class TileDisplay : MonoBehaviour
     [SerializeField] private float _displayHeight = 0.01f;
     [SerializeField] private BlobTilesetInfo[] _blobTilesets;
     [SerializeField] private Sprite _mouseHoverTileSprite;
+    [SerializeField] private MeshRenderer _gridRenderer;
 
     [System.Serializable]
     public struct BlobTilesetInfo
@@ -67,7 +68,26 @@ public class TileDisplay : MonoBehaviour
             _splitBlobTilesetsDictionary.Add(_blobTilesets[i].TileZoneDisplay, _splitBlobTileset);
             _texturesTintDictionary.Add(_blobTilesets[i].TileZoneDisplay, _blobTilesets[i].Tint);
         }
+
+        DisplayGrid(true);
     }
+
+    #region Grid display
+
+    public void DisplayGrid(bool display)
+    {
+        if (display)
+        {
+            Vector3 p = CombatGameManager.Instance.GridMap.GridWorldCenter;
+            _gridRenderer.transform.position = new Vector3(p.x, _displayHeight + 0.01f, p.z);
+            _gridRenderer.transform.localScale = new Vector3(CombatGameManager.Instance.GridMap.GridWorldWidth, CombatGameManager.Instance.GridMap.GridWorldHeight, 1f);
+            _gridRenderer.material.SetFloat("_CellSize", CombatGameManager.Instance.GridMap.CellSize);
+        }
+
+        _gridRenderer.enabled = display;
+    }
+
+    #endregion
 
     #region Tile display
 
@@ -83,7 +103,6 @@ public class TileDisplay : MonoBehaviour
     }
 
     #endregion
-
 
     #region Tile zone display
 
