@@ -15,6 +15,8 @@ public class Relationship
         private set { _target = value; }
     }
 
+    private Character _source;
+
     private class Gauge
     {
         /// <summary>
@@ -59,8 +61,9 @@ public class Relationship
         return _gauges[sentiment].level;
     }
 
-    public Relationship()
+    public Relationship(AllyCharacter source)
     {
+        this._source = source;
         _listEmotions = new List<EnumEmotions>();
         _gauges = new Dictionary<EnumSentiment, Gauge>();
         foreach (EnumSentiment sentiment in Enum.GetValues(typeof(EnumSentiment)))

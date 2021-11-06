@@ -44,7 +44,7 @@ public class AllyCharacter : Character
         {
             if (ally.Character != this)
             {
-                _relationships.Add(ally.AllyCharacter, new Relationship());
+                _relationships.Add(ally.AllyCharacter, new Relationship(this));
             }
         }
     }
