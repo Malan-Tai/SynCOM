@@ -29,8 +29,8 @@ public class AllyCharacter : Character
     private Dictionary<AllyCharacter, Relationship> _relationships;
     public Dictionary<AllyCharacter, Relationship> Relationships { get { return _relationships; } }
 
-    public AllyCharacter(EnumClasses characterClass, float maxHealth, float damage, float accuracy, float dodge, float critChances, float movementPoints, float weight) :
-        base(maxHealth, damage, accuracy, dodge, critChances, movementPoints, weight)
+    public AllyCharacter(EnumClasses characterClass, float maxHealth, float damage, float accuracy, float dodge, float critChances, float rangeShot, float movementPoints, float weight) :
+        base(maxHealth, damage, accuracy, dodge, critChances, rangeShot, movementPoints, weight)
     {
         _class = characterClass;
         addMandatoryTraits(_class);

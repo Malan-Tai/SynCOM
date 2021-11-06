@@ -16,6 +16,7 @@ public class Character
     [SerializeField] private float _movementPoints; // how far can a charcater move in one turn
     [SerializeField] private float _weigth; //can be a condition for some actions
     [SerializeField] private float _critChances;
+    [SerializeField] private float _rangeShot;
 
     //constructor 
 
@@ -23,7 +24,7 @@ public class Character
     {
     }
 
-    public Character(float maxHealth,float damage, float accuracy, float dodge,float critChances, float movementPoints, float weight)
+    public Character(float maxHealth,float damage, float accuracy, float dodge,float critChances,float rangeShot, float movementPoints, float weight)
     {
         _maxHealth = maxHealth;
         _healthPoints = maxHealth;
@@ -33,6 +34,7 @@ public class Character
         _critChances = critChances;
         _movementPoints = movementPoints;
         _weigth = weight;
+        _rangeShot = rangeShot;
 
     }
 
@@ -41,25 +43,25 @@ public class Character
     public float MaxHealth
     {
         get { return this._maxHealth; }
-        private set { this._maxHealth = value; }
+        set { this._maxHealth = value; }
     }
 
     public float HealthPoints
     {
         get { return this._healthPoints; }
-        private set { this._healthPoints = value; }
+        set { this._healthPoints = value; }
     }
 
     public float Damage
     {
         get { return this._damage; }
-        private set { this._damage = value; }
+        set { this._damage = value; }
     }
 
     public float Accuracy
     {
         get { return this._accuracy; }
-        private set { this._accuracy = value; }
+        set { this._accuracy = value; }
     }
 
     //public float Dodge
@@ -89,19 +91,25 @@ public class Character
     public float CritChances
     {
         get { return this._critChances; }
-        private set { this._critChances = value; }
+        set { this._critChances = value; }
     }
 
     public float MovementPoints
     {
         get { return this._movementPoints; }
-        private set { this._movementPoints = value; }
+        set { this._movementPoints = value; }
     }
 
     public float Weigth
     {
         get { return this._weigth; }
-        private set { this._weigth = value; }
+        set { this._weigth = value; }
+    }
+
+    public float RangeShot
+    {
+        get { return this._rangeShot; }
+        set { this._rangeShot = value; }
     }
 
     public void TakeDamage(float damage)
