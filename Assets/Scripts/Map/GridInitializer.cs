@@ -7,7 +7,6 @@ public class GridInitializer : MonoBehaviour
     [SerializeField] private Transform[] _gridPos;
     [SerializeField] private LayerMask _mapElementLayer;
 
-    private Tile[,] _grid;
     private int _minX = int.MaxValue;
     private int _minZ = int.MaxValue;
     private int _maxX = int.MinValue;
@@ -35,10 +34,11 @@ public class GridInitializer : MonoBehaviour
     {
         Vector2Int size = DetermineGridSize(cellSize);
 
-        _grid = new Tile[size.x, size.y];
+        Tile[,] grid = new Tile[size.x, size.y];
         Vector3 overlapSize = new Vector3(cellSize * 0.45f, cellSize * 2f, cellSize * 0.45f);
         Collider[] overlap;
 
+        // For each tile in the delimited zone, we detect ground, obstacles and covers with overlaps
         for (int x = 0; x < size.x; x++)
         {
             for (int z = 0; z < size.y; z++)
@@ -60,11 +60,11 @@ public class GridInitializer : MonoBehaviour
                     }
                 }
 
-                _grid[x, z] = new Tile(x, z, coverValue, walkable);
+                grid[x, z] = new Tile(x, z, coverValue, walkable);
             }
         }
 
-        return _grid;
+        return grid;
     }
 
     public Vector2 GetMinimums()
