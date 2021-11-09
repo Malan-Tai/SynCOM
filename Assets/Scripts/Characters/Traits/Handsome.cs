@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Brave : Trait
+public class Handsome : Trait
 {
     public override int GetSelfToAllySentimentGain(EnumSentiment sentiment, int baseSentiment)
     {
@@ -11,7 +11,7 @@ public class Brave : Trait
 
     public override int GetAllyToSelfSentimentGain(EnumSentiment sentiment, int baseSentiment)
     {
-        if (sentiment == EnumSentiment.Admiration && baseSentiment > 0)
+        if (sentiment == EnumSentiment.Trust && baseSentiment > 0)
         {
             return (int) (baseSentiment*1.5);
         }
@@ -20,7 +20,7 @@ public class Brave : Trait
 
     public override string GetName()
     {
-        return "Brave";
+        return "Handsome";
     }
 
 }

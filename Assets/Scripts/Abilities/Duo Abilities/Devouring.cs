@@ -96,7 +96,7 @@ public class Devouring : BaseDuoAbility
         // Actual effect of the ability
         GridBasedUnit target = _possibleTargets[_targetIndex];
 
-        Debug.Log("we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
+        Debug.Log("DEVOURING : we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
         SelfShoot(target);
         _effector.Character.Heal(6);
     }

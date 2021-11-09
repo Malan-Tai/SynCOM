@@ -17,5 +17,10 @@ public class Nice : Trait
         }
             return baseSentiment;
     }
-    
+
+    public override string GetName()
+    {
+        return "Nice";
+    }
+
 }

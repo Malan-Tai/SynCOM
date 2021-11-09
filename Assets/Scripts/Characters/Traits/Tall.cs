@@ -13,4 +13,9 @@ public class Tall : Trait
     {
         return baseSentiment;
     }
+
+    public override string GetName()
+    {
+        return "Tall";
+    }
 }

@@ -13,4 +13,9 @@ public class Rapturous : Trait
     {
         return baseSentiment;
     }
+
+    public override string GetName()
+    {
+        return "Rapturous";
+    }
 }

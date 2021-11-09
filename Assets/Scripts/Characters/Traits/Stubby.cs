@@ -14,4 +14,9 @@ public class Stubby : Trait
         return baseSentiment;
     }
 
+    public override string GetName()
+    {
+        return "Stubby";
+    }
+
 }

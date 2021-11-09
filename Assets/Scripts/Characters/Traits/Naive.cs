@@ -21,5 +21,10 @@ public class Naive : Trait
         }
         return baseSentiment;
     }
-    
+
+    public override string GetName()
+    {
+        return "Naive";
+    }
+
 }

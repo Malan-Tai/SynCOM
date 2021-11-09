@@ -7,4 +7,6 @@ public abstract class Trait
     public abstract int GetSelfToAllySentimentGain(EnumSentiment sentiment, int baseSentiment);
 
     public abstract int GetAllyToSelfSentimentGain(EnumSentiment sentiment, int baseSentiment);
+
+    public abstract string GetName();
 }
