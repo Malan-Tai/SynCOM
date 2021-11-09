@@ -94,4 +94,14 @@ public class BasicShot : BaseAbility
         _possibleTargets = null;
         base.FinalizeAbility(executed);
     }
+
+    public override string GetName()
+    {
+        return "Basic Attack";
+    }
+
+    public override string GetDescription()
+    {
+        return "A basic attack";
+    }
 }

@@ -149,4 +149,14 @@ public class BasicDuoShot : BaseDuoAbility
             SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
         }
     }
+
+    public override string GetName()
+    {
+        return "Relentless Assault";
+    }
+
+    public override string GetDescription()
+    {
+        return "The two units assault the same enemy in a coordinated attack that leaves it defenceless.";
+    }
 }

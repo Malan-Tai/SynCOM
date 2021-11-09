@@ -122,6 +122,16 @@ public class Character
         }
     }
 
+    public void Heal(float heal)
+    {
+        Debug.Log("mmh, recovered " + heal + " HP");
+        _healthPoints = Mathf.Min(_maxHealth, _healthPoints + heal);
+        if (_healthPoints == _maxHealth)
+        {
+            Debug.Log("Health full");
+        }
+    }
+
     public void Die()
     {
     }

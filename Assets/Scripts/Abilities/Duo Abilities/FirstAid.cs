@@ -34,7 +34,7 @@ public class FirstAid : BaseDuoAbility
         AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, 5);
 
         // Actual effect of the ability
-        // TODO : implementing heal
+        _chosenAlly.Character.Heal(3);
 
         _chosenAlly.Character.HealthPoints += 5;
 
@@ -49,5 +49,15 @@ public class FirstAid : BaseDuoAbility
     protected override bool IsAllyCompatible(AllyUnit unit)
     {
         return (unit.GridPosition - this._effector.GridPosition).magnitude <= 1;
+    }
+
+    public override string GetName()
+    {
+        return "First Aid";
+    }
+
+    public override string GetDescription()
+    {
+        return "You heal an injured ally and take them out of critical state.";
     }
 }

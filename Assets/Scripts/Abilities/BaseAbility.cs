@@ -43,6 +43,18 @@ public abstract class BaseAbility
             FinalizeAbility(false);
         }
     }
+
+    /// <summary>
+    /// Returns the name of the ability.
+    /// The name of the ability is not an attribute : it's determined by the return value of this function.
+    /// </summary>
+    public abstract string GetName();
+
+    /// <summary>
+    /// Returns a short description of the ability.
+    /// The description of the ability is not an attribute : it's determined by the return value of this function.
+    /// </summary>
+    public abstract string GetDescription();
 }
 
 public abstract class BaseDuoAbility : BaseAbility

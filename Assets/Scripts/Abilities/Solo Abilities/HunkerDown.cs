@@ -18,4 +18,14 @@ public class HunkerDown : BaseAbility
     {
         Debug.Log("i hunker down");
     }
+
+    public override string GetName()
+    {
+        return "Hunker Down";
+    }
+
+    public override string GetDescription()
+    {
+        return "Hunker down behind a cover to gain a protection against incoming damage";
+    }
 }

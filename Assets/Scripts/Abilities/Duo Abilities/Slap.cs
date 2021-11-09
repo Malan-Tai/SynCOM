@@ -48,4 +48,15 @@ public class Slap : BaseDuoAbility
     {
         return true;
     }
+
+    public override string GetName()
+    {
+        return "Slap";
+    }
+
+    public override string GetDescription()
+    {
+        return  "A secrete technique that only the chosen ones can use. " +
+                "You express your rage against your useless ally in the form of a single perfectly placed slap";
+    }
 }
