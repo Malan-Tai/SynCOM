@@ -21,5 +21,10 @@ public class Cold : Trait
         }
         return baseSentiment;
     }
-    
+
+    public override string GetName()
+    {
+        return "Cold";
+    }
+
 }

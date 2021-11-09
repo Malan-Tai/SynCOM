@@ -17,5 +17,9 @@ public class Antisocial : Trait //TU PERDS TON SANG FROID
     {
         return baseSentiment;
     }
-    
+
+    public override string GetName()
+    {
+        return "Antisocial";
+    }
 }

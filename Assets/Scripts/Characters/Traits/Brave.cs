@@ -17,5 +17,10 @@ public class Brave : Trait
         }
             return baseSentiment;
     }
-    
+
+    public override string GetName()
+    {
+        return "Brave";
+    }
+
 }

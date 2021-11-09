@@ -4,27 +4,27 @@ using UnityEngine;
 
 public class AllyCharacter : Character
 {
-    private static Dictionary<EnumClasses, List<EnumTraits>> s_mandatoryTraits = new Dictionary<EnumClasses, List<EnumTraits>>(){
-        {EnumClasses.Berserker, new List<EnumTraits> {EnumTraits.Stocky}},
-        {EnumClasses.Engineer, new List<EnumTraits> {EnumTraits.Stocky}},
-        {EnumClasses.Hitman, new List<EnumTraits> {EnumTraits.Racist}},
-        {EnumClasses.Sniper, new List<EnumTraits> {EnumTraits.Racist}},
-        {EnumClasses.HoundMaster, new List<EnumTraits> {EnumTraits.Ugly}},
-        {EnumClasses.Smuggler, new List<EnumTraits> {EnumTraits.Ugly}}
+    private static Dictionary<EnumClasses, List<Trait>> s_mandatoryTraits = new Dictionary<EnumClasses, List<Trait>>(){
+        {EnumClasses.Berserker, new List<Trait> {new Brave()}},
+        {EnumClasses.Engineer, new List<Trait> {new Brave()}},
+        {EnumClasses.Hitman, new List<Trait> {new Handsome(),new Contemptuous()}},
+        {EnumClasses.Sniper, new List<Trait> {new Handsome(), new Contemptuous()}},
+        {EnumClasses.HoundMaster, new List<Trait> {new Ugly(), new Fearless()}},
+        {EnumClasses.Smuggler, new List<Trait> {new Ugly(), new Fearless()}}
     };
 
-    private static Dictionary<EnumClasses, List<EnumTraits>> s_commonPossibleTraits = new Dictionary<EnumClasses, List<EnumTraits>>(){
-        {EnumClasses.Berserker, new List<EnumTraits> {EnumTraits.Fearful,EnumTraits.Brave}},
-        {EnumClasses.Engineer, new List<EnumTraits> {EnumTraits.Fearful,EnumTraits.Brave}},
-        {EnumClasses.Hitman, new List<EnumTraits> {EnumTraits.Lovely, EnumTraits.Sprinter}},
-        {EnumClasses.Sniper, new List<EnumTraits> {EnumTraits.Lovely,EnumTraits.Sprinter}},
-        {EnumClasses.HoundMaster, new List<EnumTraits> {EnumTraits.Brave,EnumTraits.Sprinter}},
-        {EnumClasses.Smuggler, new List<EnumTraits> {EnumTraits.Brave,EnumTraits.Sprinter}}
+    private static Dictionary<EnumClasses, List<Trait>> s_commonPossibleTraits = new Dictionary<EnumClasses, List<Trait>>(){
+         {EnumClasses.Berserker, new List<Trait> {new Ugly(),new Fearful(),new Cold(), new Antisocial()}},
+        {EnumClasses.Engineer, new List<Trait> {new Ugly(),new Fearful(),new Cold(), new Antisocial()}},
+        {EnumClasses.Hitman, new List<Trait> {new Brave(), new Nice() ,new Fearful(),new Cold()}},
+        {EnumClasses.Sniper, new List<Trait> {new Brave(),new Nice(),new Fearful(),new Cold()}},
+        {EnumClasses.HoundMaster, new List<Trait> {new Antisocial(), new Brave(), new Cold(), new Sensitive()}},
+        {EnumClasses.Smuggler, new List<Trait> {new Antisocial(), new Brave(), new Cold(), new Sensitive()}}
     };
 
     //Character's archetype
     private EnumClasses _class;
-    private List<EnumTraits> _traits = new List<EnumTraits>();
+    private List<Trait> _traits = new List<Trait>();
 
     private Dictionary<AllyCharacter, Relationship> _relationships;
     public Dictionary<AllyCharacter, Relationship> Relationships { get { return _relationships; } }
@@ -35,6 +35,13 @@ public class AllyCharacter : Character
         _class = characterClass;
         addMandatoryTraits(_class);
         addRandomTrait(_class);
+
+        Debug.Log(_traits.Count);
+
+        for (int i = 0; i < _traits.Count; i++)
+        {
+            Debug.Log(_traits[i].GetName());
+        }
     }
 
     public void InitializeRelationships()
@@ -49,14 +56,6 @@ public class AllyCharacter : Character
         }
     }
 
-    private EnumTraits GetRandomTraitsFromClass(EnumClasses characterClass)
-    {
-
-        int indice = Random.Range(0, s_mandatoryTraits[characterClass].Count);
-        EnumTraits newTrait = s_mandatoryTraits[characterClass][indice];
-        return newTrait;
-    }
-
     private void addMandatoryTraits(EnumClasses characterClass)
     {
         for (int i = 0; i < s_mandatoryTraits[characterClass].Count; i++)
@@ -67,6 +66,7 @@ public class AllyCharacter : Character
 
     private void addRandomTrait(EnumClasses characterClass)
     {
-        _traits.Add(GetRandomTraitsFromClass(characterClass));
+        int indice = Random.Range(0, s_commonPossibleTraits[characterClass].Count);
+        _traits.Add(s_commonPossibleTraits[characterClass][indice]);
     }
 }

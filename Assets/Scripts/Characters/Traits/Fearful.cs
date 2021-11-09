@@ -17,5 +17,10 @@ public class Fearful : Trait
     {
         return baseSentiment;
     }
-    
+
+    public override string GetName()
+    {
+        return "Fearful";
+    }
+
 }

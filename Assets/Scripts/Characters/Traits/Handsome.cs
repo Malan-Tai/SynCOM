@@ -17,5 +17,10 @@ public class Handsome : Trait
         }
             return baseSentiment;
     }
-    
+
+    public override string GetName()
+    {
+        return "Handsome";
+    }
+
 }

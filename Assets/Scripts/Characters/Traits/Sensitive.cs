@@ -13,5 +13,9 @@ public class Sensitive : Trait
     {
         return baseSentiment;
     }
-    
+
+    public override string GetName()
+    {
+        return "Sensitive";
+    }
 }

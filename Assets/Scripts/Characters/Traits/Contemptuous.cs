@@ -17,5 +17,10 @@ public class Contemptuous : Trait
     {
         return baseSentiment;
     }
-    
+
+    public override string GetName()
+    {
+        return "Contemptuous";
+    }
+
 }
