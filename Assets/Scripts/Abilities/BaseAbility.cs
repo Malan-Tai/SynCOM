@@ -177,4 +177,62 @@ public abstract class BaseDuoAbility : BaseAbility
         Relationship relationshipAllyToSelf = ally.AllyCharacter.Relationships[this._effector.AllyCharacter];
         relationshipAllyToSelf.IncreaseSentiment(sentiment, gain);
     }
+
+    protected virtual void SelfShoot(GridBasedUnit target, AbilityStats selfShotStats)
+    {
+        int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
+        int randCrit = UnityEngine.Random.Range(0, 100);
+
+        Debug.Log("self to hit: " + randShot + " for " + selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover));
+
+        if (randShot < selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
+        {
+            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, 5);
+
+            if (randCrit < selfShotStats.GetCritRate())
+            {
+                target.Character.TakeDamage(selfShotStats.GetDamage() * 1.5f);
+                SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
+                AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
+            }
+            else
+            {
+                target.Character.TakeDamage(selfShotStats.GetDamage());
+            }
+        }
+        else
+        {
+            Debug.Log("self missed");
+            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
+            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
+        }
+    }
+
+    protected virtual void AllyShoot(GridBasedUnit target, AbilityStats allyShotStats)
+    {
+        int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
+        int randCrit = UnityEngine.Random.Range(0, 100);
+
+        Debug.Log("ally to hit: " + randShot + " for " + allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover));
+
+        if (randShot < allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover))
+        {
+            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, 5);
+
+            if (randCrit < allyShotStats.GetCritRate())
+            {
+                target.Character.TakeDamage(allyShotStats.GetDamage() * 1.5f);
+                SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
+            }
+            else
+            {
+                target.Character.TakeDamage(allyShotStats.GetDamage());
+            }
+        }
+        else
+        {
+            Debug.Log("ally missed");
+            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
+        }
+    }
 }

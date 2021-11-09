@@ -15,7 +15,7 @@ public class Slap : BaseDuoAbility
 
     protected override bool CanExecute()
     {
-        return _chosenAlly != null; // && _chosenAlly.HP > 0
+        return _chosenAlly != null;
     }
 
     protected override void EnemyTargetingInput()

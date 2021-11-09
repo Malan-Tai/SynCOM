@@ -83,8 +83,8 @@ public class BasicDuoShot : BaseDuoAbility
         GridBasedUnit target = _possibleTargets[_targetIndex];
 
         Debug.Log("we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
-        SelfShoot(target);
-        AllyShoot(target);
+        SelfShoot(target, _selfShotStats);
+        AllyShoot(target, _allyShotStats);
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)
@@ -92,63 +92,9 @@ public class BasicDuoShot : BaseDuoAbility
         return true;
     }
 
-    private void SelfShoot(GridBasedUnit target)
-    {
-        int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
-        int randCrit = UnityEngine.Random.Range(0, 100);
+    
 
-        Debug.Log("self to hit: " + randShot + " for " + _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover));
-
-        if (randShot < _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
-        {
-            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, 5);
-
-            if (randCrit < _selfShotStats.GetCritRate())
-            {
-                target.Character.TakeDamage(_selfShotStats.GetDamage() * 1.5f);
-                SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
-                AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
-            }
-            else
-            {
-                target.Character.TakeDamage(_selfShotStats.GetDamage());
-            }
-        }
-        else
-        {
-            Debug.Log("self missed");
-            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
-            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
-        }
-    }
-
-    private void AllyShoot(GridBasedUnit target)
-    {
-        int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
-        int randCrit = UnityEngine.Random.Range(0, 100);
-
-        Debug.Log("ally to hit: " + randShot + " for " + _allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover));
-
-        if (randShot < _allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover))
-        {
-            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, 5);
-
-            if (randCrit < _allyShotStats.GetCritRate())
-            {
-                target.Character.TakeDamage(_allyShotStats.GetDamage() * 1.5f);
-                SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
-            }
-            else
-            {
-                target.Character.TakeDamage(_allyShotStats.GetDamage());
-            }
-        }
-        else
-        {
-            Debug.Log("ally missed");
-            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
-        }
-    }
+    
 
     public override string GetName()
     {
