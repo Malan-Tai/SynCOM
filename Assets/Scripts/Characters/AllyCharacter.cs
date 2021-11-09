@@ -94,7 +94,7 @@ public class AllyCharacter : Character
         return dodge;
     }
 
-    private bool HaveTrait(Trait traitToFind)
+    public bool HaveTrait(Trait traitToFind)
     {
         bool traitFound = false;
         foreach (Trait trait in _traits)

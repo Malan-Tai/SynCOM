@@ -143,7 +143,13 @@ public struct AbilityStats
     public float GetDamage()
     {
         // TODO: randomize the damage -> need implementing GetMaxDamage() and GetMinDamage() for display
-        return (this._unit.Character.Damage * _selfDamageModifier * _innateDamage);
+
+        if (_unit.AllyCharacter.HaveTrait(new Rapturous()))
+        {
+            float damageModifier = 1 + 0.5f * (1 - (_unit.AllyCharacter.HealthPoints / _unit.AllyCharacter.MaxHealth));
+            return damageModifier * (this._unit.Character.Damage * _selfDamageModifier * _innateDamage);
+        }
+        else return (this._unit.Character.Damage * _selfDamageModifier * _innateDamage);
     }
 
     /// <summary>
