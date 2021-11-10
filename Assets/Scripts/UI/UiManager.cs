@@ -17,6 +17,7 @@ public class UiManager : MonoBehaviour
     public Button Slap;
     public Button HunkerDown;
     public Button Heal;
+    public GameObject infoPanel;
     // Start is called before the first frame update
     void Start()
     {
