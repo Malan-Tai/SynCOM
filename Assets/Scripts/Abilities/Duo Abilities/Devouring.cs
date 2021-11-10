@@ -8,11 +8,10 @@ public class Devouring : BaseDuoAbility
 
     private AbilityStats _selfShotStats;
 
-
     public override string GetDescription()
     {
-        return  "You ask an ally to hold an enemy while you feed on them, " +
-                "restoring your health and extending your Frenzy state. Leaves your ally terrified.";
+        return  "Devouring\nYou ask an ally to hold an enemy while you feed on them, " +
+                "restoring your health and extending your Frenzy state.";
     }
 
     public override string GetName()
@@ -134,5 +133,10 @@ public class Devouring : BaseDuoAbility
     protected override bool IsAllyCompatible(AllyUnit unit)
     {
         return (unit.GridPosition - this._effector.GridPosition).magnitude <= 1;
+    }
+
+    public override string GetAllyDescription()
+    {
+        return "Devouring\nGet eaten, it is terrifying.";
     }
 }

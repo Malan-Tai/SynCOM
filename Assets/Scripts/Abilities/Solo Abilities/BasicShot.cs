@@ -8,6 +8,21 @@ public class BasicShot : BaseAbility
     private GridBasedUnit[] _possibleTargets;
     private int _targetIndex = -1;
 
+    public override string GetDescription()
+    {
+        string res = "Shot\nShoot at the target.";
+        if (_targetIndex >= 0)
+        {
+            GridBasedUnit target = _possibleTargets[_targetIndex];
+
+            res += "\nAcc:" + (_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover)) +
+                    " | Crit:" + _effector.Character.CritChances +
+                    " | Dmg:" + _effector.Character.Damage;
+        }
+
+        return res;
+    }
+
     public override void SetEffector(AllyUnit effector)
     {
         _possibleTargets = new GridBasedUnit[effector.LinesOfSight.Count];
@@ -98,10 +113,5 @@ public class BasicShot : BaseAbility
     public override string GetName()
     {
         return "Basic Attack";
-    }
-
-    public override string GetDescription()
-    {
-        return "A basic attack";
     }
 }

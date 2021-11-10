@@ -7,7 +7,18 @@ public abstract class BaseAbility
     public delegate void EndAbility(bool executed);
     public event EndAbility OnAbilityEnded;
 
+    protected bool _uiConfirmed = false;
+    protected bool _uiCancelled = false;
+
     protected AllyUnit _effector;
+    public void SetUIConfirmed()
+    {
+        _uiConfirmed = true;
+    }
+    public void SetUICancelled()
+    {
+        _uiCancelled = true;
+    }
     public virtual void SetEffector(AllyUnit effector)
     {
         _effector = effector;
@@ -26,22 +37,38 @@ public abstract class BaseAbility
     {
         EnemyTargetingInput();
 
-        if (Input.GetKeyDown(KeyCode.Return) && CanExecute())
+        bool confirmed = _uiConfirmed || Input.GetKeyDown(KeyCode.Return);
+        bool cancelled = _uiCancelled || Input.GetKeyDown(KeyCode.Escape);
+
+        if (confirmed && CanExecute())
         {
             Execute();
             FinalizeAbility(true);
         }
-        else if (Input.GetKeyDown(KeyCode.Return))
+        else if (confirmed)
         {
             Debug.Log("cant use this ability");
             FinalizeAbility(false);
         }
-        else if (Input.GetKeyDown(KeyCode.Escape))
+        else if (cancelled)
         {
             Debug.Log("cancelled ability");
             CombatGameManager.Instance.Camera.SwitchParenthood(_effector);
             FinalizeAbility(false);
         }
+
+        _uiConfirmed = false;
+        _uiCancelled = false;
+    }
+
+    public void UIConfirm()
+    {
+        _uiConfirmed = true;
+    }
+
+    public void UICancel()
+    {
+        _uiCancelled = true;
     }
 
     /// <summary>
@@ -65,6 +92,8 @@ public abstract class BaseDuoAbility : BaseAbility
 
     protected abstract bool IsAllyCompatible(AllyUnit unit);
     protected abstract void ChooseAlly();
+
+    public abstract string GetAllyDescription();
 
     public override void SetEffector(AllyUnit effector)
     {
@@ -107,29 +136,34 @@ public abstract class BaseDuoAbility : BaseAbility
             EnemyTargetingInput();
         }
 
-        if (Input.GetKeyDown(KeyCode.Return) && CanExecute())
+        bool confirmed = _uiConfirmed || Input.GetKeyDown(KeyCode.Return);
+        bool cancelled = _uiCancelled || Input.GetKeyDown(KeyCode.Escape);
+
+        if (confirmed && CanExecute())
         {
             Execute();
             FinalizeAbility(true);
         }
-        else if (Input.GetKeyDown(KeyCode.Return) && _temporaryChosenAlly != null && _chosenAlly == null)
+        else if (confirmed && _temporaryChosenAlly != null && _chosenAlly == null)
         {
             _chosenAlly = _temporaryChosenAlly;
-            // _chosenAlly.UseAbilityAsAlly(this);
             ChooseAlly();
             // TODO: check if 1) ally refuse to cooperate and 2) Emotion gives a free action
         }
-        else if (Input.GetKeyDown(KeyCode.Return))
+        else if (confirmed)
         {
             Debug.Log("cant use this ability");
             FinalizeAbility(false);
         }
-        else if (Input.GetKeyDown(KeyCode.Escape))
+        else if (cancelled)
         {
             Debug.Log("cancelled ability");
             CombatGameManager.Instance.Camera.SwitchParenthood(_effector);
             FinalizeAbility(false);
         }
+
+        _uiConfirmed = false;
+        _uiCancelled = false;
     }
 
     protected void AllyTargetingInput()
