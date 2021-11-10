@@ -19,7 +19,7 @@ public struct Mission
         if (mission.difficulty >= 4 && UnityEngine.Random.Range(0, 10) < mission.difficulty)
         {
             /// TODO : random character with some levels
-            mission.recruitReward = new AllyCharacter(EnumClasses.Sniper, 20, 2, 65, 10, 15, 4, 60);
+            mission.recruitReward = new AllyCharacter(EnumClasses.Sniper, 20, 2, 65, 10, 15, 20, 4, 60);
         }
         else
         {
