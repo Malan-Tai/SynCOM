@@ -339,6 +339,7 @@ public class GridMap : MonoBehaviour
             {
                 Vector3 cellPosition = GridToWorld(x, z, 0f);
 
+                // Draw grid in gizmos
                 if (ShowGridGizmos)
                 {
                     Gizmos.color = Color.gray;
@@ -351,6 +352,7 @@ public class GridMap : MonoBehaviour
                     Gizmos.DrawLine(minZ, maxZ);
                 }
 
+                // Draw grid tiles : blue = walkable, red = not walkable
                 if (_map[x, z] != null && ShowWalkableGizmos)
                 {
                     if (_map[x, z].IsWalkable)
@@ -364,6 +366,7 @@ public class GridMap : MonoBehaviour
                     Gizmos.DrawCube(cellPosition + Vector3.up * 3f, new Vector3(CellSize, 0.01f, CellSize));
                 }
 
+                // Draw covers
                 if (_map[x, z] != null && ShowCoversGizmos)
                 {
                     switch (_map[x, z].Cover)

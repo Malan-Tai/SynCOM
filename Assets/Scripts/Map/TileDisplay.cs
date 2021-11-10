@@ -11,6 +11,7 @@ public class TileDisplay : MonoBehaviour
     [SerializeField] private Sprite _mouseHoverTileSprite;
     [SerializeField] private MeshRenderer _gridRenderer;
 
+    // Info for using a blob tileset when rendering zones
     [System.Serializable]
     public struct BlobTilesetInfo
     {
@@ -28,7 +29,7 @@ public class TileDisplay : MonoBehaviour
         }
     }
 
-
+    // Sprite renderers to render tiles
     private List<SpriteRenderer> _spriteRenderersList = new List<SpriteRenderer>();
     private SpriteRenderer _mouseHovertileSpriteRenderer;
 
@@ -48,12 +49,14 @@ public class TileDisplay : MonoBehaviour
         // Split blob tilesets
         for (int i = 0; i < _blobTilesets.Length; i++)
         {
+            // There should be no more than 1 blob tileset for each type of zone display
             Assert.IsFalse
             (
                 _splitBlobTilesetsDictionary.ContainsKey(_blobTilesets[i].TileZoneDisplay),
                 "Each TileZoneDisplayEnum should appear exactly one time."
             );
 
+            // Split each tileset in single sprites
             Dictionary<int, Sprite> _splitBlobTileset = new Dictionary<int, Sprite>(47);
 
             for (int j = 0; j < _blobTilesets[i].TilePixelSize; j++)
@@ -109,6 +112,7 @@ public class TileDisplay : MonoBehaviour
     // Works with the blob tileset principle -> more here http://www.cr31.co.uk/stagecast/wang/blob.html
     public void DisplayTileZone(List<Tile> tiles, TileZoneDisplayEnum display)
     {
+        // We render each tile with a sprite renderer
         int i = 0;
         for (; i < tiles.Count; i++)
         {
