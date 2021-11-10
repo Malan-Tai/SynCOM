@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class DistrictButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class DistrictButton : MonoBehaviour
 {
     [SerializeField]
     private string _name;
@@ -16,22 +16,19 @@ public class DistrictButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     private void Start()
     {
         _sprite = GetComponent<Image>();
-        _sprite.alphaHitTestMinimumThreshold = 0.1f;
     }
 
-    void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
+    private void OnMouseEnter()
     {
-        //print("enter " + _name);
         _sprite.color = _hoverColor;
     }
 
-    void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
+    private void OnMouseExit()
     {
-        //print("exit " + _name);
         _sprite.color = Color.white;
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    private void OnMouseUpAsButton()
     {
         print("clicked " + _name);
     }
