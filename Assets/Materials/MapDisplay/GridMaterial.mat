@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: MoveZoneMaterial
+  m_Name: GridMaterial
   m_Shader: {fileID: 4800000, guid: 0afd5281c31ce894f92f1f72d390e77f, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -15,10 +15,15 @@ Material:
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
-  disabledShaderPasses: []
+  disabledShaderPasses:
+  - FORWARDBASE
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _AttackBlobTileset:
+        m_Texture: {fileID: 2800000, guid: f9f5e165a978aca4e87e0d7e4c0f1eea, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BlodTileset:
         m_Texture: {fileID: 2800000, guid: f9f5e165a978aca4e87e0d7e4c0f1eea, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -64,6 +69,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _AttackPixelsPerUnit: 256
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
@@ -71,6 +77,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _LineWidth: 0.04
     - _Metallic: 0
     - _Mode: 0
     - _MovePixelsPerUnit: 256
@@ -83,8 +90,10 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
+    - _AttackBlobColor: {r: 1, g: 0.2028302, b: 0.2028302, a: 1}
     - _BlobColor: {r: 0, g: 0.65795946, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _GridColor: {r: 1, g: 1, b: 1, a: 1}
     - _MoveBlobColor: {r: 0, g: 0.7695224, b: 1, a: 1}
   m_BuildTextureStacks: []

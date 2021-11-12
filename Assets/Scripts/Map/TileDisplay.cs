@@ -8,18 +8,15 @@ public class TileDisplay : MonoBehaviour
 {
     [SerializeField] private float _displayHeight = 0.01f;
     [SerializeField] private Sprite _mouseHoverTileSprite;
+    [SerializeField] private Material _gridMaterial;
     [SerializeField] private MeshRenderer _gridRenderer;
-
-    [Header("Unit move zone")]
-    [SerializeField] private Material _moveBlobMaterial;
-    [SerializeField] private MeshRenderer _planeRenderer;
 
     // Sprite renderers to render tiles
     private SpriteRenderer _mouseHovertileSpriteRenderer;
 
     private void Start()
     {
-        _planeRenderer.material = _moveBlobMaterial;
+        _gridRenderer.material = _gridMaterial;
 
         GameObject spriteRendererGO = new GameObject("MouseHoverTileSprite");
         spriteRendererGO.transform.parent = transform;
@@ -29,23 +26,6 @@ public class TileDisplay : MonoBehaviour
 
         DisplayGrid(true);
     }
-
-    #region Grid display
-
-    public void DisplayGrid(bool display)
-    {
-        if (display)
-        {
-            Vector3 p = CombatGameManager.Instance.GridMap.GridWorldCenter;
-            _gridRenderer.transform.position = new Vector3(p.x, _displayHeight + 0.01f, p.z);
-            _gridRenderer.transform.localScale = new Vector3(CombatGameManager.Instance.GridMap.GridWorldWidth, CombatGameManager.Instance.GridMap.GridWorldHeight, 1f);
-            _gridRenderer.material.SetFloat("_CellSize", CombatGameManager.Instance.GridMap.CellSize);
-        }
-
-        _gridRenderer.enabled = display;
-    }
-
-    #endregion
 
     #region Tile display
 
@@ -62,6 +42,23 @@ public class TileDisplay : MonoBehaviour
 
     #endregion
 
+    #region Grid display
+
+    public void DisplayGrid(bool display)
+    {
+        if (display)
+        {
+            Vector3 p = CombatGameManager.Instance.GridMap.GridWorldCenter;
+            _gridRenderer.transform.position = new Vector3(p.x, _displayHeight + 0.01f, p.z);
+            _gridRenderer.transform.localScale = new Vector3(CombatGameManager.Instance.GridMap.GridWorldWidth, CombatGameManager.Instance.GridMap.GridWorldHeight, 1f);
+            _gridMaterial.SetFloat("_CellSize", CombatGameManager.Instance.GridMap.CellSize);
+        }
+
+        _gridMaterial.SetInt("_RenderGridLines", display ? 1 : 0);
+    }
+
+    #endregion
+
     #region Tile zone display
 
     // Works with the blob tileset principle -> more here http://www.cr31.co.uk/stagecast/wang/blob.html
@@ -69,7 +66,8 @@ public class TileDisplay : MonoBehaviour
     {
         if (tiles.Count == 0)
         {
-            _planeRenderer.enabled = false;
+            _gridMaterial.SetInt("_RenderMoveZone", 0);
+            _gridMaterial.SetInt("_RenderAttackZone", 0);
             return;
         }
 
@@ -95,14 +93,29 @@ public class TileDisplay : MonoBehaviour
         }
 
         Vector3 p = CombatGameManager.Instance.GridMap.GridWorldCenter;
-        _planeRenderer.transform.position = new Vector3(p.x, _displayHeight + 0.01f, p.z);
-        _planeRenderer.transform.localScale = new Vector3(CombatGameManager.Instance.GridMap.GridWorldWidth, CombatGameManager.Instance.GridMap.GridWorldHeight, 1f);
-        _moveBlobMaterial.SetInt("_GridWidthInTiles", CombatGameManager.Instance.GridMap.GridTileWidth);
-        _moveBlobMaterial.SetInt("_GridHeightInTiles", CombatGameManager.Instance.GridMap.GridTileHeight);
-        _moveBlobMaterial.SetVectorArray("_ReachableCoords", coordsVec4);
-        _moveBlobMaterial.SetInt("_ReachableCoordsCount", tiles.Count);
-        _moveBlobMaterial.SetFloatArray("_BlobIndices", blobIndices);
-        _planeRenderer.enabled = true;
+        _gridRenderer.transform.position = new Vector3(p.x, _displayHeight + 0.01f, p.z);
+        _gridRenderer.transform.localScale = new Vector3(CombatGameManager.Instance.GridMap.GridWorldWidth, CombatGameManager.Instance.GridMap.GridWorldHeight, 1f);
+        _gridMaterial.SetInt("_GridWidthInTiles", CombatGameManager.Instance.GridMap.GridTileWidth);
+        _gridMaterial.SetInt("_GridHeightInTiles", CombatGameManager.Instance.GridMap.GridTileHeight);
+        _gridMaterial.SetVectorArray("_ReachableCoords", coordsVec4);
+        _gridMaterial.SetInt("_ReachableCoordsCount", tiles.Count);
+        _gridMaterial.SetFloatArray("_BlobIndices", blobIndices);
+
+        switch (display)
+        {
+            case TileZoneDisplayEnum.AttackZoneDisplay:
+                _gridMaterial.SetInt("_RenderMoveZone", 0);
+                _gridMaterial.SetInt("_RenderAttackZone", 1);
+                break;
+            case TileZoneDisplayEnum.MoveZoneDisplay:
+                _gridMaterial.SetInt("_RenderMoveZone", 1);
+                _gridMaterial.SetInt("_RenderAttackZone", 0);
+                break;
+            default:
+                _gridMaterial.SetInt("_RenderMoveZone", 0);
+                _gridMaterial.SetInt("_RenderAttackZone", 0);
+                break;
+        }
     }
 
     private int NeighbourIndex(Vector2Int coordDiff) => coordDiff switch

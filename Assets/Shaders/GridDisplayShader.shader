@@ -1,10 +1,17 @@
-Shader "Custom/BlobZoneShader"
+Shader "Custom/GridDisplay"
 {
 	Properties
 	{
-		_MoveBlobTileset("Blob tileset", 2D) = "white" {}
-		_MoveBlobColor("Color", Color) = (1, 1, 1, 1)
-		_MovePixelsPerUnit("Pixels per unit", Float) = 256
+		[NoScaleOffset] _MoveBlobTileset("Move blob tileset", 2D) = "white" {}
+		_MoveBlobColor("Move color", Color) = (1, 1, 1, 1)
+		_MovePixelsPerUnit("Move pixels per unit", Float) = 256
+
+		[NoScaleOffset] _AttackBlobTileset("Attack blob tileset", 2D) = "white" {}
+		_AttackBlobColor("Attack color", Color) = (1, 1, 1, 1)
+		_AttackPixelsPerUnit("Attack pixels per unit", Float) = 256
+
+		_GridColor("Grid color", Color) = (1, 1, 1, 1)
+		_LineWidth("Grid lines width", Range(0, .3)) = .01
 	}
 	SubShader
 	{
@@ -15,8 +22,6 @@ Shader "Custom/BlobZoneShader"
 
 		Pass
 		{
-			Name "MoveTileZone"
-
 			CGPROGRAM
 
 			#pragma vertex vert alpha
@@ -24,14 +29,25 @@ Shader "Custom/BlobZoneShader"
 
 			#include "UnityCG.cginc"
 
-			sampler2D _MoveBlobTileset;
-			fixed4 _MoveBlobColor;
-			float _MovePixelsPerUnit;
+			// All zones (multiple zones types can't be rendered at same time)
 			int _GridWidthInTiles;
 			int _GridHeightInTiles;
 			int _ReachableCoordsCount;
 			int2 _ReachableCoords[500];
 			int _BlobIndices[500];
+
+			// Move zone
+			sampler2D _MoveBlobTileset;
+			fixed4 _MoveBlobColor;
+			float _MovePixelsPerUnit;
+			bool _RenderMoveZone;
+
+			// Attack zone
+			sampler2D _AttackBlobTileset;
+			fixed4 _AttackBlobColor;
+			float _AttackPixelsPerUnit;
+			bool _RenderAttackZone;
+
 
 			struct appdata
 			{
@@ -113,6 +129,11 @@ Shader "Custom/BlobZoneShader"
 
 			fixed4 frag(v2f i) : SV_Target
 			{
+				if (!_RenderMoveZone && !_RenderAttackZone)
+				{
+					discard;
+				}
+
 				int2 uvGridCoord = int2(floor(i.uv.x * _GridWidthInTiles), floor(i.uv.y * _GridHeightInTiles));
 
 				int2 blobCoord = int2(-1, -1);
@@ -125,7 +146,22 @@ Shader "Custom/BlobZoneShader"
 					}
 				}
 
-				if (blobCoord.x != -1)
+				if (blobCoord.x == -1)
+				{
+					discard;
+				}
+
+				if (_RenderAttackZone)
+				{
+					float2 worldUv = float2(i.uv.x * _GridWidthInTiles * _AttackPixelsPerUnit, i.uv.y * _GridHeightInTiles * _AttackPixelsPerUnit);
+					float2 outUv;
+					outUv.x = (blobCoord.x + fmod(worldUv.x, _AttackPixelsPerUnit) / _AttackPixelsPerUnit) / 8;
+					outUv.y = (blobCoord.y + fmod(worldUv.y, _AttackPixelsPerUnit) / _AttackPixelsPerUnit) / 6;
+
+					fixed4 col = tex2D(_AttackBlobTileset, outUv);
+					return fixed4(_AttackBlobColor.xyz * col.xyz, col.w);
+				}
+				else if (_RenderMoveZone)
 				{
 					float2 worldUv = float2(i.uv.x * _GridWidthInTiles * _MovePixelsPerUnit, i.uv.y * _GridHeightInTiles * _MovePixelsPerUnit);
 					float2 outUv;
@@ -133,13 +169,83 @@ Shader "Custom/BlobZoneShader"
 					outUv.y = (blobCoord.y + fmod(worldUv.y, _MovePixelsPerUnit) / _MovePixelsPerUnit) / 6;
 
 					fixed4 col = tex2D(_MoveBlobTileset, outUv);
-
 					return fixed4(_MoveBlobColor.xyz * col.xyz, col.w);
+				}
+				else
+				{
+					discard;
 				}
 
 				return fixed4(1, 1, 1, 0);
 			}
 
+			ENDCG
+		}
+
+		Pass
+		{
+			Name "GridLines"
+
+			CGPROGRAM
+
+			#pragma vertex vert alpha
+			#pragma fragment frag alpha
+
+			#include "UnityCG.cginc"
+
+			float _CellSize;
+			fixed4 _GridColor;
+			float _LineWidth;
+			bool _RenderGridLines;
+
+			struct appdata
+			{
+				float4 vertex : POSITION;
+			};
+
+			struct v2f
+			{
+				float2 uv : TEXCOORD0;
+				float4 vertex : SV_POSITION;
+			};
+
+
+			v2f vert(appdata v)
+			{
+				v2f o;
+				o.vertex = UnityObjectToClipPos(v.vertex);
+				// xy position of the vertex in worldspace.
+				o.uv = mul(unity_ObjectToWorld, v.vertex).xz;
+
+				return o;
+			}
+
+			float DrawGrid(float2 uv, float cellSize, float aa)
+			{
+				float aaThresh = aa;
+				float aaMin = aa * 0.1;
+
+				float2 gUV = uv / cellSize + aaThresh;
+
+				float2 fl = floor(gUV);
+				gUV = frac(gUV);
+				gUV -= aaThresh;
+				gUV = smoothstep(aaThresh, aaMin, abs(gUV));
+				float d = max(gUV.x, gUV.y);
+
+				return d;
+			}
+
+			fixed4 frag(v2f i) : SV_Target
+			{
+				if (!_RenderGridLines)
+				{
+					discard;
+				}
+				
+				fixed alpha = DrawGrid(i.uv, _CellSize, _LineWidth);
+				return fixed4(_GridColor.xyz, alpha);
+			}
 			ENDCG
 		}
 	}
