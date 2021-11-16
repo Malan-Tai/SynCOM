@@ -5,6 +5,8 @@ using UnityEngine;
 
 public struct Mission
 {
+    public static Mission None;
+
     public int moneyReward;
     public AllyCharacter recruitReward;
     public int difficulty;

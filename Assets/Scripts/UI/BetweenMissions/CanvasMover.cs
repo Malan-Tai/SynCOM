@@ -31,8 +31,25 @@ public class CanvasMover : MonoBehaviour
         _currentRect = _currentCanvas.RectTransform;
     }
 
+    private void OnEnable()
+    {
+        RegionButton.OnMouseClickEvent += ClickRegion;
+    }
+
+    private void OnDisable()
+    {
+        RegionButton.OnMouseClickEvent -= ClickRegion;
+    }
+
+    private void ClickRegion()
+    {
+        ChangeCanvas(1, 0);
+    }
+
     public void ChangeCanvas(int x, int y)
     {
+        if ((_targetOffset - _currentOffset).sqrMagnitude > 5f) return;
+
         LinkedCanvas newCanvas = _currentCanvas.GetNextCanvas(x, y);
 
         if (newCanvas != null)
@@ -46,10 +63,10 @@ public class CanvasMover : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.UpArrow)) ChangeCanvas(0, 1);
-        else if (Input.GetKeyDown(KeyCode.DownArrow)) ChangeCanvas(0, -1);
-        else if (Input.GetKeyDown(KeyCode.LeftArrow)) ChangeCanvas(-1, 0);
-        else if (Input.GetKeyDown(KeyCode.RightArrow)) ChangeCanvas(1, 0);
+        //if (Input.GetKeyDown(KeyCode.UpArrow)) ChangeCanvas(0, 1);
+        //else if (Input.GetKeyDown(KeyCode.DownArrow)) ChangeCanvas(0, -1);
+        //else if (Input.GetKeyDown(KeyCode.LeftArrow)) ChangeCanvas(-1, 0);
+        //else if (Input.GetKeyDown(KeyCode.RightArrow)) ChangeCanvas(1, 0);
 
         _camera.position += (_targetOffset - _currentOffset) * _speed * Time.deltaTime;
     }

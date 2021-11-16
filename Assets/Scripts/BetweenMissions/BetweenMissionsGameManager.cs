@@ -26,6 +26,29 @@ public class BetweenMissionsGameManager : MonoBehaviour
 
     private Dictionary<RegionName, Mission> _availableMissions;
 
+    private Dictionary<RegionName, int> _control;
+
+    private void Start()
+    {
+        _control = new Dictionary<RegionName, int>
+        {
+            { RegionName.Bronx,     0 },
+            { RegionName.Brooklyn,  0 },
+            { RegionName.Manhattan, 0 },
+            { RegionName.Queens,    0 },
+            { RegionName.Richmond,  0 }
+        };
+
+        _availableMissions = new Dictionary<RegionName, Mission>
+        {
+            { RegionName.Bronx,     Mission.None },
+            { RegionName.Brooklyn,  Mission.None },
+            { RegionName.Manhattan, Mission.None },
+            { RegionName.Queens,    Mission.None },
+            { RegionName.Richmond,  Mission.None }
+        };
+    }
+
     public void GenerateMissions(int progress, int missionNumber)
     {
         _availableMissions = new Dictionary<RegionName, Mission>();
@@ -39,5 +62,10 @@ public class BetweenMissionsGameManager : MonoBehaviour
 
             _availableMissions.Add(region, Mission.GenerateMission(progress - 2, progress + 3));
         }
+    }
+
+    public int GetRegionControl(RegionName region)
+    {
+        return _control[region];
     }
 }
