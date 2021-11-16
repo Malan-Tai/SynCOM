@@ -7,18 +7,28 @@ public class CanvasMover : MonoBehaviour
 {
     [SerializeField]
     private LinkedCanvas _currentCanvas;
+    private RectTransform _currentRect;
 
-    private RectTransform _rect;
+    private Vector3 _baseCameraPosition;
+    private Vector3 _targetOffset;
+    private Vector3 _currentOffset
+    {
+        get
+        {
+            return _camera.position - _baseCameraPosition;
+        }
+    }
 
-    private Vector3 _targetPosition;
+    private Transform _camera;
 
     [SerializeField]
     private float _speed;
 
     private void Awake()
     {
-        _rect = GetComponent<RectTransform>();
-        _targetPosition = _currentCanvas.RectTransform.position;
+        _camera = Camera.main.transform;
+        _baseCameraPosition = _camera.position;
+        _currentRect = _currentCanvas.RectTransform;
     }
 
     public void ChangeCanvas(int x, int y)
@@ -27,9 +37,10 @@ public class CanvasMover : MonoBehaviour
 
         if (newCanvas != null)
         {
-            //_targetPosition = newCanvas.RectTransform.position;
+            _targetOffset += newCanvas.RectTransform.position - _currentRect.position;
+
+            _currentRect = newCanvas.RectTransform;
             _currentCanvas = newCanvas;
-            //print(_targetPosition);
         }
     }
 
@@ -40,6 +51,6 @@ public class CanvasMover : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.LeftArrow)) ChangeCanvas(-1, 0);
         else if (Input.GetKeyDown(KeyCode.RightArrow)) ChangeCanvas(1, 0);
 
-        //_rect.position += (_targetPosition - _rect.position) * _speed;
+        _camera.position += (_targetOffset - _currentOffset) * _speed * Time.deltaTime;
     }
 }
