@@ -9,6 +9,7 @@ public class RegionDescription : MonoBehaviour
     private TMP_Text _regionDescription;
 
     private bool _eraseOnExit;
+    private bool _setOnEnter;
 
     private void Start()
     {
@@ -16,29 +17,32 @@ public class RegionDescription : MonoBehaviour
         _regionDescription  = this.transform.Find("RegionDescription").GetComponent<TMP_Text>();
 
         _eraseOnExit = true;
+        _setOnEnter = true;
     }
 
     private void OnEnable()
     {
-        RegionButton.OnMouseExitEvent += ResetDescription;
+        RegionButton.OnMouseExitEvent += EraseDescription;
         RegionButton.OnMouseEnterEvent += SetDescription;
         RegionButton.OnMouseClickEvent += FreezeDescription;
     }
 
     private void OnDisable()
     {
-        RegionButton.OnMouseExitEvent -= ResetDescription;
+        RegionButton.OnMouseExitEvent -= EraseDescription;
         RegionButton.OnMouseEnterEvent -= SetDescription;
         RegionButton.OnMouseClickEvent -= FreezeDescription;
     }
 
     public void SetDescription(RegionScriptableObject data)
     {
+        if (!_setOnEnter) return;
+
         _regionName.text = data.regionName.ToString();
         _regionDescription.text = data.description;
     }
 
-    public void ResetDescription()
+    public void EraseDescription()
     {
         if (!_eraseOnExit) return;
 
@@ -49,5 +53,6 @@ public class RegionDescription : MonoBehaviour
     public void FreezeDescription()
     {
         _eraseOnExit = false;
+        _setOnEnter = false;
     }
 }
