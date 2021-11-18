@@ -7,6 +7,8 @@ public class RegionDescription : MonoBehaviour
 {
     private TMP_Text _regionName;
     private TMP_Text _regionDescription;
+    private TMP_Text _mission;
+    private TMP_Text _missionDescription;
 
     private bool _eraseOnExit;
     private bool _setOnEnter;
@@ -15,9 +17,13 @@ public class RegionDescription : MonoBehaviour
     {
         _regionName         = this.transform.Find("RegionName").GetComponent<TMP_Text>();
         _regionDescription  = this.transform.Find("RegionDescription").GetComponent<TMP_Text>();
+        _mission            = this.transform.Find("Mission").GetComponent<TMP_Text>();
+        _missionDescription = this.transform.Find("MissionDescription").GetComponent<TMP_Text>();
 
         _eraseOnExit = true;
         _setOnEnter = true;
+
+        EraseDescription();
     }
 
     private void OnEnable()
@@ -40,6 +46,13 @@ public class RegionDescription : MonoBehaviour
 
         _regionName.text = data.regionName.ToString();
         _regionDescription.text = data.description;
+
+        Mission mission = BetweenMissionsGameManager.Instance.GetMissionInRegion(data.regionName);
+        if (!mission.Equals(Mission.None))
+        {
+            _mission.text = mission.missionTypeData.winCondition.ToString();
+            _missionDescription.text = mission.missionTypeData.description;
+        }
     }
 
     public void EraseDescription()
@@ -48,6 +61,8 @@ public class RegionDescription : MonoBehaviour
 
         _regionName.text = "";
         _regionDescription.text = "";
+        _mission.text = "";
+        _missionDescription.text = "";
     }
 
     public void FreezeDescription()
