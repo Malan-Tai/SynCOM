@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BetweenMissionsGameManager : MonoBehaviour
 {
@@ -31,8 +32,12 @@ public class BetweenMissionsGameManager : MonoBehaviour
 
     private Dictionary<RegionName, int> _control;
 
+    private RegionName _selectedRegion;
+
     private void Start()
     {
+        _selectedRegion = RegionName.None;
+
         _control = new Dictionary<RegionName, int>
         {
             { RegionName.Bronx,     0 },
@@ -65,7 +70,7 @@ public class BetweenMissionsGameManager : MonoBehaviour
             { RegionName.Richmond,  Mission.None }
         };
 
-        int N = Enum.GetNames(typeof(RegionName)).Length;
+        int N = Enum.GetNames(typeof(RegionName)).Length - 1;
 
         List<RegionName> addedRegions = new List<RegionName>();
         while (addedRegions.Count < missionNumber)
@@ -97,5 +102,19 @@ public class BetweenMissionsGameManager : MonoBehaviour
     public Mission GetMissionInRegion(RegionName region)
     {
         return _availableMissions[region];
+    }
+
+    public void StartMission()
+    {
+        if (_selectedRegion == RegionName.None) return;
+
+        print("start mission in " + _selectedRegion);
+
+        SceneManager.LoadScene("SampleScene");
+    }
+
+    public void SetSelectedRegion(RegionName region)
+    {
+        _selectedRegion = region;
     }
 }

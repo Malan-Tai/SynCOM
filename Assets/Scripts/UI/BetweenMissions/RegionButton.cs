@@ -43,6 +43,7 @@ public class RegionButton : MonoBehaviour
     {
         if (BetweenMissionsGameManager.Instance.GetMissionInRegion(_regionData.regionName).Equals(Mission.None)) return;
 
+        BetweenMissionsGameManager.Instance.SetSelectedRegion(_regionData.regionName);
         print("clicked " + _regionData.regionName);
         if (OnMouseClickEvent != null) OnMouseClickEvent();
     }
