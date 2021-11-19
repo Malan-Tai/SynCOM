@@ -19,7 +19,7 @@ public class RegionButton : MonoBehaviour
     public delegate void EventMouseExit();
     public static event EventMouseExit OnMouseExitEvent;
 
-    public delegate void EventMouseClick();
+    public delegate void EventMouseClick(RegionScriptableObject data);
     public static event EventMouseClick OnMouseClickEvent;
 
     private void Start()
@@ -43,8 +43,7 @@ public class RegionButton : MonoBehaviour
     {
         if (BetweenMissionsGameManager.Instance.GetMissionInRegion(_regionData.regionName).Equals(Mission.None)) return;
 
-        BetweenMissionsGameManager.Instance.SetSelectedRegion(_regionData.regionName);
         print("clicked " + _regionData.regionName);
-        if (OnMouseClickEvent != null) OnMouseClickEvent();
+        if (OnMouseClickEvent != null) OnMouseClickEvent(_regionData);
     }
 }

@@ -65,7 +65,7 @@ public class RegionDescription : MonoBehaviour
         _missionDescription.text = "";
     }
 
-    public void FreezeDescription()
+    public void FreezeDescription(RegionScriptableObject region)
     {
         _eraseOnExit = false;
         _setOnEnter = false;

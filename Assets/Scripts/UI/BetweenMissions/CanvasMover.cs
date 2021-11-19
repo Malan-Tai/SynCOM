@@ -41,7 +41,7 @@ public class CanvasMover : MonoBehaviour
         RegionButton.OnMouseClickEvent -= ClickRegion;
     }
 
-    private void ClickRegion()
+    private void ClickRegion(RegionScriptableObject region)
     {
         ChangeCanvas(1, 0);
     }

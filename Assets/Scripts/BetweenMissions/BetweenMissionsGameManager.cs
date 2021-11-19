@@ -30,22 +30,11 @@ public class BetweenMissionsGameManager : MonoBehaviour
 
     private Dictionary<RegionName, Mission> _availableMissions;
 
-    private Dictionary<RegionName, int> _control;
-
     private RegionName _selectedRegion;
 
     private void Start()
     {
         _selectedRegion = RegionName.None;
-
-        _control = new Dictionary<RegionName, int>
-        {
-            { RegionName.Bronx,     0 },
-            { RegionName.Brooklyn,  0 },
-            { RegionName.Manhattan, 0 },
-            { RegionName.Queens,    0 },
-            { RegionName.Richmond,  0 }
-        };
 
         _availableMissions = new Dictionary<RegionName, Mission>
         {
@@ -57,6 +46,16 @@ public class BetweenMissionsGameManager : MonoBehaviour
         };
 
         GenerateMissions(0, 2);
+    }
+
+    private void OnEnable()
+    {
+        RegionButton.OnMouseClickEvent += SetSelectedRegion;
+    }
+
+    private void OnDisable()
+    {
+        RegionButton.OnMouseClickEvent -= SetSelectedRegion;
     }
 
     public void GenerateMissions(int progress, int missionNumber)
@@ -84,11 +83,6 @@ public class BetweenMissionsGameManager : MonoBehaviour
         }
     }
 
-    public int GetRegionControl(RegionName region)
-    {
-        return _control[region];
-    }
-
     public MissionTypeScriptableObject GetMissionType(WinCondition winCondition)
     {
         foreach (MissionTypeScriptableObject data in _missionTypes)
@@ -113,8 +107,8 @@ public class BetweenMissionsGameManager : MonoBehaviour
         SceneManager.LoadScene("SampleScene");
     }
 
-    public void SetSelectedRegion(RegionName region)
+    public void SetSelectedRegion(RegionScriptableObject region)
     {
-        _selectedRegion = region;
+        _selectedRegion = region.regionName;
     }
 }
