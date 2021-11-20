@@ -35,6 +35,9 @@ public class BetweenMissionsGameManager : MonoBehaviour
     [SerializeField]
     private UnitScrollList _missionUnitList;
 
+    [SerializeField]
+    private Transform _missionRecapUnits;
+
     private void Start()
     {
         _selectedRegion = RegionName.None;
@@ -51,6 +54,14 @@ public class BetweenMissionsGameManager : MonoBehaviour
         GenerateMissions(0, 2);
 
         _missionUnitList.Populate(GlobalGameManager.Instance.allCharacters);
+
+        GlobalGameManager.Instance.SetDefaultSquad();
+        int i = 0;
+        foreach (MissionRecapUnit unit in _missionRecapUnits.GetComponentsInChildren<MissionRecapUnit>())
+        {
+            unit.SetCharacter(i, GlobalGameManager.Instance.currentSquad[i]);
+            i++;
+        }
     }
 
     private void OnEnable()

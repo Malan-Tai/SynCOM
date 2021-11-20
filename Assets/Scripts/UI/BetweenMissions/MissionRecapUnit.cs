@@ -4,11 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class UnitListElement : MonoBehaviour
+public class MissionRecapUnit : MonoBehaviour
 {
+    private int _indexInSquad;
     private AllyCharacter _character;
     private TMP_Text _unitName;
-    private Image _unitPortrait;
+    private TMP_Text _unitClass;
+    private Image _unitImage;
     private GameObject _background;
 
     public delegate void EventMouseEnter(AllyCharacter character);
@@ -17,27 +19,44 @@ public class UnitListElement : MonoBehaviour
     public delegate void EventMouseExit();
     public static event EventMouseExit OnMouseExitEvent;
 
-    public delegate void EventMouseClick(AllyCharacter character);
+    public delegate void EventMouseClick(int squadIndex);
     public static event EventMouseClick OnMouseClickEvent;
 
     private bool _needsWidthUpdate = true;
 
-    public void Init()
+    private void Start()
     {
-        _unitName = GetComponentInChildren<TMP_Text>();
-        _unitPortrait = transform.Find("portrait").GetComponent<Image>();
-        _background = transform.Find("background").gameObject;
+        _unitName = transform.Find("Name").GetComponent<TMP_Text>();
+        _unitClass = transform.Find("Class").GetComponent<TMP_Text>();
+        _unitImage = transform.Find("Image").GetComponent<Image>();
+        _background = transform.Find("Background").gameObject;
         _background.SetActive(false);
 
         _needsWidthUpdate = true;
     }
 
-    public void SetCharacter(AllyCharacter character)
+    public void SetCharacter(int index, AllyCharacter character)
     {
+        _indexInSquad = index;
         _character = character;
 
+        if (character == null)
+        {
+            _unitName.gameObject.SetActive(false);
+            _unitClass.gameObject.SetActive(false);
+            _unitImage.gameObject.SetActive(false);
+            _background.SetActive(true);
+
+            return;
+        }
+
+        _unitName.gameObject.SetActive(true);
+        _unitClass.gameObject.SetActive(true);
+        _unitImage.gameObject.SetActive(true);
+        _background.SetActive(false);
+
         // TODO : portrait & name
-        _unitName.text = "Name";
+        _unitClass.text = character.CharacterClass.ToString();
     }
 
     private void OnMouseEnter()
@@ -49,16 +68,16 @@ public class UnitListElement : MonoBehaviour
 
     private void OnMouseExit()
     {
-        _background.SetActive(false);
+        _background.SetActive(_character == null);
 
         if (OnMouseExitEvent != null) OnMouseExitEvent();
     }
 
     private void OnMouseUpAsButton()
     {
-        print("click " + _unitName.text);
+        print("click " + _indexInSquad + " : " + _unitName.text);
 
-        if (OnMouseClickEvent != null) OnMouseClickEvent(_character);
+        if (OnMouseClickEvent != null) OnMouseClickEvent(_indexInSquad);
     }
 
     private void Update()

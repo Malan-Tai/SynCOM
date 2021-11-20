@@ -24,6 +24,8 @@ public class AllyCharacter : Character
 
     //Character's archetype
     private EnumClasses _class;
+    public EnumClasses CharacterClass { get => _class; }
+
     private List<Trait> _traits = new List<Trait>();
     public List<Trait> Traits
     {
@@ -50,12 +52,26 @@ public class AllyCharacter : Character
 
     public void InitializeRelationships()
     {
+        // TODO : deprecated soon
+
         _relationships = new Dictionary<AllyCharacter, Relationship>();
         foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
         {
             if (ally.Character != this)
             {
                 _relationships.Add(ally.AllyCharacter, new Relationship(this, ally.AllyCharacter));
+            }
+        }
+    }
+
+    public void InitializeRelationships(List<AllyCharacter> characters)
+    {
+        _relationships = new Dictionary<AllyCharacter, Relationship>();
+        foreach (AllyCharacter ally in characters)
+        {
+            if (ally != this)
+            {
+                _relationships.Add(ally, new Relationship(this, ally));
             }
         }
     }

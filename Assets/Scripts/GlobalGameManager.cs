@@ -15,6 +15,7 @@ public class GlobalGameManager : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(gameObject);
 
+            currentSquad = new AllyCharacter[] { null, null, null, null };
             GenerateCharacters();
         }
         else
@@ -25,6 +26,7 @@ public class GlobalGameManager : MonoBehaviour
     #endregion
 
     public List<AllyCharacter> allCharacters { get; private set; }
+    public AllyCharacter[] currentSquad { get; private set; }
 
     private int _money;
 
@@ -55,5 +57,25 @@ public class GlobalGameManager : MonoBehaviour
             new AllyCharacter(EnumClasses.Sniper, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Sniper, 20, 2, 65, 10, 15, 20, 4, 60),
         };
+
+        foreach (AllyCharacter character in allCharacters)
+        {
+            character.InitializeRelationships(allCharacters);
+        }
+    }
+
+    public void SetDefaultSquad()
+    {
+        int i = 0;
+        while (i < currentSquad.Length && i < allCharacters.Count)
+        {
+            currentSquad[i] = allCharacters[i];
+            i++;
+        }
+
+        while (i < currentSquad.Length)
+        {
+            currentSquad[i] = null;
+        }
     }
 }
