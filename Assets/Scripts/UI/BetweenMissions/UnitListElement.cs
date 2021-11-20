@@ -40,7 +40,6 @@ public class UnitListElement : MonoBehaviour
 
     private void OnMouseEnter()
     {
-        print("enter " + _unitName.text);
         _background.SetActive(true);
 
         if (OnMouseEnterEvent != null) OnMouseEnterEvent(_character);
@@ -48,7 +47,6 @@ public class UnitListElement : MonoBehaviour
 
     private void OnMouseExit()
     {
-        print("exit " + _unitName.text);
         _background.SetActive(false);
 
         if (OnMouseExitEvent != null) OnMouseExitEvent();

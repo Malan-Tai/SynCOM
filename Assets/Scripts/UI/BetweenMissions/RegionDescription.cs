@@ -31,6 +31,7 @@ public class RegionDescription : MonoBehaviour
         RegionButton.OnMouseExitEvent += EraseDescription;
         RegionButton.OnMouseEnterEvent += SetDescription;
         RegionButton.OnMouseClickEvent += FreezeDescription;
+        BackToMapButton.OnMouseClickEvent += UnfreezeDescription;
     }
 
     private void OnDisable()
@@ -38,6 +39,7 @@ public class RegionDescription : MonoBehaviour
         RegionButton.OnMouseExitEvent -= EraseDescription;
         RegionButton.OnMouseEnterEvent -= SetDescription;
         RegionButton.OnMouseClickEvent -= FreezeDescription;
+        BackToMapButton.OnMouseClickEvent -= UnfreezeDescription;
     }
 
     public void SetDescription(RegionScriptableObject data)
@@ -69,5 +71,13 @@ public class RegionDescription : MonoBehaviour
     {
         _eraseOnExit = false;
         _setOnEnter = false;
+    }
+
+    public void UnfreezeDescription()
+    {
+        _eraseOnExit = true;
+        _setOnEnter = true;
+
+        EraseDescription();
     }
 }

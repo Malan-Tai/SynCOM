@@ -34,16 +34,23 @@ public class CanvasMover : MonoBehaviour
     private void OnEnable()
     {
         RegionButton.OnMouseClickEvent += ClickRegion;
+        BackToMapButton.OnMouseClickEvent += BackToMap;
     }
 
     private void OnDisable()
     {
         RegionButton.OnMouseClickEvent -= ClickRegion;
+        BackToMapButton.OnMouseClickEvent -= BackToMap;
     }
 
     private void ClickRegion(RegionScriptableObject region)
     {
         ChangeCanvas(1, 0);
+    }
+
+    private void BackToMap()
+    {
+        ChangeCanvas(-1, 0);
     }
 
     public void ChangeCanvas(int x, int y)
