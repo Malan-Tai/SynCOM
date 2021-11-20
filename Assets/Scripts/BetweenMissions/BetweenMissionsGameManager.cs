@@ -32,6 +32,9 @@ public class BetweenMissionsGameManager : MonoBehaviour
 
     private RegionName _selectedRegion;
 
+    [SerializeField]
+    private UnitScrollList _missionUnitList;
+
     private void Start()
     {
         _selectedRegion = RegionName.None;
@@ -46,6 +49,8 @@ public class BetweenMissionsGameManager : MonoBehaviour
         };
 
         GenerateMissions(0, 2);
+
+        _missionUnitList.Populate(GlobalGameManager.Instance.allCharacters);
     }
 
     private void OnEnable()
