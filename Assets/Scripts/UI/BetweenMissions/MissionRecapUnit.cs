@@ -59,6 +59,11 @@ public class MissionRecapUnit : MonoBehaviour
         _unitClass.text = character.CharacterClass.ToString();
     }
 
+    public void SetCharacterToNull()
+    {
+        SetCharacter(_indexInSquad, null);
+    }
+
     private void OnMouseEnter()
     {
         _background.SetActive(true);
