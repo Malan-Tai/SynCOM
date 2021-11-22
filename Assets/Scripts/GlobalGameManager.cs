@@ -78,4 +78,10 @@ public class GlobalGameManager : MonoBehaviour
             currentSquad[i] = null;
         }
     }
+
+    public void SetSquadUnit(int i, AllyCharacter character)
+    {
+        if (i >= currentSquad.Length) return;
+        currentSquad[i] = character;
+    }
 }

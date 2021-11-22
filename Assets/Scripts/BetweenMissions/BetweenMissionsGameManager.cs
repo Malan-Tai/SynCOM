@@ -38,6 +38,11 @@ public class BetweenMissionsGameManager : MonoBehaviour
     [SerializeField]
     private Transform _missionRecapUnits;
 
+    private int _selectedSquadUnit;
+
+    public delegate void NotifyCanvasChange(int x, int y);
+    public static event NotifyCanvasChange OnNotifyCanvasChange;
+
     private void Start()
     {
         _selectedRegion = RegionName.None;
@@ -59,7 +64,9 @@ public class BetweenMissionsGameManager : MonoBehaviour
         int i = 0;
         foreach (MissionRecapUnit unit in _missionRecapUnits.GetComponentsInChildren<MissionRecapUnit>())
         {
-            unit.SetCharacter(i, GlobalGameManager.Instance.currentSquad[i]);
+            unit.Init();
+            unit.SetIndex(i);
+            unit.SetCharacter(GlobalGameManager.Instance.currentSquad[i]);
             i++;
         }
     }
@@ -67,11 +74,17 @@ public class BetweenMissionsGameManager : MonoBehaviour
     private void OnEnable()
     {
         RegionButton.OnMouseClickEvent += SetSelectedRegion;
+        MissionRecapUnit.OnMouseClickEvent += SetSelectedSquadUnitAndUpdateFrozenUnitsInList;
+
+        _missionUnitList.OnMouseClickEvent += ChooseSquadUnit;
     }
 
     private void OnDisable()
     {
         RegionButton.OnMouseClickEvent -= SetSelectedRegion;
+        MissionRecapUnit.OnMouseClickEvent -= SetSelectedSquadUnitAndUpdateFrozenUnitsInList;
+
+        _missionUnitList.OnMouseClickEvent -= ChooseSquadUnit;
     }
 
     public void GenerateMissions(int progress, int missionNumber)
@@ -123,8 +136,31 @@ public class BetweenMissionsGameManager : MonoBehaviour
         SceneManager.LoadScene("SampleScene");
     }
 
-    public void SetSelectedRegion(RegionScriptableObject region)
+    public void ClearSquad()
+    {
+        int n = GlobalGameManager.Instance.currentSquad.Length;
+        for (int i = 0; i < n; i++)
+        {
+            GlobalGameManager.Instance.SetSquadUnit(i, null);
+        }
+    }
+
+    private void SetSelectedRegion(RegionScriptableObject region)
     {
         _selectedRegion = region.regionName;
+    }
+
+    private void SetSelectedSquadUnitAndUpdateFrozenUnitsInList(int squadIndex)
+    {
+        _selectedSquadUnit = squadIndex;
+        _missionUnitList.FreezeCharacters(GlobalGameManager.Instance.currentSquad);
+    }
+
+    private void ChooseSquadUnit(AllyCharacter character)
+    {
+        GlobalGameManager.Instance.SetSquadUnit(_selectedSquadUnit, character);
+        _missionRecapUnits.GetComponentsInChildren<MissionRecapUnit>()[_selectedSquadUnit].SetCharacter(character);
+
+        if (OnNotifyCanvasChange != null) OnNotifyCanvasChange(0, -1);
     }
 }

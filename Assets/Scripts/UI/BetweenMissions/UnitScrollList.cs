@@ -10,6 +10,15 @@ public class UnitScrollList : MonoBehaviour
     [SerializeField]
     private float _offset = 5;
 
+    public delegate void EventMouseEnter(AllyCharacter character);
+    public event EventMouseEnter OnMouseEnterEvent;
+
+    public delegate void EventMouseExit();
+    public event EventMouseExit OnMouseExitEvent;
+
+    public delegate void EventMouseClick(AllyCharacter character);
+    public event EventMouseClick OnMouseClickEvent;
+
     public void Populate(List<AllyCharacter> characters)
     {
         int i = 0;
@@ -27,6 +36,9 @@ public class UnitScrollList : MonoBehaviour
             if (i >= N)
             {
                 elem.gameObject.SetActive(false);
+                elem.OnMouseEnterEvent  -= ListElementMouseEnter;
+                elem.OnMouseExitEvent   -= ListElementMouseExit;
+                elem.OnMouseClickEvent  -= ListElementMouseClick;
             }
             else
             {
@@ -44,7 +56,35 @@ public class UnitScrollList : MonoBehaviour
             newElem.SetCharacter(characters[i]);
             newElem.transform.localPosition -= new Vector3(0, height * i, 0);
 
+            newElem.OnMouseEnterEvent  += ListElementMouseEnter;
+            newElem.OnMouseExitEvent   += ListElementMouseExit;
+            newElem.OnMouseClickEvent  += ListElementMouseClick;
+
             i++;
         }
+    }
+
+    public void FreezeCharacters(AllyCharacter[] frozen)
+    {
+        UnitListElement[] children = GetComponentsInChildren<UnitListElement>();
+        foreach (UnitListElement child in children)
+        {
+            child.SetFrozen(frozen);
+        }
+    }
+
+    private void ListElementMouseEnter(AllyCharacter character)
+    {
+        if (OnMouseEnterEvent != null) OnMouseEnterEvent(character);
+    }
+
+    private void ListElementMouseExit()
+    {
+        if (OnMouseExitEvent != null) OnMouseExitEvent();
+    }
+
+    private void ListElementMouseClick(AllyCharacter character)
+    {
+        if (OnMouseClickEvent != null) OnMouseClickEvent(character);
     }
 }

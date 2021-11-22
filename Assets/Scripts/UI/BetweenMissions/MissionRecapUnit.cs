@@ -24,7 +24,7 @@ public class MissionRecapUnit : MonoBehaviour
 
     private bool _needsWidthUpdate = true;
 
-    private void Start()
+    public void Init()
     {
         _unitName = transform.Find("Name").GetComponent<TMP_Text>();
         _unitClass = transform.Find("Class").GetComponent<TMP_Text>();
@@ -35,9 +35,13 @@ public class MissionRecapUnit : MonoBehaviour
         _needsWidthUpdate = true;
     }
 
-    public void SetCharacter(int index, AllyCharacter character)
+    public void SetIndex(int index)
     {
         _indexInSquad = index;
+    }
+
+    public void SetCharacter(AllyCharacter character)
+    {
         _character = character;
 
         if (character == null)
@@ -61,7 +65,7 @@ public class MissionRecapUnit : MonoBehaviour
 
     public void SetCharacterToNull()
     {
-        SetCharacter(_indexInSquad, null);
+        SetCharacter(null);
     }
 
     private void OnMouseEnter()
