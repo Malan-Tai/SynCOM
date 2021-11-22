@@ -151,30 +151,19 @@ Shader "Custom/GridDisplay"
 					discard;
 				}
 
+				float2 worldUv = float2(i.uv.x * _GridWidthInTiles, i.uv.y * _GridHeightInTiles);
+				float2 outUv = (blobCoord + frac(worldUv)) / float2(8.0, 6.0);
 				if (_RenderAttackZone)
 				{
-					float2 worldUv = float2(i.uv.x * _GridWidthInTiles * _AttackPixelsPerUnit, i.uv.y * _GridHeightInTiles * _AttackPixelsPerUnit);
-					float2 outUv;
-					outUv.x = (blobCoord.x + fmod(worldUv.x, _AttackPixelsPerUnit) / _AttackPixelsPerUnit) / 8;
-					outUv.y = (blobCoord.y + fmod(worldUv.y, _AttackPixelsPerUnit) / _AttackPixelsPerUnit) / 6;
-
 					fixed4 col = tex2D(_AttackBlobTileset, outUv);
-					return fixed4(_AttackBlobColor.xyz * col.xyz, col.w);
+					return _AttackBlobColor * col;
 				}
 				else if (_RenderMoveZone)
 				{
-					float2 worldUv = float2(i.uv.x * _GridWidthInTiles * _MovePixelsPerUnit, i.uv.y * _GridHeightInTiles * _MovePixelsPerUnit);
-					float2 outUv;
-					outUv.x = (blobCoord.x + fmod(worldUv.x, _MovePixelsPerUnit) / _MovePixelsPerUnit) / 8;
-					outUv.y = (blobCoord.y + fmod(worldUv.y, _MovePixelsPerUnit) / _MovePixelsPerUnit) / 6;
-
 					fixed4 col = tex2D(_MoveBlobTileset, outUv);
-					return fixed4(_MoveBlobColor.xyz * col.xyz, col.w);
+					return _MoveBlobColor * col;
 				}
-				else
-				{
-					discard;
-				}
+				// else Not possible
 
 				return fixed4(1, 1, 1, 0);
 			}
