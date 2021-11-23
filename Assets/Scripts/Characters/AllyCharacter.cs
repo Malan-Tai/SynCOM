@@ -14,7 +14,7 @@ public class AllyCharacter : Character
     };
 
     private static Dictionary<EnumClasses, List<Trait>> s_commonPossibleTraits = new Dictionary<EnumClasses, List<Trait>>(){
-         {EnumClasses.Berserker, new List<Trait> {new Ugly(),new Fearful(),new Cold(), new Antisocial()}},
+        {EnumClasses.Berserker, new List<Trait> {new Ugly(),new Fearful(),new Cold(), new Antisocial()}},
         {EnumClasses.Engineer, new List<Trait> {new Ugly(),new Fearful(),new Cold(), new Antisocial()}},
         {EnumClasses.Hitman, new List<Trait> {new Brave(), new Nice() ,new Fearful(),new Cold()}},
         {EnumClasses.Sniper, new List<Trait> {new Brave(),new Nice(),new Fearful(),new Cold()}},
@@ -64,14 +64,14 @@ public class AllyCharacter : Character
     {
         for (int i = 0; i < s_mandatoryTraits[characterClass].Count; i++)
         {
-            _traits.Add(s_mandatoryTraits[characterClass][i]);
+            _traits.Add(s_mandatoryTraits[characterClass][i].GetClone(this));
         }
     }
 
     private void addRandomTrait(EnumClasses characterClass)
     {
         int indice = Random.Range(0, s_commonPossibleTraits[characterClass].Count);
-        _traits.Add(s_commonPossibleTraits[characterClass][indice]);
+        _traits.Add(s_commonPossibleTraits[characterClass][indice].GetClone(this));
     }
 
     public override float GetDodge(EnumCover cover)

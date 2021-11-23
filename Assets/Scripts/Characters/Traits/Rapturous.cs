@@ -18,4 +18,9 @@ public class Rapturous : Trait
     {
         return "Rapturous";
     }
+
+    public override float GetDamageModifier()
+    {
+        return base.GetDamageModifier();
+    }
 }
