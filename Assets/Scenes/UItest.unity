@@ -1528,7 +1528,7 @@ MonoBehaviour:
   m_Padding:
     m_Left: 0
     m_Right: 0
-    m_Top: 0
+    m_Top: 300
     m_Bottom: 0
   m_ChildAlignment: 0
   m_Spacing: 0
@@ -3531,12 +3531,13 @@ MonoBehaviour:
   CameraL: {fileID: 92619674}
   CameraR: {fileID: 26812077}
   EscapeButton: {fileID: 755071266}
-  ReturnButton: {fileID: 0}
+  ReturnButton: {fileID: 755071266}
   BasicAbility: {fileID: 1781439120}
   BasicDuoAbility: {fileID: 949882093}
   Slap: {fileID: 215690160}
   HunkerDown: {fileID: 807352170}
   Heal: {fileID: 1544643684}
+  infoPanel: {fileID: 1145436578}
 --- !u!114 &695709483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5360,6 +5361,7 @@ MonoBehaviour:
     TilePixelSize: 256
     Tint: {r: 0, g: 0.81468797, b: 1, a: 1}
   _mouseHoverTileSprite: {fileID: 21300000, guid: 76bf20e64a169aa4c8a14c4730632f0b, type: 3}
+  _gridRenderer: {fileID: 0}
 --- !u!1 &1145436578
 GameObject:
   m_ObjectHideFlags: 0
@@ -5396,8 +5398,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 443.75, y: -65.16174}
-  m_SizeDelta: {x: 887.5, y: 130.32349}
+  m_AnchoredPosition: {x: 443.75, y: -375.10822}
+  m_SizeDelta: {x: 887.5, y: 150.21646}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1145436580
 MonoBehaviour:
