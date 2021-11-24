@@ -53,6 +53,9 @@ public class CombatGameManager : MonoBehaviour
 
     private List<Tile> _previousReachableTiles;
 
+    public delegate void NewTurnEvent();
+    public static event NewTurnEvent OnNewTurn;
+
     private void Start()
     {
         _currentUnitIndex = 0;
@@ -190,6 +193,7 @@ public class CombatGameManager : MonoBehaviour
     public void NewAllyTurn()
     {
         print("new turn");
+        if (OnNewTurn != null) OnNewTurn();
 
         foreach (AllyUnit unit in _allAllyUnits)
         {
