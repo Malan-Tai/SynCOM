@@ -38,8 +38,8 @@ public class CombatGameManager : MonoBehaviour
     private List<AllyUnit> _controllableUnits;
     private int _currentUnitIndex;
 
-    private AllyUnit[] _allAllyUnits;
-    public AllyUnit[] AllAllyUnits { get { return _allAllyUnits; } }
+    private List<AllyUnit> _allAllyUnits;
+    public List<AllyUnit> AllAllyUnits { get { return _allAllyUnits; } }
 
     public AllyUnit CurrentUnit { get { return _controllableUnits[_currentUnitIndex]; } }
 
@@ -56,22 +56,32 @@ public class CombatGameManager : MonoBehaviour
     public delegate void NewTurnEvent();
     public static event NewTurnEvent OnNewTurn;
 
+    public delegate void EventSelectUnit(int squadIndex);
+    public static event EventSelectUnit OnUnitSelected;
+
     private void Start()
     {
         _currentUnitIndex = 0;
         _previousReachableTiles = new List<Tile>();
 
-        _allAllyUnits = new AllyUnit[_controllableUnits.Count];
-        _controllableUnits.CopyTo(_allAllyUnits);
+        _allAllyUnits = new List<AllyUnit>();
+        foreach (AllyUnit unit in _controllableUnits)
+        {
+            _allAllyUnits.Add(unit);
+        }
 
         InitCharacters();
+
+        if (OnUnitSelected != null) OnUnitSelected(_currentUnitIndex);
     }
 
     private void InitCharacters()
     {
+        int i = 0;
         foreach (AllyUnit ally in _allAllyUnits)
         {
-            ally.Character = new AllyCharacter(EnumClasses.Sniper, 20, 2, 65, 10, 15, 20, 4, 60);
+            ally.Character = new AllyCharacter((EnumClasses)i, 20, 2, 65, 10, 15, 20, 4, 60);
+            i++;
         }
 
         foreach (AllyUnit ally in _allAllyUnits)
@@ -104,6 +114,8 @@ public class CombatGameManager : MonoBehaviour
         _camera.SwitchParenthood(CurrentUnit);
         UpdateReachableTiles();
         UpdateVisibilities();
+
+        if (OnUnitSelected != null) OnUnitSelected(_currentUnitIndex);
     }
 
     public void SelectControllableUnit(AllyUnit unit)
@@ -115,6 +127,8 @@ public class CombatGameManager : MonoBehaviour
             _camera.SwitchParenthood(unit);
             UpdateReachableTiles();
             UpdateVisibilities();
+
+            if (OnUnitSelected != null) OnUnitSelected(_currentUnitIndex);
         }
     }
 
@@ -126,6 +140,8 @@ public class CombatGameManager : MonoBehaviour
             _camera.SwitchParenthood(_controllableUnits[index]);
             UpdateReachableTiles();
             UpdateVisibilities();
+
+            if (OnUnitSelected != null) OnUnitSelected(_currentUnitIndex);
         }
     }
 

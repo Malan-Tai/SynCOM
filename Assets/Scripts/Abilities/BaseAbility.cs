@@ -11,14 +11,17 @@ public abstract class BaseAbility
     protected bool _uiCancelled = false;
 
     protected AllyUnit _effector;
+
     public void SetUIConfirmed()
     {
         _uiConfirmed = true;
     }
+
     public void SetUICancelled()
     {
         _uiCancelled = true;
     }
+
     public virtual void SetEffector(AllyUnit effector)
     {
         _effector = effector;
