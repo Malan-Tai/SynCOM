@@ -15,7 +15,7 @@ public class Slap : BaseDuoAbility
 
     protected override bool CanExecute()
     {
-        return _chosenAlly != null; // && _chosenAlly.HP > 0
+        return _chosenAlly != null;
     }
 
     protected override void EnemyTargetingInput()
@@ -47,5 +47,21 @@ public class Slap : BaseDuoAbility
     protected override bool IsAllyCompatible(AllyUnit unit)
     {
         return true;
+    }
+
+    public override string GetName()
+    {
+        return "Slap";
+    }
+
+    public override string GetDescription()
+    {
+        return "Slap\nA secrete technique that only the chosen ones can use. " +
+                "You express your rage against your useless ally in the form of a single perfectly placed slap";
+    }
+
+    public override string GetAllyDescription()
+    {
+        return "Slap\nGet slapped, dislike your ally.";
     }
 }

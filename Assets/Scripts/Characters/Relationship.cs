@@ -8,12 +8,14 @@ public class Relationship
     /// <summary>
     /// The <c>Character</c> towards which the sentiments and emotions are felt.
     /// </summary>
-    private Character _target;
-    public Character Target
+    private AllyCharacter _target;
+    public AllyCharacter Target
     {
         get { return _target; }
         private set { _target = value; }
     }
+
+    private AllyCharacter _source;
 
     private class Gauge
     {
@@ -59,8 +61,10 @@ public class Relationship
         return _gauges[sentiment].level;
     }
 
-    public Relationship()
+    public Relationship(AllyCharacter source, AllyCharacter target)
     {
+        this._source = source;
+        this._target = target;
         _listEmotions = new List<EnumEmotions>();
         _gauges = new Dictionary<EnumSentiment, Gauge>();
         foreach (EnumSentiment sentiment in Enum.GetValues(typeof(EnumSentiment)))
@@ -77,6 +81,20 @@ public class Relationship
     public void IncreaseSentiment(EnumSentiment sentiment, int gain)
     {
         Gauge gauge = _gauges[sentiment];
+        
+
+        List<Trait> listeSelfTrait = _source.Traits;
+        foreach (Trait trait in listeSelfTrait)
+        {
+            gain = trait.GetSelfToAllySentimentGain(sentiment, gain);
+        }
+
+        List<Trait> listeAllyTrait = _target.Traits;
+        foreach (Trait trait in listeAllyTrait)
+        {
+            gain = trait.GetAllyToSelfSentimentGain(sentiment, gain);
+        }
+
         int sentimentTotal = gauge.value + gain;
 
         if (sentimentTotal >= GetGaugeLimit(gauge.level))

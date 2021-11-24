@@ -12,10 +12,12 @@ public class Character
     [SerializeField] private float _healthPoints;
     [SerializeField] private float _damage;    //amount of damages dealt
     [SerializeField] private float _accuracy;  //value between 0 and 1
-    [SerializeField] private float _dodge;     // value between 0 and 1. Probability of successful attack is accuracy-dodge
+    [SerializeField] protected float _dodge;     // value between 0 and 1. Probability of successful attack is accuracy-dodge
     [SerializeField] private float _movementPoints; // how far can a charcater move in one turn
     [SerializeField] private float _weigth; //can be a condition for some actions
     [SerializeField] private float _critChances;
+    [SerializeField] private float _rangeShot;
+    [SerializeField] private float _name;
 
     //constructor 
 
@@ -23,15 +25,17 @@ public class Character
     {
     }
 
-    public Character(float maxHealth,float damage, float accuracy, float dodge,float critChances, float movementPoints, float weight)
+    public Character(float maxHealth,float damage, float accuracy, float dodge,float critChances,float rangeShot, float movementPoints, float weight)
     {
         _maxHealth = maxHealth;
+        _healthPoints = maxHealth;
         _damage = damage;
         _accuracy = accuracy;
         _dodge = dodge;
         _critChances = critChances;
         _movementPoints = movementPoints;
         _weigth = weight;
+        _rangeShot = rangeShot;
 
     }
 
@@ -40,25 +44,25 @@ public class Character
     public float MaxHealth
     {
         get { return this._maxHealth; }
-        private set { this._maxHealth = value; }
+        set { this._maxHealth = value; }
     }
 
     public float HealthPoints
     {
         get { return this._healthPoints; }
-        private set { this._healthPoints = value; }
+        set { this._healthPoints = value; }
     }
 
     public float Damage
     {
         get { return this._damage; }
-        private set { this._damage = value; }
+        set { this._damage = value; }
     }
 
     public float Accuracy
     {
         get { return this._accuracy; }
-        private set { this._accuracy = value; }
+        set { this._accuracy = value; }
     }
 
     //public float Dodge
@@ -67,7 +71,7 @@ public class Character
     //    private set { this._dodge = value; }
     //}
 
-    public float GetDodge(EnumCover cover)
+    public virtual float GetDodge(EnumCover cover)
     {
         float dodge = _dodge;
         switch (cover)
@@ -88,19 +92,25 @@ public class Character
     public float CritChances
     {
         get { return this._critChances; }
-        private set { this._critChances = value; }
+        set { this._critChances = value; }
     }
 
     public float MovementPoints
     {
         get { return this._movementPoints; }
-        private set { this._movementPoints = value; }
+        set { this._movementPoints = value; }
     }
 
     public float Weigth
     {
         get { return this._weigth; }
-        private set { this._weigth = value; }
+        set { this._weigth = value; }
+    }
+
+    public float RangeShot
+    {
+        get { return this._rangeShot; }
+        set { this._rangeShot = value; }
     }
 
     public void TakeDamage(float damage)
@@ -110,6 +120,16 @@ public class Character
         if (_healthPoints <= 0)
         {
             Die();
+        }
+    }
+
+    public void Heal(float heal)
+    {
+        Debug.Log("mmh, recovered " + heal + " HP");
+        _healthPoints = Mathf.Min(_maxHealth, _healthPoints + heal);
+        if (_healthPoints == _maxHealth)
+        {
+            Debug.Log("Health full");
         }
     }
 

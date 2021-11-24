@@ -8,5 +8,6 @@ public enum RegionName
     Manhattan,
     Queens,
     Brooklyn,
-    Richmond
+    Richmond,
+    None
 }

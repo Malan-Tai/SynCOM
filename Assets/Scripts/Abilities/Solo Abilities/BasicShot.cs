@@ -8,6 +8,21 @@ public class BasicShot : BaseAbility
     private GridBasedUnit[] _possibleTargets;
     private int _targetIndex = -1;
 
+    public override string GetDescription()
+    {
+        string res = "Shot\nShoot at the target.";
+        if (_targetIndex >= 0)
+        {
+            GridBasedUnit target = _possibleTargets[_targetIndex];
+
+            res += "\nAcc:" + (_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover)) +
+                    " | Crit:" + _effector.Character.CritChances +
+                    " | Dmg:" + _effector.Character.Damage;
+        }
+
+        return res;
+    }
+
     public override void SetEffector(AllyUnit effector)
     {
         _possibleTargets = new GridBasedUnit[effector.LinesOfSight.Count];
@@ -24,7 +39,9 @@ public class BasicShot : BaseAbility
 
     protected override bool CanExecute()
     {
-        return _targetIndex >= 0;
+        float distance = Vector2.Distance(_possibleTargets[_targetIndex].GridPosition, _effector.GridPosition);
+        Debug.Log("Distance between shot and shooted =" + distance);
+        return _targetIndex >= 0 && distance < _effector.Character.RangeShot;
     }
 
     protected override void EnemyTargetingInput()
@@ -78,6 +95,7 @@ public class BasicShot : BaseAbility
             {
                 target.Character.TakeDamage(_effector.Character.Damage);
             }
+            Debug.Log("Ennemy has" + _possibleTargets[_targetIndex].Character.HealthPoints + "HP left");
         }
         else
         {
@@ -90,5 +108,10 @@ public class BasicShot : BaseAbility
         _targetIndex = -1;
         _possibleTargets = null;
         base.FinalizeAbility(executed);
+    }
+
+    public override string GetName()
+    {
+        return "Basic Attack";
     }
 }

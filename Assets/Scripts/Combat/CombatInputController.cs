@@ -90,5 +90,9 @@ public class CombatInputController : MonoBehaviour
         {
             CombatGameManager.Instance.CurrentUnit.UseAbility(new Slap());
         }
+        else if (Input.GetKeyDown(KeyCode.Alpha9))
+        {
+            CombatGameManager.Instance.CurrentUnit.UseAbility(new Devouring());
+        }
     }
 }

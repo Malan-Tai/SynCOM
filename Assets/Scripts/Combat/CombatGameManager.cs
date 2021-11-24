@@ -53,6 +53,9 @@ public class CombatGameManager : MonoBehaviour
 
     private List<Tile> _previousReachableTiles;
 
+    public delegate void NewTurnEvent();
+    public static event NewTurnEvent OnNewTurn;
+
     private void Start()
     {
         _currentUnitIndex = 0;
@@ -68,7 +71,7 @@ public class CombatGameManager : MonoBehaviour
     {
         foreach (AllyUnit ally in _allAllyUnits)
         {
-            ally.Character = new AllyCharacter(EnumClasses.Sniper, 20, 2, 65, 10, 15, 4, 60);
+            ally.Character = new AllyCharacter(EnumClasses.Sniper, 20, 2, 65, 10, 15, 20, 4, 60);
         }
 
         foreach (AllyUnit ally in _allAllyUnits)
@@ -78,7 +81,7 @@ public class CombatGameManager : MonoBehaviour
 
         foreach (EnemyUnit enemy in _enemyUnits)
         {
-            enemy.Character = new Character(20, 2, 65, 10, 15, 4, 60);
+            enemy.Character = new Character(20, 2, 65, 10, 15, 20, 4, 60);
         }
     }
 
@@ -197,6 +200,7 @@ public class CombatGameManager : MonoBehaviour
     public void NewAllyTurn()
     {
         print("new turn");
+        if (OnNewTurn != null) OnNewTurn();
 
         foreach (AllyUnit unit in _allAllyUnits)
         {
@@ -206,6 +210,22 @@ public class CombatGameManager : MonoBehaviour
 
         _currentUnitIndex = 0;
         SelectControllableUnit(0);
+    }
+
+    public void UIConfirmAbility()
+    {
+        if (CurrentAbility != null)
+        {
+            CurrentAbility.UIConfirm();
+        }
+    }
+
+    public void UICancelAbility()
+    {
+        if (CurrentAbility != null)
+        {
+            CurrentAbility.UICancel();
+        }
     }
 
     public void NewEnemyTurn()
