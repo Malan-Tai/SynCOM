@@ -169,6 +169,13 @@ public class CombatGameManager : MonoBehaviour
 
     public void FinishAllyUnitTurn(AllyUnit unit, bool wasAllyForDuo = false)
     {
+        // Check mission success/failure
+        if (CheckMissionFailure() || CheckMissionSuccess())
+        {
+            /// TODO Win/Lose
+            return;
+        }
+
         int index = _controllableUnits.IndexOf(unit);
         if (index < 0) return;
 
@@ -199,5 +206,32 @@ public class CombatGameManager : MonoBehaviour
 
         _currentUnitIndex = 0;
         SelectControllableUnit(0);
+    }
+
+    public void NewEnemyTurn()
+    {
+
+    }
+
+    public void FinishEnemyUnitTurn()
+    {
+        // Check mission success/failure
+        if (CheckMissionFailure() || CheckMissionSuccess())
+        {
+            /// TODO Win/Lose
+            return;
+        }
+    }
+
+    public bool CheckMissionFailure()
+    {
+        /// TODO Implement
+        return false;
+    }
+
+    public bool CheckMissionSuccess()
+    {
+        /// TODO Implement
+        return false;
     }
 }
