@@ -30,11 +30,26 @@ public class UiManager : MonoBehaviour
         CameraL.transform.GetComponent<Button>().onClick.AddListener(delegate { CombatGameManager.Instance.Camera.RotateCamera(-1); });
         CameraR.transform.GetComponent<Button>().onClick.AddListener(delegate { CombatGameManager.Instance.Camera.RotateCamera(1); });
 
-        BasicAbility.onClick.AddListener(delegate { DisplayAbilityText(); });
-        BasicDuoAbility.onClick.AddListener(delegate { CombatGameManager.Instance.CurrentUnit.UseAbility(new BasicDuoShot()); });
-        Slap.onClick.AddListener(delegate { CombatGameManager.Instance.CurrentUnit.UseAbility(new Slap()); });
-        HunkerDown.onClick.AddListener(delegate { CombatGameManager.Instance.CurrentUnit.UseAbility(new HunkerDown()); });
-        Heal.onClick.AddListener(delegate { CombatGameManager.Instance.CurrentUnit.UseAbility(new FirstAid()); });
+        BasicAbility.onClick.AddListener(delegate {
+            CombatGameManager.Instance.CurrentUnit.UseAbility(new BasicShot());
+            DisplayAbilityText();
+        });
+        BasicDuoAbility.onClick.AddListener(delegate {
+            CombatGameManager.Instance.CurrentUnit.UseAbility(new BasicDuoShot());
+            DisplayAbilityText();
+        });
+        Slap.onClick.AddListener(delegate {
+           CombatGameManager.Instance.CurrentUnit.UseAbility(new Slap());
+            DisplayAbilityText();
+        });
+        HunkerDown.onClick.AddListener(delegate {
+           CombatGameManager.Instance.CurrentUnit.UseAbility(new HunkerDown());
+            DisplayAbilityText();
+        });
+        Heal.onClick.AddListener(delegate {
+           CombatGameManager.Instance.CurrentUnit.UseAbility(new FirstAid());
+            DisplayAbilityText();
+        });
 
         
 
@@ -42,8 +57,7 @@ public class UiManager : MonoBehaviour
     void DisplayAbilityText()
     {
         infoPanel.SetActive(true);
-        CombatGameManager.Instance.CurrentUnit.UseAbility(new BasicShot());
-        infoPanel.transform.GetComponent<Text>().text = combatManager.CurrentAbility.GetDescription(); ;
+        infoPanel.transform.GetComponentInChildren<Text>().text = combatManager.CurrentAbility.GetDescription(); ;
         combatManager.CurrentAbility.GetDescription();
     }
     // Update is called once per frame
@@ -52,7 +66,7 @@ public class UiManager : MonoBehaviour
         if (CombatGameManager.Instance.CurrentAbility != null)
         {
             EscapeButton.onClick.AddListener(delegate { infoPanel.SetActive(false); CombatGameManager.Instance.CurrentAbility.SetUICancelled(); });
-            ReturnButton.onClick.AddListener(delegate { CombatGameManager.Instance.CurrentAbility.SetUIConfirmed();  });
+            ReturnButton.onClick.AddListener(delegate { infoPanel.SetActive(false); CombatGameManager.Instance.CurrentAbility.SetUIConfirmed();  });
         }
         
     }
