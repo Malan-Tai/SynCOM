@@ -42,6 +42,9 @@ public class UiManager : MonoBehaviour
     void DisplayAbilityText()
     {
         infoPanel.SetActive(true);
+        CombatGameManager.Instance.CurrentUnit.UseAbility(new BasicShot());
+        infoPanel.transform.GetComponent<Text>().text = combatManager.CurrentAbility.GetDescription(); ;
+        combatManager.CurrentAbility.GetDescription();
     }
     // Update is called once per frame
     void Update()
