@@ -28,7 +28,7 @@ public class FullRelationshipsPanel : MonoBehaviour
         MissionRecapUnit.OnMouseExitEvent -= ClearPanel;
     }
 
-    private void HoverCharacter(AllyCharacter character)
+    public void HoverCharacter(AllyCharacter character)
     {
         if (character == null) return;
 

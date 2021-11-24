@@ -54,18 +54,14 @@ public class UnitListElement : MonoBehaviour
 
     private void OnMouseEnter()
     {
-        if (_frozen) return;
-
-        _background.SetActive(true);
+        if (!_frozen) _background.SetActive(true);
 
         if (OnMouseEnterEvent != null) OnMouseEnterEvent(_character);
     }
 
     private void OnMouseExit()
     {
-        if (_frozen) return;
-
-        _background.SetActive(false);
+        if (!_frozen) _background.SetActive(false);
 
         if (OnMouseExitEvent != null) OnMouseExitEvent();
     }
