@@ -16,6 +16,8 @@ public class GridMap : MonoBehaviour
     public bool ShowCoversGizmos = true;
 #endif
 
+    public int GridTileWidth { get => _map.GetLength(0); }
+    public int GridTileHeight { get => _map.GetLength(1); }
     public float GridWorldWidth { get => CellSize * _map.GetLength(0); }
     public float GridWorldHeight { get => CellSize * _map.GetLength(1); }
     public Vector3 GridWorldCenter

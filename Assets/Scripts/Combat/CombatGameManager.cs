@@ -132,7 +132,7 @@ public class CombatGameManager : MonoBehaviour
     public void UpdateReachableTiles()
     {
         List<Tile> newReachable = CurrentUnit.GetReachableTiles();
-        _tileDisplay.DisplayTileZone(newReachable, TileZoneDisplayEnum.MoveZoneDisplay);
+        _tileDisplay.UpdateTileZoneDisplay(newReachable, TileZoneDisplayEnum.MoveZoneDisplay);
         _previousReachableTiles = newReachable;
     }
 
