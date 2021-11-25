@@ -33,17 +33,35 @@ public class CanvasMover : MonoBehaviour
 
     private void OnEnable()
     {
+        BetweenMissionsGameManager.OnNotifyCanvasChange += ChangeCanvas;
+
         RegionButton.OnMouseClickEvent += ClickRegion;
+        BackToMapButton.OnMouseClickEvent += BackToMap;
+        MissionRecapUnit.OnMouseClickEvent += ClickMissionRecapUnit;
     }
 
     private void OnDisable()
     {
+        BetweenMissionsGameManager.OnNotifyCanvasChange -= ChangeCanvas;
+
         RegionButton.OnMouseClickEvent -= ClickRegion;
+        BackToMapButton.OnMouseClickEvent -= BackToMap;
+        MissionRecapUnit.OnMouseClickEvent -= ClickMissionRecapUnit;
     }
 
-    private void ClickRegion()
+    private void ClickRegion(RegionScriptableObject region)
     {
         ChangeCanvas(1, 0);
+    }
+
+    private void BackToMap()
+    {
+        ChangeCanvas(-1, 0);
+    }
+
+    private void ClickMissionRecapUnit(int index)
+    {
+        ChangeCanvas(0, 1);
     }
 
     public void ChangeCanvas(int x, int y)

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BetweenMissionsGameManager : MonoBehaviour
 {
@@ -22,22 +23,29 @@ public class BetweenMissionsGameManager : MonoBehaviour
     }
     #endregion
 
+    [SerializeField]
+    private List<MissionTypeScriptableObject> _missionTypes;
+
     private List<AllyCharacter> _newRecruits;
 
     private Dictionary<RegionName, Mission> _availableMissions;
 
-    private Dictionary<RegionName, int> _control;
+    private RegionName _selectedRegion;
+
+    [SerializeField]
+    private UnitScrollList _missionUnitList;
+
+    [SerializeField]
+    private Transform _missionRecapUnits;
+
+    private int _selectedSquadUnit;
+
+    public delegate void NotifyCanvasChange(int x, int y);
+    public static event NotifyCanvasChange OnNotifyCanvasChange;
 
     private void Start()
     {
-        _control = new Dictionary<RegionName, int>
-        {
-            { RegionName.Bronx,     0 },
-            { RegionName.Brooklyn,  0 },
-            { RegionName.Manhattan, 0 },
-            { RegionName.Queens,    0 },
-            { RegionName.Richmond,  0 }
-        };
+        _selectedRegion = RegionName.None;
 
         _availableMissions = new Dictionary<RegionName, Mission>
         {
@@ -47,25 +55,112 @@ public class BetweenMissionsGameManager : MonoBehaviour
             { RegionName.Queens,    Mission.None },
             { RegionName.Richmond,  Mission.None }
         };
+
+        GenerateMissions(0, 2);
+
+        _missionUnitList.Populate(GlobalGameManager.Instance.allCharacters);
+
+        GlobalGameManager.Instance.SetDefaultSquad();
+        int i = 0;
+        foreach (MissionRecapUnit unit in _missionRecapUnits.GetComponentsInChildren<MissionRecapUnit>())
+        {
+            unit.Init();
+            unit.SetIndex(i);
+            unit.SetCharacter(GlobalGameManager.Instance.currentSquad[i]);
+            i++;
+        }
+    }
+
+    private void OnEnable()
+    {
+        RegionButton.OnMouseClickEvent += SetSelectedRegion;
+        MissionRecapUnit.OnMouseClickEvent += SetSelectedSquadUnitAndUpdateFrozenUnitsInList;
+
+        _missionUnitList.OnMouseClickEvent += ChooseSquadUnit;
+    }
+
+    private void OnDisable()
+    {
+        RegionButton.OnMouseClickEvent -= SetSelectedRegion;
+        MissionRecapUnit.OnMouseClickEvent -= SetSelectedSquadUnitAndUpdateFrozenUnitsInList;
+
+        _missionUnitList.OnMouseClickEvent -= ChooseSquadUnit;
     }
 
     public void GenerateMissions(int progress, int missionNumber)
     {
-        _availableMissions = new Dictionary<RegionName, Mission>();
-        int N = Enum.GetNames(typeof(RegionName)).Length;
+        _availableMissions = new Dictionary<RegionName, Mission>
+        {
+            { RegionName.Bronx,     Mission.None },
+            { RegionName.Brooklyn,  Mission.None },
+            { RegionName.Manhattan, Mission.None },
+            { RegionName.Queens,    Mission.None },
+            { RegionName.Richmond,  Mission.None }
+        };
 
-        while (_availableMissions.Count < missionNumber)
+        int N = Enum.GetNames(typeof(RegionName)).Length - 1;
+
+        List<RegionName> addedRegions = new List<RegionName>();
+        while (addedRegions.Count < missionNumber)
         {
             RegionName region;
-            while (_availableMissions.ContainsKey(region = (RegionName)UnityEngine.Random.Range(0, N)))
+            while (addedRegions.Contains(region = (RegionName)UnityEngine.Random.Range(0, N)))
             { }
 
-            _availableMissions.Add(region, Mission.GenerateMission(progress - 2, progress + 3));
+            _availableMissions[region] = Mission.GenerateMission(progress - 2, progress + 3);
+            addedRegions.Add(region);
         }
     }
 
-    public int GetRegionControl(RegionName region)
+    public MissionTypeScriptableObject GetMissionType(WinCondition winCondition)
     {
-        return _control[region];
+        foreach (MissionTypeScriptableObject data in _missionTypes)
+        {
+            if (data.winCondition == winCondition) return data;
+        }
+
+        return null;
+    }
+
+    public Mission GetMissionInRegion(RegionName region)
+    {
+        return _availableMissions[region];
+    }
+
+    public void StartMission()
+    {
+        if (_selectedRegion == RegionName.None) return;
+
+        print("start mission in " + _selectedRegion);
+
+        SceneManager.LoadScene("SampleScene");
+    }
+
+    public void ClearSquad()
+    {
+        int n = GlobalGameManager.Instance.currentSquad.Length;
+        for (int i = 0; i < n; i++)
+        {
+            GlobalGameManager.Instance.SetSquadUnit(i, null);
+        }
+    }
+
+    private void SetSelectedRegion(RegionScriptableObject region)
+    {
+        _selectedRegion = region.regionName;
+    }
+
+    private void SetSelectedSquadUnitAndUpdateFrozenUnitsInList(int squadIndex)
+    {
+        _selectedSquadUnit = squadIndex;
+        _missionUnitList.FreezeCharacters(GlobalGameManager.Instance.currentSquad);
+    }
+
+    private void ChooseSquadUnit(AllyCharacter character)
+    {
+        GlobalGameManager.Instance.SetSquadUnit(_selectedSquadUnit, character);
+        _missionRecapUnits.GetComponentsInChildren<MissionRecapUnit>()[_selectedSquadUnit].SetCharacter(character);
+
+        if (OnNotifyCanvasChange != null) OnNotifyCanvasChange(0, -1);
     }
 }

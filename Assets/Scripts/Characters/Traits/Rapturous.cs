@@ -18,4 +18,9 @@ public class Rapturous : Trait
     {
         return "Rapturous";
     }
+
+    public override float GetDamageModifier()
+    {
+        return 0.5f * (1 - (_owner.HealthPoints / _owner.MaxHealth));
+    }
 }
