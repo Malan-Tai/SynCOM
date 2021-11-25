@@ -30,7 +30,7 @@ public class AbilityList : MonoBehaviour
         foreach (BaseAbility ability in abilities)
         {
             AbilityButton btn = Instantiate(_abilityBtnPrefab, transform).GetComponent<AbilityButton>();
-            btn.transform.position += new Vector3(x, 0, 0);
+            btn.transform.localPosition += new Vector3(x, 0, 0);
             float width = btn.GetComponent<RectTransform>().rect.width + 10;
             _rectTransform.sizeDelta += new Vector2(width, 0);
             x += width;
