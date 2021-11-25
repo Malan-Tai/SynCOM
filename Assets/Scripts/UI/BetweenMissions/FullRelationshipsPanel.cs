@@ -30,6 +30,11 @@ public class FullRelationshipsPanel : MonoBehaviour
 
     public void HoverCharacter(AllyCharacter character)
     {
+        HoverCharacter(character, true);
+    }
+
+    public void HoverCharacter(AllyCharacter character, bool selfIsLeft)
+    {
         if (character == null) return;
 
         int i = 0;
@@ -38,7 +43,8 @@ public class FullRelationshipsPanel : MonoBehaviour
             if (ally == character || ally == null || i >= _panels.Length) continue;
 
             _panels[i].gameObject.SetActive(true);
-            _panels[i].SetPanel(character, ally);
+            if (selfIsLeft) _panels[i].SetPanel(character, ally);
+            else _panels[i].SetPanel(ally, character);
             i++;
         }
     }

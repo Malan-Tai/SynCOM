@@ -66,7 +66,7 @@ public class CharacterSheet : MonoBehaviour
         _mvtText.text = character.MovementPoints + " : Mvt";
         _wgtText.text = character.Weigth + " : Wgt";
 
-        _relationships.HoverCharacter(character);
+        _relationships.HoverCharacter(character, false);
     }
 
     private void SetInvisible()

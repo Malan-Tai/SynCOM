@@ -50,6 +50,7 @@ public class UnitListElement : MonoBehaviour
         // TODO : portrait & name
         _unitName.text = "Name";
         _unitClass.text = character.CharacterClass.ToString();
+        _unitPortrait.sprite = character.Portrait;
     }
 
     private void OnMouseEnter()

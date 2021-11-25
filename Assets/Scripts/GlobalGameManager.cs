@@ -35,6 +35,8 @@ public class GlobalGameManager : MonoBehaviour
 
     [SerializeField]
     private Sprite[] _classSprites;
+    [SerializeField]
+    private Sprite[] _classPortraits;
 
     private void GenerateCharacters()
     {
@@ -92,5 +94,12 @@ public class GlobalGameManager : MonoBehaviour
         int i = (int)charClass;
         if (i < 0 || i >= _classSprites.Length) return null;
         return _classSprites[i];
+    }
+
+    public Sprite GetClassPortrait(EnumClasses charClass)
+    {
+        int i = (int)charClass;
+        if (i < 0 || i >= _classPortraits.Length) return null;
+        return _classPortraits[i];
     }
 }
