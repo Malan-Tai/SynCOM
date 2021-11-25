@@ -40,6 +40,7 @@ public abstract class BaseAbility
         bool confirmed = _uiConfirmed || Input.GetKeyDown(KeyCode.Return);
         bool cancelled = _uiCancelled || Input.GetKeyDown(KeyCode.Escape);
 
+
         if (confirmed && CanExecute())
         {
             Execute();

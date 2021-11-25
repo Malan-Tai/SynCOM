@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Character
 {
     protected const float _fullCoverDodgeBonus = 40f;
     protected const float _halfCoverDodgeBonus = 20f;
-
+    
     //Character's statistics
     [SerializeField] private float _maxHealth;
     [SerializeField] private float _healthPoints;
@@ -135,4 +136,7 @@ public class Character
     public void Die()
     {
     }
+
+
+   
 }
