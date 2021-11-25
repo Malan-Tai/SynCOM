@@ -4,11 +4,9 @@ Shader "Custom/GridDisplay"
 	{
 		[NoScaleOffset] _MoveBlobTileset("Move blob tileset", 2D) = "white" {}
 		_MoveBlobColor("Move color", Color) = (1, 1, 1, 1)
-		_MovePixelsPerUnit("Move pixels per unit", Float) = 256
 
 		[NoScaleOffset] _AttackBlobTileset("Attack blob tileset", 2D) = "white" {}
 		_AttackBlobColor("Attack color", Color) = (1, 1, 1, 1)
-		_AttackPixelsPerUnit("Attack pixels per unit", Float) = 256
 
 		_GridColor("Grid color", Color) = (1, 1, 1, 1)
 		_LineWidth("Grid lines width", Range(0, .3)) = .01
@@ -39,25 +37,23 @@ Shader "Custom/GridDisplay"
 			// Move zone
 			sampler2D _MoveBlobTileset;
 			fixed4 _MoveBlobColor;
-			float _MovePixelsPerUnit;
 			bool _RenderMoveZone;
 
 			// Attack zone
 			sampler2D _AttackBlobTileset;
 			fixed4 _AttackBlobColor;
-			float _AttackPixelsPerUnit;
 			bool _RenderAttackZone;
 
 
 			struct appdata
 			{
-				float2 uv : TEXCOORD0;
+				float2 uv : TEXCOORD;
 				float4 vertex : POSITION;
 			};
 
 			struct v2f
 			{
-				float2 uv : TEXCOORD0;
+				float2 uv : TEXCOORD;
 				float4 vertex : SV_POSITION;
 			};
 

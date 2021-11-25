@@ -24,6 +24,11 @@ public class TileDisplay : MonoBehaviour
         _mouseHovertileSpriteRenderer.sprite = _mouseHoverTileSprite;
         _mouseHovertileSpriteRenderer.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
 
+        _gridMaterial.SetInt("_RenderMoveZone", 0);
+        _gridMaterial.SetInt("_RenderAttackZone", 0);
+        _gridMaterial.SetVectorArray("_ReachableCoords", new Vector4[500]);
+        _gridMaterial.SetFloatArray("_BlobIndices", new float[500]);
+
         DisplayGrid(true);
     }
 
@@ -97,8 +102,8 @@ public class TileDisplay : MonoBehaviour
         _gridRenderer.transform.localScale = new Vector3(CombatGameManager.Instance.GridMap.GridWorldWidth, CombatGameManager.Instance.GridMap.GridWorldHeight, 1f);
         _gridMaterial.SetInt("_GridWidthInTiles", CombatGameManager.Instance.GridMap.GridTileWidth);
         _gridMaterial.SetInt("_GridHeightInTiles", CombatGameManager.Instance.GridMap.GridTileHeight);
-        _gridMaterial.SetVectorArray("_ReachableCoords", coordsVec4);
         _gridMaterial.SetInt("_ReachableCoordsCount", tiles.Count);
+        _gridMaterial.SetVectorArray("_ReachableCoords", coordsVec4);
         _gridMaterial.SetFloatArray("_BlobIndices", blobIndices);
 
         switch (display)
@@ -143,8 +148,6 @@ public class TileDisplay : MonoBehaviour
         if (neighbours[5] && neighbours[4] && neighbours[6]) ret += 32;
         if (neighbours[6]) ret += 64;
         if (neighbours[7] && neighbours[6] && neighbours[0]) ret += 128;
-
-        if (ret == 0) ret = -1;
 
         return ret;
     }
