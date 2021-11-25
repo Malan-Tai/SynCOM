@@ -75,4 +75,10 @@ public class AllyUnit : GridBasedUnit
         NeedsPathfinderUpdate();
         UpdateLineOfSights(!IsEnemy());
     }
+
+    public void UseCharacterSprite()
+    {
+        SpriteRenderer renderer = GetComponentInChildren<SpriteRenderer>();
+        renderer.sprite = _character.Sprite;
+    }
 }

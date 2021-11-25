@@ -3093,6 +3093,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10bdd8ef63ddb8e419f6dd509d214628, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _classSprites:
+  - {fileID: 21300000, guid: 0c3f9e5eea30c73468be9cb1b63f9a0b, type: 3}
+  - {fileID: 21300000, guid: 340e42f26f3feac4c9361b2ce55e7aed, type: 3}
+  - {fileID: 21300000, guid: 1af7cb9462077394590acb17dba0bf12, type: 3}
+  - {fileID: 21300000, guid: 464bb799ef6d99a4999ef331ef707bed, type: 3}
+  - {fileID: 21300000, guid: fe4db1cff0e1b8e42bdea3bf59013877, type: 3}
+  - {fileID: 21300000, guid: 4263cd14e881e34449c5a819c985a4da, type: 3}
 --- !u!4 &1153119460
 Transform:
   m_ObjectHideFlags: 0

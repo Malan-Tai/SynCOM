@@ -77,10 +77,13 @@ public class CombatGameManager : MonoBehaviour
 
     private void InitCharacters()
     {
+        // TODO : deprecated soon
+
         int i = 0;
         foreach (AllyUnit ally in _allAllyUnits)
         {
             ally.Character = new AllyCharacter((EnumClasses)i, 20, 2, 65, 10, 15, 20, 4, 60);
+            ally.UseCharacterSprite();
             i++;
         }
 

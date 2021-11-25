@@ -48,6 +48,8 @@ public class AllyCharacter : Character
         {
             Debug.Log(_traits[i].GetName());
         }
+
+        _sprite = GlobalGameManager.Instance.GetClassTexture(characterClass);
     }
 
     public void InitializeRelationships()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,6 +32,9 @@ public class GlobalGameManager : MonoBehaviour
     private int _money;
 
     private Dictionary<RegionName, int> _controlStatus;
+
+    [SerializeField]
+    private Sprite[] _classSprites;
 
     private void GenerateCharacters()
     {
@@ -83,5 +87,12 @@ public class GlobalGameManager : MonoBehaviour
     {
         if (i >= currentSquad.Length) return;
         currentSquad[i] = character;
+    }
+
+    public Sprite GetClassTexture(EnumClasses charClass)
+    {
+        int i = (int)charClass;
+        if (i < 0 || i >= _classSprites.Length) return null;
+        return _classSprites[i];
     }
 }
