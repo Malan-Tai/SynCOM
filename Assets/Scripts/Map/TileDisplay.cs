@@ -28,8 +28,6 @@ public class TileDisplay : MonoBehaviour
         _gridMaterial.SetInt("_RenderAttackZone", 0);
         _gridMaterial.SetVectorArray("_ReachableCoords", new Vector4[500]);
         _gridMaterial.SetFloatArray("_BlobIndices", new float[500]);
-
-        DisplayGrid(true);
     }
 
     #region Tile display
