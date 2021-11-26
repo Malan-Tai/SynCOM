@@ -138,7 +138,7 @@ public class BetweenMissionsGameManager : MonoBehaviour
 
         print("start mission in " + _selectedRegion);
 
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("Erwan");
     }
 
     public void ClearSquad()
