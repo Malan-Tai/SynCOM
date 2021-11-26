@@ -54,7 +54,7 @@ public class PortraitButton : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (eventData.button == PointerEventData.InputButton.Left)
+        if (eventData.button == PointerEventData.InputButton.Left && CombatGameManager.Instance.CurrentAbility == null)
         {
             CombatGameManager.Instance.SelectControllableUnit(_squadIndex);
         }
