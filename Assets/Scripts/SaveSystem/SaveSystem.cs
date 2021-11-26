@@ -38,9 +38,10 @@ public static class SaveSystem
             file.Close();
             //loading the previously saved currentsquad into the GlobalGameManager
             for (int i=0; i<4; i++)
-                {
-                    GlobalGameManager.Instance.SetSquadUnit(i, data.allyCharacters[i]);
-                }
+            {
+                GlobalGameManager.Instance.SetSquadUnit(i, data.allyCharacters[i]);
+            }
+            BetweenMissionsGameManager.Instance.InitMissionRecapUnits();
             
             Debug.Log("Game data loaded!");
             //making sure that the save and load functions work as intended

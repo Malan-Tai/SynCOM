@@ -64,6 +64,13 @@ public class BetweenMissionsGameManager : MonoBehaviour
         _missionUnitList.Populate(GlobalGameManager.Instance.allCharacters);
 
         GlobalGameManager.Instance.SetDefaultSquad();
+        InitMissionRecapUnits();
+
+        _characterSheet.InitEventsWithScrollList(_missionUnitList);
+    }
+
+    public void InitMissionRecapUnits()
+    {
         int i = 0;
         foreach (MissionRecapUnit unit in _missionRecapUnits.GetComponentsInChildren<MissionRecapUnit>())
         {
@@ -72,8 +79,6 @@ public class BetweenMissionsGameManager : MonoBehaviour
             unit.SetCharacter(GlobalGameManager.Instance.currentSquad[i]);
             i++;
         }
-
-        _characterSheet.InitEventsWithScrollList(_missionUnitList);
     }
 
     private void OnEnable()
