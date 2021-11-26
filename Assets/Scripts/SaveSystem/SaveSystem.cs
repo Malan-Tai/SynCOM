@@ -27,6 +27,7 @@ public static class SaveSystem
 
     public static void loadFunction()
     {
+        //checking if there is a save file
         if (File.Exists(Application.persistentDataPath+ "/lobby.save"))
         {
             BinaryFormatter bf = new BinaryFormatter();
@@ -35,12 +36,14 @@ public static class SaveSystem
                        + "/lobby.save", FileMode.Open);
             SaveData data = (SaveData)bf.Deserialize(file);
             file.Close();
+            //loading the previously saved currentsquad into the GlobalGameManager
             for (int i=0; i<4; i++)
                 {
                     GlobalGameManager.Instance.SetSquadUnit(i, data.allyCharacters[i]);
                 }
             
             Debug.Log("Game data loaded!");
+            //making sure that the save and load functions work as intended
             Debug.Log(GlobalGameManager.Instance.currentSquad[1].CharacterClass);
         }
         else

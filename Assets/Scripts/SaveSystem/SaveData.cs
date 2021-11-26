@@ -7,10 +7,10 @@ public class SaveData
     //here is where data that needs to be saved is stored
     
     [SerializeField]
-    public List<AllyCharacter> characters;
+    public List<AllyCharacter> characters; //currently unsaved
     public AllyCharacter[] allyCharacters;
-    public int money;
-    public Dictionary<RegionName, int> _controlStatus;
+    public int money; //currently unsaved
+    public Dictionary<RegionName, int> _controlStatus; //currently unsaved
 
 
 }
