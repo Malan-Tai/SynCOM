@@ -21,5 +21,9 @@ public class SaveManager : MonoBehaviour
         {
             SaveSystem.loadFunction();
         }
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            Debug.Log(GlobalGameManager.Instance.currentSquad[1].CharacterClass);
+        }
     }
 }

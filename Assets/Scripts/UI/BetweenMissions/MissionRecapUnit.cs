@@ -61,7 +61,7 @@ public class MissionRecapUnit : MonoBehaviour
 
         // TODO : portrait & name
         _unitClass.text = character.CharacterClass.ToString();
-        _unitImage.sprite = character.Sprite;
+        _unitImage.sprite = GlobalGameManager.Instance.GetClassTexture(character.CharacterClass);
     }
 
     public void SetCharacterToNull()
