@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[System.Serializable]
 public class AllyCharacter : Character
 {
     private static Dictionary<EnumClasses, List<Trait>> s_mandatoryTraits = new Dictionary<EnumClasses, List<Trait>>(){
