@@ -23,8 +23,8 @@ public class SquadUnitSelection : MonoBehaviour
 
     private void OnDisable()
     {
-        _list.OnMouseClickEvent += Hide;
-        MissionRecapUnit.OnMouseClickEvent += Show;
+        _list.OnMouseClickEvent -= Hide;
+        MissionRecapUnit.OnMouseClickEvent -= Show;
     }
 
     private void Show(int i)
