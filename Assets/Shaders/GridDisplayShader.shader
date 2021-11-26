@@ -13,7 +13,7 @@ Shader "Custom/GridDisplay"
 	}
 	SubShader
 	{
-		Tags {"IgnoreProjector" = "True" "RenderType" = "Transparent"}
+		Tags {"Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent"}
 		ZWrite Off
 		Blend SrcAlpha OneMinusSrcAlpha
 		LOD 200
@@ -169,8 +169,6 @@ Shader "Custom/GridDisplay"
 
 		Pass
 		{
-			Name "GridLines"
-
 			CGPROGRAM
 
 			#pragma vertex vert alpha
