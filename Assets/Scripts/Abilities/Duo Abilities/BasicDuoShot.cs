@@ -77,7 +77,11 @@ public class BasicDuoShot : BaseDuoAbility
             changedUnitThisFrame = true;
         }
 
-        if (changedUnitThisFrame) CombatGameManager.Instance.Camera.SwitchParenthood(_possibleTargets[_targetIndex]);
+        if (changedUnitThisFrame)
+        {
+            CombatGameManager.Instance.Camera.SwitchParenthood(_possibleTargets[_targetIndex]);
+            RequestDescriptionUpdate();
+        }
     }
 
     protected override void Execute()
@@ -101,9 +105,10 @@ public class BasicDuoShot : BaseDuoAbility
 
     public override string GetDescription()
     {
-        string res = "Duo Shot\nTake a shot at the target with augmented damage.";
+        string res = "Take a shot at the target with augmented damage.";
         if (_targetIndex >= 0 && _chosenAlly != null)
         {
+            Debug.Log("new desc");
             GridBasedUnit target = _possibleTargets[_targetIndex];
 
             res += "\nAcc:" + _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover) +
@@ -116,9 +121,10 @@ public class BasicDuoShot : BaseDuoAbility
 
     public override string GetAllyDescription()
     {
-        string res = "Duo Shot\nTake a shot at the target with augmented damage.";
+        string res = "Take a shot at the target with augmented damage.";
         if (_targetIndex >= 0 && _chosenAlly != null)
         {
+            Debug.Log("new desc");
             GridBasedUnit target = _possibleTargets[_targetIndex];
 
             res += "\nAcc:" + _allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover) +

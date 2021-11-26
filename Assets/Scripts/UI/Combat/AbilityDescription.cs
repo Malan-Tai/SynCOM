@@ -31,12 +31,16 @@ public class AbilityDescription : MonoBehaviour
     {
         AllyUnit.OnStartedUsingAbility += StartUsing;
         AllyUnit.OnStoppedUsingAbility += StopUsing;
+
+        BaseAbility.OnDescriptionUpdateRequest += UpdateDescription;
     }
 
     private void OnDisable()
     {
         AllyUnit.OnStartedUsingAbility -= StartUsing;
         AllyUnit.OnStoppedUsingAbility -= StopUsing;
+
+        BaseAbility.OnDescriptionUpdateRequest -= UpdateDescription;
     }
 
     private void StartUsing(BaseAbility ability)
@@ -83,5 +87,26 @@ public class AbilityDescription : MonoBehaviour
 
         this.transform.position += new Vector3(0, OFFSET_Y, 0);
         _hidden = true;
+    }
+
+    private void UpdateDescription(BaseAbility ability)
+    {
+        if (_hidden) return;
+
+        BaseDuoAbility duo = ability as BaseDuoAbility;
+        switch (_descriptionType)
+        {
+            case EnumAbilityDescription.Solo:
+                _description.text = ability.GetDescription();
+                break;
+            case EnumAbilityDescription.Self:
+                _description.text = duo.GetDescription();
+                break;
+            case EnumAbilityDescription.Ally:
+                _description.text = duo.GetAllyDescription();
+                break;
+            default:
+                break;
+        }
     }
 }

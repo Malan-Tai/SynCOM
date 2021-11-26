@@ -83,7 +83,11 @@ public class BasicShot : BaseAbility
             changedUnitThisFrame = true;
         }
 
-        if (changedUnitThisFrame) CombatGameManager.Instance.Camera.SwitchParenthood(_possibleTargets[_targetIndex]);
+        if (changedUnitThisFrame)
+        {
+            CombatGameManager.Instance.Camera.SwitchParenthood(_possibleTargets[_targetIndex]);
+            RequestDescriptionUpdate();
+        }
     }
 
     protected override void Execute()

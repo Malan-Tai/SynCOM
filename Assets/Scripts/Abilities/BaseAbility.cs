@@ -12,6 +12,14 @@ public abstract class BaseAbility
 
     protected AllyUnit _effector;
 
+    public delegate void EventRequestDescriptionUpdate(BaseAbility ability);
+    public static event EventRequestDescriptionUpdate OnDescriptionUpdateRequest;
+
+    protected void RequestDescriptionUpdate()
+    {
+        if (OnDescriptionUpdateRequest != null) OnDescriptionUpdateRequest(this);
+    }
+
     public void SetUIConfirmed()
     {
         _uiConfirmed = true;
@@ -151,6 +159,7 @@ public abstract class BaseDuoAbility : BaseAbility
         {
             _chosenAlly = _temporaryChosenAlly;
             ChooseAlly();
+            RequestDescriptionUpdate();
             // TODO: check if 1) ally refuse to cooperate and 2) Emotion gives a free action
         }
         else if (confirmed)
@@ -200,7 +209,11 @@ public abstract class BaseDuoAbility : BaseAbility
             changedUnitThisFrame = true;
         }
 
-        if (changedUnitThisFrame) CombatGameManager.Instance.Camera.SwitchParenthood(_temporaryChosenAlly);
+        if (changedUnitThisFrame)
+        {
+            CombatGameManager.Instance.Camera.SwitchParenthood(_temporaryChosenAlly);
+            RequestDescriptionUpdate();
+        }
     }
 
     protected void SelfToAllyModifySentiment(AllyUnit ally, EnumSentiment sentiment, int gain)
