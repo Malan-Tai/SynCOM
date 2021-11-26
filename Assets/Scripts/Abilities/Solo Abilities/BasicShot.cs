@@ -99,6 +99,7 @@ public class BasicShot : BaseAbility
         }
         else
         {
+            target.Missed();
             Debug.Log("Dice got " + randShot + " and had to be lower than " + (_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover)) + ": Missed");
         }
     }
