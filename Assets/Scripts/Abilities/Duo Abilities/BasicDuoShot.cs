@@ -18,7 +18,9 @@ public class BasicDuoShot : BaseDuoAbility
 
         foreach (GridBasedUnit unit in tempTargets)
         {
-            if (_chosenAlly.LinesOfSight.ContainsKey(unit))
+            float distanceToSelf = Vector2.Distance(unit.GridPosition, _effector.GridPosition);
+            float distanceToAlly = Vector2.Distance(unit.GridPosition, _chosenAlly.GridPosition);
+            if (distanceToSelf <= _effector.Character.RangeShot && distanceToAlly <= _effector.Character.RangeShot && _chosenAlly.LinesOfSight.ContainsKey(unit))
             {
                 _possibleTargets.Add(unit);
             }

@@ -58,11 +58,11 @@ public class FirstAid : BaseDuoAbility
 
     public override string GetAllyDescription()
     {
-        return "First Aid\nGet healed.";
+        return "Get healed.";
     }
 
     public override string GetDescription()
     {
-        return "First Aid\nYou heal an injured ally and take them out of critical state.";
+        return "You heal an injured ally and take them out of critical state.";
     }
 }

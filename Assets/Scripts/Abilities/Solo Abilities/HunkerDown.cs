@@ -6,7 +6,7 @@ public class HunkerDown : BaseAbility
 {
     public override string GetDescription()
     {
-        return "Hunker Down\nIncreases the efficiency of your cover, if you have one.";
+        return "Increases the efficiency of your cover, if you have one.";
     }
 
     protected override bool CanExecute()
