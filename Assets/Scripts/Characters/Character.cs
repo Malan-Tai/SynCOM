@@ -17,7 +17,7 @@ public class Character
     [SerializeField] private float _weigth; //can be a condition for some actions
     [SerializeField] private float _critChances;
     [SerializeField] private float _rangeShot;
-    [SerializeField] private float _name;
+    [SerializeField] private string _name;
 
     //constructor 
 
@@ -111,6 +111,11 @@ public class Character
     {
         get { return this._rangeShot; }
         set { this._rangeShot = value; }
+    }
+
+    public string Name
+    {
+        get { return this._name; }
     }
 
     public void TakeDamage(float damage)
