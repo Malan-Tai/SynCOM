@@ -17,6 +17,7 @@ public class TileDisplay : MonoBehaviour
     private void Start()
     {
         _gridRenderer.material = _gridMaterial;
+        _gridRenderer.sortingOrder = -1;
 
         GameObject spriteRendererGO = new GameObject("MouseHoverTileSprite");
         spriteRendererGO.transform.parent = transform;

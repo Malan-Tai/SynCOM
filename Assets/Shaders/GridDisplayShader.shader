@@ -15,7 +15,9 @@ Shader "Custom/GridDisplay"
 	{
 		Tags {"Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent"}
 		ZWrite Off
+		Lighting Off
 		Blend SrcAlpha OneMinusSrcAlpha
+		Cull Off
 		LOD 200
 
 		Pass
