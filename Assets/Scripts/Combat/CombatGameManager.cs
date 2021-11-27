@@ -51,13 +51,37 @@ public class CombatGameManager : MonoBehaviour
     public List<AllyUnit> ControllableUnits { get { return _controllableUnits; } }
     public List<EnemyUnit> EnemyUnits { get { return _enemyUnits; } }
 
+    private Mission _mission;
+
     private List<Tile> _previousReachableTiles;
+
+
+    #region Events
 
     public delegate void NewTurnEvent();
     public static event NewTurnEvent OnNewTurn;
 
+
+    public class MissionEndEventArgs : EventArgs
+    {
+        public readonly bool Success;
+
+        public MissionEndEventArgs(bool success)
+        {
+            Success = success;
+        }
+    }
+
+    public delegate void MissionEndEvent(MissionEndEventArgs e);
+    public static event MissionEndEvent OnMissionEnd;
+
+    #endregion
+
+
     private void Start()
     {
+        _mission = GlobalGameManager.Instance.CurrentMission;
+
         _currentUnitIndex = 0;
         _previousReachableTiles = new List<Tile>();
 
@@ -172,10 +196,9 @@ public class CombatGameManager : MonoBehaviour
 
     public void FinishAllyUnitTurn(AllyUnit unit, bool wasAllyForDuo = false)
     {
-        // Check mission success/failure
-        if (CheckMissionFailure() || CheckMissionSuccess())
+        // Check mission end
+        if (CheckMissionEnd())
         {
-            /// TODO Win/Lose
             return;
         }
 
@@ -235,23 +258,76 @@ public class CombatGameManager : MonoBehaviour
 
     public void FinishEnemyUnitTurn()
     {
-        // Check mission success/failure
-        if (CheckMissionFailure() || CheckMissionSuccess())
+        // Check mission end
+        if (CheckMissionEnd())
         {
-            /// TODO Win/Lose
             return;
         }
     }
 
     public bool CheckMissionFailure()
     {
-        /// TODO Implement
-        return false;
+        /// TODO Implement other types of mission failures
+
+        bool allAlliesDown = true;
+        for (int i = 0; allAlliesDown && i < _allAllyUnits.Length; i++)
+        {
+            allAlliesDown &= _allAllyUnits[i].Character.HealthPoints <= 0;
+        }
+
+        return allAlliesDown;
     }
 
     public bool CheckMissionSuccess()
     {
-        /// TODO Implement
+        /// TODO Implement other types of mission successes
+
+        bool allEnemiesDown = true;
+        for (int i = 0; allEnemiesDown && i < _enemyUnits.Count; i++)
+        {
+            allEnemiesDown &= _enemyUnits[i].Character.HealthPoints <= 0;
+        }
+
+        return allEnemiesDown;
+    }
+
+    private bool CheckMissionEnd()
+    {
+        // Check mission success/failure
+        bool success = CheckMissionSuccess();
+        bool failure = CheckMissionFailure();
+        if (failure || success)
+        {
+            // Failure is stronger than success, so if the mission fails and succeed at the same time,
+            // it is considered as a failure
+            MissionEndEventArgs args = new MissionEndEventArgs(success && !failure);
+            OnMissionEnd?.Invoke(args);
+
+            return true;
+        }
+
         return false;
     }
+
+#if UNITY_EDITOR
+    public void TestKillAllAllies()
+    {
+        for (int i = 0; i < _allAllyUnits.Length; i++)
+        {
+            _allAllyUnits[i].Character.Kill();
+        }
+
+        CheckMissionEnd();
+    }
+
+    public void TestKillAllEnemies()
+    {
+        for (int i = 0; i < _enemyUnits.Count; i++)
+        {
+            _enemyUnits[i].Character.Kill();
+        }
+
+        CheckMissionEnd();
+    }
+#endif
 }

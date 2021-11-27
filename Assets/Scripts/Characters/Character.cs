@@ -123,6 +123,12 @@ public class Character
         }
     }
 
+    public void Kill()
+    {
+        _healthPoints = 0;
+        Die();
+    }
+
     public void Heal(float heal)
     {
         Debug.Log("mmh, recovered " + heal + " HP");

@@ -132,6 +132,7 @@ public class BetweenMissionsGameManager : MonoBehaviour
         if (_selectedRegion == RegionName.None) return;
 
         print("start mission in " + _selectedRegion);
+        GlobalGameManager.Instance.CurrentMission = _availableMissions[_selectedRegion];
 
         SceneManager.LoadScene("SampleScene");
     }
