@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GridBasedUnit : MonoBehaviour
 {
@@ -50,6 +51,7 @@ public class GridBasedUnit : MonoBehaviour
     public delegate void FinishedMoving(GridBasedUnit movedUnit);
     public static event FinishedMoving OnMoveFinish;
 
+    private CanvasGroup _canvasGroup;
     protected void Start()
     {
         GridMap gridMap = CombatGameManager.Instance.GridMap;
@@ -62,6 +64,8 @@ public class GridBasedUnit : MonoBehaviour
         _sightDistance = 20;
 
         _linesOfSight = new Dictionary<GridBasedUnit, LineOfSight>();
+
+        _canvasGroup = transform.Find("Canvas").GetComponent<CanvasGroup>();
     }
 
     private void Update()
@@ -233,5 +237,24 @@ public class GridBasedUnit : MonoBehaviour
     public List<Tile> GetReachableTiles()
     {
         return _pathfinder.GetReachableTiles();
+    }
+
+    public void TakeDamage(float damage)
+    {
+        string str = "-" + damage.ToString();
+        _canvasGroup.gameObject.transform.Find("Text").GetComponent<TMPro.TextMeshProUGUI>().text = str;
+        StartCoroutine("LoseHP");
+        _character.TakeDamage(damage);
+    }
+
+    IEnumerator LoseHP()
+    {
+        for (float ft = 2f; ft >= 0; ft -= 0.1f)
+        {
+            _canvasGroup.alpha = ft/2;
+            _canvasGroup.transform.position += new Vector3(0,0.1f,0);
+            yield return new WaitForSeconds(.1f);
+        }
+        _canvasGroup.transform.position = transform.position;
     }
 }
