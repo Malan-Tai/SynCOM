@@ -125,4 +125,14 @@ public class AllyCharacter : Character
 
         return traitFound;
     }
+
+    public override Sprite GetSprite()
+    {
+        return GlobalGameManager.Instance.GetClassSprite(_class);
+    }
+
+    public override Sprite GetPortrait()
+    {
+        return GlobalGameManager.Instance.GetClassPortrait(_class);
+    }
 }

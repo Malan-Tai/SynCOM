@@ -106,11 +106,11 @@ public class CombatGameManager : MonoBehaviour
     {
         // TODO : deprecated soon
 
-        int i = 0;
+        int i = 1;
         foreach (AllyUnit ally in _allAllyUnits)
         {
             ally.Character = new AllyCharacter((EnumClasses)i, 20, 2, 65, 10, 15, 20, 4, 60);
-            ally.UseCharacterSprite();
+            ally.InitSprite();
             i++;
         }
 
@@ -122,6 +122,7 @@ public class CombatGameManager : MonoBehaviour
         foreach (EnemyUnit enemy in _enemyUnits)
         {
             enemy.Character = new Character(20, 2, 65, 10, 15, 20, 4, 60);
+            enemy.InitSprite();
         }
     }
 

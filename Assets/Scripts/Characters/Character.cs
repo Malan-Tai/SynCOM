@@ -19,11 +19,7 @@ public class Character
     [SerializeField] private float _rangeShot;
     [SerializeField] private float _name;
 
-    
-    
-
     //constructor 
-
     public Character()
     {
     }
@@ -144,5 +140,15 @@ public class Character
 
     public void Die()
     {
+    }
+
+    public virtual Sprite GetSprite()
+    {
+        return null;
+    }
+
+    public virtual Sprite GetPortrait()
+    {
+        return null;
     }
 }

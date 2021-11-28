@@ -63,8 +63,8 @@ public class CharacterSheet : MonoBehaviour
 
     private void SetCharacter(AllyCharacter character)
     {
-        // TODO : image, abilities, name
-        _image.sprite = GlobalGameManager.Instance.GetClassTexture(character.CharacterClass);
+        // TODO : abilities, name
+        _image.sprite = character.GetSprite();
         _class.text = character.CharacterClass.ToString();
 
         _hpText.text = "HP : " + character.HealthPoints + " / " + character.MaxHealth;

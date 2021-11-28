@@ -258,4 +258,9 @@ public class GridBasedUnit : MonoBehaviour
     //    }
     //    _canvasGroup.transform.position = transform.position;
     //}
+
+    public virtual void InitSprite()
+    {
+
+    }
 }

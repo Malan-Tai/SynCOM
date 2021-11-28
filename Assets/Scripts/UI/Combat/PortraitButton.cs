@@ -45,8 +45,7 @@ public class PortraitButton : MonoBehaviour, IPointerClickHandler
     {
         _squadIndex = (squadIndex + _buttonOrder) % CombatGameManager.Instance.AllAllyUnits.Count;
 
-        // TODO : portrait
-        _sprite.sprite = GlobalGameManager.Instance.GetClassPortrait(CombatGameManager.Instance.AllAllyUnits[_squadIndex].AllyCharacter.CharacterClass);
+        _sprite.sprite = CombatGameManager.Instance.AllAllyUnits[_squadIndex].AllyCharacter.GetPortrait();
 
         if (_isSelected)
         {

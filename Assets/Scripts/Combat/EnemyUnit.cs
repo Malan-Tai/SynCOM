@@ -44,4 +44,10 @@ public class EnemyUnit : GridBasedUnit
             }
         }
     }
+
+    public override void InitSprite()
+    {
+        SpriteRenderer renderer = GetComponentInChildren<SpriteRenderer>();
+        renderer.sprite = GlobalGameManager.Instance.GetEnemySprite();
+    }
 }

@@ -76,9 +76,9 @@ public class AllyUnit : GridBasedUnit
         UpdateLineOfSights(!IsEnemy());
     }
 
-    public void UseCharacterSprite()
+    public override void InitSprite()
     {
         SpriteRenderer renderer = GetComponentInChildren<SpriteRenderer>();
-        renderer.sprite = GlobalGameManager.Instance.GetClassTexture(AllyCharacter.CharacterClass);
+        renderer.sprite = AllyCharacter.GetSprite();
     }
 }
