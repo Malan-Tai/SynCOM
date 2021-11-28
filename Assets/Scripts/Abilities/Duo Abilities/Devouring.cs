@@ -10,7 +10,7 @@ public class Devouring : BaseDuoAbility
 
     public override string GetDescription()
     {
-        return  "You ask an ally to hold an enemy while you feed on them, restoring your health and extending your Frenzy state.";
+        return "You ask an ally to hold an enemy while you feed on them, restoring your health and extending your Frenzy state.";
     }
 
     public override string GetName()
@@ -31,8 +31,8 @@ public class Devouring : BaseDuoAbility
 
         foreach (GridBasedUnit unit in tempTargets)
         {
-            if (    (_chosenAlly.LinesOfSight.ContainsKey(unit)) 
-                &&  ((unit.GridPosition - this._effector.GridPosition).magnitude <= 1))
+            if ((_chosenAlly.LinesOfSight.ContainsKey(unit))
+                && ((unit.GridPosition - this._effector.GridPosition).magnitude <= 1))
             {
                 _possibleTargets.Add(unit);
             }
@@ -44,7 +44,7 @@ public class Devouring : BaseDuoAbility
             CombatGameManager.Instance.Camera.SwitchParenthood(_possibleTargets[_targetIndex]);
         }
 
-        _selfShotStats = new AbilityStats(200, 0, 1.5f, 0, _effector);
+        _selfShotStats = new AbilityStats(999, 0, 1.5f, 0, _effector);
 
         _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
     }
@@ -105,30 +105,18 @@ public class Devouring : BaseDuoAbility
         int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
         int randCrit = UnityEngine.Random.Range(0, 100);
 
-        Debug.Log("self to hit: " + randShot + " for " + _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover));
-
-        if (randShot < _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
+        // Cannot miss
+        if (randCrit < _selfShotStats.GetCritRate())
         {
-            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, 5);
-
-            if (randCrit < _selfShotStats.GetCritRate())
-            {
-                target.Character.TakeDamage(_selfShotStats.GetDamage() * 1.5f);
-                SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
-                AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
-                Debug.Log(this._effector.AllyCharacter.Name + " (self) : CRIT hit ! " + _selfShotStats.GetDamage() * 1.5f + "damage dealt");
-            }
-            else
-            {
-                target.Character.TakeDamage(_selfShotStats.GetDamage());
-                Debug.Log(this._effector.AllyCharacter.Name + " (self) : hit ! " + _selfShotStats.GetDamage() + "damage dealt");
-            }
+            target.Character.TakeDamage(_selfShotStats.GetDamage() * 1.5f);
+            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
+            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
+            Debug.Log(this._effector.AllyCharacter.Name + " (self) : CRIT hit ! " + _selfShotStats.GetDamage() * 1.5f + " damage dealt");
         }
         else
         {
-            Debug.Log(this._effector.AllyCharacter.Name + " (self) : missed");
-            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
-            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
+            target.Character.TakeDamage(_selfShotStats.GetDamage());
+            Debug.Log(this._effector.AllyCharacter.Name + " (self) : hit ! " + _selfShotStats.GetDamage() + " damage dealt");
         }
     }
 
