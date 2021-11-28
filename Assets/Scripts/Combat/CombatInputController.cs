@@ -44,6 +44,18 @@ public class CombatInputController : MonoBehaviour
         bool changedUnitThisFrame = false;
         bool clicked = Input.GetMouseButtonUp(0);
 
+
+        if (Physics.Raycast(ray, out hitData, 1000))
+        {
+            var hitUnit = hitData.transform.GetComponent<AllyUnit>();
+
+            if (hitUnit != null && clicked && hitUnit != CombatGameManager.Instance.CurrentUnit)
+            {
+                CombatGameManager.Instance.SelectControllableUnit(hitUnit);
+                changedUnitThisFrame = true;
+                clicked = false;
+            }
+        }
         if (Physics.Raycast(ray, out hitData, 1000, _groundLayerMask) && hitData.transform.CompareTag("Ground"))
         {
             Vector2Int tileCoord = CombatGameManager.Instance.GridMap.WorldToGrid(hitData.point);
@@ -52,16 +64,6 @@ public class CombatInputController : MonoBehaviour
             if (clicked)
             {
                 CombatGameManager.Instance.CurrentUnit.ChoosePathTo(tileCoord);
-            }
-        }
-        else if (Physics.Raycast(ray, out hitData, 1000))
-        {
-            var hitUnit = hitData.transform.GetComponent<AllyUnit>();
-
-            if (hitUnit != null && clicked)
-            {
-                CombatGameManager.Instance.SelectControllableUnit(hitUnit);
-                changedUnitThisFrame = true;
             }
         }
 
