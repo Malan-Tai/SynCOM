@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 [System.Serializable]
 public class AllyCharacter : Character
 {
@@ -35,8 +36,6 @@ public class AllyCharacter : Character
     private Dictionary<AllyCharacter, Relationship> _relationships;
     public Dictionary<AllyCharacter, Relationship> Relationships { get { return _relationships; } }
 
-    
-
     public AllyCharacter(EnumClasses characterClass, float maxHealth, float damage, float accuracy, float dodge, float critChances, float rangeShot, float movementPoints, float weight) :
         base(maxHealth, damage, accuracy, dodge, critChances, rangeShot, movementPoints, weight)
     {
@@ -50,9 +49,6 @@ public class AllyCharacter : Character
         {
             Debug.Log(_traits[i].GetName());
         }
-
-        
-        
     }
 
     public void InitializeRelationships()
