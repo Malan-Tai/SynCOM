@@ -26,6 +26,9 @@ public class MoveableCamera : MonoBehaviour
     private float _targetRotationY;
     private bool _followRotation = false;
 
+    private GridBasedUnit _parentViewedUnit;
+    private GridBasedUnit _currentlyViewedUnit;
+
     private void Start()
     {
         _startingOffset = this.transform.localPosition;
@@ -83,12 +86,38 @@ public class MoveableCamera : MonoBehaviour
 
     public void SwitchParenthood(GridBasedUnit newUnit)
     {
-        Vector3 delta = newUnit.transform.position - this.transform.position;
-        this.transform.localPosition -= delta;
+        if (_currentlyViewedUnit == newUnit)
+        {
+            this.transform.SetParent(newUnit.transform, true);
+        }
+        else
+        {
+            Vector3 delta = newUnit.transform.position - this.transform.position;
+            this.transform.localPosition -= delta;
+
+            this.transform.SetParent(newUnit.transform, false);
+        }
         _targetPosition = _startingOffset;
         _followTarget = true;
 
-        this.transform.SetParent(newUnit.transform, false);
+        _parentViewedUnit = newUnit;
+        _currentlyViewedUnit = newUnit;
+    }
+
+    public void SwitchViewWithoutParenthood(GridBasedUnit unit)
+    {
+        _targetPosition = unit.transform.position + _startingOffset - transform.position;
+        _followTarget = true;
+
+        _currentlyViewedUnit = unit;
+    }
+
+    public void SwitchViewBackToParent()
+    {
+        _targetPosition = _startingOffset;
+        _followTarget = true;
+
+        _currentlyViewedUnit = _parentViewedUnit;
     }
 
     public void RotateCamera(float sign)

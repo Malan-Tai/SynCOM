@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
-public class PortraitButton : MonoBehaviour, IPointerClickHandler
+public class PortraitButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField]
     private int _buttonOrder;
@@ -73,5 +73,16 @@ public class PortraitButton : MonoBehaviour, IPointerClickHandler
         {
             gameObject.SetActive(false);
         }
+    }
+
+    void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
+    {
+        print("enter");
+        CombatGameManager.Instance.Camera.SwitchViewWithoutParenthood(CombatGameManager.Instance.AllAllyUnits[_squadIndex]);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        CombatGameManager.Instance.Camera.SwitchViewBackToParent();
     }
 }
