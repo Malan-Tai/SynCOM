@@ -30,6 +30,8 @@ public class GlobalGameManager : MonoBehaviour
     [SerializeField]
     public AllyCharacter[] currentSquad { get; private set; }
 
+    public Mission CurrentMission { get; set; }
+
     private int _money;
 
     private Dictionary<RegionName, int> _controlStatus;
