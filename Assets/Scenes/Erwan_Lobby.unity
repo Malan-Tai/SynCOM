@@ -3152,6 +3152,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 54437d75a778985428542f71ebc6e7c5, type: 3}
   - {fileID: 21300000, guid: cbb2a6a75f9fbe543a2e33b3080094a6, type: 3}
   - {fileID: 21300000, guid: cb4cfb9b7eb914a419168490493d77e1, type: 3}
+  _enemySprite: {fileID: 21300000, guid: 1656c4d2f390f5e46b9d0215a44114b1, type: 3}
+  _enemyPortrait: {fileID: 21300000, guid: 086fb3d72d03a414eb43fcf013f8b5fe, type: 3}
 --- !u!4 &1153119460
 Transform:
   m_ObjectHideFlags: 0

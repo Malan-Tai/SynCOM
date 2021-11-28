@@ -19,9 +19,14 @@ public class CharacterSheet : MonoBehaviour
     private TMP_Text _mvtText;
     private TMP_Text _wgtText;
     private FullRelationshipsPanel _relationships;
+    private GameObject _quitButton;
+
+    private Vector3 _basePos;
 
     private void Awake()
     {
+        _basePos = transform.localPosition;
+
         _image = transform.Find("Image").GetComponent<Image>();
         _name = transform.Find("Name").GetComponent<TMP_Text>();
         _class = transform.Find("Class").GetComponent<TMP_Text>();
@@ -36,6 +41,8 @@ public class CharacterSheet : MonoBehaviour
         _wgtText = stats.Find("wgt").GetComponent<TMP_Text>();
 
         _relationships = transform.Find("Relationships").GetComponent<FullRelationshipsPanel>();
+
+        _quitButton = transform.Find("Quit").gameObject;
     }
 
     public void InitEventsWithScrollList(UnitScrollList list)
@@ -45,20 +52,22 @@ public class CharacterSheet : MonoBehaviour
         list.OnMouseExitEvent += SetInvisible;
 
         this.transform.position += new Vector3(0, OFFSET_Y, 0);
+
+        _quitButton.SetActive(false);
     }
 
     public void InitEventsFromCombat()
     {
-        //PortraitButton.OnCharacterRightClicked += SetVisible;
-        //PortraitButton.OnCharacterRightClicked += SetCharacter;
-        //list.OnMouseExitEvent += SetInvisible;
+        PortraitButton.OnCharacterRightClicked += SetVisible;
+        PortraitButton.OnCharacterRightClicked += SetCharacter;
 
         this.transform.position += new Vector3(0, OFFSET_Y, 0);
     }
 
     private void SetVisible(AllyCharacter character)
     {
-        this.transform.position -= new Vector3(0, OFFSET_Y, 0);
+        //this.transform.position -= new Vector3(0, OFFSET_Y, 0);
+        transform.localPosition = _basePos;
     }
 
     private void SetCharacter(AllyCharacter character)
@@ -78,7 +87,7 @@ public class CharacterSheet : MonoBehaviour
         _relationships.HoverCharacter(character, false);
     }
 
-    private void SetInvisible()
+    public void SetInvisible()
     {
         this.transform.position += new Vector3(0, OFFSET_Y, 0);
     }
