@@ -124,6 +124,13 @@ public class CombatGameManager : MonoBehaviour
             enemy.Character = new Character(20, 2, 65, 10, 15, 20, 4, 60);
             enemy.InitSprite();
         }
+
+        foreach (AllyUnit ally in _allAllyUnits)
+        {
+            ally.UpdateLineOfSights();
+        }
+
+        UpdateVisibilities();
     }
 
     private void OnEnable()
