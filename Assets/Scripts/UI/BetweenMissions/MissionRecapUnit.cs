@@ -12,6 +12,7 @@ public class MissionRecapUnit : MonoBehaviour
     private TMP_Text _unitClass;
     private Image _unitImage;
     private GameObject _background;
+    private GameObject _quitButton;
 
     public delegate void EventMouseEnter(AllyCharacter character);
     public static event EventMouseEnter OnMouseEnterEvent;
@@ -31,6 +32,7 @@ public class MissionRecapUnit : MonoBehaviour
         _unitImage = transform.Find("Image").GetComponent<Image>();
         _background = transform.Find("Background").gameObject;
         _background.SetActive(false);
+        _quitButton = transform.Find("Quit").gameObject;
 
         _needsWidthUpdate = true;
     }
@@ -50,6 +52,7 @@ public class MissionRecapUnit : MonoBehaviour
             _unitClass.gameObject.SetActive(false);
             _unitImage.gameObject.SetActive(false);
             _background.SetActive(true);
+            _quitButton.SetActive(false);
 
             return;
         }
@@ -58,6 +61,7 @@ public class MissionRecapUnit : MonoBehaviour
         _unitClass.gameObject.SetActive(true);
         _unitImage.gameObject.SetActive(true);
         _background.SetActive(false);
+        _quitButton.SetActive(true);
 
         // TODO : portrait & name
         _unitClass.text = character.CharacterClass.ToString();
@@ -67,6 +71,7 @@ public class MissionRecapUnit : MonoBehaviour
     public void SetCharacterToNull()
     {
         SetCharacter(null);
+        GlobalGameManager.Instance.SetSquadUnit(_indexInSquad, null);
     }
 
     private void OnMouseEnter()
