@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[System.Serializable]
 public class Rapturous : Trait
 {
     public override int GetSelfToAllySentimentGain(EnumSentiment sentiment, int baseSentiment)

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[System.Serializable]
 public class Character
 {
     protected const float _fullCoverDodgeBonus = 40f;
@@ -18,6 +18,9 @@ public class Character
     [SerializeField] private float _critChances;
     [SerializeField] private float _rangeShot;
     [SerializeField] private string _name;
+
+    
+    
 
     //constructor 
 
@@ -126,6 +129,12 @@ public class Character
         {
             Die();
         }
+    }
+
+    public void Kill()
+    {
+        _healthPoints = 0;
+        Die();
     }
 
     public void Heal(float heal)

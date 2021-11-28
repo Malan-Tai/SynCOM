@@ -9,6 +9,12 @@ public class AllyUnit : GridBasedUnit
 
     public AllyCharacter AllyCharacter { get => (AllyCharacter)_character; }
 
+    public delegate void EventStartUsingAbility(BaseAbility ability);
+    public static event EventStartUsingAbility OnStartedUsingAbility;
+
+    public delegate void EventStopUsingAbility();
+    public static event EventStopUsingAbility OnStoppedUsingAbility;
+
     protected override bool IsEnemy()
     {
         return false;
@@ -25,9 +31,12 @@ public class AllyUnit : GridBasedUnit
 
     public void UseAbility(BaseAbility ability)
     {
+        if (ability == _currentAbility) return;
+
         _currentAbility = ability;
         ability.SetEffector(this);
         ability.OnAbilityEnded += StopUsingAbility;
+        if (OnStartedUsingAbility != null) OnStartedUsingAbility(ability);
     }
 
     //public void UseAbilityAsAlly(BaseAbility ability)
@@ -45,6 +54,8 @@ public class AllyUnit : GridBasedUnit
         {
             CombatGameManager.Instance.FinishAllyUnitTurn(this);
         }
+
+        if (OnStoppedUsingAbility != null) OnStoppedUsingAbility();
     }
 
     public void StopUsingAbilityAsAlly(bool executed)
@@ -63,5 +74,11 @@ public class AllyUnit : GridBasedUnit
         _movesLeft = 10f;
         NeedsPathfinderUpdate();
         UpdateLineOfSights(!IsEnemy());
+    }
+
+    public void UseCharacterSprite()
+    {
+        SpriteRenderer renderer = GetComponentInChildren<SpriteRenderer>();
+        //renderer.sprite = GlobalGameManager.Instance.GetClassTexture(_character.characterClass);
     }
 }

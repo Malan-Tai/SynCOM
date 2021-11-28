@@ -6,6 +6,7 @@ public class EnemyUnit : GridBasedUnit
 {
     private GeneralRenderer _renderer;
     private Color _originalColor;
+
     private new void Start()
     {
         base.Start();
