@@ -8,15 +8,38 @@ using System.Threading.Tasks;
 /// Buffs are temporary traits that affect performannces in combat.
 /// Note that debuffs are just buffs with negative values.
 /// </summary>
-public abstract class Buff : Trait
+public class Buff : Trait
 {
     private int _turnCount;
     private GridBasedUnit _ownerUnit;
 
-    public Buff(int duration, GridBasedUnit unit)
+    private float _damageBuff;
+    private float _critBuff;
+    private float _accuracyBuff;
+    private float _mitigationBuff;
+    private float _moveBuff;
+    private float _dodgeBuff;
+
+    public Buff(
+        int duration,
+        GridBasedUnit unit,
+        float damageBuff = 0,
+        float critBuff = 0,
+        float accuracyBuff = 0,
+        float mitigationBuff = 0,
+        float moveBuff = 0,
+        float dodgeBuff = 0
+        )
     {
         _turnCount = duration;
         _ownerUnit = unit;
+
+        _damageBuff = damageBuff;
+        _critBuff = critBuff;
+        _accuracyBuff = accuracyBuff;
+        _mitigationBuff = mitigationBuff;
+        _moveBuff = moveBuff;
+        _dodgeBuff = dodgeBuff;
 
         CombatGameManager.OnNewTurn += HandleNewTurn;
     }
@@ -37,8 +60,8 @@ public abstract class Buff : Trait
 
     public virtual void Expire()
     {
-        /// Special effect ???
-        /// 
+        /// override in derived classes to implement special effects on expiration
+
         CombatGameManager.OnNewTurn -= HandleNewTurn;
         this._ownerUnit.CurrentBuffs.Remove(this);
     }

@@ -90,10 +90,12 @@ public class BasicShot : BaseAbility
             Debug.Log("i am shooting at " + _possibleTargets[_targetIndex].GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
             if (_effector.Character.CritChances > randCrit) {
                 target.TakeDamage(_effector.Character.Damage * 1.5f);
+                Debug.Log(this._effector.AllyCharacter.Name + " (self) : CRIT hit ! " + _effector.Character.Damage * 1.5f + "damage dealt");
             }
             else
             {
                 target.TakeDamage(_effector.Character.Damage);
+                Debug.Log(this._effector.AllyCharacter.Name + " (self) : hit ! " + _effector.Character.Damage + "damage dealt");
             }
             Debug.Log("Ennemy has" + _possibleTargets[_targetIndex].Character.HealthPoints + "HP left");
         }

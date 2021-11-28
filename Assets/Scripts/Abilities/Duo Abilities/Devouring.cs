@@ -98,6 +98,7 @@ public class Devouring : BaseDuoAbility
         Debug.Log("DEVOURING : we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
         SelfShoot(target);
         _effector.Character.Heal(6);
+        _effector.CurrentBuffs.Add(new Buff(3, _effector, damageBuff: 2f, critBuff: 0.5f, mitigationBuff: -0.5f));
     }
 
     private void SelfShoot(GridBasedUnit target)
@@ -116,15 +117,17 @@ public class Devouring : BaseDuoAbility
                 target.Character.TakeDamage(_selfShotStats.GetDamage() * 1.5f);
                 SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
                 AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
+                Debug.Log(this._effector.AllyCharacter.Name + " (self) : CRIT hit ! " + _selfShotStats.GetDamage() * 1.5f + "damage dealt");
             }
             else
             {
                 target.Character.TakeDamage(_selfShotStats.GetDamage());
+                Debug.Log(this._effector.AllyCharacter.Name + " (self) : hit ! " + _selfShotStats.GetDamage() + "damage dealt");
             }
         }
         else
         {
-            Debug.Log("self missed");
+            Debug.Log(this._effector.AllyCharacter.Name + " (self) : missed");
             SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
             AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
         }
