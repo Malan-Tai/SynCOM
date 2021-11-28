@@ -79,6 +79,6 @@ public class AllyUnit : GridBasedUnit
     public void UseCharacterSprite()
     {
         SpriteRenderer renderer = GetComponentInChildren<SpriteRenderer>();
-        renderer.sprite = _character.Sprite;
+        //renderer.sprite = GlobalGameManager.Instance.GetClassTexture(_character.characterClass);
     }
 }

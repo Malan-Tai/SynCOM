@@ -27,6 +27,7 @@ public class GlobalGameManager : MonoBehaviour
     #endregion
 
     public List<AllyCharacter> allCharacters { get; private set; }
+    [SerializeField]
     public AllyCharacter[] currentSquad { get; private set; }
 
     private int _money;
