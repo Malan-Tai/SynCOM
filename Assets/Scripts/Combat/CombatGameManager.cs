@@ -48,6 +48,9 @@ public class CombatGameManager : MonoBehaviour
     [SerializeField]
     private List<EnemyUnit> _enemyUnits;
 
+    [SerializeField]
+    private CharacterSheet _characterSheet;
+
     public List<AllyUnit> ControllableUnits { get { return _controllableUnits; } }
     public List<EnemyUnit> EnemyUnits { get { return _enemyUnits; } }
 
@@ -73,6 +76,8 @@ public class CombatGameManager : MonoBehaviour
         InitCharacters();
 
         if (OnUnitSelected != null) OnUnitSelected(_currentUnitIndex);
+
+        _characterSheet.InitEventsFromCombat();
     }
 
     private void InitCharacters()

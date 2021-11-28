@@ -22,6 +22,9 @@ public class PortraitButton : MonoBehaviour, IPointerClickHandler
 
     private Image _sprite;
 
+    public delegate void RightClickCharacter(AllyCharacter character);
+    public static event RightClickCharacter OnCharacterRightClicked;
+
     private void Awake()
     {
         _squadIndex = _buttonOrder;
@@ -58,9 +61,10 @@ public class PortraitButton : MonoBehaviour, IPointerClickHandler
         {
             CombatGameManager.Instance.SelectControllableUnit(_squadIndex);
         }
-        else if (eventData.button == PointerEventData.InputButton.Right)
+        else if (eventData.button == PointerEventData.InputButton.Right && OnCharacterRightClicked != null)
         {
             print("right");
+            OnCharacterRightClicked(CombatGameManager.Instance.AllAllyUnits[_squadIndex].AllyCharacter);
         }
     }
 

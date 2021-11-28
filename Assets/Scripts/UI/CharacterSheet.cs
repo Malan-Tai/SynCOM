@@ -6,7 +6,7 @@ using TMPro;
 
 public class CharacterSheet : MonoBehaviour
 {
-    private const float OFFSET_Y = 200;
+    private const float OFFSET_Y = 2000;
 
     private Image _image;
     private TMP_Text _name;
@@ -43,6 +43,15 @@ public class CharacterSheet : MonoBehaviour
         list.OnMouseEnterEvent += SetVisible;
         list.OnMouseEnterEvent += SetCharacter;
         list.OnMouseExitEvent += SetInvisible;
+
+        this.transform.position += new Vector3(0, OFFSET_Y, 0);
+    }
+
+    public void InitEventsFromCombat()
+    {
+        //PortraitButton.OnCharacterRightClicked += SetVisible;
+        //PortraitButton.OnCharacterRightClicked += SetCharacter;
+        //list.OnMouseExitEvent += SetInvisible;
 
         this.transform.position += new Vector3(0, OFFSET_Y, 0);
     }
