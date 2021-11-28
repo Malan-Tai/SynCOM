@@ -77,7 +77,6 @@ public class PortraitButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
 
     void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
     {
-        print("enter");
         CombatGameManager.Instance.Camera.SwitchViewWithoutParenthood(CombatGameManager.Instance.AllAllyUnits[_squadIndex]);
     }
 
