@@ -26,6 +26,8 @@ public class RelationshipPanel : MonoBehaviour
     public void SetPanel(AllyCharacter left, AllyCharacter right)
     {
         // TODO : portraits & names
+        _leftPortrait.sprite = left.Portrait;
+        _rightPortrait.sprite = right.Portrait;
 
         List<EnumEmotions> leftRightEmotions = left.Relationships[right].ListEmotions;
 

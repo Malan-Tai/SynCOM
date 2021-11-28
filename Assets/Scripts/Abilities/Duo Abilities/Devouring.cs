@@ -10,8 +10,7 @@ public class Devouring : BaseDuoAbility
 
     public override string GetDescription()
     {
-        return  "Devouring\nYou ask an ally to hold an enemy while you feed on them, " +
-                "restoring your health and extending your Frenzy state.";
+        return  "You ask an ally to hold an enemy while you feed on them, restoring your health and extending your Frenzy state.";
     }
 
     public override string GetName()
@@ -137,6 +136,6 @@ public class Devouring : BaseDuoAbility
 
     public override string GetAllyDescription()
     {
-        return "Devouring\nGet eaten, it is terrifying.";
+        return "Get eaten, it is terrifying.";
     }
 }

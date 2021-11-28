@@ -5,12 +5,12 @@ using System;
 
 public class BasicShot : BaseAbility
 {
-    private GridBasedUnit[] _possibleTargets;
+    private List<GridBasedUnit> _possibleTargets;
     private int _targetIndex = -1;
 
     public override string GetDescription()
     {
-        string res = "Shot\nShoot at the target.";
+        string res = "Shoot at the target.";
         if (_targetIndex >= 0)
         {
             GridBasedUnit target = _possibleTargets[_targetIndex];
@@ -25,10 +25,18 @@ public class BasicShot : BaseAbility
 
     public override void SetEffector(AllyUnit effector)
     {
-        _possibleTargets = new GridBasedUnit[effector.LinesOfSight.Count];
-        effector.LinesOfSight.Keys.CopyTo(_possibleTargets, 0);
+        _possibleTargets = new List<GridBasedUnit>();
+        
+        foreach (GridBasedUnit unit in effector.LinesOfSight.Keys)
+        {
+            float distance = Vector2.Distance(unit.GridPosition, effector.GridPosition);
+            if (distance <= effector.Character.RangeShot)
+            {
+                _possibleTargets.Add(unit);
+            }
+        }
 
-        if (_possibleTargets.Length > 0)
+        if (_possibleTargets.Count > 0)
         {
             _targetIndex = 0;
             CombatGameManager.Instance.Camera.SwitchParenthood(_possibleTargets[_targetIndex]);
@@ -39,14 +47,12 @@ public class BasicShot : BaseAbility
 
     protected override bool CanExecute()
     {
-        float distance = Vector2.Distance(_possibleTargets[_targetIndex].GridPosition, _effector.GridPosition);
-        Debug.Log("Distance between shot and shooted =" + distance);
-        return _targetIndex >= 0 && distance < _effector.Character.RangeShot;
+        return _targetIndex >= 0;
     }
 
     protected override void EnemyTargetingInput()
     {
-        if (_possibleTargets.Length <= 0) return;
+        if (_possibleTargets.Count <= 0) return;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitData;
@@ -61,7 +67,7 @@ public class BasicShot : BaseAbility
 
             if (hitUnit != null && clicked)
             {
-                int newIndex = Array.IndexOf(_possibleTargets, hitUnit);
+                int newIndex = _possibleTargets.IndexOf(hitUnit);
                 if (newIndex >= 0)
                 {
                     _targetIndex = newIndex;
@@ -73,11 +79,15 @@ public class BasicShot : BaseAbility
         if (Input.GetKeyDown(KeyCode.Tab) && !changedUnitThisFrame)
         {
             _targetIndex++;
-            if (_targetIndex >= _possibleTargets.Length) _targetIndex = 0;
+            if (_targetIndex >= _possibleTargets.Count) _targetIndex = 0;
             changedUnitThisFrame = true;
         }
 
-        if (changedUnitThisFrame) CombatGameManager.Instance.Camera.SwitchParenthood(_possibleTargets[_targetIndex]);
+        if (changedUnitThisFrame)
+        {
+            CombatGameManager.Instance.Camera.SwitchParenthood(_possibleTargets[_targetIndex]);
+            RequestDescriptionUpdate();
+        }
     }
 
     protected override void Execute()
