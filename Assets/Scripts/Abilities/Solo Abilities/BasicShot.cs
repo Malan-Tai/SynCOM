@@ -8,6 +8,8 @@ public class BasicShot : BaseAbility
     private List<GridBasedUnit> _possibleTargets;
     private int _targetIndex = -1;
 
+    private AbilityStats _selfShotStats;
+
     public override string GetDescription()
     {
         string res = "Shoot at the target.";
@@ -93,25 +95,55 @@ public class BasicShot : BaseAbility
     protected override void Execute()
     {
         GridBasedUnit target = _possibleTargets[_targetIndex];
-        int randShot = UnityEngine.Random.Range(0, 100);
+
+        //int randShot = UnityEngine.Random.Range(0, 100);
+        //int randCrit = UnityEngine.Random.Range(0, 100);
+
+        //if (_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover) > randShot) {
+        //    Debug.Log("i am shooting at " + _possibleTargets[_targetIndex].GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
+        //    if (_effector.Character.CritChances > randCrit) {
+        //        target.TakeDamage(_effector.Character.Damage * 1.5f);
+        //        Debug.Log(this._effector.AllyCharacter.Name + " (self) : CRIT hit ! " + _effector.Character.Damage * 1.5f + "damage dealt");
+        //    }
+        //    else
+        //    {
+        //        target.TakeDamage(_effector.Character.Damage);
+        //        Debug.Log(this._effector.AllyCharacter.Name + " (self) : hit ! " + _effector.Character.Damage + "damage dealt");
+        //    }
+        //    Debug.Log("Ennemy has" + _possibleTargets[_targetIndex].Character.HealthPoints + "HP left");
+        //}
+        //else
+        //{
+        //    Debug.Log("Dice got " + randShot + " and had to be lower than " + (_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover)) + ": Missed");
+        //}
+
+        //////////////////////////////////////////////////////////////////////////////////////////
+        
+        // Set accuracy to 999 to facilitate debugging
+        _selfShotStats = new AbilityStats(0, 0, 1f, 0, _effector);
+
+        int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
         int randCrit = UnityEngine.Random.Range(0, 100);
 
-        if (_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover) > randShot) {
-            Debug.Log("i am shooting at " + _possibleTargets[_targetIndex].GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
-            if (_effector.Character.CritChances > randCrit) {
-                target.TakeDamage(_effector.Character.Damage * 1.5f);
-                Debug.Log(this._effector.AllyCharacter.Name + " (self) : CRIT hit ! " + _effector.Character.Damage * 1.5f + "damage dealt");
+        Debug.Log("self to hit: " + randShot + " for " + _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover));
+
+        if (randShot < _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
+        {
+
+            if (randCrit < _selfShotStats.GetCritRate())
+            {
+                target.Character.TakeDamage(_selfShotStats.GetDamage() * 1.5f);
+                Debug.Log(this._effector.AllyCharacter.Name + " (self) : CRIT hit ! " + _selfShotStats.GetDamage() * 1.5f + "damage dealt");
             }
             else
             {
-                target.TakeDamage(_effector.Character.Damage);
-                Debug.Log(this._effector.AllyCharacter.Name + " (self) : hit ! " + _effector.Character.Damage + "damage dealt");
+                target.Character.TakeDamage(_selfShotStats.GetDamage());
+                Debug.Log(this._effector.AllyCharacter.Name + " (self) : hit ! " + _selfShotStats.GetDamage() + "damage dealt");
             }
-            Debug.Log("Ennemy has" + _possibleTargets[_targetIndex].Character.HealthPoints + "HP left");
         }
         else
         {
-            Debug.Log("Dice got " + randShot + " and had to be lower than " + (_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover)) + ": Missed");
+            Debug.Log(this._effector.AllyCharacter.Name + " (self) : missed");
         }
     }
 

@@ -74,6 +74,7 @@ public class AllyUnit : GridBasedUnit
         _movesLeft = 10f;
         NeedsPathfinderUpdate();
         UpdateLineOfSights(!IsEnemy());
+        //Debug.Log(this.CurrentBuffs.Count + " buffs");
     }
 
     public void UseCharacterSprite()

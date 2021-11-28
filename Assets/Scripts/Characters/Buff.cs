@@ -75,4 +75,34 @@ public class Buff : Trait
     {
         return baseSentiment;
     }
+
+    public override float GetDamageModifier()
+    {
+        return _damageBuff;
+    }
+
+    public override float GetCritRateModifier()
+    {
+        return _critBuff;
+    }
+
+    public override float GetHitRateModifier()
+    {
+        return _accuracyBuff;
+    }
+
+    public override float GetDodgeModifier()
+    {
+        return _dodgeBuff;
+    }
+
+    public override float GetMitigationModifier()
+    {
+        return _mitigationBuff;
+    }
+
+    public override float GetMoveModifier()
+    {
+        return _moveBuff;
+    }
 }

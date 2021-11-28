@@ -44,12 +44,12 @@ public class AllyCharacter : Character
         addMandatoryTraits(_class);
         addRandomTrait(_class);
 
-        Debug.Log(_traits.Count);
+        //Debug.Log(_traits.Count);
 
-        for (int i = 0; i < _traits.Count; i++)
-        {
-            Debug.Log(_traits[i].GetName());
-        }
+        //for (int i = 0; i < _traits.Count; i++)
+        //{
+        //    Debug.Log(_traits[i].GetName());
+        //}
 
         
         
