@@ -4,13 +4,19 @@ using UnityEngine;
 
 public class AbilityList : MonoBehaviour
 {
+    private const float OFFSET_Y = -100f;
+
     [SerializeField]
     private RectTransform _abilityBtnPrefab;
 
     private RectTransform _rectTransform;
 
+    private Vector3 _basePosition;
+
     private void Awake()
     {
+        _basePosition = transform.localPosition;
+
         _rectTransform = GetComponent<RectTransform>();
 
         Populate(new List<BaseAbility>
@@ -22,6 +28,18 @@ public class AbilityList : MonoBehaviour
             new Slap(),
             new Devouring()
         });
+    }
+
+    private void OnEnable()
+    {
+        AllyUnit.OnStartedUsingAbility += Hide;
+        AllyUnit.OnStoppedUsingAbility += Show;
+    }
+
+    private void OnDisable()
+    {
+        AllyUnit.OnStartedUsingAbility -= Hide;
+        AllyUnit.OnStoppedUsingAbility -= Show;
     }
 
     public void Populate(List<BaseAbility> abilities)
@@ -62,5 +80,15 @@ public class AbilityList : MonoBehaviour
 
             i++;
         }
+    }
+
+    private void Hide(BaseAbility ability)
+    {
+        this.transform.localPosition += new Vector3(0, OFFSET_Y, 0);
+    }
+
+    private void Show()
+    {
+        this.transform.localPosition = _basePosition;
     }
 }
