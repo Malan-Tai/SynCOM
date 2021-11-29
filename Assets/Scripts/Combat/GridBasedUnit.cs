@@ -241,7 +241,7 @@ public class GridBasedUnit : MonoBehaviour
 
     public void Missed()
     {
-        string str = "Missed";
+        string str = "Miss";
         _canvasGroup.gameObject.transform.Find("Text").GetComponent<TMPro.TextMeshProUGUI>().text = str;
         StartCoroutine("IsAimed");
     }
