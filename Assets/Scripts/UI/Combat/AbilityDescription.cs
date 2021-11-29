@@ -32,6 +32,9 @@ public class AbilityDescription : MonoBehaviour
         AllyUnit.OnStartedUsingAbility += StartUsing;
         AllyUnit.OnStoppedUsingAbility += StopUsing;
 
+        AbilityButton.OnMouseEnter += StartUsing;
+        AbilityButton.OnMouseExit += StopUsing;
+
         BaseAbility.OnDescriptionUpdateRequest += UpdateDescription;
     }
 
@@ -39,6 +42,9 @@ public class AbilityDescription : MonoBehaviour
     {
         AllyUnit.OnStartedUsingAbility -= StartUsing;
         AllyUnit.OnStoppedUsingAbility -= StopUsing;
+
+        AbilityButton.OnMouseEnter -= StartUsing;
+        AbilityButton.OnMouseExit -= StopUsing;
 
         BaseAbility.OnDescriptionUpdateRequest -= UpdateDescription;
     }
@@ -83,7 +89,7 @@ public class AbilityDescription : MonoBehaviour
 
     private void StopUsing()
     {
-        if (_hidden) return;
+        if (_hidden || CombatGameManager.Instance.CurrentAbility != null) return;
 
         this.transform.position += new Vector3(0, OFFSET_Y, 0);
         _hidden = true;
