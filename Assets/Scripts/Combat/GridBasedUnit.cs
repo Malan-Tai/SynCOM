@@ -51,7 +51,8 @@ public class GridBasedUnit : MonoBehaviour
     public delegate void FinishedMoving(GridBasedUnit movedUnit);
     public static event FinishedMoving OnMoveFinish;
 
-    private CanvasGroup _canvasGroup;
+    //private CanvasGroup _canvasGroup;
+
     protected void Start()
     {
         GridMap gridMap = CombatGameManager.Instance.GridMap;
@@ -65,7 +66,7 @@ public class GridBasedUnit : MonoBehaviour
 
         _linesOfSight = new Dictionary<GridBasedUnit, LineOfSight>();
 
-        _canvasGroup = transform.Find("Canvas").GetComponent<CanvasGroup>();
+        //_canvasGroup = transform.Find("Canvas").GetComponent<CanvasGroup>();
     }
 
     private void Update()

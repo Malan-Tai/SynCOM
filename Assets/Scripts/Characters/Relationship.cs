@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-
+[Serializable]
 public class Relationship
 {
     /// <summary>
@@ -16,7 +16,7 @@ public class Relationship
     }
 
     private AllyCharacter _source;
-
+    [Serializable]
     private class Gauge
     {
         /// <summary>

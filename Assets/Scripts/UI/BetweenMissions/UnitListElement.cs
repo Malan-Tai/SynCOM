@@ -50,22 +50,19 @@ public class UnitListElement : MonoBehaviour
         // TODO : portrait & name
         _unitName.text = "Name";
         _unitClass.text = character.CharacterClass.ToString();
+        _unitPortrait.sprite = GlobalGameManager.Instance.GetClassPortrait(character.CharacterClass);
     }
 
     private void OnMouseEnter()
     {
-        if (_frozen) return;
-
-        _background.SetActive(true);
+        if (!_frozen) _background.SetActive(true);
 
         if (OnMouseEnterEvent != null) OnMouseEnterEvent(_character);
     }
 
     private void OnMouseExit()
     {
-        if (_frozen) return;
-
-        _background.SetActive(false);
+        if (!_frozen) _background.SetActive(false);
 
         if (OnMouseExitEvent != null) OnMouseExitEvent();
     }

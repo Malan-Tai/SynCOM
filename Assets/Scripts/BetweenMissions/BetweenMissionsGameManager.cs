@@ -38,6 +38,9 @@ public class BetweenMissionsGameManager : MonoBehaviour
     [SerializeField]
     private Transform _missionRecapUnits;
 
+    [SerializeField]
+    private CharacterSheet _characterSheet;
+
     private int _selectedSquadUnit;
 
     public delegate void NotifyCanvasChange(int x, int y);
@@ -61,6 +64,13 @@ public class BetweenMissionsGameManager : MonoBehaviour
         _missionUnitList.Populate(GlobalGameManager.Instance.allCharacters);
 
         GlobalGameManager.Instance.SetDefaultSquad();
+        InitMissionRecapUnits();
+
+        _characterSheet.InitEventsWithScrollList(_missionUnitList);
+    }
+
+    public void InitMissionRecapUnits()
+    {
         int i = 0;
         foreach (MissionRecapUnit unit in _missionRecapUnits.GetComponentsInChildren<MissionRecapUnit>())
         {
@@ -132,8 +142,9 @@ public class BetweenMissionsGameManager : MonoBehaviour
         if (_selectedRegion == RegionName.None) return;
 
         print("start mission in " + _selectedRegion);
+        GlobalGameManager.Instance.CurrentMission = _availableMissions[_selectedRegion];
 
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("Erwan");
     }
 
     public void ClearSquad()

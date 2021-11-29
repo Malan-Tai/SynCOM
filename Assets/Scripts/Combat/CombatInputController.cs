@@ -44,12 +44,12 @@ public class CombatInputController : MonoBehaviour
         bool changedUnitThisFrame = false;
         bool clicked = Input.GetMouseButtonUp(0);
 
-        if (Physics.Raycast(ray, out hitData, 1000, _groundLayerMask))
+        if (Physics.Raycast(ray, out hitData, 1000, _groundLayerMask) && hitData.transform.CompareTag("Ground"))
         {
             Vector2Int tileCoord = CombatGameManager.Instance.GridMap.WorldToGrid(hitData.point);
             CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(tileCoord);
 
-            if (hitData.transform.CompareTag("Ground") && clicked)
+            if (clicked)
             {
                 CombatGameManager.Instance.CurrentUnit.ChoosePathTo(tileCoord);
             }
