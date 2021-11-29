@@ -28,4 +28,9 @@ public class HunkerDown : BaseAbility
     {
         return "Hunker Down";
     }
+
+    public override void UISelectUnit(GridBasedUnit unit)
+    {
+        // no unit to select
+    }
 }

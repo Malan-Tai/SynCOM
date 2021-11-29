@@ -121,7 +121,7 @@ public class CombatGameManager : MonoBehaviour
 
         foreach (EnemyUnit enemy in _enemyUnits)
         {
-            enemy.Character = new Character(20, 2, 65, 10, 15, 20, 4, 60);
+            enemy.Character = new EnemyCharacter(20, 2, 65, 10, 15, 20, 4, 60);
             enemy.InitSprite();
         }
 
@@ -337,6 +337,20 @@ public class CombatGameManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void AbilityHoverTarget(GridBasedUnit unit)
+    {
+        if (CurrentAbility == null) return;
+
+        CurrentAbility.HoverPortrait(unit);
+    }
+
+    public void UIClickTarget(GridBasedUnit unit)
+    {
+        if (CurrentAbility == null) return;
+
+        CurrentAbility.UISelectUnit(unit);
     }
 
 #if UNITY_EDITOR

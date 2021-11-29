@@ -47,6 +47,8 @@ public class Devouring : BaseDuoAbility
         _selfShotStats = new AbilityStats(200, 0, 1.5f, 0, _effector);
 
         _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
+
+        RequestTargetsUpdate(_possibleTargets);
     }
 
     protected override void EnemyTargetingInput()
@@ -136,6 +138,17 @@ public class Devouring : BaseDuoAbility
 
     public override string GetAllyDescription()
     {
-        return "Get eaten, it is terrifying.";
+        return "The feasting spectacle is terrifying.";
+    }
+
+    public override void UISelectUnit(GridBasedUnit unit)
+    {
+        if (_chosenAlly != null)
+        {
+            _targetIndex = _possibleTargets.IndexOf(unit);
+            CombatGameManager.Instance.Camera.SwitchParenthood(_possibleTargets[_targetIndex]);
+            RequestDescriptionUpdate();
+        }
+        else base.UISelectUnit(unit);
     }
 }

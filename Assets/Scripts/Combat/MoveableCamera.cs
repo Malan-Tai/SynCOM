@@ -106,6 +106,8 @@ public class MoveableCamera : MonoBehaviour
 
     public void SwitchViewWithoutParenthood(GridBasedUnit unit)
     {
+        if (unit == _parentViewedUnit) return;
+
         _targetPosition = unit.transform.position + _startingOffset - transform.position;
         _followTarget = true;
 
@@ -114,6 +116,8 @@ public class MoveableCamera : MonoBehaviour
 
     public void SwitchViewBackToParent()
     {
+        if (_currentlyViewedUnit == _parentViewedUnit) return;
+
         _targetPosition = _startingOffset;
         _followTarget = true;
 

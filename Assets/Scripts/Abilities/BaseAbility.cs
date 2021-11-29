@@ -10,24 +10,29 @@ public abstract class BaseAbility
     protected bool _uiConfirmed = false;
     protected bool _uiCancelled = false;
 
+    protected GridBasedUnit _hoveredUnit = null;
     protected AllyUnit _effector;
 
     public delegate void EventRequestDescriptionUpdate(BaseAbility ability);
     public static event EventRequestDescriptionUpdate OnDescriptionUpdateRequest;
+
+    public delegate void EventRequestTargetsUpdate(IEnumerable<GridBasedUnit> targets);
+    public static event EventRequestTargetsUpdate OnTargetsUpdateRequest;
+
+    public void HoverPortrait(GridBasedUnit unit)
+    {
+        _hoveredUnit = unit;
+        RequestDescriptionUpdate();
+    }
 
     protected void RequestDescriptionUpdate()
     {
         if (OnDescriptionUpdateRequest != null) OnDescriptionUpdateRequest(this);
     }
 
-    public void SetUIConfirmed()
+    protected void RequestTargetsUpdate(IEnumerable<GridBasedUnit> targets)
     {
-        _uiConfirmed = true;
-    }
-
-    public void SetUICancelled()
-    {
-        _uiCancelled = true;
+        if (OnTargetsUpdateRequest != null) OnTargetsUpdateRequest(targets);
     }
 
     public virtual void SetEffector(AllyUnit effector)
@@ -35,12 +40,14 @@ public abstract class BaseAbility
         _effector = effector;
     }
 
+    public abstract void UISelectUnit(GridBasedUnit unit);
     protected abstract void EnemyTargetingInput();
     protected abstract bool CanExecute();
     protected abstract void Execute();
 
     protected virtual void FinalizeAbility(bool executed)
     {
+        _hoveredUnit = null;
         if (OnAbilityEnded != null) OnAbilityEnded(executed);
     }
 
@@ -97,7 +104,7 @@ public abstract class BaseAbility
 
 public abstract class BaseDuoAbility : BaseAbility
 {
-    private AllyUnit _temporaryChosenAlly = null;
+    protected AllyUnit _temporaryChosenAlly = null;
     protected AllyUnit _chosenAlly = null;
     private List<AllyUnit> _possibleAllies = null;
 
@@ -105,6 +112,16 @@ public abstract class BaseDuoAbility : BaseAbility
     protected abstract void ChooseAlly();
 
     public abstract string GetAllyDescription();
+
+    public override void UISelectUnit(GridBasedUnit unit)
+    {
+        if (unit is AllyUnit && _chosenAlly == null)
+        {
+            _temporaryChosenAlly = unit as AllyUnit;
+            CombatGameManager.Instance.Camera.SwitchParenthood(_temporaryChosenAlly);
+            RequestDescriptionUpdate();
+        }
+    }
 
     public override void SetEffector(AllyUnit effector)
     {
@@ -124,6 +141,8 @@ public abstract class BaseDuoAbility : BaseAbility
             _temporaryChosenAlly = _possibleAllies[0];
             CombatGameManager.Instance.Camera.SwitchParenthood(_temporaryChosenAlly);
         }
+
+        RequestTargetsUpdate(_possibleAllies);
     }
 
     protected override void FinalizeAbility(bool executed)

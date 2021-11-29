@@ -65,8 +65,8 @@ public class UiManager : MonoBehaviour
     {
         if (CombatGameManager.Instance.CurrentAbility != null)
         {
-            EscapeButton.onClick.AddListener(delegate { infoPanel.SetActive(false); CombatGameManager.Instance.CurrentAbility.SetUICancelled(); });
-            ReturnButton.onClick.AddListener(delegate { infoPanel.SetActive(false); CombatGameManager.Instance.CurrentAbility.SetUIConfirmed();  });
+            EscapeButton.onClick.AddListener(delegate { infoPanel.SetActive(false); CombatGameManager.Instance.CurrentAbility.UICancel(); });
+            ReturnButton.onClick.AddListener(delegate { infoPanel.SetActive(false); CombatGameManager.Instance.CurrentAbility.UIConfirm();  });
         }
         
     }

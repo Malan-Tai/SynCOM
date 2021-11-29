@@ -263,4 +263,9 @@ public class GridBasedUnit : MonoBehaviour
     {
 
     }
+
+    public virtual Sprite GetPortrait()
+    {
+        return _character.GetPortrait();
+    }
 }
