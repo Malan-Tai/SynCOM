@@ -89,7 +89,7 @@ public class AbilityDescription : MonoBehaviour
 
     private void StopUsing()
     {
-        if (_hidden || CombatGameManager.Instance.CurrentAbility != null) return;
+        if (_hidden) return;
 
         this.transform.position += new Vector3(0, OFFSET_Y, 0);
         _hidden = true;

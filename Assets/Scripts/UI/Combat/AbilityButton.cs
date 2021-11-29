@@ -32,11 +32,11 @@ public class AbilityButton : MonoBehaviour, IPointerClickHandler, IPointerEnterH
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (OnMouseEnter != null) OnMouseEnter(_ability);
+        if (OnMouseEnter != null && CombatGameManager.Instance.CurrentAbility == null) OnMouseEnter(_ability);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (OnMouseExit != null) OnMouseExit();
+        if (OnMouseExit != null && CombatGameManager.Instance.CurrentAbility == null) OnMouseExit();
     }
 }
