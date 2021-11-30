@@ -15,7 +15,7 @@ public class AbilityList : MonoBehaviour
 
     private void Awake()
     {
-        _basePosition = transform.localPosition;
+        _basePosition = transform.position;
 
         _rectTransform = GetComponent<RectTransform>();
 
@@ -89,6 +89,6 @@ public class AbilityList : MonoBehaviour
 
     private void Show()
     {
-        this.transform.localPosition = _basePosition;
+        this.transform.position = _basePosition;
     }
 }
