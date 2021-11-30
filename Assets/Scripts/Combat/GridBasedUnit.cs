@@ -240,23 +240,30 @@ public class GridBasedUnit : MonoBehaviour
         return _pathfinder.GetReachableTiles();
     }
 
+    public void Missed()
+    {
+        //string str = "Miss";
+        //_canvasGroup.gameObject.transform.Find("Text").GetComponent<TMPro.TextMeshProUGUI>().text = str;
+        //StartCoroutine(IsAimed());
+    }
+
     public void TakeDamage(float damage)
     {
         //string str = "-" + damage.ToString();
         //_canvasGroup.gameObject.transform.Find("Text").GetComponent<TMPro.TextMeshProUGUI>().text = str;
-        //StartCoroutine(LoseHP());
+        //StartCoroutine(IsAimed());
         _character.TakeDamage(damage);
     }
 
-    //IEnumerator LoseHP()
+    //IEnumerator IsAimed()
     //{
-    //    for (float ft = 2f; ft >= 0; ft -= 0.1f)
+    //    for (float ft = 2f; ft >= 0; ft -= 0.01f)
     //    {
-    //        _canvasGroup.alpha = ft/2;
-    //        _canvasGroup.transform.position += new Vector3(0,0.1f,0);
-    //        yield return new WaitForSeconds(.1f);
+    //        _canvasGroup.alpha = ft / 2;
+    //        _canvasGroup.transform.position += new Vector3(0, 0.01f, 0);
+    //        yield return new WaitForSeconds(.01f);
     //    }
-    //    _canvasGroup.transform.position = transform.position;
+    //    _canvasGroup.transform.position = transform.position + new Vector3(0, 2, 0);
     //}
 
     public virtual void InitSprite()
