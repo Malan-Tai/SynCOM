@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class AbilityDescription : MonoBehaviour
@@ -13,6 +14,8 @@ public class AbilityDescription : MonoBehaviour
     private TMP_Text _title;
     private TMP_Text _description;
 
+    private Image _portrait;
+
     private bool _hidden;
 
     private Vector3 _basePosition;
@@ -21,6 +24,12 @@ public class AbilityDescription : MonoBehaviour
     {
         _title = transform.Find("Title").GetComponent<TMP_Text>();
         _description = transform.Find("Description").GetComponent<TMP_Text>();
+
+        Transform portrait = transform.Find("Portrait");
+        if (portrait != null)
+        {
+            _portrait = portrait.GetComponent<Image>();
+        }
 
         _basePosition = this.transform.localPosition;
         this.transform.position += new Vector3(0, OFFSET_Y, 0);
@@ -78,9 +87,27 @@ public class AbilityDescription : MonoBehaviour
                 break;
             case EnumAbilityDescription.Self:
                 _description.text = duo.GetDescription();
+
+                Sprite portrait = duo.GetSelfPortrait();
+                if (portrait == null) _portrait.gameObject.SetActive(false);
+                else
+                {
+                    _portrait.gameObject.SetActive(true);
+                    _portrait.sprite = portrait;
+                }
+
                 break;
             case EnumAbilityDescription.Ally:
                 _description.text = duo.GetAllyDescription();
+
+                portrait = duo.GetAllyPortrait();
+                if (portrait == null) _portrait.gameObject.SetActive(false);
+                else
+                {
+                    _portrait.gameObject.SetActive(true);
+                    _portrait.sprite = portrait;
+                }
+
                 break;
             default:
                 break;
@@ -107,9 +134,27 @@ public class AbilityDescription : MonoBehaviour
                 break;
             case EnumAbilityDescription.Self:
                 _description.text = duo.GetDescription();
+
+                Sprite portrait = duo.GetSelfPortrait();
+                if (portrait == null) _portrait.gameObject.SetActive(false);
+                else
+                {
+                    _portrait.gameObject.SetActive(true);
+                    _portrait.sprite = portrait;
+                }
+
                 break;
             case EnumAbilityDescription.Ally:
                 _description.text = duo.GetAllyDescription();
+
+                portrait = duo.GetAllyPortrait();
+                if (portrait == null) _portrait.gameObject.SetActive(false);
+                else
+                {
+                    _portrait.gameObject.SetActive(true);
+                    _portrait.sprite = portrait;
+                }
+
                 break;
             default:
                 break;

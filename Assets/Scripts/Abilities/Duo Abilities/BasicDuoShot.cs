@@ -26,19 +26,21 @@ public class BasicDuoShot : BaseDuoAbility
             }
         }
 
+        RequestTargetsUpdate(_possibleTargets);
+
         if (_possibleTargets.Count > 0)
         {
             _targetIndex = 0;
             CombatGameManager.Instance.Camera.SwitchParenthood(_possibleTargets[_targetIndex]);
+            RequestTargetSymbolUpdate(_possibleTargets[_targetIndex]);
         }
+        else RequestTargetSymbolUpdate(null);
 
         _selfShotStats = new AbilityStats(0, 0, 1.5f, 0, _effector);
         _allyShotStats = new AbilityStats(0, 0, 1.5f, 0, _chosenAlly);
 
         _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
         _allyShotStats.UpdateWithEmotionModifiers(_effector);
-
-        RequestTargetsUpdate(_possibleTargets);
     }
 
     protected override bool CanExecute()
@@ -83,6 +85,7 @@ public class BasicDuoShot : BaseDuoAbility
         {
             CombatGameManager.Instance.Camera.SwitchParenthood(_possibleTargets[_targetIndex]);
             RequestDescriptionUpdate();
+            RequestTargetSymbolUpdate(_possibleTargets[_targetIndex]);
         }
     }
 
@@ -152,8 +155,9 @@ public class BasicDuoShot : BaseDuoAbility
         if (_chosenAlly != null)
         {
             _targetIndex = _possibleTargets.IndexOf(unit);
-            CombatGameManager.Instance.Camera.SwitchParenthood(_possibleTargets[_targetIndex]);
+            CombatGameManager.Instance.Camera.SwitchParenthood(unit);
             RequestDescriptionUpdate();
+            RequestTargetSymbolUpdate(unit);
         }
         else base.UISelectUnit(unit);
     }

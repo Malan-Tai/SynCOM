@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 public class TargetButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     private Image _sprite;
+    private Image _selectedImage;
 
     private GridBasedUnit _unit;
 
@@ -16,13 +17,36 @@ public class TargetButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
     {
         _skipFrame = true;
         _sprite = GetComponent<Image>();
+        _selectedImage = transform.Find("Image").GetComponent<Image>();
+    }
+
+    private void OnEnable()
+    {
+        BaseAbility.OnTargetSymbolUpdateRequest += SetSelected;
+    }
+
+    private void OnDisable()
+    {
+        BaseAbility.OnTargetSymbolUpdateRequest -= SetSelected;
     }
 
     public void SetUnit(GridBasedUnit unit)
     {
         _unit = unit;
         _sprite.sprite = unit.GetPortrait();
+
         _skipFrame = true;
+    }
+
+    private void SetSelected(GridBasedUnit selected)
+    {
+        bool isSelected = selected == _unit;
+        _selectedImage.gameObject.SetActive(isSelected);
+        if (_selectedImage)
+        {
+            if (selected is AllyUnit) _selectedImage.color = Color.cyan;
+            else _selectedImage.color = Color.yellow;
+        }
     }
 
     public void OnPointerClick(PointerEventData eventData)

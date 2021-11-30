@@ -19,6 +19,9 @@ public abstract class BaseAbility
     public delegate void EventRequestTargetsUpdate(IEnumerable<GridBasedUnit> targets);
     public static event EventRequestTargetsUpdate OnTargetsUpdateRequest;
 
+    public delegate void EventRequestTargetSymbolUpdate(GridBasedUnit unit);
+    public static event EventRequestTargetSymbolUpdate OnTargetSymbolUpdateRequest;
+
     public void HoverPortrait(GridBasedUnit unit)
     {
         _hoveredUnit = unit;
@@ -35,12 +38,21 @@ public abstract class BaseAbility
         if (OnTargetsUpdateRequest != null) OnTargetsUpdateRequest(targets);
     }
 
+    protected void RequestTargetSymbolUpdate(GridBasedUnit unit)
+    {
+        if (OnTargetSymbolUpdateRequest != null) OnTargetSymbolUpdateRequest(unit);
+    }
+
     public virtual void SetEffector(AllyUnit effector)
     {
         _effector = effector;
     }
 
-    public abstract void UISelectUnit(GridBasedUnit unit);
+    public virtual void UISelectUnit(GridBasedUnit unit)
+    {
+        RequestTargetSymbolUpdate(unit);
+    }
+
     protected abstract void EnemyTargetingInput();
     protected abstract bool CanExecute();
     protected abstract void Execute();
@@ -48,6 +60,7 @@ public abstract class BaseAbility
     protected virtual void FinalizeAbility(bool executed)
     {
         _hoveredUnit = null;
+        _effector = null;
         if (OnAbilityEnded != null) OnAbilityEnded(executed);
     }
 
@@ -121,6 +134,7 @@ public abstract class BaseDuoAbility : BaseAbility
             _temporaryChosenAlly = unit as AllyUnit;
             CombatGameManager.Instance.Camera.SwitchParenthood(_temporaryChosenAlly);
             RequestDescriptionUpdate();
+            RequestTargetSymbolUpdate(_temporaryChosenAlly);
         }
     }
 
@@ -144,6 +158,7 @@ public abstract class BaseDuoAbility : BaseAbility
         }
 
         RequestTargetsUpdate(_possibleAllies);
+        RequestTargetSymbolUpdate(_temporaryChosenAlly);
     }
 
     protected override void FinalizeAbility(bool executed)
@@ -304,5 +319,19 @@ public abstract class BaseDuoAbility : BaseAbility
             Debug.Log("ally missed");
             SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
         }
+    }
+
+    public Sprite GetSelfPortrait()
+    {
+        if (_effector == null) return CombatGameManager.Instance.CurrentUnit.GetPortrait();
+        return _effector.GetPortrait();
+    }
+
+    public Sprite GetAllyPortrait()
+    {
+        if (_chosenAlly != null) return _chosenAlly.GetPortrait();
+        else if (_hoveredUnit != null) return _hoveredUnit.GetPortrait();
+        else if (_temporaryChosenAlly != null) return _temporaryChosenAlly.GetPortrait();
+        else return null;
     }
 }

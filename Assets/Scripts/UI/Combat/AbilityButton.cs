@@ -23,6 +23,9 @@ public class AbilityButton : MonoBehaviour, IPointerClickHandler, IPointerEnterH
 
         TMP_Text text = GetComponentInChildren<TMP_Text>();
         text.text = ability.GetName();
+
+        Transform duoImage = transform.Find("duo");
+        duoImage.gameObject.SetActive(_duo);
     }
 
     public void OnPointerClick(PointerEventData eventData)
