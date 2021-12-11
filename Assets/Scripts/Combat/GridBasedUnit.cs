@@ -21,6 +21,7 @@ public class GridBasedUnit : MonoBehaviour
         set
         {
             _character = value;
+            _character.OnDeath += Die;
         }
     }
 
@@ -43,6 +44,8 @@ public class GridBasedUnit : MonoBehaviour
     protected Dictionary<GridBasedUnit, LineOfSight> _linesOfSight;
     private float _sightDistance;
 
+    private bool _markedForDeath = false;
+
     public Dictionary<GridBasedUnit, LineOfSight> LinesOfSight { get { return _linesOfSight; } }
 
     public delegate void StartedMoving(GridBasedUnit movedUnit, Vector2Int finalPos);
@@ -50,6 +53,9 @@ public class GridBasedUnit : MonoBehaviour
 
     public delegate void FinishedMoving(GridBasedUnit movedUnit);
     public static event FinishedMoving OnMoveFinish;
+
+    public delegate void DieEvent(GridBasedUnit deadUnit);
+    public static event DieEvent OnDeath;
 
     private FeedbackDisplay _feedback;
 
@@ -98,6 +104,17 @@ public class GridBasedUnit : MonoBehaviour
             UpdateLineOfSights(!IsEnemy());
             if (OnMoveFinish != null) OnMoveFinish(this);
         }
+
+        if (_markedForDeath && transform.Find("CameraTarget") == null)
+        {
+            _markedForDeath = false;
+            Destroy(this.gameObject);
+        }
+    }
+
+    public void MarkForDestruction()
+    {
+        _markedForDeath = true;
     }
 
     protected virtual bool IsEnemy()
@@ -249,6 +266,11 @@ public class GridBasedUnit : MonoBehaviour
     {
         _feedback.DisplayFeedback("-" + damage.ToString());
         _character.TakeDamage(damage);
+    }
+
+    private void Die()
+    {
+        if (OnDeath != null) OnDeath(this);
     }
 
     public virtual void InitSprite()

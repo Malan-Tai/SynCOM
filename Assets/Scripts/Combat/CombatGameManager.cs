@@ -121,7 +121,7 @@ public class CombatGameManager : MonoBehaviour
 
         foreach (EnemyUnit enemy in _enemyUnits)
         {
-            enemy.Character = new EnemyCharacter(20, 2, 65, 10, 15, 20, 4, 60);
+            enemy.Character = new EnemyCharacter(5, 2, 65, 10, 15, 20, 4, 60);
             enemy.InitSprite();
         }
 
@@ -137,12 +137,14 @@ public class CombatGameManager : MonoBehaviour
     {
         GridBasedUnit.OnMoveStart += UpdatePathfinders;
         GridBasedUnit.OnMoveFinish += UpdateVisibilities;
+        GridBasedUnit.OnDeath += UnitDie;
     }
 
     private void OnDisable()
     {
         GridBasedUnit.OnMoveStart -= UpdatePathfinders;
         GridBasedUnit.OnMoveFinish -= UpdateVisibilities;
+        GridBasedUnit.OnDeath -= UnitDie;
     }
 
     public void NextControllableUnit()
@@ -229,6 +231,7 @@ public class CombatGameManager : MonoBehaviour
         // Check mission end
         if (CheckMissionEnd())
         {
+            print("end");
             return;
         }
 
@@ -337,6 +340,26 @@ public class CombatGameManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void UnitDie(GridBasedUnit deadUnit)
+    {
+        EnemyUnit enemy = deadUnit as EnemyUnit;
+        AllyUnit ally = deadUnit as AllyUnit;
+
+        if (enemy != null)
+        {
+            _enemyUnits.Remove(enemy);
+        }
+        else if (ally != null)
+        {
+            _allAllyUnits.Remove(ally);
+            _controllableUnits.Remove(ally);
+        }
+
+        //deadUnit.gameObject.SetActive(false);
+        _gridMap.FreeOccupiedTile(deadUnit.GridPosition);
+        deadUnit.MarkForDestruction();
     }
 
     public void AbilityHoverTarget(GridBasedUnit unit)
