@@ -10943,7 +10943,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 71073694}
         m_TargetAssemblyTypeName: MoveableCamera, Assembly-CSharp
         m_MethodName: RotateCamera
         m_Mode: 4
@@ -19007,7 +19007,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 71073694}
         m_TargetAssemblyTypeName: MoveableCamera, Assembly-CSharp
         m_MethodName: RotateCamera
         m_Mode: 4
