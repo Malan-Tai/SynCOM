@@ -4469,6 +4469,7 @@ GameObject:
   - component: {fileID: 458397002}
   - component: {fileID: 458397001}
   - component: {fileID: 458397000}
+  - component: {fileID: 458397003}
   m_Layer: 0
   m_Name: Phone
   m_TagString: Untagged
@@ -4553,6 +4554,20 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 458396998}
   m_Mesh: {fileID: 4300056, guid: 29b8da6fbd3c2b542bf7bcda4beeab81, type: 3}
+--- !u!114 &458397003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 458396998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85d7a1cd52c9a7843a6c1d4d6b2d9b37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isWalkable: 0
+  _coverValue: 1
 --- !u!1 &484443084
 GameObject:
   m_ObjectHideFlags: 0
