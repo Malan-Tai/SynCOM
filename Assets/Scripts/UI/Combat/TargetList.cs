@@ -65,8 +65,8 @@ public class TargetList : MonoBehaviour
 
         while (i < _buttons.Length)
         {
-            float width = _buttons[i].GetComponent<RectTransform>().rect.width + 10;
-            _rectTransform.sizeDelta -= new Vector2(width, 0);
+            //float width = _buttons[i].GetComponent<RectTransform>().rect.width + 10;
+            //_rectTransform.sizeDelta -= new Vector2(width, 0);
 
             Destroy(_buttons[i].gameObject);
 
