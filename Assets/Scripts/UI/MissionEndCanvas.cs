@@ -14,8 +14,16 @@ public class MissionEndCanvas : MonoBehaviour
     {
         _missionSuccessGO.SetActive(false);
         _missionFailureGO.SetActive(false);
+    }
 
+    private void OnEnable()
+    {
         CombatGameManager.OnMissionEnd += OnMissionEnd;
+    }
+
+    private void OnDisable()
+    {
+        CombatGameManager.OnMissionEnd -= OnMissionEnd;
     }
 
     public void OnMissionEnd(CombatGameManager.MissionEndEventArgs missionEndEventArgs)
