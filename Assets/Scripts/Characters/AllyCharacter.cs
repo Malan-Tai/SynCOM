@@ -66,7 +66,7 @@ public class AllyCharacter : Character
         }
     }
 
-    public void InitializeRelationships(List<AllyCharacter> characters)
+    public void InitializeRelationships(List<AllyCharacter> characters, bool alsoAddRelationshipToAllies = false)
     {
         _relationships = new Dictionary<AllyCharacter, Relationship>();
         foreach (AllyCharacter ally in characters)
@@ -74,8 +74,15 @@ public class AllyCharacter : Character
             if (ally != this)
             {
                 _relationships.Add(ally, new Relationship(this, ally));
+
+                if (alsoAddRelationshipToAllies) ally.InitializeRelationshipWithOneAlly(this);
             }
         }
+    }
+
+    private void InitializeRelationshipWithOneAlly(AllyCharacter ally)
+    {
+        _relationships.Add(ally, new Relationship(this, ally));
     }
 
     private void addMandatoryTraits(EnumClasses characterClass)

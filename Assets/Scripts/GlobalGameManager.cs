@@ -27,6 +27,7 @@ public class GlobalGameManager : MonoBehaviour
     #endregion
 
     public List<AllyCharacter> allCharacters { get; private set; }
+
     [SerializeField]
     public AllyCharacter[] currentSquad { get; private set; }
 
@@ -119,5 +120,11 @@ public class GlobalGameManager : MonoBehaviour
     public Sprite GetEnemyPortrait()
     {
         return _enemyPortrait;
+    }
+
+    public void AddCharacter(AllyCharacter character)
+    {
+        allCharacters.Add(character);
+        character.InitializeRelationships(allCharacters, true);
     }
 }
