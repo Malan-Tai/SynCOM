@@ -24,6 +24,7 @@ public abstract class Trait
     public abstract int GetAllyToSelfSentimentGain(EnumSentiment sentiment, int baseSentiment);
 
     public abstract string GetName();
+    public abstract string GetDescription();
 
     /// <summary>
     /// Returns the multiplicative damage modifier. For instance, a +50% buff

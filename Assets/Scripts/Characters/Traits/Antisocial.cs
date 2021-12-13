@@ -22,4 +22,9 @@ public class Antisocial : Trait //TU PERDS TON SANG FROID
     {
         return "Antisocial";
     }
+
+    public override string GetDescription()
+    {
+        return "They are particularly sensitive to unkind actions.";
+    }
 }

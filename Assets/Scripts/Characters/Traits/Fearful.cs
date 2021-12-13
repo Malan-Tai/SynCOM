@@ -23,4 +23,8 @@ public class Fearful : Trait
         return "Fearful";
     }
 
+    public override string GetDescription()
+    {
+        return "Very easily frightened.";
+    }
 }

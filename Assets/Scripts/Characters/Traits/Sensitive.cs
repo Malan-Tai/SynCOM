@@ -18,4 +18,9 @@ public class Sensitive : Trait
     {
         return "Sensitive";
     }
+
+    public override string GetDescription()
+    {
+        return "Everything they feel is strengthened, whether it is positive or not.";
+    }
 }

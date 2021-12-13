@@ -27,4 +27,8 @@ public class Cold : Trait
         return "Cold";
     }
 
+    public override string GetDescription()
+    {
+        return "Isn't particularly sympathetic.";
+    }
 }

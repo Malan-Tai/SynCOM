@@ -23,4 +23,8 @@ public class Handsome : Trait
         return "Handsome";
     }
 
+    public override string GetDescription()
+    {
+        return "Their bueaty makes them strangely easy to trust.";
+    }
 }

@@ -19,4 +19,8 @@ public class Stubby : Trait
         return "Stubby";
     }
 
+    public override string GetDescription()
+    {
+        return "As a small being, every cover is a high cover to them.";
+    }
 }

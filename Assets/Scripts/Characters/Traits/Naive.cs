@@ -27,4 +27,8 @@ public class Naive : Trait
         return "Naive";
     }
 
+    public override string GetDescription()
+    {
+        return "Trusts very easily, but others won't be as keen on them.";
+    }
 }

@@ -15,7 +15,7 @@ public class Nice : Trait
         {
             return (int) (baseSentiment*1.5);
         }
-            return baseSentiment;
+        return baseSentiment;
     }
 
     public override string GetName()
@@ -23,4 +23,8 @@ public class Nice : Trait
         return "Nice";
     }
 
+    public override string GetDescription()
+    {
+        return "They are very sympathetic.";
+    }
 }

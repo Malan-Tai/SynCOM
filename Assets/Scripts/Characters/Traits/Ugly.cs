@@ -23,4 +23,8 @@ public class Ugly : Trait
         return "Ugly";
     }
 
+    public override string GetDescription()
+    {
+        return "They're so ugly everyone fears them.";
+    }
 }
