@@ -41,7 +41,6 @@ public class TraitScrollList : MonoBehaviour
             TraitListElement newElem = Instantiate(_listElementPrefab, transform).GetComponent<TraitListElement>();
             newElem.Init();
             float height = newElem.SetTrait(traits[i]) + _offset;
-            print(currentHeight);
             newElem.transform.localPosition = new Vector3(0, -currentHeight, 0);
             currentHeight += height;
 
