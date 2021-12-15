@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class CombatGameManager : MonoBehaviour
 {
     #region Singleton
@@ -89,6 +90,8 @@ public class CombatGameManager : MonoBehaviour
         _currentUnitIndex = 0;
         _previousReachableTiles = new List<Tile>();
 
+        
+
         _allAllyUnits = new List<AllyUnit>();
         foreach (AllyUnit unit in _controllableUnits)
         {
@@ -109,7 +112,17 @@ public class CombatGameManager : MonoBehaviour
         int i = 1;
         foreach (AllyUnit ally in _allAllyUnits)
         {
-            ally.Character = new AllyCharacter((EnumClasses)i, 20, 2, 65, 10, 15, 20, 4, 60);
+            //changes here
+            if (GlobalGameManager.Instance.currentSquad[i-1] == null)
+            {
+                ally.Character = new AllyCharacter((EnumClasses)i, 20, 2, 65, 10, 15, 20, 4, 60);
+            }
+            else
+            {
+                ally.Character = GlobalGameManager.Instance.currentSquad[i];
+            }
+            
+            
             ally.InitSprite();
             i++;
         }
