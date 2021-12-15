@@ -4,6 +4,6 @@ public enum EnumClasses
     Engineer,
     Sniper,
     Hitman,
-    HoundMaster,
+    Bodyguard,
     Smuggler
 }

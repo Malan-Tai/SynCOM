@@ -10,11 +10,11 @@ public class Character
     //Character's statistics
     [SerializeField] private float _maxHealth;
     [SerializeField] private float _healthPoints;
-    [SerializeField] private float _damage;    //amount of damages dealt
-    [SerializeField] private float _accuracy;  //value between 0 and 1
-    [SerializeField] protected float _dodge;     // value between 0 and 1. Probability of successful attack is accuracy-dodge
-    [SerializeField] private float _movementPoints; // how far can a charcater move in one turn
-    [SerializeField] private float _weigth; //can be a condition for some actions
+    [SerializeField] private float _damage;                  //amount of damages dealt
+    [SerializeField] private float _accuracy;                //value between 0 and 1
+    [SerializeField] protected float _dodge;                 // value between 0 and 1. Probability of successful attack is accuracy-dodge
+    [SerializeField] private float _movementPoints;          // how far can a charcater move in one turn
+    [SerializeField] private float _weigth;                  //can be a condition for some actions
     [SerializeField] private float _critChances;
     [SerializeField] private float _rangeShot;
     [SerializeField] private float _name;
