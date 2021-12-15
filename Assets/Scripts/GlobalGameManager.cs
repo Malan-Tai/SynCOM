@@ -56,19 +56,19 @@ public class GlobalGameManager : MonoBehaviour
             new AllyCharacter(EnumClasses.Sniper, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Hitman, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Smuggler, 20, 2, 65, 10, 15, 20, 4, 60),
-            new AllyCharacter(EnumClasses.HoundMaster, 20, 2, 65, 10, 15, 20, 4, 60),
+            new AllyCharacter(EnumClasses.Bodyguard, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Berserker, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Engineer, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Sniper, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Hitman, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Smuggler, 20, 2, 65, 10, 15, 20, 4, 60),
-            new AllyCharacter(EnumClasses.HoundMaster, 20, 2, 65, 10, 15, 20, 4, 60),
+            new AllyCharacter(EnumClasses.Bodyguard, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Berserker, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Engineer, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Sniper, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Hitman, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Smuggler, 20, 2, 65, 10, 15, 20, 4, 60),
-            new AllyCharacter(EnumClasses.HoundMaster, 20, 2, 65, 10, 15, 20, 4, 60),
+            new AllyCharacter(EnumClasses.Bodyguard, 20, 2, 65, 10, 15, 20, 4, 60),
         };
 
         foreach (AllyCharacter character in allCharacters)

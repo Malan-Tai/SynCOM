@@ -10,7 +10,7 @@ public class AllyCharacter : Character
         {EnumClasses.Engineer, new List<Trait> {new Brave()}},
         {EnumClasses.Hitman, new List<Trait> {new Handsome(),new Contemptuous()}},
         {EnumClasses.Sniper, new List<Trait> {new Handsome(), new Contemptuous()}},
-        {EnumClasses.HoundMaster, new List<Trait> {new Ugly(), new Fearless()}},
+        {EnumClasses.Bodyguard, new List<Trait> {new Ugly(), new Fearless()}},
         {EnumClasses.Smuggler, new List<Trait> {new Ugly(), new Fearless()}}
     };
 
@@ -19,7 +19,7 @@ public class AllyCharacter : Character
         {EnumClasses.Engineer, new List<Trait> {new Ugly(),new Fearful(),new Cold(), new Antisocial()}},
         {EnumClasses.Hitman, new List<Trait> {new Brave(), new Nice() ,new Fearful(),new Cold()}},
         {EnumClasses.Sniper, new List<Trait> {new Brave(),new Nice(),new Fearful(),new Cold()}},
-        {EnumClasses.HoundMaster, new List<Trait> {new Antisocial(), new Brave(), new Cold(), new Sensitive()}},
+        {EnumClasses.Bodyguard, new List<Trait> {new Antisocial(), new Brave(), new Cold(), new Sensitive()}},
         {EnumClasses.Smuggler, new List<Trait> {new Antisocial(), new Brave(), new Cold(), new Sensitive()}}
     };
 
