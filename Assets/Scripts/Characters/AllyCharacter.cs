@@ -52,20 +52,6 @@ public class AllyCharacter : Character
         }
     }
 
-    public void InitializeRelationships()
-    {
-        // TODO : deprecated soon
-
-        _relationships = new Dictionary<AllyCharacter, Relationship>();
-        foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
-        {
-            if (ally.Character != this)
-            {
-                _relationships.Add(ally.AllyCharacter, new Relationship(this, ally.AllyCharacter));
-            }
-        }
-    }
-
     public void InitializeRelationships(List<AllyCharacter> characters)
     {
         _relationships = new Dictionary<AllyCharacter, Relationship>();

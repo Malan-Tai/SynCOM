@@ -107,29 +107,30 @@ public class CombatGameManager : MonoBehaviour
 
     private void InitCharacters()
     {
-        // TODO : deprecated soon
+        List<AllyUnit> toRemove = new List<AllyUnit>();
 
-        int i = 1;
+        int i = 0;
         foreach (AllyUnit ally in _allAllyUnits)
         {
             //changes here
-            if (GlobalGameManager.Instance.currentSquad[i-1] == null)
+            if (GlobalGameManager.Instance.currentSquad[i] == null)
             {
-                ally.Character = new AllyCharacter((EnumClasses)i, 20, 2, 65, 10, 15, 20, 4, 60);
+                //ally.Character = new AllyCharacter((EnumClasses)i, 20, 2, 65, 10, 15, 20, 4, 60);
+                toRemove.Add(ally);
             }
             else
             {
-                ally.Character = GlobalGameManager.Instance.currentSquad[i-1];
+                ally.Character = GlobalGameManager.Instance.currentSquad[i];
+                ally.InitSprite();
             }
-            
-            
-            ally.InitSprite();
             i++;
         }
 
-        foreach (AllyUnit ally in _allAllyUnits)
+        foreach (AllyUnit unit in toRemove)
         {
-            ally.AllyCharacter.InitializeRelationships();
+            _allAllyUnits.Remove(unit);
+            _controllableUnits.Remove(unit);
+            Destroy(unit.gameObject);
         }
 
         foreach (EnemyUnit enemy in _enemyUnits)
