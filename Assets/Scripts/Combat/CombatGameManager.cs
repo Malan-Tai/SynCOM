@@ -54,8 +54,6 @@ public class CombatGameManager : MonoBehaviour
     public List<AllyUnit> ControllableUnits { get { return _controllableUnits; } }
     public List<EnemyUnit> EnemyUnits { get { return _enemyUnits; } }
 
-    private Mission _mission;
-
     private List<Tile> _previousReachableTiles;
 
 
@@ -84,7 +82,7 @@ public class CombatGameManager : MonoBehaviour
 
     private void Start()
     {
-        _mission = GlobalGameManager.Instance.CurrentMission;
+        GlobalGameManager.Instance.StartCurrentMission();
 
         _currentUnitIndex = 0;
         _previousReachableTiles = new List<Tile>();
