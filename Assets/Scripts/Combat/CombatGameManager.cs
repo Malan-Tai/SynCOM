@@ -119,7 +119,7 @@ public class CombatGameManager : MonoBehaviour
             }
             else
             {
-                ally.Character = GlobalGameManager.Instance.currentSquad[i];
+                ally.Character = GlobalGameManager.Instance.currentSquad[i-1];
             }
             
             
