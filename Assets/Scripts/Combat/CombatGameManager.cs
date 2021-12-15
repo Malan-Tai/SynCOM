@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class CombatGameManager : MonoBehaviour
 {
     #region Singleton
@@ -87,6 +88,8 @@ public class CombatGameManager : MonoBehaviour
         _currentUnitIndex = 0;
         _previousReachableTiles = new List<Tile>();
 
+        
+
         _allAllyUnits = new List<AllyUnit>();
         foreach (AllyUnit unit in _controllableUnits)
         {
@@ -102,19 +105,30 @@ public class CombatGameManager : MonoBehaviour
 
     private void InitCharacters()
     {
-        // TODO : deprecated soon
+        List<AllyUnit> toRemove = new List<AllyUnit>();
 
-        int i = 1;
+        int i = 0;
         foreach (AllyUnit ally in _allAllyUnits)
         {
-            ally.Character = new AllyCharacter((EnumClasses)i, 20, 2, 65, 10, 15, 20, 4, 60);
-            ally.InitSprite();
+            //changes here
+            if (GlobalGameManager.Instance.currentSquad[i] == null)
+            {
+                //ally.Character = new AllyCharacter((EnumClasses)i, 20, 2, 65, 10, 15, 20, 4, 60);
+                toRemove.Add(ally);
+            }
+            else
+            {
+                ally.Character = GlobalGameManager.Instance.currentSquad[i];
+                ally.InitSprite();
+            }
             i++;
         }
 
-        foreach (AllyUnit ally in _allAllyUnits)
+        foreach (AllyUnit unit in toRemove)
         {
-            ally.AllyCharacter.InitializeRelationships();
+            _allAllyUnits.Remove(unit);
+            _controllableUnits.Remove(unit);
+            Destroy(unit.gameObject);
         }
 
         foreach (EnemyUnit enemy in _enemyUnits)
