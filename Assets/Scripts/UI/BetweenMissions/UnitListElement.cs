@@ -47,10 +47,10 @@ public class UnitListElement : MonoBehaviour
     {
         _character = character;
 
-        // TODO : portrait & name
+        // TODO : name
         _unitName.text = "Name";
         _unitClass.text = character.CharacterClass.ToString();
-        _unitPortrait.sprite = GlobalGameManager.Instance.GetClassPortrait(character.CharacterClass);
+        _unitPortrait.sprite = character.GetPortrait();
     }
 
     private void OnMouseEnter()

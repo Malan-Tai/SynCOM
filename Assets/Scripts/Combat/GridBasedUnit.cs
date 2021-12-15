@@ -51,7 +51,7 @@ public class GridBasedUnit : MonoBehaviour
     public delegate void FinishedMoving(GridBasedUnit movedUnit);
     public static event FinishedMoving OnMoveFinish;
 
-    private CanvasGroup _canvasGroup;
+    private FeedbackDisplay _feedback;
 
     protected void Start()
     {
@@ -66,7 +66,7 @@ public class GridBasedUnit : MonoBehaviour
 
         _linesOfSight = new Dictionary<GridBasedUnit, LineOfSight>();
 
-        _canvasGroup = transform.Find("Canvas").GetComponent<CanvasGroup>();
+        _feedback = GetComponent<FeedbackDisplay>();
     }
 
     private void Update()
@@ -242,27 +242,22 @@ public class GridBasedUnit : MonoBehaviour
 
     public void Missed()
     {
-        string str = "Miss";
-        _canvasGroup.gameObject.transform.Find("Text").GetComponent<TMPro.TextMeshProUGUI>().text = str;
-        StartCoroutine("IsAimed");
+        _feedback.DisplayFeedback("Miss");
     }
 
     public void TakeDamage(float damage)
     {
-        string str = "-" + damage.ToString();
-        _canvasGroup.gameObject.transform.Find("Text").GetComponent<TMPro.TextMeshProUGUI>().text = str;
-        StartCoroutine("IsAimed");
+        _feedback.DisplayFeedback("-" + damage.ToString());
         _character.TakeDamage(damage);
     }
 
-    IEnumerator IsAimed()
+    public virtual void InitSprite()
     {
-        for (float ft = 2f; ft >= 0; ft -= 0.01f)
-        {
-            _canvasGroup.alpha = ft/2;
-            _canvasGroup.transform.position += new Vector3(0,0.01f,0);
-            yield return new WaitForSeconds(.01f);
-        }
-        _canvasGroup.transform.position = transform.position + new Vector3(0,2,0);
+
+    }
+
+    public virtual Sprite GetPortrait()
+    {
+        return _character.GetPortrait();
     }
 }

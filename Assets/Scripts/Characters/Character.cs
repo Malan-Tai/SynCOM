@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 [System.Serializable]
 public class Character
 {
@@ -19,11 +20,7 @@ public class Character
     [SerializeField] private float _rangeShot;
     [SerializeField] private float _name;
 
-    
-    
-
     //constructor 
-
     public Character()
     {
     }
@@ -146,6 +143,13 @@ public class Character
     {
     }
 
+    public virtual Sprite GetSprite()
+    {
+        return null;
+    }
 
-   
+    public virtual Sprite GetPortrait()
+    {
+        return null;
+    }
 }

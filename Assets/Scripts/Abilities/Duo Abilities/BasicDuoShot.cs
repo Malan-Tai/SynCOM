@@ -26,11 +26,15 @@ public class BasicDuoShot : BaseDuoAbility
             }
         }
 
+        RequestTargetsUpdate(_possibleTargets);
+
         if (_possibleTargets.Count > 0)
         {
             _targetIndex = 0;
             CombatGameManager.Instance.Camera.SwitchParenthood(_possibleTargets[_targetIndex]);
+            RequestTargetSymbolUpdate(_possibleTargets[_targetIndex]);
         }
+        else RequestTargetSymbolUpdate(null);
 
         _selfShotStats = new AbilityStats(0, 0, 1.5f, 0, _effector);
         _allyShotStats = new AbilityStats(0, 0, 1.5f, 0, _chosenAlly);
@@ -81,6 +85,7 @@ public class BasicDuoShot : BaseDuoAbility
         {
             CombatGameManager.Instance.Camera.SwitchParenthood(_possibleTargets[_targetIndex]);
             RequestDescriptionUpdate();
+            RequestTargetSymbolUpdate(_possibleTargets[_targetIndex]);
         }
     }
 
@@ -106,9 +111,14 @@ public class BasicDuoShot : BaseDuoAbility
     public override string GetDescription()
     {
         string res = "Take a shot at the target with augmented damage.";
-        if (_targetIndex >= 0 && _chosenAlly != null)
+        if (_chosenAlly != null && _hoveredUnit != null)
         {
-            Debug.Log("new desc");
+            res += "\nAcc:" + _selfShotStats.GetAccuracy(_hoveredUnit, _effector.LinesOfSight[_hoveredUnit].cover) +
+                    " | Crit:" + _selfShotStats.GetCritRate() +
+                    " | Dmg:" + _selfShotStats.GetDamage();
+        }
+        else if (_targetIndex >= 0 && _chosenAlly != null)
+        {
             GridBasedUnit target = _possibleTargets[_targetIndex];
 
             res += "\nAcc:" + _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover) +
@@ -122,9 +132,14 @@ public class BasicDuoShot : BaseDuoAbility
     public override string GetAllyDescription()
     {
         string res = "Take a shot at the target with augmented damage.";
-        if (_targetIndex >= 0 && _chosenAlly != null)
+        if (_chosenAlly != null && _hoveredUnit != null)
         {
-            Debug.Log("new desc");
+            res += "\nAcc:" + _allyShotStats.GetAccuracy(_hoveredUnit, _chosenAlly.LinesOfSight[_hoveredUnit].cover) +
+                    " | Crit:" + _allyShotStats.GetCritRate() +
+                    " | Dmg:" + _allyShotStats.GetDamage();
+        }
+        else if (_targetIndex >= 0 && _chosenAlly != null)
+        {
             GridBasedUnit target = _possibleTargets[_targetIndex];
 
             res += "\nAcc:" + _allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover) +
@@ -133,5 +148,17 @@ public class BasicDuoShot : BaseDuoAbility
         }
 
         return res;
+    }
+
+    public override void UISelectUnit(GridBasedUnit unit)
+    {
+        if (_chosenAlly != null)
+        {
+            _targetIndex = _possibleTargets.IndexOf(unit);
+            CombatGameManager.Instance.Camera.SwitchParenthood(unit);
+            RequestDescriptionUpdate();
+            RequestTargetSymbolUpdate(unit);
+        }
+        else base.UISelectUnit(unit);
     }
 }

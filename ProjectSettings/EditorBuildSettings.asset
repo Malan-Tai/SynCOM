@@ -8,10 +8,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Erwan_Lobby.unity
     guid: f5918070b89203242ba5e0e4f4b2495e
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 46c250f481c774748a51cf8193443c1d
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Erwan.unity
     guid: 515497612e5963b4d84b531940aed796
   m_configObjects: {}

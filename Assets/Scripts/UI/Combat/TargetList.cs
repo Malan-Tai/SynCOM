@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AbilityList : MonoBehaviour
+public class TargetList : MonoBehaviour
 {
     private const float OFFSET_Y = -200f;
 
     [SerializeField]
-    private RectTransform _abilityBtnPrefab;
+    private RectTransform _targetBtnPrefab;
 
     private RectTransform _rectTransform;
 
@@ -19,55 +19,47 @@ public class AbilityList : MonoBehaviour
 
         _rectTransform = GetComponent<RectTransform>();
 
-        Populate(new List<BaseAbility>
-        {
-            new HunkerDown(),
-            new BasicShot(),
-            new BasicDuoShot(),
-            new FirstAid(),
-            new Slap(),
-            new Devouring()
-        });
+        Hide();
     }
 
     private void OnEnable()
     {
-        AllyUnit.OnStartedUsingAbility += Hide;
-        AllyUnit.OnStoppedUsingAbility += Show;
+        BaseAbility.OnTargetsUpdateRequest += Show;
+        AllyUnit.OnStoppedUsingAbility += Hide;
     }
 
     private void OnDisable()
     {
-        AllyUnit.OnStartedUsingAbility -= Hide;
-        AllyUnit.OnStoppedUsingAbility -= Show;
+        BaseAbility.OnTargetsUpdateRequest -= Show;
+        AllyUnit.OnStoppedUsingAbility -= Hide;
     }
 
-    public void Populate(List<BaseAbility> abilities)
+    public void Populate(IEnumerable<GridBasedUnit> units)
     {
         float x = 10;
         int i = 0;
-        AbilityButton[] _buttons = GetComponentsInChildren<AbilityButton>();
+        TargetButton[] _buttons = GetComponentsInChildren<TargetButton>();
 
         _rectTransform.sizeDelta = new Vector2(10, 100);
-        
-        foreach (BaseAbility ability in abilities)
+
+        foreach (GridBasedUnit unit in units)
         {
-            AbilityButton btn;
+            TargetButton btn;
             if (i < _buttons.Length)
             {
                 btn = _buttons[i];
-                btn.SetAbility(ability);
+                btn.SetUnit(unit);
             }
             else
             {
-                btn = Instantiate(_abilityBtnPrefab, transform).GetComponent<AbilityButton>();
+                btn = Instantiate(_targetBtnPrefab, transform).GetComponent<TargetButton>();
                 btn.transform.localPosition += new Vector3(x, 0, 0);
             }
 
             float width = btn.GetComponent<RectTransform>().rect.width + 10;
             _rectTransform.sizeDelta += new Vector2(width, 0);
             x += width;
-            btn.SetAbility(ability);
+            btn.SetUnit(unit);
             i++;
         }
 
@@ -82,13 +74,14 @@ public class AbilityList : MonoBehaviour
         }
     }
 
-    private void Hide(BaseAbility ability)
-    {
-        this.transform.localPosition += new Vector3(0, OFFSET_Y, 0);
-    }
-
-    private void Show()
+    private void Show(IEnumerable<GridBasedUnit> units)
     {
         this.transform.position = _basePosition;
+        Populate(units);
+    }
+
+    private void Hide()
+    {
+        this.transform.localPosition += new Vector3(0, OFFSET_Y, 0);
     }
 }

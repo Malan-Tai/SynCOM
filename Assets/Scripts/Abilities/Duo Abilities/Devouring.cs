@@ -38,11 +38,15 @@ public class Devouring : BaseDuoAbility
             }
         }
 
+        RequestTargetsUpdate(_possibleTargets);
+
         if (_possibleTargets.Count > 0)
         {
             _targetIndex = 0;
             CombatGameManager.Instance.Camera.SwitchParenthood(_possibleTargets[_targetIndex]);
+            RequestTargetSymbolUpdate(_possibleTargets[_targetIndex]);
         }
+        else RequestTargetSymbolUpdate(null);
 
         _selfShotStats = new AbilityStats(200, 0, 1.5f, 0, _effector);
 
@@ -82,7 +86,11 @@ public class Devouring : BaseDuoAbility
             changedUnitThisFrame = true;
         }
 
-        if (changedUnitThisFrame) CombatGameManager.Instance.Camera.SwitchParenthood(_possibleTargets[_targetIndex]);
+        if (changedUnitThisFrame)
+        {
+            CombatGameManager.Instance.Camera.SwitchParenthood(_possibleTargets[_targetIndex]);
+            RequestTargetSymbolUpdate(_possibleTargets[_targetIndex]);
+        }
     }
 
     protected override void Execute()
@@ -136,6 +144,18 @@ public class Devouring : BaseDuoAbility
 
     public override string GetAllyDescription()
     {
-        return "Get eaten, it is terrifying.";
+        return "The feasting spectacle is terrifying.";
+    }
+
+    public override void UISelectUnit(GridBasedUnit unit)
+    {
+        if (_chosenAlly != null)
+        {
+            _targetIndex = _possibleTargets.IndexOf(unit);
+            CombatGameManager.Instance.Camera.SwitchParenthood(unit);
+            RequestDescriptionUpdate();
+            RequestTargetSymbolUpdate(unit);
+        }
+        else base.UISelectUnit(unit);
     }
 }

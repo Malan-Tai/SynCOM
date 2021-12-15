@@ -11,7 +11,13 @@ public class BasicShot : BaseAbility
     public override string GetDescription()
     {
         string res = "Shoot at the target.";
-        if (_targetIndex >= 0)
+        if (_hoveredUnit != null)
+        {
+            res += "\nAcc:" + (_effector.Character.Accuracy - _hoveredUnit.Character.GetDodge(_effector.LinesOfSight[_hoveredUnit].cover)) +
+                    " | Crit:" + _effector.Character.CritChances +
+                    " | Dmg:" + _effector.Character.Damage;
+        }
+        else if (_targetIndex >= 0)
         {
             GridBasedUnit target = _possibleTargets[_targetIndex];
 
@@ -36,11 +42,15 @@ public class BasicShot : BaseAbility
             }
         }
 
+        RequestTargetsUpdate(_possibleTargets);
+
         if (_possibleTargets.Count > 0)
         {
             _targetIndex = 0;
             CombatGameManager.Instance.Camera.SwitchParenthood(_possibleTargets[_targetIndex]);
+            RequestTargetSymbolUpdate(_possibleTargets[_targetIndex]);
         }
+        else RequestTargetSymbolUpdate(null);
 
         base.SetEffector(effector);
     }
@@ -87,6 +97,7 @@ public class BasicShot : BaseAbility
         {
             CombatGameManager.Instance.Camera.SwitchParenthood(_possibleTargets[_targetIndex]);
             RequestDescriptionUpdate();
+            RequestTargetSymbolUpdate(_possibleTargets[_targetIndex]);
         }
     }
 
@@ -124,5 +135,13 @@ public class BasicShot : BaseAbility
     public override string GetName()
     {
         return "Basic Attack";
+    }
+
+    public override void UISelectUnit(GridBasedUnit unit)
+    {
+        _targetIndex = _possibleTargets.IndexOf(unit);
+        CombatGameManager.Instance.Camera.SwitchParenthood(unit);
+        RequestDescriptionUpdate();
+        RequestTargetSymbolUpdate(unit);
     }
 }

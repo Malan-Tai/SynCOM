@@ -41,6 +41,11 @@ public class GlobalGameManager : MonoBehaviour
     [SerializeField]
     private Sprite[] _classPortraits;
 
+    [SerializeField]
+    private Sprite _enemySprite;
+    [SerializeField]
+    private Sprite _enemyPortrait;
+
     private void GenerateCharacters()
     {
         allCharacters = new List<AllyCharacter>
@@ -92,7 +97,7 @@ public class GlobalGameManager : MonoBehaviour
         currentSquad[i] = character;
     }
 
-    public Sprite GetClassTexture(EnumClasses charClass)
+    public Sprite GetClassSprite(EnumClasses charClass)
     {
         int i = (int)charClass;
         if (i < 0 || i >= _classSprites.Length) return null;
@@ -104,5 +109,15 @@ public class GlobalGameManager : MonoBehaviour
         int i = (int)charClass;
         if (i < 0 || i >= _classPortraits.Length) return null;
         return _classPortraits[i];
+    }
+
+    public Sprite GetEnemySprite()
+    {
+        return _enemySprite;
+    }
+
+    public Sprite GetEnemyPortrait()
+    {
+        return _enemyPortrait;
     }
 }

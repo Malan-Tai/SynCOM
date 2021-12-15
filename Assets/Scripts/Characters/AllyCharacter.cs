@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 [System.Serializable]
 public class AllyCharacter : Character
 {
@@ -48,7 +49,7 @@ public class AllyCharacter : Character
         for (int i = 0; i < _traits.Count; i++)
         {
             Debug.Log(_traits[i].GetName());
-        }        
+        }
     }
 
     public void InitializeRelationships()
@@ -124,5 +125,15 @@ public class AllyCharacter : Character
         }
 
         return traitFound;
+    }
+
+    public override Sprite GetSprite()
+    {
+        return GlobalGameManager.Instance.GetClassSprite(_class);
+    }
+
+    public override Sprite GetPortrait()
+    {
+        return GlobalGameManager.Instance.GetClassPortrait(_class);
     }
 }

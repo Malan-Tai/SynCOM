@@ -10,29 +10,47 @@ public abstract class BaseAbility
     protected bool _uiConfirmed = false;
     protected bool _uiCancelled = false;
 
+    protected GridBasedUnit _hoveredUnit = null;
     protected AllyUnit _effector;
 
     public delegate void EventRequestDescriptionUpdate(BaseAbility ability);
     public static event EventRequestDescriptionUpdate OnDescriptionUpdateRequest;
+
+    public delegate void EventRequestTargetsUpdate(IEnumerable<GridBasedUnit> targets);
+    public static event EventRequestTargetsUpdate OnTargetsUpdateRequest;
+
+    public delegate void EventRequestTargetSymbolUpdate(GridBasedUnit unit);
+    public static event EventRequestTargetSymbolUpdate OnTargetSymbolUpdateRequest;
+
+    public void HoverPortrait(GridBasedUnit unit)
+    {
+        _hoveredUnit = unit;
+        RequestDescriptionUpdate();
+    }
 
     protected void RequestDescriptionUpdate()
     {
         if (OnDescriptionUpdateRequest != null) OnDescriptionUpdateRequest(this);
     }
 
-    public void SetUIConfirmed()
+    protected void RequestTargetsUpdate(IEnumerable<GridBasedUnit> targets)
     {
-        _uiConfirmed = true;
+        if (OnTargetsUpdateRequest != null) OnTargetsUpdateRequest(targets);
     }
 
-    public void SetUICancelled()
+    protected void RequestTargetSymbolUpdate(GridBasedUnit unit)
     {
-        _uiCancelled = true;
+        if (OnTargetSymbolUpdateRequest != null) OnTargetSymbolUpdateRequest(unit);
     }
 
     public virtual void SetEffector(AllyUnit effector)
     {
         _effector = effector;
+    }
+
+    public virtual void UISelectUnit(GridBasedUnit unit)
+    {
+        RequestTargetSymbolUpdate(unit);
     }
 
     protected abstract void EnemyTargetingInput();
@@ -41,6 +59,8 @@ public abstract class BaseAbility
 
     protected virtual void FinalizeAbility(bool executed)
     {
+        _hoveredUnit = null;
+        _effector = null;
         if (OnAbilityEnded != null) OnAbilityEnded(executed);
     }
 
@@ -98,7 +118,7 @@ public abstract class BaseAbility
 
 public abstract class BaseDuoAbility : BaseAbility
 {
-    private AllyUnit _temporaryChosenAlly = null;
+    protected AllyUnit _temporaryChosenAlly = null;
     protected AllyUnit _chosenAlly = null;
     private List<AllyUnit> _possibleAllies = null;
 
@@ -106,6 +126,17 @@ public abstract class BaseDuoAbility : BaseAbility
     protected abstract void ChooseAlly();
 
     public abstract string GetAllyDescription();
+
+    public override void UISelectUnit(GridBasedUnit unit)
+    {
+        if (unit is AllyUnit && _chosenAlly == null)
+        {
+            _temporaryChosenAlly = unit as AllyUnit;
+            CombatGameManager.Instance.Camera.SwitchParenthood(_temporaryChosenAlly);
+            RequestDescriptionUpdate();
+            RequestTargetSymbolUpdate(_temporaryChosenAlly);
+        }
+    }
 
     public override void SetEffector(AllyUnit effector)
     {
@@ -125,6 +156,9 @@ public abstract class BaseDuoAbility : BaseAbility
             _temporaryChosenAlly = _possibleAllies[0];
             CombatGameManager.Instance.Camera.SwitchParenthood(_temporaryChosenAlly);
         }
+
+        RequestTargetsUpdate(_possibleAllies);
+        RequestTargetSymbolUpdate(_temporaryChosenAlly);
     }
 
     protected override void FinalizeAbility(bool executed)
@@ -285,5 +319,19 @@ public abstract class BaseDuoAbility : BaseAbility
             Debug.Log("ally missed");
             SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
         }
+    }
+
+    public Sprite GetSelfPortrait()
+    {
+        if (_effector == null) return CombatGameManager.Instance.CurrentUnit.GetPortrait();
+        return _effector.GetPortrait();
+    }
+
+    public Sprite GetAllyPortrait()
+    {
+        if (_chosenAlly != null) return _chosenAlly.GetPortrait();
+        else if (_hoveredUnit != null) return _hoveredUnit.GetPortrait();
+        else if (_temporaryChosenAlly != null) return _temporaryChosenAlly.GetPortrait();
+        else return null;
     }
 }
