@@ -21,6 +21,9 @@ public class CharacterSheet : MonoBehaviour
     private FullRelationshipsPanel _relationships;
     private GameObject _quitButton;
 
+    [SerializeField]
+    private TraitScrollList _traitList;
+
     private Vector3 _basePos;
 
     private AllyCharacter _clickedCharacter;
@@ -95,6 +98,8 @@ public class CharacterSheet : MonoBehaviour
         _wgtText.text = character.Weigth + " : Wgt";
 
         _relationships.HoverCharacter(character, false);
+
+        _traitList.Populate(character.Traits);
     }
 
     public void SetInvisible()
