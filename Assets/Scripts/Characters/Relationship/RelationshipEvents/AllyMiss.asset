@@ -17,10 +17,14 @@ MonoBehaviour:
   requiresEmotions: 0
   requiredEmotionsTowardsSource: 
   requiredEmotionsTowardsTarget: 
+  targetsAlly: 0
   onMiss: 1
   onHit: 0
   onCrit: 0
+  onDamage: 0
+  onFatal: 0
   effectType: 1
+  interrupts: 0
   reciprocal: 0
   admirationChange: -5
   trustChange: 0

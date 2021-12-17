@@ -43,6 +43,24 @@ public abstract class BaseAbility
         if (OnTargetSymbolUpdateRequest != null) OnTargetSymbolUpdateRequest(unit);
     }
 
+    protected void AttackHitOrMiss(AllyUnit source, EnemyUnit target, bool hit, AllyCharacter duo = null)
+    {
+        target.Missed();
+        if (RelationshipEventsManager.Instance.AllyOnEnemyAttackHitOrMiss(source.AllyCharacter, hit, duo))
+        {
+            Debug.Log("interrupted");
+        }
+    }
+
+    protected void AttackDamage(AllyUnit source, EnemyUnit target, float damage, bool crit, AllyCharacter duo = null)
+    {
+        target.TakeDamage(damage);
+        if (RelationshipEventsManager.Instance.AllyOnEnemyAttackDamage(source.AllyCharacter, target.EnemyCharacter, damage, crit, duo))
+        {
+            Debug.Log("interrupted");
+        }
+    }
+
     public virtual void SetEffector(AllyUnit effector)
     {
         _effector = effector;
@@ -251,6 +269,9 @@ public abstract class BaseDuoAbility : BaseAbility
         }
     }
 
+    /// <summary>
+    /// shouldn't be used for hit or miss or other generic events, but for very specific stuff
+    /// </summary>
     protected void SelfToAllyModifySentiment(AllyUnit ally, EnumSentiment sentiment, int gain)
     {
         Relationship relationshipSelfToAlly = this._effector.AllyCharacter.Relationships[ally.AllyCharacter];
@@ -272,24 +293,28 @@ public abstract class BaseDuoAbility : BaseAbility
 
         if (randShot < selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
         {
-            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, 5);
+            //AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, 5);
+            AttackHitOrMiss(_effector, target as EnemyUnit, true, _chosenAlly.AllyCharacter);
 
             if (randCrit < selfShotStats.GetCritRate())
             {
-                target.Character.TakeDamage(selfShotStats.GetDamage() * 1.5f);
-                SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
-                AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
+                //target.Character.TakeDamage(selfShotStats.GetDamage() * 1.5f);
+                //SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
+                //AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
+                AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage() * 1.5f, true, _chosenAlly.AllyCharacter);
             }
             else
             {
-                target.Character.TakeDamage(selfShotStats.GetDamage());
+                //target.Character.TakeDamage(selfShotStats.GetDamage());
+                AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage(), false, _chosenAlly.AllyCharacter);
             }
         }
         else
         {
             Debug.Log("self missed");
-            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
-            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
+            //SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
+            //AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
+            AttackHitOrMiss(_effector, target as EnemyUnit, false, _chosenAlly.AllyCharacter);
         }
     }
 
@@ -302,22 +327,26 @@ public abstract class BaseDuoAbility : BaseAbility
 
         if (randShot < allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover))
         {
-            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, 5);
+            //SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, 5);
+            AttackHitOrMiss(_chosenAlly, target as EnemyUnit, true, _effector.AllyCharacter);
 
             if (randCrit < allyShotStats.GetCritRate())
             {
-                target.Character.TakeDamage(allyShotStats.GetDamage() * 1.5f);
-                SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
+                //target.Character.TakeDamage(allyShotStats.GetDamage() * 1.5f);
+                //SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
+                AttackDamage(_chosenAlly, target as EnemyUnit, allyShotStats.GetDamage() * 1.5f, true, _effector.AllyCharacter);
             }
             else
             {
-                target.Character.TakeDamage(allyShotStats.GetDamage());
+                //target.Character.TakeDamage(allyShotStats.GetDamage());
+                AttackDamage(_chosenAlly, target as EnemyUnit, allyShotStats.GetDamage(), false, _effector.AllyCharacter);
             }
         }
         else
         {
             Debug.Log("ally missed");
-            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
+            //SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
+            AttackHitOrMiss(_chosenAlly, target as EnemyUnit, false, _effector.AllyCharacter);
         }
     }
 

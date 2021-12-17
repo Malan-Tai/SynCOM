@@ -2,5 +2,6 @@ public enum RelationshipEventTriggerType
 {
     None,
     Attack,
-    FriendlyFire
+    FriendlyFire,
+    KillSteal
 }

@@ -1,5 +1,7 @@
 public enum RelationshipEventEffectType
 {
     None,
-    RelationshipGaugeChange
+    RelationshipGaugeChange,
+    Protect,
+    FreeAction
 }

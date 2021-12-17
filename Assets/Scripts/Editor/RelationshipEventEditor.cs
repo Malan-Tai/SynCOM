@@ -21,12 +21,16 @@ public class RelationshipEventEditor : Editor
     private SerializedProperty _requiredEmotionsTowardsTarget;
 
     // attack
+    private SerializedProperty _targetsAlly;
     private SerializedProperty _onMiss;
     private SerializedProperty _onHit;
     private SerializedProperty _onCrit;
+    private SerializedProperty _onDamage;
+    private SerializedProperty _onFatal;
 
     /// effect
     private SerializedProperty _effectType;
+    private SerializedProperty _interrupts;
 
     // relationship gauges
     private SerializedProperty _reciprocal;
@@ -44,13 +48,17 @@ public class RelationshipEventEditor : Editor
         _requiresEmotions               = serializedObject.FindProperty("requiresEmotions");
         _requiredEmotionsTowardsSource  = serializedObject.FindProperty("requiredEmotionsTowardsSource");
         _requiredEmotionsTowardsTarget  = serializedObject.FindProperty("requiredEmotionsTowardsTarget");
-
+        
+        _targetsAlly                    = serializedObject.FindProperty("targetsAlly");
         _onMiss                         = serializedObject.FindProperty("onMiss");
         _onHit                          = serializedObject.FindProperty("onHit");
         _onCrit                         = serializedObject.FindProperty("onCrit");
+        _onDamage                       = serializedObject.FindProperty("onDamage");
+        _onFatal                        = serializedObject.FindProperty("onFatal");
 
 
         _effectType                     = serializedObject.FindProperty("effectType");
+        _interrupts                     = serializedObject.FindProperty("interrupts");
 
         _reciprocal                     = serializedObject.FindProperty("reciprocal");
         _admChange                      = serializedObject.FindProperty("admirationChange");
@@ -63,17 +71,21 @@ public class RelationshipEventEditor : Editor
         // fetch current values from the real instance into the serialized "clone"
         serializedObject.Update();
 
-        if (_foldTrigger = EditorGUILayout.Foldout(_foldTrigger, "Trigger", true))
+        if (_foldTrigger = EditorGUILayout.BeginFoldoutHeaderGroup(_foldTrigger, "Trigger"))
         {
             EditorGUILayout.PropertyField(_triggerType);
 
             if (_triggerType.enumValueIndex == (int)RelationshipEventTriggerType.Attack)
             {
+                EditorGUILayout.PropertyField(_targetsAlly);
                 EditorGUILayout.PropertyField(_onHit);
                 EditorGUILayout.PropertyField(_onMiss);
                 EditorGUILayout.PropertyField(_onCrit);
+                EditorGUILayout.PropertyField(_onDamage);
+                EditorGUILayout.PropertyField(_onFatal);
             }
         }
+        EditorGUILayout.EndFoldoutHeaderGroup();
         EditorGUILayout.Space();
 
         if (_foldInvolved = EditorGUILayout.Foldout(_foldInvolved, "Involved Units", true))
@@ -89,9 +101,10 @@ public class RelationshipEventEditor : Editor
         }
         EditorGUILayout.Space();
 
-        if (_foldEffect = EditorGUILayout.Foldout(_foldEffect, "Effect", true))
+        if (_foldEffect = EditorGUILayout.BeginFoldoutHeaderGroup(_foldEffect, "Effect"))
         {
             EditorGUILayout.PropertyField(_effectType);
+            EditorGUILayout.PropertyField(_interrupts);
 
             if (_effectType.enumValueIndex == (int)RelationshipEventEffectType.RelationshipGaugeChange)
             {
@@ -101,6 +114,7 @@ public class RelationshipEventEditor : Editor
                 EditorGUILayout.PropertyField(_symChange);
             }
         }
+        EditorGUILayout.EndFoldoutHeaderGroup();
 
         // write back serialized values to the real instance
         // automatically handles all marking dirty and undo/redo

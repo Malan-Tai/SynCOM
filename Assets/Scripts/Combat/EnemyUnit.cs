@@ -7,6 +7,8 @@ public class EnemyUnit : GridBasedUnit
     private GeneralRenderer _renderer;
     private Color _originalColor;
 
+    public EnemyCharacter EnemyCharacter { get => (EnemyCharacter)_character; }
+
     private void Awake()
     {
         _renderer = GetComponentInChildren<GeneralRenderer>();
