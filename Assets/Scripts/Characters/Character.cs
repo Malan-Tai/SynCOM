@@ -1,29 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 [System.Serializable]
 public class Character
 {
     protected const float _fullCoverDodgeBonus = 40f;
     protected const float _halfCoverDodgeBonus = 20f;
-
+    
     //Character's statistics
     [SerializeField] private float _maxHealth;
     [SerializeField] private float _healthPoints;
-    [SerializeField] private float _damage;    //amount of damages dealt
-    [SerializeField] private float _accuracy;  //value between 0 and 1
-    [SerializeField] protected float _dodge;     // value between 0 and 1. Probability of successful attack is accuracy-dodge
-    [SerializeField] private float _movementPoints; // how far can a charcater move in one turn
-    [SerializeField] private float _weigth; //can be a condition for some actions
+    [SerializeField] private float _damage;                  //amount of damages dealt
+    [SerializeField] private float _accuracy;                //value between 0 and 1
+    [SerializeField] protected float _dodge;                 // value between 0 and 1. Probability of successful attack is accuracy-dodge
+    [SerializeField] private float _movementPoints;          // how far can a charcater move in one turn
+    [SerializeField] private float _weigth;                  //can be a condition for some actions
     [SerializeField] private float _critChances;
     [SerializeField] private float _rangeShot;
     [SerializeField] private string _name;
 
-    
-    
+    public delegate void DieEvent();
+    public event DieEvent OnDeath;
 
     //constructor 
-
     public Character()
     {
     }
@@ -149,5 +149,16 @@ public class Character
 
     public void Die()
     {
+        if (OnDeath != null) OnDeath();
+    }
+
+    public virtual Sprite GetSprite()
+    {
+        return null;
+    }
+
+    public virtual Sprite GetPortrait()
+    {
+        return null;
     }
 }

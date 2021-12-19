@@ -23,4 +23,9 @@ public class Rapturous : Trait
     {
         return 0.5f * (1 - (_owner.HealthPoints / _owner.MaxHealth));
     }
+
+    public override string GetDescription()
+    {
+        return "Blood maddens them, making them stronger when hurt";
+    }
 }

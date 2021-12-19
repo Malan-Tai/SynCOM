@@ -23,4 +23,8 @@ public class Fearless : Trait
         return "Fearless";
     }
 
+    public override string GetDescription()
+    {
+        return "They do not know fear, of any kind.";
+    }
 }

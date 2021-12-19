@@ -25,9 +25,9 @@ public class RelationshipPanel : MonoBehaviour
 
     public void SetPanel(AllyCharacter left, AllyCharacter right)
     {
-        // TODO : portraits & names
-        _leftPortrait.sprite = GlobalGameManager.Instance.GetClassPortrait(left.CharacterClass);
-        _rightPortrait.sprite = GlobalGameManager.Instance.GetClassPortrait(right.CharacterClass);
+        // TODO : names
+        _leftPortrait.sprite = left.GetPortrait();
+        _rightPortrait.sprite = right.GetPortrait();
 
         List<EnumEmotions> leftRightEmotions = left.Relationships[right].ListEmotions;
 

@@ -39,7 +39,16 @@ public class BetweenMissionsGameManager : MonoBehaviour
     private Transform _missionRecapUnits;
 
     [SerializeField]
-    private CharacterSheet _characterSheet;
+    private CharacterSheet _missionCharacterSheet;
+
+    [SerializeField]
+    private UnitScrollList _recruitUnitList;
+
+    [SerializeField]
+    private CharacterSheet _recruitCharacterSheet;
+
+    [SerializeField]
+    private string _combatSceneName = "SampleScene";
 
     private int _selectedSquadUnit;
 
@@ -66,7 +75,17 @@ public class BetweenMissionsGameManager : MonoBehaviour
         GlobalGameManager.Instance.SetDefaultSquad();
         InitMissionRecapUnits();
 
-        _characterSheet.InitEventsWithScrollList(_missionUnitList);
+        _missionCharacterSheet.InitEventsWithScrollList(_missionUnitList);
+
+        _newRecruits = new List<AllyCharacter>
+        {
+            new AllyCharacter(EnumClasses.Berserker, 20, 2, 65, 10, 15, 20, 4, 60),
+            new AllyCharacter(EnumClasses.Engineer, 20, 2, 65, 10, 15, 20, 4, 60),
+            new AllyCharacter(EnumClasses.Sniper, 20, 2, 65, 10, 15, 20, 4, 60)
+        };
+
+        _recruitUnitList.Populate(_newRecruits);
+        _recruitCharacterSheet.InitEventsWithScrollList(_recruitUnitList, true);
     }
 
     public void InitMissionRecapUnits()
@@ -144,7 +163,7 @@ public class BetweenMissionsGameManager : MonoBehaviour
         print("start mission in " + _selectedRegion);
         GlobalGameManager.Instance.CurrentMission = _availableMissions[_selectedRegion];
 
-        SceneManager.LoadScene("Erwan");
+        SceneManager.LoadScene(_combatSceneName);
     }
 
     public void ClearSquad()
@@ -172,6 +191,27 @@ public class BetweenMissionsGameManager : MonoBehaviour
         GlobalGameManager.Instance.SetSquadUnit(_selectedSquadUnit, character);
         _missionRecapUnits.GetComponentsInChildren<MissionRecapUnit>()[_selectedSquadUnit].SetCharacter(character);
 
-        if (OnNotifyCanvasChange != null) OnNotifyCanvasChange(0, -1);
+        //if (OnNotifyCanvasChange != null) OnNotifyCanvasChange(0, -1);
+    }
+
+    public void GoToRecruitCanvas()
+    {
+        if (OnNotifyCanvasChange != null) OnNotifyCanvasChange(-1, 0);
+    }
+
+    public void GoFromRecruitToMapCanvas()
+    {
+        if (OnNotifyCanvasChange != null) OnNotifyCanvasChange(1, 0);
+    }
+
+    public void RecruitUnit(AllyCharacter rookie)
+    {
+        if (_newRecruits.Remove(rookie))
+        {
+            GlobalGameManager.Instance.AddCharacter(rookie);
+
+            _missionUnitList.Populate(GlobalGameManager.Instance.allCharacters);
+            _recruitUnitList.Populate(_newRecruits);
+        }
     }
 }

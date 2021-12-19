@@ -77,9 +77,9 @@ public class AllyUnit : GridBasedUnit
         //Debug.Log(this.CurrentBuffs.Count + " buffs");
     }
 
-    public void UseCharacterSprite()
+    public override void InitSprite()
     {
         SpriteRenderer renderer = GetComponentInChildren<SpriteRenderer>();
-        //renderer.sprite = GlobalGameManager.Instance.GetClassTexture(_character.characterClass);
+        renderer.sprite = AllyCharacter.GetSprite();
     }
 }

@@ -19,9 +19,19 @@ public class CharacterSheet : MonoBehaviour
     private TMP_Text _mvtText;
     private TMP_Text _wgtText;
     private FullRelationshipsPanel _relationships;
+    private GameObject _quitButton;
+
+    [SerializeField]
+    private TraitScrollList _traitList;
+
+    private Vector3 _basePos;
+
+    private AllyCharacter _clickedCharacter;
 
     private void Awake()
     {
+        _basePos = transform.localPosition;
+
         _image = transform.Find("Image").GetComponent<Image>();
         _name = transform.Find("Name").GetComponent<TMP_Text>();
         _class = transform.Find("Class").GetComponent<TMP_Text>();
@@ -36,35 +46,47 @@ public class CharacterSheet : MonoBehaviour
         _wgtText = stats.Find("wgt").GetComponent<TMP_Text>();
 
         _relationships = transform.Find("Relationships").GetComponent<FullRelationshipsPanel>();
+
+        _quitButton = transform.Find("Quit").gameObject;
     }
 
-    public void InitEventsWithScrollList(UnitScrollList list)
+    public void InitEventsWithScrollList(UnitScrollList list, bool clickableUnits = false)
     {
         list.OnMouseEnterEvent += SetVisible;
         list.OnMouseEnterEvent += SetCharacter;
-        list.OnMouseExitEvent += SetInvisible;
+        if (clickableUnits)
+        {
+            list.OnMouseClickEvent += ClickCharacter;
+            list.OnMouseExitEvent += SetClickedCharacterOrInvisible;
+        }
+        else
+        {
+            list.OnMouseExitEvent += SetInvisible;
+        }
 
         this.transform.position += new Vector3(0, OFFSET_Y, 0);
+
+        _quitButton.SetActive(false);
     }
 
     public void InitEventsFromCombat()
     {
-        //PortraitButton.OnCharacterRightClicked += SetVisible;
-        //PortraitButton.OnCharacterRightClicked += SetCharacter;
-        //list.OnMouseExitEvent += SetInvisible;
+        PortraitButton.OnCharacterRightClicked += SetVisible;
+        PortraitButton.OnCharacterRightClicked += SetCharacter;
 
         this.transform.position += new Vector3(0, OFFSET_Y, 0);
     }
 
     private void SetVisible(AllyCharacter character)
     {
-        this.transform.position -= new Vector3(0, OFFSET_Y, 0);
+        //this.transform.position -= new Vector3(0, OFFSET_Y, 0);
+        transform.localPosition = _basePos;
     }
 
     private void SetCharacter(AllyCharacter character)
     {
-        // TODO : image, abilities, name
-        _image.sprite = GlobalGameManager.Instance.GetClassTexture(character.CharacterClass);
+        // TODO : abilities, name
+        _image.sprite = character.GetSprite();
         _class.text = character.CharacterClass.ToString();
 
         _hpText.text = "HP : " + character.HealthPoints + " / " + character.MaxHealth;
@@ -76,10 +98,33 @@ public class CharacterSheet : MonoBehaviour
         _wgtText.text = character.Weigth + " : Wgt";
 
         _relationships.HoverCharacter(character, false);
+
+        _traitList.Populate(character.Traits);
     }
 
-    private void SetInvisible()
+    public void SetInvisible()
     {
         this.transform.position += new Vector3(0, OFFSET_Y, 0);
+    }
+
+    private void ClickCharacter(AllyCharacter character)
+    {
+        if (_clickedCharacter == character) _clickedCharacter = null;
+        else _clickedCharacter = character;
+    }
+
+    private void SetClickedCharacterOrInvisible()
+    {
+        if (_clickedCharacter != null) SetCharacter(_clickedCharacter);
+        else SetInvisible();
+    }
+
+    public void ClickRecruitButton()
+    {
+        if (_clickedCharacter == null) return;
+
+        BetweenMissionsGameManager.Instance.RecruitUnit(_clickedCharacter);
+        _clickedCharacter = null;
+        SetClickedCharacterOrInvisible();
     }
 }

@@ -23,4 +23,8 @@ public class Contemptuous : Trait
         return "Contemptuous";
     }
 
+    public override string GetDescription()
+    {
+        return "Their disdain is very easily triggered.";
+    }
 }

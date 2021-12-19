@@ -23,4 +23,8 @@ public class Brave : Trait
         return "Brave";
     }
 
+    public override string GetDescription()
+    {
+        return "Their acts of courage will raise admiration within your ranks.";
+    }
 }

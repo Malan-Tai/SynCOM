@@ -27,12 +27,13 @@ public class GlobalGameManager : MonoBehaviour
     #endregion
 
     public List<AllyCharacter> allCharacters { get; private set; }
+
     [SerializeField]
     public AllyCharacter[] currentSquad { get; private set; }
 
     public Mission CurrentMission { get; set; }
 
-    private int _money;
+    public int Money { get; private set; }
 
     private Dictionary<RegionName, int> _controlStatus;
 
@@ -40,6 +41,11 @@ public class GlobalGameManager : MonoBehaviour
     private Sprite[] _classSprites;
     [SerializeField]
     private Sprite[] _classPortraits;
+
+    [SerializeField]
+    private Sprite _enemySprite;
+    [SerializeField]
+    private Sprite _enemyPortrait;
 
     private void GenerateCharacters()
     {
@@ -50,19 +56,19 @@ public class GlobalGameManager : MonoBehaviour
             new AllyCharacter(EnumClasses.Sniper, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Hitman, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Smuggler, 20, 2, 65, 10, 15, 20, 4, 60),
-            new AllyCharacter(EnumClasses.HoundMaster, 20, 2, 65, 10, 15, 20, 4, 60),
+            new AllyCharacter(EnumClasses.Bodyguard, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Berserker, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Engineer, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Sniper, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Hitman, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Smuggler, 20, 2, 65, 10, 15, 20, 4, 60),
-            new AllyCharacter(EnumClasses.HoundMaster, 20, 2, 65, 10, 15, 20, 4, 60),
+            new AllyCharacter(EnumClasses.Bodyguard, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Berserker, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Engineer, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Sniper, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Hitman, 20, 2, 65, 10, 15, 20, 4, 60),
             new AllyCharacter(EnumClasses.Smuggler, 20, 2, 65, 10, 15, 20, 4, 60),
-            new AllyCharacter(EnumClasses.HoundMaster, 20, 2, 65, 10, 15, 20, 4, 60),
+            new AllyCharacter(EnumClasses.Bodyguard, 20, 2, 65, 10, 15, 20, 4, 60),
         };
 
         foreach (AllyCharacter character in allCharacters)
@@ -92,7 +98,7 @@ public class GlobalGameManager : MonoBehaviour
         currentSquad[i] = character;
     }
 
-    public Sprite GetClassTexture(EnumClasses charClass)
+    public Sprite GetClassSprite(EnumClasses charClass)
     {
         int i = (int)charClass;
         if (i < 0 || i >= _classSprites.Length) return null;
@@ -104,5 +110,39 @@ public class GlobalGameManager : MonoBehaviour
         int i = (int)charClass;
         if (i < 0 || i >= _classPortraits.Length) return null;
         return _classPortraits[i];
+    }
+
+    public Sprite GetEnemySprite()
+    {
+        return _enemySprite;
+    }
+
+    public Sprite GetEnemyPortrait()
+    {
+        return _enemyPortrait;
+    }
+
+    public void AddCharacter(AllyCharacter character)
+    {
+        allCharacters.Add(character);
+        character.InitializeRelationships(allCharacters, true);
+    }
+
+    public void StartCurrentMission()
+    {
+        CombatGameManager.OnMissionEnd += OnCurrentMissionEnd;
+    }
+
+    private void OnCurrentMissionEnd(CombatGameManager.MissionEndEventArgs missionEndEventArgs)
+    {
+        if (missionEndEventArgs.Success)
+        {
+            Debug.Log(CurrentMission.moneyReward);
+            Money += CurrentMission.moneyReward;
+        }
+        else
+        {
+            /// TODO Failure things
+        }
     }
 }

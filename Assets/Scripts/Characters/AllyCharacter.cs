@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 [System.Serializable]
 public class AllyCharacter : Character
 {
@@ -9,7 +10,7 @@ public class AllyCharacter : Character
         {EnumClasses.Engineer, new List<Trait> {new Brave()}},
         {EnumClasses.Hitman, new List<Trait> {new Handsome(),new Contemptuous()}},
         {EnumClasses.Sniper, new List<Trait> {new Handsome(), new Contemptuous()}},
-        {EnumClasses.HoundMaster, new List<Trait> {new Ugly(), new Fearless()}},
+        {EnumClasses.Bodyguard, new List<Trait> {new Ugly(), new Fearless()}},
         {EnumClasses.Smuggler, new List<Trait> {new Ugly(), new Fearless()}}
     };
 
@@ -18,7 +19,7 @@ public class AllyCharacter : Character
         {EnumClasses.Engineer, new List<Trait> {new Ugly(),new Fearful(),new Cold(), new Antisocial()}},
         {EnumClasses.Hitman, new List<Trait> {new Brave(), new Nice() ,new Fearful(),new Cold()}},
         {EnumClasses.Sniper, new List<Trait> {new Brave(),new Nice(),new Fearful(),new Cold()}},
-        {EnumClasses.HoundMaster, new List<Trait> {new Antisocial(), new Brave(), new Cold(), new Sensitive()}},
+        {EnumClasses.Bodyguard, new List<Trait> {new Antisocial(), new Brave(), new Cold(), new Sensitive()}},
         {EnumClasses.Smuggler, new List<Trait> {new Antisocial(), new Brave(), new Cold(), new Sensitive()}}
     };
 
@@ -31,11 +32,10 @@ public class AllyCharacter : Character
     {
         get { return _traits; }
     }
-
+   
     private Dictionary<AllyCharacter, Relationship> _relationships;
     public Dictionary<AllyCharacter, Relationship> Relationships { get { return _relationships; } }
 
-    
 
     public AllyCharacter(EnumClasses characterClass, float maxHealth, float damage, float accuracy, float dodge, float critChances, float rangeShot, float movementPoints, float weight) :
         base(maxHealth, damage, accuracy, dodge, critChances, rangeShot, movementPoints, weight)
@@ -46,30 +46,13 @@ public class AllyCharacter : Character
 
         //Debug.Log(_traits.Count);
 
-        //for (int i = 0; i < _traits.Count; i++)
-        //{
-        //    Debug.Log(_traits[i].GetName());
-        //}
-
-        
-        
-    }
-
-    public void InitializeRelationships()
-    {
-        // TODO : deprecated soon
-
-        _relationships = new Dictionary<AllyCharacter, Relationship>();
-        foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
+        for (int i = 0; i < _traits.Count; i++)
         {
-            if (ally.Character != this)
-            {
-                _relationships.Add(ally.AllyCharacter, new Relationship(this, ally.AllyCharacter));
-            }
+            Debug.Log(_traits[i].GetName());
         }
     }
 
-    public void InitializeRelationships(List<AllyCharacter> characters)
+    public void InitializeRelationships(List<AllyCharacter> characters, bool alsoAddRelationshipToAllies = false)
     {
         _relationships = new Dictionary<AllyCharacter, Relationship>();
         foreach (AllyCharacter ally in characters)
@@ -77,8 +60,15 @@ public class AllyCharacter : Character
             if (ally != this)
             {
                 _relationships.Add(ally, new Relationship(this, ally));
+
+                if (alsoAddRelationshipToAllies) ally.InitializeRelationshipWithOneAlly(this);
             }
         }
+    }
+
+    private void InitializeRelationshipWithOneAlly(AllyCharacter ally)
+    {
+        _relationships.Add(ally, new Relationship(this, ally));
     }
 
     private void addMandatoryTraits(EnumClasses characterClass)
@@ -128,5 +118,15 @@ public class AllyCharacter : Character
         }
 
         return traitFound;
+    }
+
+    public override Sprite GetSprite()
+    {
+        return GlobalGameManager.Instance.GetClassSprite(_class);
+    }
+
+    public override Sprite GetPortrait()
+    {
+        return GlobalGameManager.Instance.GetClassPortrait(_class);
     }
 }

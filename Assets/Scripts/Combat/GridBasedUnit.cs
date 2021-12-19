@@ -21,6 +21,7 @@ public class GridBasedUnit : MonoBehaviour
         set
         {
             _character = value;
+            _character.OnDeath += Die;
         }
     }
 
@@ -43,6 +44,8 @@ public class GridBasedUnit : MonoBehaviour
     protected Dictionary<GridBasedUnit, LineOfSight> _linesOfSight;
     private float _sightDistance;
 
+    private bool _markedForDeath = false;
+
     public Dictionary<GridBasedUnit, LineOfSight> LinesOfSight { get { return _linesOfSight; } }
 
     public delegate void StartedMoving(GridBasedUnit movedUnit, Vector2Int finalPos);
@@ -51,7 +54,10 @@ public class GridBasedUnit : MonoBehaviour
     public delegate void FinishedMoving(GridBasedUnit movedUnit);
     public static event FinishedMoving OnMoveFinish;
 
-    //private CanvasGroup _canvasGroup;
+    public delegate void DieEvent(GridBasedUnit deadUnit);
+    public static event DieEvent OnDeath;
+
+    private FeedbackDisplay _feedback;
 
     protected void Start()
     {
@@ -66,7 +72,7 @@ public class GridBasedUnit : MonoBehaviour
 
         _linesOfSight = new Dictionary<GridBasedUnit, LineOfSight>();
 
-        //_canvasGroup = transform.Find("Canvas").GetComponent<CanvasGroup>();
+        _feedback = GetComponent<FeedbackDisplay>();
     }
 
     private void Update()
@@ -98,6 +104,17 @@ public class GridBasedUnit : MonoBehaviour
             UpdateLineOfSights(!IsEnemy());
             if (OnMoveFinish != null) OnMoveFinish(this);
         }
+
+        if (_markedForDeath && transform.Find("CameraTarget") == null)
+        {
+            _markedForDeath = false;
+            Destroy(this.gameObject);
+        }
+    }
+
+    public void MarkForDestruction()
+    {
+        _markedForDeath = true;
     }
 
     protected virtual bool IsEnemy()
@@ -240,22 +257,29 @@ public class GridBasedUnit : MonoBehaviour
         return _pathfinder.GetReachableTiles();
     }
 
+    public void Missed()
+    {
+        _feedback.DisplayFeedback("Miss");
+    }
+
     public void TakeDamage(float damage)
     {
-        //string str = "-" + damage.ToString();
-        //_canvasGroup.gameObject.transform.Find("Text").GetComponent<TMPro.TextMeshProUGUI>().text = str;
-        //StartCoroutine(LoseHP());
+        _feedback.DisplayFeedback("-" + damage.ToString());
         _character.TakeDamage(damage);
     }
 
-    //IEnumerator LoseHP()
-    //{
-    //    for (float ft = 2f; ft >= 0; ft -= 0.1f)
-    //    {
-    //        _canvasGroup.alpha = ft/2;
-    //        _canvasGroup.transform.position += new Vector3(0,0.1f,0);
-    //        yield return new WaitForSeconds(.1f);
-    //    }
-    //    _canvasGroup.transform.position = transform.position;
-    //}
+    private void Die()
+    {
+        if (OnDeath != null) OnDeath(this);
+    }
+
+    public virtual void InitSprite()
+    {
+
+    }
+
+    public virtual Sprite GetPortrait()
+    {
+        return _character.GetPortrait();
+    }
 }

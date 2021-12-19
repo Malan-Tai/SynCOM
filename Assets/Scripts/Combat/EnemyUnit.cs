@@ -7,10 +7,8 @@ public class EnemyUnit : GridBasedUnit
     private GeneralRenderer _renderer;
     private Color _originalColor;
 
-    private new void Start()
+    private void Awake()
     {
-        base.Start();
-
         _renderer = GetComponentInChildren<GeneralRenderer>();
     }
 
@@ -43,5 +41,11 @@ public class EnemyUnit : GridBasedUnit
                     break;
             }
         }
+    }
+
+    public override void InitSprite()
+    {
+        SpriteRenderer renderer = GetComponentInChildren<SpriteRenderer>();
+        renderer.sprite = GlobalGameManager.Instance.GetEnemySprite();
     }
 }
