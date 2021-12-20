@@ -166,7 +166,7 @@ public class CombatGameManager : MonoBehaviour
 
         foreach (EnemyUnit enemy in _enemyUnits)
         {
-            enemy.Character = new EnemyCharacter(5, 2, 65, 10, 15, 20, 4, 60);
+            enemy.Character = new EnemyCharacter(6, 2, 65, 10, 15, 20, 4, 60);
             enemy.InitSprite();
         }
 

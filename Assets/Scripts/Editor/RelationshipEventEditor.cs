@@ -17,6 +17,8 @@ public class RelationshipEventEditor : Editor
     // involved
     private SerializedProperty _onlyCheckDuoAlly;
     private SerializedProperty _dontCheckDuoAlly;
+    private SerializedProperty _onlyCheckTarget;
+    private SerializedProperty _dontCheckTarget;
     private SerializedProperty _requiresEmotions;
     private SerializedProperty _requiredEmotionsTowardsSource;
     private SerializedProperty _requiredEmotionsTowardsTarget;
@@ -30,7 +32,10 @@ public class RelationshipEventEditor : Editor
     private SerializedProperty _onFatal;
 
     // heal
-    public SerializedProperty _minMaxHealthRatio;
+    private SerializedProperty _minMaxHealthRatio;
+
+    // kill
+    private SerializedProperty _killSteal;
 
     /// effect
     private SerializedProperty _effectType;
@@ -41,10 +46,10 @@ public class RelationshipEventEditor : Editor
     private SerializedProperty _admChange;
     private SerializedProperty _truChange;
     private SerializedProperty _symChange;
-    public SerializedProperty _sourceToTarget;
-    public SerializedProperty _admirationChangeSTT;
-    public SerializedProperty _trustChangeSTT;
-    public SerializedProperty _sympathyChangeSTT;
+    private SerializedProperty _sourceToTarget;
+    private SerializedProperty _admirationChangeSTT;
+    private SerializedProperty _trustChangeSTT;
+    private SerializedProperty _sympathyChangeSTT;
 
     #endregion
 
@@ -55,6 +60,8 @@ public class RelationshipEventEditor : Editor
 
         _onlyCheckDuoAlly               = serializedObject.FindProperty("onlyCheckDuoAlly");
         _dontCheckDuoAlly               = serializedObject.FindProperty("dontCheckDuoAlly");
+        _onlyCheckTarget                = serializedObject.FindProperty("onlyCheckTarget");
+        _dontCheckTarget                = serializedObject.FindProperty("dontCheckTarget");
         _requiresEmotions               = serializedObject.FindProperty("requiresEmotions");
         _requiredEmotionsTowardsSource  = serializedObject.FindProperty("requiredEmotionsTowardsSource");
         _requiredEmotionsTowardsTarget  = serializedObject.FindProperty("requiredEmotionsTowardsTarget");
@@ -67,6 +74,8 @@ public class RelationshipEventEditor : Editor
         _onFatal                        = serializedObject.FindProperty("onFatal");
 
         _minMaxHealthRatio              = serializedObject.FindProperty("minMaxHealthRatio");
+
+        _killSteal                      = serializedObject.FindProperty("killSteal");
 
 
         _effectType                     = serializedObject.FindProperty("effectType");
@@ -104,18 +113,38 @@ public class RelationshipEventEditor : Editor
             {
                 EditorGUILayout.PropertyField(_minMaxHealthRatio);
             }
+            else if (_triggerType.enumValueIndex == (int)RelationshipEventTriggerType.Kill)
+            {
+                EditorGUILayout.PropertyField(_killSteal);
+            }
         }
         EditorGUILayout.EndFoldoutHeaderGroup();
         EditorGUILayout.Space();
 
         if (_foldInvolved = EditorGUILayout.Foldout(_foldInvolved, "Involved Units", true))
         {
-            EditorGUILayout.PropertyField(_onlyCheckDuoAlly);
-            EditorGUILayout.PropertyField(_dontCheckDuoAlly);
-
-            if (_onlyCheckDuoAlly.boolValue && _dontCheckDuoAlly.boolValue)
+            if (_onlyCheckDuoAlly.boolValue)
             {
-                EditorGUILayout.LabelField("WARNING !!! onlyCheck and dontCheck shouldn't both be true");
+                EditorGUILayout.PropertyField(_onlyCheckDuoAlly);
+            }
+            else if (_dontCheckDuoAlly.boolValue)
+            {
+                EditorGUILayout.PropertyField(_dontCheckDuoAlly);
+            }
+            else if (_onlyCheckTarget.boolValue)
+            {
+                EditorGUILayout.PropertyField(_onlyCheckTarget);
+            }
+            else if (_dontCheckTarget.boolValue)
+            {
+                EditorGUILayout.PropertyField(_dontCheckTarget);
+            }
+            else
+            {
+                EditorGUILayout.PropertyField(_onlyCheckDuoAlly);
+                EditorGUILayout.PropertyField(_dontCheckDuoAlly);
+                EditorGUILayout.PropertyField(_onlyCheckTarget);
+                EditorGUILayout.PropertyField(_dontCheckTarget);
             }
 
             EditorGUILayout.PropertyField(_requiresEmotions);

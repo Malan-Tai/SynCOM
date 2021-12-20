@@ -15,6 +15,8 @@ MonoBehaviour:
   triggerType: 4
   onlyCheckDuoAlly: 0
   dontCheckDuoAlly: 0
+  onlyCheckTarget: 0
+  dontCheckTarget: 1
   requiresEmotions: 1
   requiredEmotionsTowardsSource: 0100000006000000070000000e0000001000000011000000
   requiredEmotionsTowardsTarget: 
@@ -25,6 +27,7 @@ MonoBehaviour:
   onDamage: 0
   onFatal: 0
   minMaxHealthRatio: {x: 0, y: 0.3}
+  killSteal: 0
   effectType: 1
   interrupts: 0
   reciprocal: 0

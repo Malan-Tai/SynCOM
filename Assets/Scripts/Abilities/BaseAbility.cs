@@ -54,8 +54,13 @@ public abstract class BaseAbility
 
     protected void AttackDamage(AllyUnit source, EnemyUnit target, float damage, bool crit, AllyCharacter duo = null)
     {
-        target.TakeDamage(damage);
+        bool killed = target.TakeDamage(damage);
         if (RelationshipEventsManager.Instance.AllyOnEnemyAttackDamage(source.AllyCharacter, target.EnemyCharacter, damage, crit, duo))
+        {
+            Debug.Log("interrupted");
+        }
+
+        if (killed && RelationshipEventsManager.Instance.KillEnemy(source.AllyCharacter, target.EnemyCharacter, duo))
         {
             Debug.Log("interrupted");
         }
@@ -64,7 +69,7 @@ public abstract class BaseAbility
     protected void Heal(AllyUnit source, AllyUnit target, float healAmount, AllyCharacter duo = null)
     {
         target.Heal(healAmount);
-        if (RelationshipEventsManager.Instance.Heal(source.AllyCharacter, target.AllyCharacter, duo))
+        if (RelationshipEventsManager.Instance.HealAlly(source.AllyCharacter, target.AllyCharacter, duo))
         {
             Debug.Log("interrupted");
         }

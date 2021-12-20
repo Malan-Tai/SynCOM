@@ -116,14 +116,16 @@ public class Character
         set { this._rangeShot = value; }
     }
 
-    public void TakeDamage(float damage)
+    public bool TakeDamage(float damage)
     {
         Debug.Log("oof, took " + damage + " dmg");
         _healthPoints -= damage;
         if (_healthPoints <= 0)
         {
             Die();
+            return true;
         }
+        return false;
     }
 
     public void Kill()

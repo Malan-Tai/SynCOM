@@ -14,14 +14,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   triggerType: 2
   onlyCheckDuoAlly: 0
+  dontCheckDuoAlly: 0
+  onlyCheckTarget: 0
+  dontCheckTarget: 1
   requiresEmotions: 1
   requiredEmotionsTowardsSource: 
   requiredEmotionsTowardsTarget: 000000000200000004000000080000000a0000000c000000
+  targetsAlly: 0
   onMiss: 0
   onHit: 0
   onCrit: 0
+  onDamage: 0
+  onFatal: 0
+  minMaxHealthRatio: {x: 0, y: 1}
+  killSteal: 0
   effectType: 1
+  interrupts: 0
   reciprocal: 0
   admirationChange: 0
   trustChange: 0
   sympathyChange: 5
+  sourceToTarget: 0
+  admirationChangeSTT: 0
+  trustChangeSTT: 0
+  sympathyChangeSTT: 0

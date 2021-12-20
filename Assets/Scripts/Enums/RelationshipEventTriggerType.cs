@@ -3,6 +3,6 @@ public enum RelationshipEventTriggerType
     None,
     Attack,
     FriendlyFire,
-    KillSteal,
+    Kill,
     Heal
 }

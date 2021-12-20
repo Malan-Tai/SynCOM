@@ -11,6 +11,8 @@ public class RelationshipEvent : ScriptableObject
     // involved
     public bool onlyCheckDuoAlly;
     public bool dontCheckDuoAlly;
+    public bool onlyCheckTarget;
+    public bool dontCheckTarget;
     public bool requiresEmotions;
     public EnumEmotions[] requiredEmotionsTowardsSource;
     public EnumEmotions[] requiredEmotionsTowardsTarget;
@@ -29,6 +31,10 @@ public class RelationshipEvent : ScriptableObject
     [MinMaxSlider(0, 1)]
     public Vector2 minMaxHealthRatio = new Vector2(0, 1);
 
+    // kill
+    [Tooltip("Kill Steal true means the trigger will only check the best damager of the killed entity")]
+    public bool killSteal;
+
     /// effect
     public RelationshipEventEffectType effectType;
     public bool interrupts;
@@ -46,11 +52,13 @@ public class RelationshipEvent : ScriptableObject
     public int sympathyChangeSTT;
 
 
-    public bool CorrespondsToTrigger(RelationshipEvent trigger, bool allyIsDuo, float healthRatio)
+    public bool CorrespondsToTrigger(RelationshipEvent trigger, bool allyIsDuo, bool allyIsTarget, float healthRatio, bool isBestDamager)
     {
         if (triggerType != trigger.triggerType) return false;
         if (onlyCheckDuoAlly && !allyIsDuo) return false;
         if (dontCheckDuoAlly && allyIsDuo) return false;
+        if (onlyCheckTarget && !allyIsTarget) return false;
+        if (dontCheckTarget && allyIsTarget) return false;
 
         switch (triggerType)
         {
@@ -64,6 +72,9 @@ public class RelationshipEvent : ScriptableObject
 
             case RelationshipEventTriggerType.Heal:
                 return minMaxHealthRatio.x <= healthRatio && healthRatio <= minMaxHealthRatio.y;
+
+            case RelationshipEventTriggerType.Kill:
+                return !killSteal || isBestDamager;
 
             default:
                 // when nothing more than the status of the relationship is needed, returns true by default

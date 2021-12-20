@@ -13,7 +13,10 @@ MonoBehaviour:
   m_Name: Heal
   m_EditorClassIdentifier: 
   triggerType: 4
-  onlyCheckDuoAlly: 1
+  onlyCheckDuoAlly: 0
+  dontCheckDuoAlly: 0
+  onlyCheckTarget: 1
+  dontCheckTarget: 0
   requiresEmotions: 0
   requiredEmotionsTowardsSource: 
   requiredEmotionsTowardsTarget: 
@@ -24,6 +27,7 @@ MonoBehaviour:
   onDamage: 0
   onFatal: 0
   minMaxHealthRatio: {x: 0, y: 1}
+  killSteal: 0
   effectType: 1
   interrupts: 0
   reciprocal: 0
