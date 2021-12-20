@@ -268,6 +268,12 @@ public class GridBasedUnit : MonoBehaviour
         _character.TakeDamage(damage);
     }
 
+    public void Heal(float healAmount)
+    {
+        _feedback.DisplayFeedback("+" + healAmount.ToString());
+        _character.Heal(healAmount);
+    }
+
     private void Die()
     {
         if (OnDeath != null) OnDeath(this);

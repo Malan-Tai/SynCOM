@@ -16,6 +16,7 @@ public class RelationshipEventEditor : Editor
 
     // involved
     private SerializedProperty _onlyCheckDuoAlly;
+    private SerializedProperty _dontCheckDuoAlly;
     private SerializedProperty _requiresEmotions;
     private SerializedProperty _requiredEmotionsTowardsSource;
     private SerializedProperty _requiredEmotionsTowardsTarget;
@@ -28,6 +29,9 @@ public class RelationshipEventEditor : Editor
     private SerializedProperty _onDamage;
     private SerializedProperty _onFatal;
 
+    // heal
+    public SerializedProperty _minMaxHealthRatio;
+
     /// effect
     private SerializedProperty _effectType;
     private SerializedProperty _interrupts;
@@ -37,6 +41,11 @@ public class RelationshipEventEditor : Editor
     private SerializedProperty _admChange;
     private SerializedProperty _truChange;
     private SerializedProperty _symChange;
+    public SerializedProperty _sourceToTarget;
+    public SerializedProperty _admirationChangeSTT;
+    public SerializedProperty _trustChangeSTT;
+    public SerializedProperty _sympathyChangeSTT;
+
     #endregion
 
     // is called once when according object gains focus in the hierachy
@@ -45,6 +54,7 @@ public class RelationshipEventEditor : Editor
         _triggerType                    = serializedObject.FindProperty("triggerType");
 
         _onlyCheckDuoAlly               = serializedObject.FindProperty("onlyCheckDuoAlly");
+        _dontCheckDuoAlly               = serializedObject.FindProperty("dontCheckDuoAlly");
         _requiresEmotions               = serializedObject.FindProperty("requiresEmotions");
         _requiredEmotionsTowardsSource  = serializedObject.FindProperty("requiredEmotionsTowardsSource");
         _requiredEmotionsTowardsTarget  = serializedObject.FindProperty("requiredEmotionsTowardsTarget");
@@ -56,6 +66,8 @@ public class RelationshipEventEditor : Editor
         _onDamage                       = serializedObject.FindProperty("onDamage");
         _onFatal                        = serializedObject.FindProperty("onFatal");
 
+        _minMaxHealthRatio              = serializedObject.FindProperty("minMaxHealthRatio");
+
 
         _effectType                     = serializedObject.FindProperty("effectType");
         _interrupts                     = serializedObject.FindProperty("interrupts");
@@ -64,7 +76,11 @@ public class RelationshipEventEditor : Editor
         _admChange                      = serializedObject.FindProperty("admirationChange");
         _truChange                      = serializedObject.FindProperty("trustChange");
         _symChange                      = serializedObject.FindProperty("sympathyChange");
-    }
+        _sourceToTarget                 = serializedObject.FindProperty("sourceToTarget");
+        _admirationChangeSTT            = serializedObject.FindProperty("admirationChangeSTT");
+        _trustChangeSTT                 = serializedObject.FindProperty("trustChangeSTT");
+        _sympathyChangeSTT              = serializedObject.FindProperty("sympathyChangeSTT");
+}
 
     public override void OnInspectorGUI()
     {
@@ -84,6 +100,10 @@ public class RelationshipEventEditor : Editor
                 EditorGUILayout.PropertyField(_onDamage);
                 EditorGUILayout.PropertyField(_onFatal);
             }
+            else if (_triggerType.enumValueIndex == (int)RelationshipEventTriggerType.Heal)
+            {
+                EditorGUILayout.PropertyField(_minMaxHealthRatio);
+            }
         }
         EditorGUILayout.EndFoldoutHeaderGroup();
         EditorGUILayout.Space();
@@ -91,6 +111,13 @@ public class RelationshipEventEditor : Editor
         if (_foldInvolved = EditorGUILayout.Foldout(_foldInvolved, "Involved Units", true))
         {
             EditorGUILayout.PropertyField(_onlyCheckDuoAlly);
+            EditorGUILayout.PropertyField(_dontCheckDuoAlly);
+
+            if (_onlyCheckDuoAlly.boolValue && _dontCheckDuoAlly.boolValue)
+            {
+                EditorGUILayout.LabelField("WARNING !!! onlyCheck and dontCheck shouldn't both be true");
+            }
+
             EditorGUILayout.PropertyField(_requiresEmotions);
 
             if (_requiresEmotions.boolValue)
@@ -112,6 +139,17 @@ public class RelationshipEventEditor : Editor
                 EditorGUILayout.PropertyField(_admChange);
                 EditorGUILayout.PropertyField(_truChange);
                 EditorGUILayout.PropertyField(_symChange);
+
+                if (!_reciprocal.boolValue)
+                {
+                    EditorGUILayout.PropertyField(_sourceToTarget);
+                    if (_sourceToTarget.boolValue)
+                    {
+                        EditorGUILayout.PropertyField(_admirationChangeSTT);
+                        EditorGUILayout.PropertyField(_trustChangeSTT);
+                        EditorGUILayout.PropertyField(_sympathyChangeSTT);
+                    }
+                }
             }
         }
         EditorGUILayout.EndFoldoutHeaderGroup();

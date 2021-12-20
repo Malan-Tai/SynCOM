@@ -32,7 +32,7 @@ public class Devouring : BaseDuoAbility
         foreach (GridBasedUnit unit in tempTargets)
         {
             if (    (_chosenAlly.LinesOfSight.ContainsKey(unit)) 
-                &&  ((unit.GridPosition - this._effector.GridPosition).magnitude <= 1))
+                &&  ((unit.GridPosition - this._effector.GridPosition).magnitude < 2))
             {
                 _possibleTargets.Add(unit);
             }
@@ -139,7 +139,7 @@ public class Devouring : BaseDuoAbility
 
     protected override bool IsAllyCompatible(AllyUnit unit)
     {
-        return (unit.GridPosition - this._effector.GridPosition).magnitude <= 1;
+        return (unit.GridPosition - this._effector.GridPosition).magnitude < 2;
     }
 
     public override string GetAllyDescription()

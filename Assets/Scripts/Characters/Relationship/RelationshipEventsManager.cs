@@ -31,7 +31,7 @@ public class RelationshipEventsManager : MonoBehaviour
         _damageOnEnemies = new Dictionary<EnemyCharacter, Dictionary<AllyCharacter, float>>();
     }
 
-    private bool CheckTriggersAndExecute(RelationshipEvent dummyTrigger, AllyCharacter source, AllyCharacter duo = null)
+    private bool CheckTriggersAndExecute(RelationshipEvent dummyTrigger, AllyCharacter source, AllyCharacter target = null, AllyCharacter duo = null)
     {
         bool interrupts = false;
 
@@ -42,29 +42,8 @@ public class RelationshipEventsManager : MonoBehaviour
 
             foreach (RelationshipEvent relationshipEvent in _allEvents)
             {
-                if (relationshipEvent.CorrespondsToTrigger(dummyTrigger, isDuo) && relationshipEvent.MeetsRelationshipRequirements(source, allyCharacter))
-                {
-                    interrupts = interrupts || relationshipEvent.interrupts;
-                    Execute(relationshipEvent, source, allyCharacter);
-                }
-            }
-        }
-
-        return interrupts;
-    }
-
-    private bool CheckTriggersAndExecute(RelationshipEvent dummyTrigger, AllyCharacter source, AllyCharacter target, AllyCharacter duo = null)
-    {
-        bool interrupts = false;
-
-        foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
-        {
-            AllyCharacter allyCharacter = ally.Character as AllyCharacter;
-            bool isDuo = allyCharacter == duo;
-
-            foreach (RelationshipEvent relationshipEvent in _allEvents)
-            {
-                if (relationshipEvent.CorrespondsToTrigger(dummyTrigger, isDuo) && relationshipEvent.MeetsRelationshipRequirements(source, target, allyCharacter))
+                if (relationshipEvent.CorrespondsToTrigger(dummyTrigger, isDuo, allyCharacter.HealthPoints / allyCharacter.MaxHealth) &&
+                    relationshipEvent.MeetsRelationshipRequirements(source, target, allyCharacter))
                 {
                     interrupts = interrupts || relationshipEvent.interrupts;
                     Execute(relationshipEvent, source, allyCharacter);
@@ -93,6 +72,13 @@ public class RelationshipEventsManager : MonoBehaviour
                     sourceToCurrent.IncreaseSentiment(EnumSentiment.Admiration, relationshipEvent.admirationChange);
                     sourceToCurrent.IncreaseSentiment(EnumSentiment.Trust, relationshipEvent.trustChange);
                     sourceToCurrent.IncreaseSentiment(EnumSentiment.Sympathy, relationshipEvent.sympathyChange);
+                }
+                else if (relationshipEvent.sourceToTarget)
+                {
+                    Relationship sourceToCurrent = source.Relationships[current];
+                    sourceToCurrent.IncreaseSentiment(EnumSentiment.Admiration, relationshipEvent.admirationChangeSTT);
+                    sourceToCurrent.IncreaseSentiment(EnumSentiment.Trust, relationshipEvent.trustChangeSTT);
+                    sourceToCurrent.IncreaseSentiment(EnumSentiment.Sympathy, relationshipEvent.sympathyChangeSTT);
                 }
 
                 break;
@@ -152,5 +138,13 @@ public class RelationshipEventsManager : MonoBehaviour
         dummyTrigger.onMiss             = !hit;
 
         return CheckTriggersAndExecute(dummyTrigger, source, duo: duo);
+    }
+
+    public bool Heal(AllyCharacter source, AllyCharacter target, AllyCharacter duo = null)
+    {
+        RelationshipEvent dummyTrigger = ScriptableObject.CreateInstance("RelationshipEvent") as RelationshipEvent;
+        dummyTrigger.triggerType = RelationshipEventTriggerType.Heal;
+
+        return CheckTriggersAndExecute(dummyTrigger, source, target, duo);
     }
 }

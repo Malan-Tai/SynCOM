@@ -61,6 +61,15 @@ public abstract class BaseAbility
         }
     }
 
+    protected void Heal(AllyUnit source, AllyUnit target, float healAmount, AllyCharacter duo = null)
+    {
+        target.Heal(healAmount);
+        if (RelationshipEventsManager.Instance.Heal(source.AllyCharacter, target.AllyCharacter, duo))
+        {
+            Debug.Log("interrupted");
+        }
+    }
+
     public virtual void SetEffector(AllyUnit effector)
     {
         _effector = effector;
@@ -292,27 +301,20 @@ public abstract class BaseDuoAbility : BaseAbility
 
         if (randShot < selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
         {
-            //AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, 5);
             AttackHitOrMiss(_effector, target as EnemyUnit, true, _chosenAlly.AllyCharacter);
 
             if (randCrit < selfShotStats.GetCritRate())
             {
-                //target.Character.TakeDamage(selfShotStats.GetDamage() * 1.5f);
-                //SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
-                //AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
                 AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage() * 1.5f, true, _chosenAlly.AllyCharacter);
             }
             else
             {
-                //target.Character.TakeDamage(selfShotStats.GetDamage());
                 AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage(), false, _chosenAlly.AllyCharacter);
             }
         }
         else
         {
             Debug.Log("self missed");
-            //SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
-            //AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
             AttackHitOrMiss(_effector, target as EnemyUnit, false, _chosenAlly.AllyCharacter);
         }
     }

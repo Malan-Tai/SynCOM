@@ -24,19 +24,8 @@ public class FirstAid : BaseDuoAbility
     }
 
     protected override void Execute()
-    {   
-        // Impact on the sentiments
-
-        // Self -> Ally relationship
-        SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
-        
-        // Ally -> Self relationship
-        AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, 5);
-
-        // Actual effect of the ability
-        _chosenAlly.Character.Heal(3);
-
-        _chosenAlly.Character.HealthPoints += 5;
+    {
+        Heal(_effector, _chosenAlly, 5, _chosenAlly.AllyCharacter);
 
         Relationship relationshipAllyToSelf = _chosenAlly.AllyCharacter.Relationships[this._effector.AllyCharacter];
         Relationship relationshipSelfToAlly = this._effector.AllyCharacter.Relationships[_chosenAlly.AllyCharacter];
@@ -48,7 +37,7 @@ public class FirstAid : BaseDuoAbility
 
     protected override bool IsAllyCompatible(AllyUnit unit)
     {
-        return (unit.GridPosition - this._effector.GridPosition).magnitude <= 1;
+        return (unit.GridPosition - this._effector.GridPosition).magnitude <= 2;
     }
 
     public override string GetName()

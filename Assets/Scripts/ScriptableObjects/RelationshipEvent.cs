@@ -10,6 +10,7 @@ public class RelationshipEvent : ScriptableObject
 
     // involved
     public bool onlyCheckDuoAlly;
+    public bool dontCheckDuoAlly;
     public bool requiresEmotions;
     public EnumEmotions[] requiredEmotionsTowardsSource;
     public EnumEmotions[] requiredEmotionsTowardsTarget;
@@ -23,21 +24,32 @@ public class RelationshipEvent : ScriptableObject
     [Tooltip("Fatal is to detect a fatal hit before it is dealt : e.g. to protect an ally, not to detect a kill")]
     public bool onFatal;
 
+    // heal
+    [MinMaxSlider(0, 1)]
+    public Vector2 minMaxHealthRatio = new Vector2(0, 1);
+
     /// effect
     public RelationshipEventEffectType effectType;
     public bool interrupts;
 
     // relationship gauge change
+    [Tooltip("Reciprocal means below changes will be made on both sides of the relationship")]
     public bool reciprocal;
     public int admirationChange;
     public int trustChange;
     public int sympathyChange;
+    [Tooltip("Source to Target is true if the effect causes a different gauge change from source to target than from target to source")]
+    public bool sourceToTarget;
+    public int admirationChangeSTT;
+    public int trustChangeSTT;
+    public int sympathyChangeSTT;
 
 
-    public bool CorrespondsToTrigger(RelationshipEvent trigger, bool allyIsDuo)
+    public bool CorrespondsToTrigger(RelationshipEvent trigger, bool allyIsDuo, float healthRatio)
     {
         if (triggerType != trigger.triggerType) return false;
         if (onlyCheckDuoAlly && !allyIsDuo) return false;
+        if (dontCheckDuoAlly && allyIsDuo) return false;
 
         switch (triggerType)
         {
@@ -48,13 +60,17 @@ public class RelationshipEvent : ScriptableObject
                         (onCrit      && trigger.onCrit)         ||
                         (onDamage    && trigger.onDamage)       ||
                         (onFatal     && trigger.onFatal));
+
+            case RelationshipEventTriggerType.Heal:
+                return minMaxHealthRatio.x <= healthRatio && healthRatio <= minMaxHealthRatio.y;
+
             default:
                 // when nothing more than the status of the relationship is needed, returns true by default
                 return true;
         }
     }
 
-    public bool MeetsRelationshipRequirements(AllyCharacter source, AllyCharacter current)
+    private bool MeetsRelationshipRequirements(AllyCharacter source, AllyCharacter current)
     {
         if (!requiresEmotions || requiredEmotionsTowardsSource.Length == 0) return true;
 
@@ -73,6 +89,7 @@ public class RelationshipEvent : ScriptableObject
 
     public bool MeetsRelationshipRequirements(AllyCharacter source, AllyCharacter target, AllyCharacter current)
     {
+        if (target == null) return MeetsRelationshipRequirements(source, current);
         if (!requiresEmotions) return true;
 
         Relationship toSource = current.Relationships[source];
@@ -101,5 +118,22 @@ public class RelationshipEvent : ScriptableObject
         }
 
         return isTargetOk;
+    }
+}
+
+/// Copy pasted from https://github.com/GucioDevs/SimpleMinMaxSlider because the import wasn't working
+/// No modifications were made
+/// I was forced to put it in this file because having it in a separate file wouldn't allow the [] attribute being found
+
+public class MinMaxSliderAttribute : PropertyAttribute
+{
+
+    public float min;
+    public float max;
+
+    public MinMaxSliderAttribute(float min, float max)
+    {
+        this.min = min;
+        this.max = max;
     }
 }
