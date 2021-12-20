@@ -25,6 +25,7 @@ public class RelationshipEvent : ScriptableObject
     public bool onFatal;
 
     // heal
+    [Tooltip("Health Ratio of the surveyed unit, not the healed one")]
     [MinMaxSlider(0, 1)]
     public Vector2 minMaxHealthRatio = new Vector2(0, 1);
 

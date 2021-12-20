@@ -107,6 +107,38 @@ public class CombatGameManager : MonoBehaviour
     {
         List<AllyUnit> toRemove = new List<AllyUnit>();
 
+#if UNITY_EDITOR
+        bool allNull = true;
+        foreach (AllyCharacter charac in GlobalGameManager.Instance.currentSquad)
+        {
+            if (charac != null)
+            {
+                allNull = false;
+                break;
+            }
+        }
+
+        if (allNull)
+        {
+            List<AllyCharacter> characters = new List<AllyCharacter>();
+
+            int i = 0;
+            foreach (AllyUnit ally in _allAllyUnits)
+            {
+                ally.Character = new AllyCharacter((EnumClasses)i, 20, 2, 65, 10, 15, 20, 4, 60);
+                characters.Add(ally.AllyCharacter);
+                ally.InitSprite();
+                i++;
+            }
+
+            foreach (AllyUnit ally in _allAllyUnits)
+            {
+                ally.AllyCharacter.InitializeRelationships(characters);
+            }
+        }
+        else
+#endif
+        {
         int i = 0;
         foreach (AllyUnit ally in _allAllyUnits)
         {
@@ -122,6 +154,7 @@ public class CombatGameManager : MonoBehaviour
                 ally.InitSprite();
             }
             i++;
+        }
         }
 
         foreach (AllyUnit unit in toRemove)
