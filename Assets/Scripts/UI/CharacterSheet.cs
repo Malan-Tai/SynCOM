@@ -88,7 +88,7 @@ public class CharacterSheet : MonoBehaviour
         // TODO : abilities, name
         _image.sprite = character.GetSprite();
         _class.text = character.CharacterClass.ToString();
-
+        _name.text = character.Name;
         _hpText.text = "HP : " + character.HealthPoints + " / " + character.MaxHealth;
         _accText.text = "Acc : " + character.Accuracy;
         _dmgText.text = "Dmg : " + character.Damage;

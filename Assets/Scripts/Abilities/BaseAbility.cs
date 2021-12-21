@@ -269,7 +269,6 @@ public abstract class BaseDuoAbility : BaseAbility
         int randCrit = UnityEngine.Random.Range(0, 100);
 
         Debug.Log("self to hit: " + randShot + " for " + selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover));
-
         if (randShot < selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
         {
             AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, 5);
