@@ -259,7 +259,7 @@ public abstract class BaseDuoAbility : BaseAbility
                 ChooseAlly();
                 RequestDescriptionUpdate();
             }
-            // TODO: check if 1) ally refuse to cooperate and 2) Emotion gives a free action
+            // TODO: check if Emotion gives a free action
         }
         else if (confirmed)
         {
