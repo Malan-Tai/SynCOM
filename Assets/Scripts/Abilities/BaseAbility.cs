@@ -66,6 +66,17 @@ public abstract class BaseAbility
         }
     }
 
+    protected void FriendlyFireDamage(AllyUnit source, AllyUnit target, float damage, AllyCharacter duo = null)
+    {
+        bool killed = target.TakeDamage(damage);
+        if (RelationshipEventsManager.Instance.FriendlyFireDamage(source.AllyCharacter, target.AllyCharacter, duo))
+        {
+            Debug.Log("interrupted");
+        }
+
+        // TODO : kill ally ?
+    }
+
     protected void Heal(AllyUnit source, AllyUnit target, float healAmount, AllyCharacter duo = null)
     {
         target.Heal(healAmount);

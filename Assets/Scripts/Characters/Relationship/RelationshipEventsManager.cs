@@ -129,9 +129,17 @@ public class RelationshipEventsManager : MonoBehaviour
         dummyTrigger.targetsAlly        = false;
         dummyTrigger.onDamage           = true;
         dummyTrigger.onCrit             = crit;                             // TODO : should be ok ? how can an ally detect your crit if no dmg is done
-        dummyTrigger.onFatal            = target.HealthPoints <= damage;    // TODO : is ok ? or kill should be a different event ?
+        dummyTrigger.onFatal            = target.HealthPoints <= damage;    // TODO : is ok ? kill is a different event but fatal checks it before actual death
 
         return CheckTriggersAndExecute(dummyTrigger, source, duo: duo);
+    }
+
+    public bool FriendlyFireDamage(AllyCharacter source, AllyCharacter target, AllyCharacter duo = null)
+    {
+        RelationshipEvent dummyTrigger = ScriptableObject.CreateInstance("RelationshipEvent") as RelationshipEvent;
+        dummyTrigger.triggerType = RelationshipEventTriggerType.FriendlyFire;
+
+        return CheckTriggersAndExecute(dummyTrigger, source, allyTarget: target, duo: duo);
     }
 
     public bool AllyOnEnemyAttackHitOrMiss(AllyCharacter source, bool hit, AllyCharacter duo = null)
