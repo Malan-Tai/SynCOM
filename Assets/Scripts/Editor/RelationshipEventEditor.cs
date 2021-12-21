@@ -51,6 +51,9 @@ public class RelationshipEventEditor : Editor
     private SerializedProperty _trustChangeSTT;
     private SerializedProperty _sympathyChangeSTT;
 
+    // refuse to duo
+    private SerializedProperty _refusalChance;
+
     #endregion
 
     // is called once when according object gains focus in the hierachy
@@ -89,6 +92,8 @@ public class RelationshipEventEditor : Editor
         _admirationChangeSTT            = serializedObject.FindProperty("admirationChangeSTT");
         _trustChangeSTT                 = serializedObject.FindProperty("trustChangeSTT");
         _sympathyChangeSTT              = serializedObject.FindProperty("sympathyChangeSTT");
+
+        _refusalChance                  = serializedObject.FindProperty("refusalChance");
 }
 
     public override void OnInspectorGUI()
@@ -123,7 +128,12 @@ public class RelationshipEventEditor : Editor
 
         if (_foldInvolved = EditorGUILayout.Foldout(_foldInvolved, "Involved Units", true))
         {
-            if (_onlyCheckDuoAlly.boolValue)
+            if (_triggerType.enumValueIndex == (int)RelationshipEventTriggerType.BeginDuo)
+            {
+                _onlyCheckDuoAlly.boolValue = true;
+                EditorGUILayout.PropertyField(_onlyCheckDuoAlly);
+            }
+            else if (_onlyCheckDuoAlly.boolValue)
             {
                 EditorGUILayout.PropertyField(_onlyCheckDuoAlly);
             }
@@ -179,6 +189,10 @@ public class RelationshipEventEditor : Editor
                         EditorGUILayout.PropertyField(_sympathyChangeSTT);
                     }
                 }
+            }
+            else if (_effectType.enumValueIndex == (int)RelationshipEventEffectType.RefuseToDuo)
+            {
+                EditorGUILayout.PropertyField(_refusalChance);
             }
         }
         EditorGUILayout.EndFoldoutHeaderGroup();

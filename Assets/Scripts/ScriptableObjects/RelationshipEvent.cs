@@ -51,6 +51,10 @@ public class RelationshipEvent : ScriptableObject
     public int trustChangeSTT;
     public int sympathyChangeSTT;
 
+    // refuse to duo
+    [Range(0, 1)]
+    public float refusalChance;
+
 
     public bool CorrespondsToTrigger(RelationshipEvent trigger, bool allyIsDuo, bool allyIsTarget, float healthRatio, bool isBestDamager)
     {

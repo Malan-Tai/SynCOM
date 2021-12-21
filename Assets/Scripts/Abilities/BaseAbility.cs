@@ -46,7 +46,7 @@ public abstract class BaseAbility
     protected void AttackHitOrMiss(AllyUnit source, EnemyUnit target, bool hit, AllyCharacter duo = null)
     {
         target.Missed();
-        if (RelationshipEventsManager.Instance.AllyOnEnemyAttackHitOrMiss(source.AllyCharacter, hit, duo))
+        if (RelationshipEventsManager.Instance.AllyOnEnemyAttackHitOrMiss(source.AllyCharacter, hit, duo).interrupts)
         {
             Debug.Log("interrupted");
         }
@@ -55,12 +55,12 @@ public abstract class BaseAbility
     protected void AttackDamage(AllyUnit source, EnemyUnit target, float damage, bool crit, AllyCharacter duo = null)
     {
         bool killed = target.TakeDamage(damage);
-        if (RelationshipEventsManager.Instance.AllyOnEnemyAttackDamage(source.AllyCharacter, target.EnemyCharacter, damage, crit, duo))
+        if (RelationshipEventsManager.Instance.AllyOnEnemyAttackDamage(source.AllyCharacter, target.EnemyCharacter, damage, crit, duo).interrupts)
         {
             Debug.Log("interrupted");
         }
 
-        if (killed && RelationshipEventsManager.Instance.KillEnemy(source.AllyCharacter, target.EnemyCharacter, duo))
+        if (killed && RelationshipEventsManager.Instance.KillEnemy(source.AllyCharacter, target.EnemyCharacter, duo).interrupts)
         {
             Debug.Log("interrupted");
         }
@@ -69,7 +69,7 @@ public abstract class BaseAbility
     protected void FriendlyFireDamage(AllyUnit source, AllyUnit target, float damage, AllyCharacter duo = null)
     {
         bool killed = target.TakeDamage(damage);
-        if (RelationshipEventsManager.Instance.FriendlyFireDamage(source.AllyCharacter, target.AllyCharacter, duo))
+        if (RelationshipEventsManager.Instance.FriendlyFireDamage(source.AllyCharacter, target.AllyCharacter, duo).interrupts)
         {
             Debug.Log("interrupted");
         }
@@ -80,10 +80,23 @@ public abstract class BaseAbility
     protected void Heal(AllyUnit source, AllyUnit target, float healAmount, AllyCharacter duo = null)
     {
         target.Heal(healAmount);
-        if (RelationshipEventsManager.Instance.HealAlly(source.AllyCharacter, target.AllyCharacter, duo))
+        if (RelationshipEventsManager.Instance.HealAlly(source.AllyCharacter, target.AllyCharacter, duo).interrupts)
         {
             Debug.Log("interrupted");
         }
+    }
+
+    protected bool TryBeginDuo(AllyUnit source, AllyUnit duo)
+    {
+        RelationshipEventsResult eventResult            = RelationshipEventsManager.Instance.BeginDuo(source.AllyCharacter, duo.AllyCharacter);
+        RelationshipEventsResult invertedEventResult    = RelationshipEventsManager.Instance.BeginDuo(duo.AllyCharacter, source.AllyCharacter);
+
+        if (eventResult.interrupts) // TODO : what happens if both interrupt ?
+        {
+            Debug.Log("interrupted");
+        }
+
+        return eventResult.refusedDuo || invertedEventResult.refusedDuo;
     }
 
     public virtual void SetEffector(AllyUnit effector)
@@ -234,9 +247,18 @@ public abstract class BaseDuoAbility : BaseAbility
         }
         else if (confirmed && _temporaryChosenAlly != null && _chosenAlly == null)
         {
-            _chosenAlly = _temporaryChosenAlly;
-            ChooseAlly();
-            RequestDescriptionUpdate();
+            if (TryBeginDuo(_effector, _temporaryChosenAlly))
+            {
+                Debug.Log("refuse to cooperate");
+                _possibleAllies.Remove(_temporaryChosenAlly);
+                _temporaryChosenAlly = null;
+            }
+            else
+            {
+                _chosenAlly = _temporaryChosenAlly;
+                ChooseAlly();
+                RequestDescriptionUpdate();
+            }
             // TODO: check if 1) ally refuse to cooperate and 2) Emotion gives a free action
         }
         else if (confirmed)

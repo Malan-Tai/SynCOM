@@ -31,9 +31,13 @@ public class RelationshipEventsManager : MonoBehaviour
         _damageOnEnemies = new Dictionary<EnemyCharacter, Dictionary<AllyCharacter, float>>();
     }
 
-    private bool CheckTriggersAndExecute(RelationshipEvent dummyTrigger, AllyCharacter source, AllyCharacter allyTarget = null, AllyCharacter duo = null, EnemyCharacter enemyTarget = null)
+    private RelationshipEventsResult CheckTriggersAndExecute(RelationshipEvent dummyTrigger, AllyCharacter source, AllyCharacter allyTarget = null, AllyCharacter duo = null, EnemyCharacter enemyTarget = null)
     {
-        bool interrupts = false;
+        RelationshipEventsResult result = new RelationshipEventsResult
+        {
+            refusedDuo = false,
+            interrupts = false
+        };
 
         foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
         {
@@ -48,16 +52,15 @@ public class RelationshipEventsManager : MonoBehaviour
                 if (relationshipEvent.CorrespondsToTrigger(dummyTrigger, isDuo, isTarget, allyCharacter.HealthPoints / allyCharacter.MaxHealth, isBestDamager) &&
                     relationshipEvent.MeetsRelationshipRequirements(source, allyTarget, allyCharacter))
                 {
-                    interrupts = interrupts || relationshipEvent.interrupts;
-                    Execute(relationshipEvent, source, allyCharacter);
+                    Execute(relationshipEvent, source, allyCharacter, ref result);
                 }
             }
         }
 
-        return interrupts;
+        return result;
     }
 
-    private void Execute(RelationshipEvent relationshipEvent, AllyCharacter source, AllyCharacter current)
+    private void Execute(RelationshipEvent relationshipEvent, AllyCharacter source, AllyCharacter current, ref RelationshipEventsResult result)
     {
         print("executed " + relationshipEvent);
 
@@ -86,9 +89,15 @@ public class RelationshipEventsManager : MonoBehaviour
 
                 break;
 
+            case RelationshipEventEffectType.RefuseToDuo:
+                result.refusedDuo = Random.Range(0, 1) < relationshipEvent.refusalChance;
+                break;
+
             default:
                 break;
         }
+
+        result.interrupts |= relationshipEvent.interrupts;
     }
 
     private AllyCharacter GetBestDamagerOf(EnemyCharacter enemy)
@@ -114,7 +123,7 @@ public class RelationshipEventsManager : MonoBehaviour
         return bestDamager;
     }
 
-    public bool AllyOnEnemyAttackDamage(AllyCharacter source, EnemyCharacter target, float damage, bool crit, AllyCharacter duo = null)
+    public RelationshipEventsResult AllyOnEnemyAttackDamage(AllyCharacter source, EnemyCharacter target, float damage, bool crit, AllyCharacter duo = null)
     {
         if (_damageOnEnemies.ContainsKey(target))
         {
@@ -134,7 +143,7 @@ public class RelationshipEventsManager : MonoBehaviour
         return CheckTriggersAndExecute(dummyTrigger, source, duo: duo);
     }
 
-    public bool FriendlyFireDamage(AllyCharacter source, AllyCharacter target, AllyCharacter duo = null)
+    public RelationshipEventsResult FriendlyFireDamage(AllyCharacter source, AllyCharacter target, AllyCharacter duo = null)
     {
         RelationshipEvent dummyTrigger = ScriptableObject.CreateInstance("RelationshipEvent") as RelationshipEvent;
         dummyTrigger.triggerType = RelationshipEventTriggerType.FriendlyFire;
@@ -142,7 +151,7 @@ public class RelationshipEventsManager : MonoBehaviour
         return CheckTriggersAndExecute(dummyTrigger, source, allyTarget: target, duo: duo);
     }
 
-    public bool AllyOnEnemyAttackHitOrMiss(AllyCharacter source, bool hit, AllyCharacter duo = null)
+    public RelationshipEventsResult AllyOnEnemyAttackHitOrMiss(AllyCharacter source, bool hit, AllyCharacter duo = null)
     {
         RelationshipEvent dummyTrigger  = ScriptableObject.CreateInstance("RelationshipEvent") as RelationshipEvent;
         dummyTrigger.triggerType        = RelationshipEventTriggerType.Attack;
@@ -153,7 +162,7 @@ public class RelationshipEventsManager : MonoBehaviour
         return CheckTriggersAndExecute(dummyTrigger, source, duo: duo);
     }
 
-    public bool HealAlly(AllyCharacter source, AllyCharacter target, AllyCharacter duo = null)
+    public RelationshipEventsResult HealAlly(AllyCharacter source, AllyCharacter target, AllyCharacter duo = null)
     {
         RelationshipEvent dummyTrigger = ScriptableObject.CreateInstance("RelationshipEvent") as RelationshipEvent;
         dummyTrigger.triggerType = RelationshipEventTriggerType.Heal;
@@ -161,11 +170,19 @@ public class RelationshipEventsManager : MonoBehaviour
         return CheckTriggersAndExecute(dummyTrigger, source, allyTarget: target, duo: duo);
     }
 
-    public bool KillEnemy(AllyCharacter source, EnemyCharacter target, AllyCharacter duo = null)
+    public RelationshipEventsResult KillEnemy(AllyCharacter source, EnemyCharacter target, AllyCharacter duo = null)
     {
         RelationshipEvent dummyTrigger = ScriptableObject.CreateInstance("RelationshipEvent") as RelationshipEvent;
         dummyTrigger.triggerType = RelationshipEventTriggerType.Kill;
 
         return CheckTriggersAndExecute(dummyTrigger, source, duo: duo, enemyTarget: target);
+    }
+
+    public RelationshipEventsResult BeginDuo(AllyCharacter source, AllyCharacter duo)
+    {
+        RelationshipEvent dummyTrigger = ScriptableObject.CreateInstance("RelationshipEvent") as RelationshipEvent;
+        dummyTrigger.triggerType = RelationshipEventTriggerType.BeginDuo;
+
+        return CheckTriggersAndExecute(dummyTrigger, source, duo: duo);
     }
 }

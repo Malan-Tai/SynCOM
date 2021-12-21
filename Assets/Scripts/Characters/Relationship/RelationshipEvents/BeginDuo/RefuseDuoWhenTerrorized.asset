@@ -10,32 +10,32 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f6c0a609471fce429c6b769d34b1e7d, type: 3}
-  m_Name: AllyHit
+  m_Name: RefuseDuoWhenTerrorized
   m_EditorClassIdentifier: 
-  triggerType: 1
+  triggerType: 5
   onlyCheckDuoAlly: 1
   dontCheckDuoAlly: 0
   onlyCheckTarget: 0
   dontCheckTarget: 0
-  requiresEmotions: 0
-  requiredEmotionsTowardsSource: 
+  requiresEmotions: 1
+  requiredEmotionsTowardsSource: 04000000
   requiredEmotionsTowardsTarget: 
   targetsAlly: 0
   onMiss: 0
-  onHit: 1
+  onHit: 0
   onCrit: 0
   onDamage: 0
   onFatal: 0
   minMaxHealthRatio: {x: 0, y: 1}
   killSteal: 0
-  effectType: 1
+  effectType: 4
   interrupts: 0
   reciprocal: 0
-  admirationChange: 5
+  admirationChange: 0
   trustChange: 0
   sympathyChange: 0
   sourceToTarget: 0
   admirationChangeSTT: 0
   trustChangeSTT: 0
   sympathyChangeSTT: 0
-  refusalChance: 0
+  refusalChance: 1
