@@ -125,9 +125,8 @@ public class CombatGameManager : MonoBehaviour
             int i = 0;
             foreach (AllyUnit ally in _allAllyUnits)
             {
-                ally.Character = new AllyCharacter((EnumClasses)i, 20, 2, 65, 10, 15, 20, 4, 60);
+                ally.SetCharacter(new AllyCharacter((EnumClasses)i, 20, 2, 65, 10, 15, 20, 10, 60));
                 characters.Add(ally.AllyCharacter);
-                ally.InitSprite();
                 i++;
             }
 
@@ -150,8 +149,7 @@ public class CombatGameManager : MonoBehaviour
             }
             else
             {
-                ally.Character = GlobalGameManager.Instance.currentSquad[i];
-                ally.InitSprite();
+                ally.SetCharacter(GlobalGameManager.Instance.currentSquad[i]);
             }
             i++;
         }
@@ -166,8 +164,7 @@ public class CombatGameManager : MonoBehaviour
 
         foreach (EnemyUnit enemy in _enemyUnits)
         {
-            enemy.Character = new EnemyCharacter(6, 2, 65, 10, 15, 20, 4, 60);
-            enemy.InitSprite();
+            enemy.SetCharacter(new EnemyCharacter(6, 2, 65, 10, 15, 20, 4, 60));
         }
 
         foreach (AllyUnit ally in _allAllyUnits)

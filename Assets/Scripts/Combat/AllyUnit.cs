@@ -71,7 +71,7 @@ public class AllyUnit : GridBasedUnit
 
     public void NewTurn()
     {
-        _movesLeft = 10f;
+        _movesLeft = AllyCharacter.MovementPoints;
         NeedsPathfinderUpdate();
         UpdateLineOfSights(!IsEnemy());
     }
