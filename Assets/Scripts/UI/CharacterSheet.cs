@@ -21,7 +21,12 @@ public class CharacterSheet : MonoBehaviour
     private FullRelationshipsPanel _relationships;
     private GameObject _quitButton;
 
+    [SerializeField]
+    private TraitScrollList _traitList;
+
     private Vector3 _basePos;
+
+    private AllyCharacter _clickedCharacter;
 
     private void Awake()
     {
@@ -45,11 +50,19 @@ public class CharacterSheet : MonoBehaviour
         _quitButton = transform.Find("Quit").gameObject;
     }
 
-    public void InitEventsWithScrollList(UnitScrollList list)
+    public void InitEventsWithScrollList(UnitScrollList list, bool clickableUnits = false)
     {
         list.OnMouseEnterEvent += SetVisible;
         list.OnMouseEnterEvent += SetCharacter;
-        list.OnMouseExitEvent += SetInvisible;
+        if (clickableUnits)
+        {
+            list.OnMouseClickEvent += ClickCharacter;
+            list.OnMouseExitEvent += SetClickedCharacterOrInvisible;
+        }
+        else
+        {
+            list.OnMouseExitEvent += SetInvisible;
+        }
 
         this.transform.position += new Vector3(0, OFFSET_Y, 0);
 
@@ -85,10 +98,33 @@ public class CharacterSheet : MonoBehaviour
         _wgtText.text = character.Weigth + " : Wgt";
 
         _relationships.HoverCharacter(character, false);
+
+        _traitList.Populate(character.Traits);
     }
 
     public void SetInvisible()
     {
         this.transform.position += new Vector3(0, OFFSET_Y, 0);
+    }
+
+    private void ClickCharacter(AllyCharacter character)
+    {
+        if (_clickedCharacter == character) _clickedCharacter = null;
+        else _clickedCharacter = character;
+    }
+
+    private void SetClickedCharacterOrInvisible()
+    {
+        if (_clickedCharacter != null) SetCharacter(_clickedCharacter);
+        else SetInvisible();
+    }
+
+    public void ClickRecruitButton()
+    {
+        if (_clickedCharacter == null) return;
+
+        BetweenMissionsGameManager.Instance.RecruitUnit(_clickedCharacter);
+        _clickedCharacter = null;
+        SetClickedCharacterOrInvisible();
     }
 }

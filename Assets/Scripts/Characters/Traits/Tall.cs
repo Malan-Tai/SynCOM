@@ -18,4 +18,9 @@ public class Tall : Trait
     {
         return "Tall";
     }
+
+    public override string GetDescription()
+    {
+        return "They are very tall and thus can't benefit from high covers.";
+    }
 }

@@ -9,6 +9,8 @@ public class RegionDescription : MonoBehaviour
     private TMP_Text _regionDescription;
     private TMP_Text _mission;
     private TMP_Text _missionDescription;
+    private TMP_Text _rewards;
+    private TMP_Text _rewardsDescription;
 
     private bool _eraseOnExit;
     private bool _setOnEnter;
@@ -19,6 +21,8 @@ public class RegionDescription : MonoBehaviour
         _regionDescription  = this.transform.Find("RegionDescription").GetComponent<TMP_Text>();
         _mission            = this.transform.Find("Mission").GetComponent<TMP_Text>();
         _missionDescription = this.transform.Find("MissionDescription").GetComponent<TMP_Text>();
+        _rewards            = this.transform.Find("Rewards").GetComponent<TMP_Text>();
+        _rewardsDescription = this.transform.Find("RewardsDescription").GetComponent<TMP_Text>();
 
         _eraseOnExit = true;
         _setOnEnter = true;
@@ -54,6 +58,12 @@ public class RegionDescription : MonoBehaviour
         {
             _mission.text = mission.missionTypeData.winCondition.ToString();
             _missionDescription.text = mission.missionTypeData.description;
+
+            if (mission.moneyReward > 0)
+            {
+                _rewards.text = "Rewards";
+                _rewardsDescription.text = $"Cash : ${mission.moneyReward}";
+            }
         }
     }
 
@@ -65,6 +75,8 @@ public class RegionDescription : MonoBehaviour
         _regionDescription.text = "";
         _mission.text = "";
         _missionDescription.text = "";
+        _rewards.text = "";
+        _rewardsDescription.text = "";
     }
 
     public void FreezeDescription(RegionScriptableObject region)

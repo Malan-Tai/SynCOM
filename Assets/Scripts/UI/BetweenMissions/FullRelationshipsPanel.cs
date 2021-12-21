@@ -35,7 +35,7 @@ public class FullRelationshipsPanel : MonoBehaviour
 
     public void HoverCharacter(AllyCharacter character, bool selfIsLeft)
     {
-        if (character == null) return;
+        if (character == null || _panels == null) return;
 
         int i = 0;
         foreach (AllyCharacter ally in GlobalGameManager.Instance.currentSquad)

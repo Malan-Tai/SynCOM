@@ -270,6 +270,11 @@ public class GridMap : MonoBehaviour
         _occupiedTiles.Add(to);
     }
 
+    public void FreeOccupiedTile(Vector2Int freed)
+    {
+        _occupiedTiles.Remove(freed);
+    }
+
     public List<CoverPlane> GetCoverPlanes(Vector2Int cell)
     {
         Tile[] neighbors = CoverNeighbors(cell);

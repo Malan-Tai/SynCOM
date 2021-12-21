@@ -45,7 +45,7 @@ public static class SaveSystem
             
             Debug.Log("Game data loaded!");
             //making sure that the save and load functions work as intended
-            Debug.Log(GlobalGameManager.Instance.currentSquad[1].CharacterClass);
+            
         }
         else
             Debug.LogError("There is no save data!");

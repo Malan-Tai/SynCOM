@@ -20,6 +20,9 @@ public class Character
     [SerializeField] private float _rangeShot;
     [SerializeField] private float _name;
 
+    public delegate void DieEvent();
+    public event DieEvent OnDeath;
+
     //constructor 
     public Character()
     {
@@ -141,6 +144,7 @@ public class Character
 
     public void Die()
     {
+        if (OnDeath != null) OnDeath();
     }
 
     public virtual Sprite GetSprite()

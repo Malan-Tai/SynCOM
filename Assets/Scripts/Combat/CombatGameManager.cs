@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class CombatGameManager : MonoBehaviour
 {
     #region Singleton
@@ -54,8 +55,6 @@ public class CombatGameManager : MonoBehaviour
     public List<AllyUnit> ControllableUnits { get { return _controllableUnits; } }
     public List<EnemyUnit> EnemyUnits { get { return _enemyUnits; } }
 
-    private Mission _mission;
-
     private List<Tile> _previousReachableTiles;
 
 
@@ -84,10 +83,12 @@ public class CombatGameManager : MonoBehaviour
 
     private void Start()
     {
-        _mission = GlobalGameManager.Instance.CurrentMission;
+        GlobalGameManager.Instance.StartCurrentMission();
 
         _currentUnitIndex = 0;
         _previousReachableTiles = new List<Tile>();
+
+        
 
         _allAllyUnits = new List<AllyUnit>();
         foreach (AllyUnit unit in _controllableUnits)
@@ -104,24 +105,35 @@ public class CombatGameManager : MonoBehaviour
 
     private void InitCharacters()
     {
-        // TODO : deprecated soon
+        List<AllyUnit> toRemove = new List<AllyUnit>();
 
-        int i = 1;
+        int i = 0;
         foreach (AllyUnit ally in _allAllyUnits)
         {
-            ally.Character = new AllyCharacter((EnumClasses)i, 20, 2, 65, 10, 15, 20, 4, 60);
-            ally.InitSprite();
+            //changes here
+            if (GlobalGameManager.Instance.currentSquad[i] == null)
+            {
+                //ally.Character = new AllyCharacter((EnumClasses)i, 20, 2, 65, 10, 15, 20, 4, 60);
+                toRemove.Add(ally);
+            }
+            else
+            {
+                ally.Character = GlobalGameManager.Instance.currentSquad[i];
+                ally.InitSprite();
+            }
             i++;
         }
 
-        foreach (AllyUnit ally in _allAllyUnits)
+        foreach (AllyUnit unit in toRemove)
         {
-            ally.AllyCharacter.InitializeRelationships();
+            _allAllyUnits.Remove(unit);
+            _controllableUnits.Remove(unit);
+            Destroy(unit.gameObject);
         }
 
         foreach (EnemyUnit enemy in _enemyUnits)
         {
-            enemy.Character = new EnemyCharacter(20, 2, 65, 10, 15, 20, 4, 60);
+            enemy.Character = new EnemyCharacter(5, 2, 65, 10, 15, 20, 4, 60);
             enemy.InitSprite();
         }
 
@@ -137,12 +149,14 @@ public class CombatGameManager : MonoBehaviour
     {
         GridBasedUnit.OnMoveStart += UpdatePathfinders;
         GridBasedUnit.OnMoveFinish += UpdateVisibilities;
+        GridBasedUnit.OnDeath += UnitDie;
     }
 
     private void OnDisable()
     {
         GridBasedUnit.OnMoveStart -= UpdatePathfinders;
         GridBasedUnit.OnMoveFinish -= UpdateVisibilities;
+        GridBasedUnit.OnDeath -= UnitDie;
     }
 
     public void NextControllableUnit()
@@ -229,6 +243,7 @@ public class CombatGameManager : MonoBehaviour
         // Check mission end
         if (CheckMissionEnd())
         {
+            print("end");
             return;
         }
 
@@ -337,6 +352,26 @@ public class CombatGameManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void UnitDie(GridBasedUnit deadUnit)
+    {
+        EnemyUnit enemy = deadUnit as EnemyUnit;
+        AllyUnit ally = deadUnit as AllyUnit;
+
+        if (enemy != null)
+        {
+            _enemyUnits.Remove(enemy);
+        }
+        else if (ally != null)
+        {
+            _allAllyUnits.Remove(ally);
+            _controllableUnits.Remove(ally);
+        }
+
+        //deadUnit.gameObject.SetActive(false);
+        _gridMap.FreeOccupiedTile(deadUnit.GridPosition);
+        deadUnit.MarkForDestruction();
     }
 
     public void AbilityHoverTarget(GridBasedUnit unit)

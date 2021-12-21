@@ -27,12 +27,13 @@ public class GlobalGameManager : MonoBehaviour
     #endregion
 
     public List<AllyCharacter> allCharacters { get; private set; }
+
     [SerializeField]
     public AllyCharacter[] currentSquad { get; private set; }
 
     public Mission CurrentMission { get; set; }
 
-    private int _money;
+    public int Money { get; private set; }
 
     private Dictionary<RegionName, int> _controlStatus;
 
@@ -119,5 +120,29 @@ public class GlobalGameManager : MonoBehaviour
     public Sprite GetEnemyPortrait()
     {
         return _enemyPortrait;
+    }
+
+    public void AddCharacter(AllyCharacter character)
+    {
+        allCharacters.Add(character);
+        character.InitializeRelationships(allCharacters, true);
+    }
+
+    public void StartCurrentMission()
+    {
+        CombatGameManager.OnMissionEnd += OnCurrentMissionEnd;
+    }
+
+    private void OnCurrentMissionEnd(CombatGameManager.MissionEndEventArgs missionEndEventArgs)
+    {
+        if (missionEndEventArgs.Success)
+        {
+            Debug.Log(CurrentMission.moneyReward);
+            Money += CurrentMission.moneyReward;
+        }
+        else
+        {
+            /// TODO Failure things
+        }
     }
 }
