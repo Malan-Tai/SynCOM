@@ -257,7 +257,19 @@ public abstract class BaseDuoAbility : BaseAbility
             Relationship relationship = _effector.AllyCharacter.Relationships[_temporaryChosenAlly.AllyCharacter];
             Relationship invertedRelationship = _temporaryChosenAlly.AllyCharacter.Relationships[_effector.AllyCharacter];
 
-            if ((relationship.CheckedDuoRefusal && !relationship.AcceptedDuo) || TryBeginDuo(_effector, _temporaryChosenAlly)) // already refused or check if refuses now
+            if ((relationship.CheckedDuoRefusal && relationship.AcceptedDuo) || !TryBeginDuo(_effector, _temporaryChosenAlly))
+            {
+                relationship.CheckedDuoRefusal = true;
+                relationship.AcceptedDuo = true;
+
+                invertedRelationship.CheckedDuoRefusal = true;
+                invertedRelationship.AcceptedDuo = true;
+
+                _chosenAlly = _temporaryChosenAlly;
+                ChooseAlly();
+                RequestDescriptionUpdate();
+            }
+            else
             {
                 Debug.Log("refuse to cooperate");
 
@@ -283,18 +295,6 @@ public abstract class BaseDuoAbility : BaseAbility
                     RequestTargetsUpdate(_possibleAllies);
                     RequestTargetSymbolUpdate(_temporaryChosenAlly);
                 }
-            }
-            else
-            {
-                relationship.CheckedDuoRefusal = true;
-                relationship.AcceptedDuo = true;
-
-                invertedRelationship.CheckedDuoRefusal = true;
-                invertedRelationship.AcceptedDuo = true;
-
-                _chosenAlly = _temporaryChosenAlly;
-                ChooseAlly();
-                RequestDescriptionUpdate();
             }
             // TODO: check if Emotion gives a free action
         }
