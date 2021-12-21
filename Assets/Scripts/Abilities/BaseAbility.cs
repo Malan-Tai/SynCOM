@@ -115,6 +115,8 @@ public abstract class BaseAbility
 
     protected virtual void FinalizeAbility(bool executed)
     {
+        if (!executed) CombatGameManager.Instance.Camera.SwitchParenthood(_effector);
+
         _hoveredUnit = null;
         _effector = null;
         if (OnAbilityEnded != null) OnAbilityEnded(executed);
@@ -210,10 +212,11 @@ public abstract class BaseDuoAbility : BaseAbility
         {
             _temporaryChosenAlly = _possibleAllies[0];
             CombatGameManager.Instance.Camera.SwitchParenthood(_temporaryChosenAlly);
-        }
 
-        RequestTargetsUpdate(_possibleAllies);
-        RequestTargetSymbolUpdate(_temporaryChosenAlly);
+            RequestTargetsUpdate(_possibleAllies);
+            RequestTargetSymbolUpdate(_temporaryChosenAlly);
+        }
+        else FinalizeAbility(false);
     }
 
     protected override void FinalizeAbility(bool executed)
@@ -250,8 +253,23 @@ public abstract class BaseDuoAbility : BaseAbility
             if (TryBeginDuo(_effector, _temporaryChosenAlly))
             {
                 Debug.Log("refuse to cooperate");
-                _possibleAllies.Remove(_temporaryChosenAlly);
-                _temporaryChosenAlly = null;
+
+                if (_possibleAllies.Count <= 1) FinalizeAbility(false);
+                else
+                {
+                    AllyUnit refused = _temporaryChosenAlly;
+
+                    int index = _possibleAllies.IndexOf(refused) + 1;
+                    if (index >= _possibleAllies.Count) index = 0;
+                    _temporaryChosenAlly = _possibleAllies[index];
+                    CombatGameManager.Instance.Camera.SwitchParenthood(_temporaryChosenAlly);
+
+                    _possibleAllies.Remove(refused);
+
+                    RequestDescriptionUpdate();
+                    RequestTargetsUpdate(_possibleAllies);
+                    RequestTargetSymbolUpdate(_temporaryChosenAlly);
+                }
             }
             else
             {
@@ -269,7 +287,6 @@ public abstract class BaseDuoAbility : BaseAbility
         else if (cancelled)
         {
             Debug.Log("cancelled ability");
-            CombatGameManager.Instance.Camera.SwitchParenthood(_effector);
             FinalizeAbility(false);
         }
 
@@ -312,6 +329,7 @@ public abstract class BaseDuoAbility : BaseAbility
         {
             CombatGameManager.Instance.Camera.SwitchParenthood(_temporaryChosenAlly);
             RequestDescriptionUpdate();
+            RequestTargetSymbolUpdate(_temporaryChosenAlly);
         }
     }
 
