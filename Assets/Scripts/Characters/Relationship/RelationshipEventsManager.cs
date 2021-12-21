@@ -90,7 +90,7 @@ public class RelationshipEventsManager : MonoBehaviour
                 break;
 
             case RelationshipEventEffectType.RefuseToDuo:
-                result.refusedDuo = Random.Range(0, 1) < relationshipEvent.refusalChance;
+                result.refusedDuo = Random.Range(0f, 1f) < relationshipEvent.refusalChance;
                 break;
 
             default:

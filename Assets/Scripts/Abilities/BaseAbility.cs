@@ -204,7 +204,11 @@ public abstract class BaseDuoAbility : BaseAbility
         {
             if (unit != effector && IsAllyCompatible(unit))
             {
-                _possibleAllies.Add(unit);
+                Relationship relationship = _effector.AllyCharacter.Relationships[unit.AllyCharacter];
+                if (!relationship.CheckedDuoRefusal || relationship.AcceptedDuo)
+                {
+                    _possibleAllies.Add(unit);
+                }
             }
         }
 
@@ -250,9 +254,18 @@ public abstract class BaseDuoAbility : BaseAbility
         }
         else if (confirmed && _temporaryChosenAlly != null && _chosenAlly == null)
         {
-            if (TryBeginDuo(_effector, _temporaryChosenAlly))
+            Relationship relationship = _effector.AllyCharacter.Relationships[_temporaryChosenAlly.AllyCharacter];
+            Relationship invertedRelationship = _temporaryChosenAlly.AllyCharacter.Relationships[_effector.AllyCharacter];
+
+            if ((relationship.CheckedDuoRefusal && !relationship.AcceptedDuo) || TryBeginDuo(_effector, _temporaryChosenAlly)) // already refused or check if refuses now
             {
                 Debug.Log("refuse to cooperate");
+
+                relationship.CheckedDuoRefusal = true;
+                relationship.AcceptedDuo = false;
+
+                invertedRelationship.CheckedDuoRefusal = true;
+                invertedRelationship.AcceptedDuo = false;
 
                 if (_possibleAllies.Count <= 1) FinalizeAbility(false);
                 else
@@ -273,6 +286,12 @@ public abstract class BaseDuoAbility : BaseAbility
             }
             else
             {
+                relationship.CheckedDuoRefusal = true;
+                relationship.AcceptedDuo = true;
+
+                invertedRelationship.CheckedDuoRefusal = true;
+                invertedRelationship.AcceptedDuo = true;
+
                 _chosenAlly = _temporaryChosenAlly;
                 ChooseAlly();
                 RequestDescriptionUpdate();

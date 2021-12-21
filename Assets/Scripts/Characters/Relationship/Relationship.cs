@@ -46,6 +46,9 @@ public class Relationship
     private List<EnumEmotions> _listEmotions;
     public List<EnumEmotions> ListEmotions { get { return _listEmotions; } }
 
+    public bool CheckedDuoRefusal { get; set; } = false;
+    public bool AcceptedDuo { get; set; }
+
     /// <summary>
     /// Returns the current value of the gauge representing the <c>sentiment</c>.
     /// </summary>
