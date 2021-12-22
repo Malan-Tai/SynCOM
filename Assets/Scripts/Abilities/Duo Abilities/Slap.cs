@@ -13,7 +13,7 @@ public class Slap : BaseDuoAbility
 
     }
 
-    protected override bool CanExecute()
+    public override bool CanExecute()
     {
         return _chosenAlly != null;
     }
@@ -23,7 +23,7 @@ public class Slap : BaseDuoAbility
 
     }
 
-    protected override void Execute()
+    public override void Execute()
     {
         // Impact on the sentiments
 

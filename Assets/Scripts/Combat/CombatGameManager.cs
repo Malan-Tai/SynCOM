@@ -285,6 +285,7 @@ public class CombatGameManager : MonoBehaviour
         if (_controllableUnits.Count <= 0)
         {
             print("end turn");
+            NewEnemyTurn();
             NewAllyTurn();
             return;
         }

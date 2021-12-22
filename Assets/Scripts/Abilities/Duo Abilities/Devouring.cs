@@ -18,7 +18,7 @@ public class Devouring : BaseDuoAbility
         return "Devouring";
     }
 
-    protected override bool CanExecute()
+    public override bool CanExecute()
     {
         return _chosenAlly != null && _targetIndex >= 0;
     }
@@ -93,7 +93,7 @@ public class Devouring : BaseDuoAbility
         }
     }
 
-    protected override void Execute()
+    public override void Execute()
     {
         // Impact on the sentiments
         // Ally -> Self relationship

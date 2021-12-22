@@ -29,7 +29,7 @@ public class BasicShot : BaseAllyAbility
         return res;
     }
 
-    public override void SetEffector(AllyUnit effector)
+    public override void SetEffector(GridBasedUnit effector)
     {
         _possibleTargets = new List<GridBasedUnit>();
         
@@ -55,7 +55,7 @@ public class BasicShot : BaseAllyAbility
         base.SetEffector(effector);
     }
 
-    protected override bool CanExecute()
+    public override bool CanExecute()
     {
         return _targetIndex >= 0;
     }
@@ -101,7 +101,7 @@ public class BasicShot : BaseAllyAbility
         }
     }
 
-    protected override void Execute()
+    public override void Execute()
     {
         GridBasedUnit target = _possibleTargets[_targetIndex];
         int randShot = UnityEngine.Random.Range(0, 100);

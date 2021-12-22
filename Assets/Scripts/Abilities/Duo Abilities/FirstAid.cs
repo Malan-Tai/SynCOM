@@ -13,7 +13,7 @@ public class FirstAid : BaseDuoAbility
         
     }
 
-    protected override bool CanExecute()
+    public override bool CanExecute()
     {
         return _chosenAlly != null; // && _chosenAlly.HP > 0
     }
@@ -23,7 +23,7 @@ public class FirstAid : BaseDuoAbility
 
     }
 
-    protected override void Execute()
+    public override void Execute()
     {
         Heal(_effector, _chosenAlly, 5, _chosenAlly.AllyCharacter);
 

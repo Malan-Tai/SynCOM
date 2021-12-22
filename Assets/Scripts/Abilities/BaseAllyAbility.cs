@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class BaseAllyAbility
+public abstract class BaseAllyAbility : BaseAbility
 {
     public delegate void EndAbility(bool executed);
     public event EndAbility OnAbilityEnded;
@@ -11,7 +11,7 @@ public abstract class BaseAllyAbility
     protected bool _uiCancelled = false;
 
     protected GridBasedUnit _hoveredUnit = null;
-    protected AllyUnit _effector;
+    protected new AllyUnit _effector;
 
     public delegate void EventRequestDescriptionUpdate(BaseAllyAbility ability);
     public static event EventRequestDescriptionUpdate OnDescriptionUpdateRequest;
@@ -99,9 +99,9 @@ public abstract class BaseAllyAbility
         return eventResult.refusedDuo || invertedEventResult.refusedDuo;
     }
 
-    public virtual void SetEffector(AllyUnit effector)
+    public override void SetEffector(GridBasedUnit effector)
     {
-        _effector = effector;
+        _effector = effector as AllyUnit;
     }
 
     public virtual void UISelectUnit(GridBasedUnit unit)
@@ -110,8 +110,6 @@ public abstract class BaseAllyAbility
     }
 
     protected abstract void EnemyTargetingInput();
-    protected abstract bool CanExecute();
-    protected abstract void Execute();
 
     protected virtual void FinalizeAbility(bool executed)
     {
@@ -159,18 +157,6 @@ public abstract class BaseAllyAbility
     {
         _uiCancelled = true;
     }
-
-    /// <summary>
-    /// Returns the name of the ability.
-    /// The name of the ability is not an attribute : it's determined by the return value of this function.
-    /// </summary>
-    public abstract string GetName();
-
-    /// <summary>
-    /// Returns a short description of the ability.
-    /// The description of the ability is not an attribute : it's determined by the return value of this function.
-    /// </summary>
-    public abstract string GetDescription();
 }
 
 public abstract class BaseDuoAbility : BaseAllyAbility
@@ -195,7 +181,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         }
     }
 
-    public override void SetEffector(AllyUnit effector)
+    public override void SetEffector(GridBasedUnit effector)
     {
         base.SetEffector(effector);
 

@@ -43,7 +43,7 @@ public class BasicDuoShot : BaseDuoAbility
         _allyShotStats.UpdateWithEmotionModifiers(_effector);
     }
 
-    protected override bool CanExecute()
+    public override bool CanExecute()
     {
         return _chosenAlly != null && _targetIndex >= 0;
     }
@@ -89,7 +89,7 @@ public class BasicDuoShot : BaseDuoAbility
         }
     }
 
-    protected override void Execute()
+    public override void Execute()
     {
         GridBasedUnit target = _possibleTargets[_targetIndex];
 

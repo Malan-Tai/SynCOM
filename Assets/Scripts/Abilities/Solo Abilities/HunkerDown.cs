@@ -9,7 +9,7 @@ public class HunkerDown : BaseAllyAbility
         return "Increases the efficiency of your cover, if you have one.";
     }
 
-    protected override bool CanExecute()
+    public override bool CanExecute()
     {
         return CombatGameManager.Instance.GridMap.GetBestCoverAt(_effector.GridPosition) != EnumCover.None;
     }
@@ -19,7 +19,7 @@ public class HunkerDown : BaseAllyAbility
         // no target needed
     }
 
-    protected override void Execute()
+    public override void Execute()
     {
         Debug.Log("i hunker down");
     }

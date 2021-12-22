@@ -177,7 +177,7 @@ public class GridBasedUnit : MonoBehaviour
         }
         else
         {
-            foreach (GridBasedUnit ally in CombatGameManager.Instance.ControllableUnits)
+            foreach (GridBasedUnit ally in CombatGameManager.Instance.AllAllyUnits)
             {
                 listToCycle.Add(ally);
             }
