@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class BaseAbility
+public abstract class BaseAllyAbility
 {
     public delegate void EndAbility(bool executed);
     public event EndAbility OnAbilityEnded;
@@ -13,7 +13,7 @@ public abstract class BaseAbility
     protected GridBasedUnit _hoveredUnit = null;
     protected AllyUnit _effector;
 
-    public delegate void EventRequestDescriptionUpdate(BaseAbility ability);
+    public delegate void EventRequestDescriptionUpdate(BaseAllyAbility ability);
     public static event EventRequestDescriptionUpdate OnDescriptionUpdateRequest;
 
     public delegate void EventRequestTargetsUpdate(IEnumerable<GridBasedUnit> targets);
@@ -173,7 +173,7 @@ public abstract class BaseAbility
     public abstract string GetDescription();
 }
 
-public abstract class BaseDuoAbility : BaseAbility
+public abstract class BaseDuoAbility : BaseAllyAbility
 {
     protected AllyUnit _temporaryChosenAlly = null;
     protected AllyUnit _chosenAlly = null;

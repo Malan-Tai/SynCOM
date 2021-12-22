@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class BasicShot : BaseAbility
+public class BasicShot : BaseAllyAbility
 {
     private List<GridBasedUnit> _possibleTargets;
     private int _targetIndex = -1;

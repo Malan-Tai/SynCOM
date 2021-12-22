@@ -44,7 +44,7 @@ public class CombatGameManager : MonoBehaviour
 
     public AllyUnit CurrentUnit { get { return _controllableUnits[_currentUnitIndex]; } }
 
-    public BaseAbility CurrentAbility { get { return _controllableUnits[_currentUnitIndex].CurrentAbility; } }
+    public BaseAllyAbility CurrentAbility { get { return _controllableUnits[_currentUnitIndex].CurrentAbility; } }
 
     [SerializeField]
     private List<EnemyUnit> _enemyUnits;

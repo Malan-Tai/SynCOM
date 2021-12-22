@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HunkerDown : BaseAbility
+public class HunkerDown : BaseAllyAbility
 {
     public override string GetDescription()
     {
