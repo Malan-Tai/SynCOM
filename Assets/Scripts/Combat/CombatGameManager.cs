@@ -267,7 +267,7 @@ public class CombatGameManager : MonoBehaviour
 
     public void NewAllyTurn()
     {
-        print("new turn");
+        print("new ally turn");
         if (OnNewTurn != null) OnNewTurn();
 
         foreach (AllyUnit unit in _allAllyUnits)
@@ -298,7 +298,18 @@ public class CombatGameManager : MonoBehaviour
 
     public void NewEnemyTurn()
     {
+        print("new enemy turn");
+        if (OnNewTurn != null) OnNewTurn();
 
+        foreach (EnemyUnit unit in _enemyUnits)
+        {
+            if (unit.Character.IsAlive)
+            {
+                unit.NewTurn();
+                unit.MakeTurn();
+                FinishEnemyUnitTurn();
+            }
+        }
     }
 
     public void FinishEnemyUnitTurn()
@@ -306,6 +317,7 @@ public class CombatGameManager : MonoBehaviour
         // Check mission end
         if (CheckMissionEnd())
         {
+            print("end");
             return;
         }
     }

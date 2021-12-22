@@ -56,6 +56,11 @@ public class Character
         set { this._healthPoints = value; }
     }
 
+    public bool IsAlive
+    {
+        get => _healthPoints > 0;
+    }
+
     public float Damage
     {
         get { return this._damage; }

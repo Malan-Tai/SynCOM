@@ -252,6 +252,13 @@ public class GridBasedUnit : MonoBehaviour
         return lineOfSight;
     }
 
+    public virtual void NewTurn()
+    {
+        _movesLeft = 10f;
+        NeedsPathfinderUpdate();
+        UpdateLineOfSights(!IsEnemy());
+    }
+
     public List<Tile> GetReachableTiles()
     {
         return _pathfinder.GetReachableTiles();

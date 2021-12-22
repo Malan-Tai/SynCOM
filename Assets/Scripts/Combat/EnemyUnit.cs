@@ -48,4 +48,9 @@ public class EnemyUnit : GridBasedUnit
         SpriteRenderer renderer = GetComponentInChildren<SpriteRenderer>();
         renderer.sprite = GlobalGameManager.Instance.GetEnemySprite();
     }
+
+    public void MakeTurn()
+    {
+
+    }
 }

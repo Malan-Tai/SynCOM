@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 /// <summary>
-/// Buffs are temporary traits that affect performannces in combat.
+/// Buffs are temporary traits that affect performances in combat.
 /// Note that debuffs are just buffs with negative values.
 /// </summary>
 public abstract class Buff : Trait

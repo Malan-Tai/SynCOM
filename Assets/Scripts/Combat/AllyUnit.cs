@@ -69,13 +69,6 @@ public class AllyUnit : GridBasedUnit
         }
     }
 
-    public void NewTurn()
-    {
-        _movesLeft = 10f;
-        NeedsPathfinderUpdate();
-        UpdateLineOfSights(!IsEnemy());
-    }
-
     public override void InitSprite()
     {
         SpriteRenderer renderer = GetComponentInChildren<SpriteRenderer>();
