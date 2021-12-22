@@ -43,6 +43,62 @@ public abstract class BaseAbility
         if (OnTargetSymbolUpdateRequest != null) OnTargetSymbolUpdateRequest(unit);
     }
 
+    protected void AttackHitOrMiss(AllyUnit source, EnemyUnit target, bool hit, AllyCharacter duo = null)
+    {
+        target.Missed();
+        if (RelationshipEventsManager.Instance.AllyOnEnemyAttackHitOrMiss(source.AllyCharacter, hit, duo).interrupts)
+        {
+            Debug.Log("interrupted");
+        }
+    }
+
+    protected void AttackDamage(AllyUnit source, EnemyUnit target, float damage, bool crit, AllyCharacter duo = null)
+    {
+        bool killed = target.TakeDamage(damage);
+        if (RelationshipEventsManager.Instance.AllyOnEnemyAttackDamage(source.AllyCharacter, target.EnemyCharacter, damage, crit, duo).interrupts)
+        {
+            Debug.Log("interrupted");
+        }
+
+        if (killed && RelationshipEventsManager.Instance.KillEnemy(source.AllyCharacter, target.EnemyCharacter, duo).interrupts)
+        {
+            Debug.Log("interrupted");
+        }
+    }
+
+    protected void FriendlyFireDamage(AllyUnit source, AllyUnit target, float damage, AllyCharacter duo = null)
+    {
+        bool killed = target.TakeDamage(damage);
+        if (RelationshipEventsManager.Instance.FriendlyFireDamage(source.AllyCharacter, target.AllyCharacter, duo).interrupts)
+        {
+            Debug.Log("interrupted");
+        }
+
+        // TODO : kill ally ?
+    }
+
+    protected void Heal(AllyUnit source, AllyUnit target, float healAmount, AllyCharacter duo = null)
+    {
+        target.Heal(healAmount);
+        if (RelationshipEventsManager.Instance.HealAlly(source.AllyCharacter, target.AllyCharacter, duo).interrupts)
+        {
+            Debug.Log("interrupted");
+        }
+    }
+
+    protected bool TryBeginDuo(AllyUnit source, AllyUnit duo)
+    {
+        RelationshipEventsResult eventResult            = RelationshipEventsManager.Instance.BeginDuo(source.AllyCharacter, duo.AllyCharacter);
+        RelationshipEventsResult invertedEventResult    = RelationshipEventsManager.Instance.BeginDuo(duo.AllyCharacter, source.AllyCharacter);
+
+        if (eventResult.interrupts) // TODO : what happens if both interrupt ?
+        {
+            Debug.Log("interrupted");
+        }
+
+        return eventResult.refusedDuo || invertedEventResult.refusedDuo;
+    }
+
     public virtual void SetEffector(AllyUnit effector)
     {
         _effector = effector;
@@ -59,6 +115,8 @@ public abstract class BaseAbility
 
     protected virtual void FinalizeAbility(bool executed)
     {
+        if (!executed) CombatGameManager.Instance.Camera.SwitchParenthood(_effector);
+
         _hoveredUnit = null;
         _effector = null;
         if (OnAbilityEnded != null) OnAbilityEnded(executed);
@@ -70,7 +128,6 @@ public abstract class BaseAbility
 
         bool confirmed = _uiConfirmed || Input.GetKeyDown(KeyCode.Return);
         bool cancelled = _uiCancelled || Input.GetKeyDown(KeyCode.Escape);
-
 
         if (confirmed && CanExecute())
         {
@@ -147,7 +204,11 @@ public abstract class BaseDuoAbility : BaseAbility
         {
             if (unit != effector && IsAllyCompatible(unit))
             {
-                _possibleAllies.Add(unit);
+                Relationship relationship = _effector.AllyCharacter.Relationships[unit.AllyCharacter];
+                if (!relationship.CheckedDuoRefusal || relationship.AcceptedDuo)
+                {
+                    _possibleAllies.Add(unit);
+                }
             }
         }
 
@@ -155,10 +216,11 @@ public abstract class BaseDuoAbility : BaseAbility
         {
             _temporaryChosenAlly = _possibleAllies[0];
             CombatGameManager.Instance.Camera.SwitchParenthood(_temporaryChosenAlly);
-        }
 
-        RequestTargetsUpdate(_possibleAllies);
-        RequestTargetSymbolUpdate(_temporaryChosenAlly);
+            RequestTargetsUpdate(_possibleAllies);
+            RequestTargetSymbolUpdate(_temporaryChosenAlly);
+        }
+        else FinalizeAbility(false);
     }
 
     protected override void FinalizeAbility(bool executed)
@@ -192,10 +254,49 @@ public abstract class BaseDuoAbility : BaseAbility
         }
         else if (confirmed && _temporaryChosenAlly != null && _chosenAlly == null)
         {
-            _chosenAlly = _temporaryChosenAlly;
-            ChooseAlly();
-            RequestDescriptionUpdate();
-            // TODO: check if 1) ally refuse to cooperate and 2) Emotion gives a free action
+            Relationship relationship = _effector.AllyCharacter.Relationships[_temporaryChosenAlly.AllyCharacter];
+            Relationship invertedRelationship = _temporaryChosenAlly.AllyCharacter.Relationships[_effector.AllyCharacter];
+
+            if ((relationship.CheckedDuoRefusal && relationship.AcceptedDuo) || !TryBeginDuo(_effector, _temporaryChosenAlly))
+            {
+                relationship.CheckedDuoRefusal = true;
+                relationship.AcceptedDuo = true;
+
+                invertedRelationship.CheckedDuoRefusal = true;
+                invertedRelationship.AcceptedDuo = true;
+
+                _chosenAlly = _temporaryChosenAlly;
+                ChooseAlly();
+                RequestDescriptionUpdate();
+            }
+            else
+            {
+                Debug.Log("refuse to cooperate");
+
+                relationship.CheckedDuoRefusal = true;
+                relationship.AcceptedDuo = false;
+
+                invertedRelationship.CheckedDuoRefusal = true;
+                invertedRelationship.AcceptedDuo = false;
+
+                if (_possibleAllies.Count <= 1) FinalizeAbility(false);
+                else
+                {
+                    AllyUnit refused = _temporaryChosenAlly;
+
+                    int index = _possibleAllies.IndexOf(refused) + 1;
+                    if (index >= _possibleAllies.Count) index = 0;
+                    _temporaryChosenAlly = _possibleAllies[index];
+                    CombatGameManager.Instance.Camera.SwitchParenthood(_temporaryChosenAlly);
+
+                    _possibleAllies.Remove(refused);
+
+                    RequestDescriptionUpdate();
+                    RequestTargetsUpdate(_possibleAllies);
+                    RequestTargetSymbolUpdate(_temporaryChosenAlly);
+                }
+            }
+            // TODO: check if Emotion gives a free action
         }
         else if (confirmed)
         {
@@ -205,7 +306,6 @@ public abstract class BaseDuoAbility : BaseAbility
         else if (cancelled)
         {
             Debug.Log("cancelled ability");
-            CombatGameManager.Instance.Camera.SwitchParenthood(_effector);
             FinalizeAbility(false);
         }
 
@@ -248,9 +348,13 @@ public abstract class BaseDuoAbility : BaseAbility
         {
             CombatGameManager.Instance.Camera.SwitchParenthood(_temporaryChosenAlly);
             RequestDescriptionUpdate();
+            RequestTargetSymbolUpdate(_temporaryChosenAlly);
         }
     }
 
+    /// <summary>
+    /// shouldn't be used for hit or miss or other generic events, but for very specific stuff
+    /// </summary>
     protected void SelfToAllyModifySentiment(AllyUnit ally, EnumSentiment sentiment, int gain)
     {
         Relationship relationshipSelfToAlly = this._effector.AllyCharacter.Relationships[ally.AllyCharacter];
@@ -272,24 +376,21 @@ public abstract class BaseDuoAbility : BaseAbility
 
         if (randShot < selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
         {
-            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, 5);
+            AttackHitOrMiss(_effector, target as EnemyUnit, true, _chosenAlly.AllyCharacter);
 
             if (randCrit < selfShotStats.GetCritRate())
             {
-                target.Character.TakeDamage(selfShotStats.GetDamage() * 1.5f);
-                SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
-                AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
+                AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage() * 1.5f, true, _chosenAlly.AllyCharacter);
             }
             else
             {
-                target.Character.TakeDamage(selfShotStats.GetDamage());
+                AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage(), false, _chosenAlly.AllyCharacter);
             }
         }
         else
         {
             Debug.Log("self missed");
-            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
-            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
+            AttackHitOrMiss(_effector, target as EnemyUnit, false, _chosenAlly.AllyCharacter);
         }
     }
 
@@ -302,22 +403,26 @@ public abstract class BaseDuoAbility : BaseAbility
 
         if (randShot < allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover))
         {
-            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, 5);
+            //SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, 5);
+            AttackHitOrMiss(_chosenAlly, target as EnemyUnit, true, _effector.AllyCharacter);
 
             if (randCrit < allyShotStats.GetCritRate())
             {
-                target.Character.TakeDamage(allyShotStats.GetDamage() * 1.5f);
-                SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
+                //target.Character.TakeDamage(allyShotStats.GetDamage() * 1.5f);
+                //SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
+                AttackDamage(_chosenAlly, target as EnemyUnit, allyShotStats.GetDamage() * 1.5f, true, _effector.AllyCharacter);
             }
             else
             {
-                target.Character.TakeDamage(allyShotStats.GetDamage());
+                //target.Character.TakeDamage(allyShotStats.GetDamage());
+                AttackDamage(_chosenAlly, target as EnemyUnit, allyShotStats.GetDamage(), false, _effector.AllyCharacter);
             }
         }
         else
         {
             Debug.Log("ally missed");
-            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
+            //SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
+            AttackHitOrMiss(_chosenAlly, target as EnemyUnit, false, _effector.AllyCharacter);
         }
     }
 

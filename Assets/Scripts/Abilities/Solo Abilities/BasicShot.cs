@@ -109,18 +109,20 @@ public class BasicShot : BaseAbility
 
         if (_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover) > randShot) {
             Debug.Log("i am shooting at " + _possibleTargets[_targetIndex].GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
+            AttackHitOrMiss(_effector, target as EnemyUnit, true);
+
             if (_effector.Character.CritChances > randCrit) {
-                target.TakeDamage(_effector.Character.Damage * 1.5f);
+                AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage * 1.5f, true);
             }
             else
             {
-                target.TakeDamage(_effector.Character.Damage);
+                AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage, false);
             }
             Debug.Log("Ennemy has" + _possibleTargets[_targetIndex].Character.HealthPoints + "HP left");
         }
         else
         {
-            target.Missed();
+            AttackHitOrMiss(_effector, target as EnemyUnit, false);
             Debug.Log("Dice got " + randShot + " and had to be lower than " + (_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover)) + ": Missed");
         }
     }

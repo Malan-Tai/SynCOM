@@ -67,7 +67,6 @@ public class GridBasedUnit : MonoBehaviour
         this.transform.position = gridMap.GridToWorld(_gridPosition, this.transform.position.y);
         _targetWorldPosition = this.transform.position;
 
-        _movesLeft = 10;
         _sightDistance = 20;
 
         _linesOfSight = new Dictionary<GridBasedUnit, LineOfSight>();
@@ -110,6 +109,13 @@ public class GridBasedUnit : MonoBehaviour
             _markedForDeath = false;
             Destroy(this.gameObject);
         }
+    }
+
+    public void SetCharacter(Character character)
+    {
+        _character = character;
+        _movesLeft = character.MovementPoints;
+        InitSprite();
     }
 
     public void MarkForDestruction()
@@ -254,7 +260,7 @@ public class GridBasedUnit : MonoBehaviour
 
     public virtual void NewTurn()
     {
-        _movesLeft = 10f;
+        _movesLeft = _character.MovementPoints;
         NeedsPathfinderUpdate();
         UpdateLineOfSights(!IsEnemy());
     }
@@ -269,10 +275,16 @@ public class GridBasedUnit : MonoBehaviour
         _feedback.DisplayFeedback("Miss");
     }
 
-    public void TakeDamage(float damage)
+    public bool TakeDamage(float damage)
     {
         _feedback.DisplayFeedback("-" + damage.ToString());
-        _character.TakeDamage(damage);
+        return _character.TakeDamage(damage);
+    }
+
+    public void Heal(float healAmount)
+    {
+        _feedback.DisplayFeedback("+" + healAmount.ToString());
+        _character.Heal(healAmount);
     }
 
     private void Die()

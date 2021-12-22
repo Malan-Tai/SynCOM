@@ -31,9 +31,11 @@ public class Slap : BaseDuoAbility
 
 
         // Ally -> Self relationship
-        AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, -3);
-        AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Sympathy, -3);
-        AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, -3);
+        //AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, -3);
+        //AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Sympathy, -3);
+        //AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, -3);
+
+        FriendlyFireDamage(_effector, _chosenAlly, 1, _chosenAlly.AllyCharacter);
 
         // Actual effect of the ability
         Relationship relationshipAllyToSelf = _chosenAlly.AllyCharacter.Relationships[this._effector.AllyCharacter];

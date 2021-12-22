@@ -69,6 +69,18 @@ public class AllyUnit : GridBasedUnit
         }
     }
 
+    public override void NewTurn()
+    {
+        _movesLeft = AllyCharacter.MovementPoints;
+        NeedsPathfinderUpdate();
+        UpdateLineOfSights(!IsEnemy());
+
+        foreach (Relationship relationship in AllyCharacter.Relationships.Values)
+        {
+            relationship.CheckedDuoRefusal = false;
+        }
+    }
+
     public override void InitSprite()
     {
         SpriteRenderer renderer = GetComponentInChildren<SpriteRenderer>();
