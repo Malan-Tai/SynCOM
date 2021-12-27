@@ -15,7 +15,7 @@ public class FocusTargetForGivenTimeInterruption : Interruption
 
     protected override IEnumerator InterruptionCoroutine()
     {
-        yield return _time;
+        yield return new WaitForSeconds(_time);
         IsDone = true;
     }
 }
