@@ -163,7 +163,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 {
     protected AllyUnit _temporaryChosenAlly = null;
     protected AllyUnit _chosenAlly = null;
-    private List<AllyUnit> _possibleAllies = null;
+    private List<AllyUnit> _possibleAllies = new List<AllyUnit>();
 
     protected abstract bool IsAllyCompatible(AllyUnit unit);
     protected abstract void ChooseAlly();
@@ -185,7 +185,6 @@ public abstract class BaseDuoAbility : BaseAllyAbility
     {
         base.SetEffector(effector);
 
-        _possibleAllies = new List<AllyUnit>();
         foreach (AllyUnit unit in CombatGameManager.Instance.ControllableUnits)
         {
             if (unit != effector && IsAllyCompatible(unit))
@@ -215,7 +214,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
         _temporaryChosenAlly = null;
         _chosenAlly = null;
-        _possibleAllies = null;
+        _possibleAllies.Clear();
         base.FinalizeAbility(executed);
     }
 
