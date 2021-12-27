@@ -24,4 +24,9 @@ public class InterruptionQueue : MonoBehaviour
     {
         return _queue.Count <= 0;
     }
+
+    public void Enqueue(Interruption interruption)
+    {
+        _queue.Enqueue(interruption);
+    }
 }
