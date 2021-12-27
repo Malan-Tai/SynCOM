@@ -62,6 +62,7 @@ public class CombatGameManager : MonoBehaviour
 
     public delegate void NewTurnEvent();
     public static event NewTurnEvent OnNewTurn;
+    // TODO : for now, OnNewTurn is called on every new ally AND enemy turn, this should be changed
 
     public delegate void EventSelectUnit(int squadIndex);
     public static event EventSelectUnit OnUnitSelected;
@@ -336,6 +337,8 @@ public class CombatGameManager : MonoBehaviour
         {
             if (unit.Character.IsAlive)
             {
+                _camera.SwitchParenthood(unit);
+
                 unit.NewTurn();
                 unit.MakeTurn();
                 FinishEnemyUnitTurn();

@@ -5,10 +5,12 @@ using UnityEngine;
 public abstract class BaseAbility
 {
     protected GridBasedUnit _effector;
+    protected InterruptionQueue _interruptionQueue;
 
     public virtual void SetEffector(GridBasedUnit effector)
     {
         _effector = effector;
+        _interruptionQueue = effector.InterruptionQueue;
     }
 
     public abstract bool CanExecute();

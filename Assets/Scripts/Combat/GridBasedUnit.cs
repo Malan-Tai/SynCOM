@@ -10,6 +10,7 @@ public class GridBasedUnit : MonoBehaviour
 
     public Vector2Int GridPosition { get { return _gridPosition; } }
 
+    public InterruptionQueue InterruptionQueue { get; private set; }
 
     protected Character _character;
     public Character Character
@@ -72,6 +73,8 @@ public class GridBasedUnit : MonoBehaviour
         _linesOfSight = new Dictionary<GridBasedUnit, LineOfSight>();
 
         _feedback = GetComponent<FeedbackDisplay>();
+
+        InterruptionQueue = GetComponent<InterruptionQueue>();
     }
 
     private void Update()

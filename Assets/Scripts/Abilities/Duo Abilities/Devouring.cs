@@ -104,7 +104,7 @@ public class Devouring : BaseDuoAbility
 
         Debug.Log("DEVOURING : we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
         SelfShoot(target);
-        _effector.Character.Heal(6);
+        _effector.Heal(6);
     }
 
     private void SelfShoot(GridBasedUnit target)

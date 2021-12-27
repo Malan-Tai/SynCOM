@@ -124,6 +124,8 @@ public abstract class BaseAllyAbility : BaseAbility
 
     public virtual void InputControl()
     {
+        if (!_interruptionQueue.IsEmpty()) return;
+
         EnemyTargetingInput();
 
         bool confirmed = _uiConfirmed || Input.GetKeyDown(KeyCode.Return);
@@ -223,6 +225,8 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
     public override void InputControl()
     {
+        if (!_interruptionQueue.IsEmpty()) return;
+
         if (_chosenAlly == null)
         {
             AllyTargetingInput();
