@@ -45,7 +45,7 @@ public abstract class BaseAllyAbility : BaseAbility
 
     protected void AttackHitOrMiss(AllyUnit source, EnemyUnit target, bool hit, AllyCharacter duo = null)
     {
-        target.Missed();
+        if (!hit) target.Missed();
         if (RelationshipEventsManager.Instance.AllyOnEnemyAttackHitOrMiss(source.AllyCharacter, hit, duo).interrupts)
         {
             Debug.Log("interrupted");

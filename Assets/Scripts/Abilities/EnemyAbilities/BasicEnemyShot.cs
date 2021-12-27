@@ -24,22 +24,15 @@ public class BasicEnemyShot : BaseEnemyAbility
         float accuratyShot = _effector.Character.Accuracy - _bestTarget.Character.GetDodge(_effector.LinesOfSight[_bestTarget].cover);
         if (accuratyShot > randShot)
         {
+            AttackHitOrMiss(_bestTarget as AllyUnit, true);
             Debug.Log($"i am shooting at {_bestTarget.GridPosition} with cover {(int)_effector.LinesOfSight[_bestTarget].cover}");
 
-            bool killed = _bestTarget.TakeDamage(_effector.Character.CritChances > randCrit ? _effector.Character.Damage * 1.5f : _effector.Character.Damage);
-
-            if (killed)
-            {
-                Debug.Log("Ally been killed");
-            }
-            else
-            {
-                Debug.Log($"Ally has {_bestTarget.Character.HealthPoints}HP left");
-            }
+            //bool killed = _bestTarget.TakeDamage(_effector.Character.CritChances > randCrit ? _effector.Character.Damage * 1.5f : _effector.Character.Damage);
+            AttackDamage(_bestTarget as AllyUnit, _effector.Character.CritChances > randCrit ? _effector.Character.Damage * 1.5f : _effector.Character.Damage, randCrit < _effector.Character.CritChances);
         }
         else
         {
-            _bestTarget.Missed();
+            AttackHitOrMiss(_bestTarget as AllyUnit, false);
             Debug.Log($"Dice got {randShot} and had to be lower than {accuratyShot}: Missed");
         }
     }

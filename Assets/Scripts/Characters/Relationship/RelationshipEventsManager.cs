@@ -143,6 +143,18 @@ public class RelationshipEventsManager : MonoBehaviour
         return CheckTriggersAndExecute(dummyTrigger, source, duo: duo);
     }
 
+    public RelationshipEventsResult EnemyOnAllyAttackDamage(AllyCharacter target, float damage, bool crit)
+    {
+        RelationshipEvent dummyTrigger = ScriptableObject.CreateInstance("RelationshipEvent") as RelationshipEvent;
+        dummyTrigger.triggerType = RelationshipEventTriggerType.Attack;
+        dummyTrigger.targetsAlly = true;
+        dummyTrigger.onDamage = true;
+        dummyTrigger.onCrit = crit;                             // TODO : should be ok ? how can an ally detect your crit if no dmg is done
+        dummyTrigger.onFatal = target.HealthPoints <= damage;    // TODO : is ok ? kill is a different event but fatal checks it before actual death
+
+        return CheckTriggersAndExecute(dummyTrigger, target);
+    }
+
     public RelationshipEventsResult FriendlyFireDamage(AllyCharacter source, AllyCharacter target, AllyCharacter duo = null)
     {
         RelationshipEvent dummyTrigger = ScriptableObject.CreateInstance("RelationshipEvent") as RelationshipEvent;
@@ -160,6 +172,17 @@ public class RelationshipEventsManager : MonoBehaviour
         dummyTrigger.onMiss             = !hit;
 
         return CheckTriggersAndExecute(dummyTrigger, source, duo: duo);
+    }
+
+    public RelationshipEventsResult EnemyOnAllyAttackHitOrMiss(AllyCharacter target, bool hit)
+    {
+        RelationshipEvent dummyTrigger = ScriptableObject.CreateInstance("RelationshipEvent") as RelationshipEvent;
+        dummyTrigger.triggerType = RelationshipEventTriggerType.Attack;
+        dummyTrigger.targetsAlly = true;
+        dummyTrigger.onHit = hit;
+        dummyTrigger.onMiss = !hit;
+
+        return CheckTriggersAndExecute(dummyTrigger, target);
     }
 
     public RelationshipEventsResult HealAlly(AllyCharacter source, AllyCharacter target, AllyCharacter duo = null)

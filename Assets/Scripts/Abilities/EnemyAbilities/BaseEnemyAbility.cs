@@ -12,6 +12,30 @@ public abstract class BaseEnemyAbility : BaseAbility
         protected set;
     }
 
+    protected void AttackHitOrMiss(AllyUnit target, bool hit)
+    {
+        if (RelationshipEventsManager.Instance.EnemyOnAllyAttackHitOrMiss(target.AllyCharacter, hit).interrupts)
+        {
+            Debug.Log("interrupted");
+        }
+
+        // TODO : change target ?
+        if (!hit) target.Missed();
+    }
+
+    protected void AttackDamage(AllyUnit target, float damage, bool crit)
+    {
+        if (RelationshipEventsManager.Instance.EnemyOnAllyAttackDamage(target.AllyCharacter, damage, crit).interrupts)
+        {
+            Debug.Log("interrupted");
+        }
+
+        // TODO : change target if protection
+        bool killed = target.TakeDamage(damage);
+
+        // TODO : if killed ?
+    }
+
     public override void SetEffector(GridBasedUnit effector)
     {
         _effector = effector as EnemyUnit;
