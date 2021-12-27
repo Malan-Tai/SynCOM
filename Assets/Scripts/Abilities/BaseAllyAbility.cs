@@ -43,9 +43,10 @@ public abstract class BaseAllyAbility : BaseAbility
         if (OnTargetSymbolUpdateRequest != null) OnTargetSymbolUpdateRequest(unit);
     }
 
+    #region RelationshipEvents
     protected void AttackHitOrMiss(AllyUnit source, EnemyUnit target, bool hit, AllyCharacter duo = null)
     {
-        target.Missed();
+        if (!hit) target.Missed();
         if (RelationshipEventsManager.Instance.AllyOnEnemyAttackHitOrMiss(source.AllyCharacter, hit, duo).interrupts)
         {
             Debug.Log("interrupted");
@@ -98,6 +99,7 @@ public abstract class BaseAllyAbility : BaseAbility
 
         return eventResult.refusedDuo || invertedEventResult.refusedDuo;
     }
+    #endregion
 
     public override void SetEffector(GridBasedUnit effector)
     {
@@ -125,6 +127,8 @@ public abstract class BaseAllyAbility : BaseAbility
 
     public virtual void InputControl()
     {
+        if (!_interruptionQueue.IsEmpty()) return;
+
         EnemyTargetingInput();
 
         bool confirmed = _uiConfirmed || Input.GetKeyDown(KeyCode.Return);
@@ -226,6 +230,8 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
     public override void InputControl()
     {
+        if (!_interruptionQueue.IsEmpty()) return;
+
         if (_chosenAlly == null)
         {
             AllyTargetingInput();
@@ -394,25 +400,20 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
         if (randShot < allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover))
         {
-            //SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, 5);
             AttackHitOrMiss(_chosenAlly, target as EnemyUnit, true, _effector.AllyCharacter);
 
             if (randCrit < allyShotStats.GetCritRate())
             {
-                //target.Character.TakeDamage(allyShotStats.GetDamage() * 1.5f);
-                //SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
                 AttackDamage(_chosenAlly, target as EnemyUnit, allyShotStats.GetDamage() * 1.5f, true, _effector.AllyCharacter);
             }
             else
             {
-                //target.Character.TakeDamage(allyShotStats.GetDamage());
                 AttackDamage(_chosenAlly, target as EnemyUnit, allyShotStats.GetDamage(), false, _effector.AllyCharacter);
             }
         }
         else
         {
             Debug.Log("ally missed");
-            //SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
             AttackHitOrMiss(_chosenAlly, target as EnemyUnit, false, _effector.AllyCharacter);
         }
     }
