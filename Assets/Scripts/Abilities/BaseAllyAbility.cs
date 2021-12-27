@@ -113,7 +113,10 @@ public abstract class BaseAllyAbility : BaseAbility
 
     protected virtual void FinalizeAbility(bool executed)
     {
-        if (!executed) CombatGameManager.Instance.Camera.SwitchParenthood(_effector);
+        if (!executed)
+        {
+            CombatGameManager.Instance.Camera.SwitchParenthood(_effector);
+        }
 
         _hoveredUnit = null;
         _effector = null;
@@ -205,7 +208,10 @@ public abstract class BaseDuoAbility : BaseAllyAbility
             RequestTargetsUpdate(_possibleAllies);
             RequestTargetSymbolUpdate(_temporaryChosenAlly);
         }
-        else FinalizeAbility(false);
+        /*else Caused some cursed nullpointer exception because it wasn't updating UI
+        {
+            FinalizeAbility(false);
+        }*/
     }
 
     protected override void FinalizeAbility(bool executed)
