@@ -55,8 +55,6 @@ public class CombatGameManager : MonoBehaviour
     public List<AllyUnit> ControllableUnits { get { return _controllableUnits; } }
     public List<EnemyUnit> EnemyUnits { get { return _enemyUnits; } }
 
-    private List<Tile> _previousReachableTiles;
-
 
     #region Events
 
@@ -87,7 +85,6 @@ public class CombatGameManager : MonoBehaviour
         GlobalGameManager.Instance.StartCurrentMission();
 
         _currentUnitIndex = 0;
-        _previousReachableTiles = new List<Tile>();
 
         
 
@@ -231,8 +228,13 @@ public class CombatGameManager : MonoBehaviour
     public void UpdateReachableTiles()
     {
         List<Tile> newReachable = CurrentUnit.GetReachableTiles();
+        if (newReachable.Count == 1)
+        {
+            // Remove the unit tile if it is the only one in the reachable tiles
+            newReachable.Clear();
+        }
+
         _tileDisplay.UpdateTileZoneDisplay(newReachable, TileZoneDisplayEnum.MoveZoneDisplay);
-        _previousReachableTiles = newReachable;
     }
 
     public void UpdatePathfinders(GridBasedUnit movedUnit, Vector2Int finalPos)
