@@ -103,6 +103,7 @@ public abstract class BaseAllyAbility : BaseAbility
 
     public override void SetEffector(GridBasedUnit effector)
     {
+        base.SetEffector(effector);
         _effector = effector as AllyUnit;
     }
 

@@ -40,6 +40,7 @@ public abstract class BaseEnemyAbility : BaseAbility
 
     public override void SetEffector(GridBasedUnit effector)
     {
+        base.SetEffector(effector);
         _effector = effector as EnemyUnit;
     }
 
