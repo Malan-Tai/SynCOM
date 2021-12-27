@@ -27,7 +27,6 @@ public class BasicEnemyShot : BaseEnemyAbility
             AttackHitOrMiss(_bestTarget as AllyUnit, true);
             Debug.Log($"i am shooting at {_bestTarget.GridPosition} with cover {(int)_effector.LinesOfSight[_bestTarget].cover}");
 
-            //bool killed = _bestTarget.TakeDamage(_effector.Character.CritChances > randCrit ? _effector.Character.Damage * 1.5f : _effector.Character.Damage);
             AttackDamage(_bestTarget as AllyUnit, _effector.Character.CritChances > randCrit ? _effector.Character.Damage * 1.5f : _effector.Character.Damage, randCrit < _effector.Character.CritChances);
         }
         else

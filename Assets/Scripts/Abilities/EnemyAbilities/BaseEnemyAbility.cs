@@ -12,6 +12,7 @@ public abstract class BaseEnemyAbility : BaseAbility
         protected set;
     }
 
+    #region RelationshipEvents
     protected void AttackHitOrMiss(AllyUnit target, bool hit)
     {
         if (RelationshipEventsManager.Instance.EnemyOnAllyAttackHitOrMiss(target.AllyCharacter, hit).interrupts)
@@ -35,6 +36,7 @@ public abstract class BaseEnemyAbility : BaseAbility
 
         // TODO : if killed ?
     }
+    #endregion
 
     public override void SetEffector(GridBasedUnit effector)
     {
