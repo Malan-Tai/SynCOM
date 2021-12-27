@@ -6,16 +6,15 @@ public class FocusTargetForGivenTimeInterruption : Interruption
 {
     private float _time;
 
-    public void Init(GridBasedUnit target, float time)
+    public override void Init(InterruptionParameters parameters)
     {
-        CombatGameManager.Instance.Camera.SwitchParenthood(target);
-
-        _time = time;
+        CombatGameManager.Instance.Camera.SwitchParenthood(parameters.target);
+        _time = parameters.time;
     }
 
     protected override IEnumerator InterruptionCoroutine()
     {
-        yield return _time;
+        yield return new WaitForSeconds(_time);
         IsDone = true;
     }
 }

@@ -34,4 +34,6 @@ public abstract class Interruption
     }
 
     protected abstract IEnumerator InterruptionCoroutine();
+
+    public abstract void Init(InterruptionParameters parameters);
 }
