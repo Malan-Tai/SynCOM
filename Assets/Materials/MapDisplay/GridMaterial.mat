@@ -24,12 +24,24 @@ Material:
         m_Texture: {fileID: 2800000, guid: f9f5e165a978aca4e87e0d7e4c0f1eea, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _BlobTilesets:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BlodTileset:
         m_Texture: {fileID: 2800000, guid: f9f5e165a978aca4e87e0d7e4c0f1eea, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CustomBlobTileset:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DamageBlobTileset:
+        m_Texture: {fileID: 2800000, guid: 6c8527cdd195b4a42ab1e0f47d8f3da0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -77,7 +89,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _LineWidth: 0.04
+    - _LineWidth: 0.03
     - _Metallic: 0
     - _Mode: 0
     - _MovePixelsPerUnit: 256
@@ -90,9 +102,11 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _AttackBlobColor: {r: 1, g: 0.2028302, b: 0.2028302, a: 1}
+    - _AttackBlobColor: {r: 1, g: 0.8228265, b: 0, a: 1}
     - _BlobColor: {r: 0, g: 0.65795946, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _CustomBlobColor: {r: 1, g: 1, b: 1, a: 1}
+    - _DamageBlobColor: {r: 1, g: 0.20392157, b: 0.20392157, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GridColor: {r: 1, g: 1, b: 1, a: 1}
     - _MoveBlobColor: {r: 0, g: 0.7695224, b: 1, a: 1}

@@ -66,11 +66,12 @@ public class TileDisplay : MonoBehaviour
     #region Tile zone display
 
     // Works with the blob tileset principle -> more here http://www.cr31.co.uk/stagecast/wang/blob.html
-    public void UpdateTileZoneDisplay(List<Tile> tiles, TileZoneDisplayEnum display)
+    public void UpdateTileZoneDisplay(List<Tile> tiles, TileZoneDisplayEnum display, bool additive = false)
     {
         if (tiles.Count == 0)
         {
             _gridMaterial.SetInt("_RenderMoveZone", 0);
+            _gridMaterial.SetInt("_RenderDamageZone", 0);
             _gridMaterial.SetInt("_RenderAttackZone", 0);
             return;
         }
@@ -101,22 +102,52 @@ public class TileDisplay : MonoBehaviour
         _gridRenderer.transform.localScale = new Vector3(CombatGameManager.Instance.GridMap.GridWorldWidth, CombatGameManager.Instance.GridMap.GridWorldHeight, 1f);
         _gridMaterial.SetInt("_GridWidthInTiles", CombatGameManager.Instance.GridMap.GridTileWidth);
         _gridMaterial.SetInt("_GridHeightInTiles", CombatGameManager.Instance.GridMap.GridTileHeight);
-        _gridMaterial.SetInt("_ReachableCoordsCount", tiles.Count);
-        _gridMaterial.SetVectorArray("_ReachableCoords", coordsVec4);
-        _gridMaterial.SetFloatArray("_BlobIndices", blobIndices);
+        _gridMaterial.SetInt("_Additive", additive ? 1 : 0);
 
         switch (display)
         {
-            case TileZoneDisplayEnum.AttackZoneDisplay:
-                _gridMaterial.SetInt("_RenderMoveZone", 0);
-                _gridMaterial.SetInt("_RenderAttackZone", 1);
-                break;
             case TileZoneDisplayEnum.MoveZoneDisplay:
                 _gridMaterial.SetInt("_RenderMoveZone", 1);
-                _gridMaterial.SetInt("_RenderAttackZone", 0);
+
+                if (!additive)
+                {
+                    _gridMaterial.SetInt("_RenderDamageZone", 0);
+                    _gridMaterial.SetInt("_RenderAttackZone", 0);
+                }
+
+                _gridMaterial.SetInt("_MoveCoordsCount", tiles.Count);
+                _gridMaterial.SetVectorArray("_MoveCoords", coordsVec4);
+                _gridMaterial.SetFloatArray("_MoveIndices", blobIndices);
+                break;
+            case TileZoneDisplayEnum.DamageZoneDisplay:
+                _gridMaterial.SetInt("_RenderDamageZone", 1);
+
+                if (!additive)
+                {
+                    _gridMaterial.SetInt("_RenderMoveZone", 0);
+                    _gridMaterial.SetInt("_RenderAttackZone", 0);
+                }
+
+                _gridMaterial.SetInt("_DamageCoordsCount", tiles.Count);
+                _gridMaterial.SetVectorArray("_DamageCoords", coordsVec4);
+                _gridMaterial.SetFloatArray("_DamageIndices", blobIndices);
+                break;
+            case TileZoneDisplayEnum.AttackZoneDisplay:
+                _gridMaterial.SetInt("_RenderAttackZone", 1);
+
+                if (!additive)
+                {
+                    _gridMaterial.SetInt("_RenderMoveZone", 0);
+                    _gridMaterial.SetInt("_RenderDamageZone", 0);
+                }
+
+                _gridMaterial.SetInt("_AttackCoordsCount", tiles.Count);
+                _gridMaterial.SetVectorArray("_AttackCoords", coordsVec4);
+                _gridMaterial.SetFloatArray("_AttackIndices", blobIndices);
                 break;
             default:
                 _gridMaterial.SetInt("_RenderMoveZone", 0);
+                _gridMaterial.SetInt("_RenderDamageZone", 0);
                 _gridMaterial.SetInt("_RenderAttackZone", 0);
                 break;
         }

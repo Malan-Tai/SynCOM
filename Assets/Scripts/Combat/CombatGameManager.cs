@@ -235,6 +235,16 @@ public class CombatGameManager : MonoBehaviour
         }
 
         _tileDisplay.UpdateTileZoneDisplay(newReachable, TileZoneDisplayEnum.MoveZoneDisplay);
+
+        for (int i = 0; i < newReachable.Count; i++)
+        {
+            if (UnityEngine.Random.value > 0.4f)
+            {
+                newReachable.RemoveAt(i);
+                i--;
+            }
+        }
+        _tileDisplay.UpdateTileZoneDisplay(newReachable, TileZoneDisplayEnum.DamageZoneDisplay, additive: true);
     }
 
     public void UpdatePathfinders(GridBasedUnit movedUnit, Vector2Int finalPos)

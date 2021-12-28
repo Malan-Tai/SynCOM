@@ -5,8 +5,11 @@ Shader "Custom/GridDisplay"
 		[NoScaleOffset] _MoveBlobTileset("Move blob tileset", 2D) = "white" {}
 		_MoveBlobColor("Move color", Color) = (1, 1, 1, 1)
 
-		[NoScaleOffset] _AttackBlobTileset("Attack blob tileset", 2D) = "white" {}
-		_AttackBlobColor("Attack color", Color) = (1, 1, 1, 1)
+		[NoScaleOffset] _DamageBlobTileset("Damage blob tileset", 2D) = "white" {}
+		_DamageBlobColor("Damage color", Color) = (1, 1, 1, 1)
+
+		[NoScaleOffset] _AttackBlobTileset("Attack zone blob tileset", 2D) = "white" {}
+		_AttackBlobColor("Attack zone color", Color) = (1, 1, 1, 1)
 
 		_GridColor("Grid color", Color) = (1, 1, 1, 1)
 		_LineWidth("Grid lines width", Range(0, .3)) = .01
@@ -29,22 +32,34 @@ Shader "Custom/GridDisplay"
 
 			#include "UnityCG.cginc"
 
-			// All zones (multiple zones types can't be rendered at same time)
+			// All zones
 			int _GridWidthInTiles;
 			int _GridHeightInTiles;
-			int _ReachableCoordsCount;
-			int2 _ReachableCoords[500];
-			int _BlobIndices[500];
+			bool _Additive;
 
 			// Move zone
 			sampler2D _MoveBlobTileset;
 			fixed4 _MoveBlobColor;
 			bool _RenderMoveZone;
+			int _MoveCoordsCount;
+			int2 _MoveCoords[500];
+			int _MoveIndices[500];
+
+			// Damage zone
+			sampler2D _DamageBlobTileset;
+			fixed4 _DamageBlobColor;
+			bool _RenderDamageZone;
+			int _DamageCoordsCount;
+			int2 _DamageCoords[500];
+			int _DamageIndices[500];
 
 			// Attack zone
 			sampler2D _AttackBlobTileset;
 			fixed4 _AttackBlobColor;
 			bool _RenderAttackZone;
+			int _AttackCoordsCount;
+			int2 _AttackCoords[500];
+			int _AttackIndices[500];
 
 
 			struct appdata
@@ -127,37 +142,150 @@ Shader "Custom/GridDisplay"
 
 			fixed4 frag(v2f i) : SV_Target
 			{
-				if (!_RenderMoveZone && !_RenderAttackZone)
+				if (!_RenderMoveZone && !_RenderDamageZone && !_RenderAttackZone)
 				{
 					discard;
 				}
 
 				int2 uvGridCoord = int2(floor(i.uv.x * _GridWidthInTiles), floor(i.uv.y * _GridHeightInTiles));
 
-				int2 blobCoord = int2(-1, -1);
-				for (int j = 0; j < _ReachableCoordsCount; j++)
+				if (_Additive)
 				{
-					if (all(uvGridCoord == _ReachableCoords[j]))
+					fixed4 col = fixed4(1, 1, 1, 0);
+
+					if (_RenderMoveZone)
 					{
-						blobCoord = FindBlobCoordFromBlobIndex(_BlobIndices[j]);
-						break;
+						int2 blobCoord = int2(-1, -1);
+						for (int j = 0; j < _MoveCoordsCount; j++)
+						{
+							if (all(uvGridCoord == _MoveCoords[j]))
+							{
+								blobCoord = FindBlobCoordFromBlobIndex(_MoveIndices[j]);
+								break;
+							}
+						}
+
+						if (blobCoord.x != -1)
+						{
+							float2 worldUv = float2(i.uv.x * _GridWidthInTiles, i.uv.y * _GridHeightInTiles);
+							float2 outUv = (blobCoord + frac(worldUv)) / float2(8.0, 6.0);
+
+							fixed4 addCol = _MoveBlobColor * tex2D(_MoveBlobTileset, outUv);
+							col = addCol * addCol.a + col * (1 - addCol.a);
+						}
 					}
+					if (_RenderAttackZone)
+					{
+						int2 blobCoord = int2(-1, -1);
+						for (int j = 0; j < _AttackCoordsCount; j++)
+						{
+							if (all(uvGridCoord == _AttackCoords[j]))
+							{
+								blobCoord = FindBlobCoordFromBlobIndex(_AttackIndices[j]);
+								break;
+							}
+						}
+
+						if (blobCoord.x != -1)
+						{
+							float2 worldUv = float2(i.uv.x * _GridWidthInTiles, i.uv.y * _GridHeightInTiles);
+							float2 outUv = (blobCoord + frac(worldUv)) / float2(8.0, 6.0);
+
+							fixed4 addCol = _AttackBlobColor * tex2D(_AttackBlobTileset, outUv);
+							col = addCol * addCol.a + col * (1 - addCol.a);
+						}
+					}
+					if (_RenderDamageZone)
+					{
+						int2 blobCoord = int2(-1, -1);
+						for (int j = 0; j < _DamageCoordsCount; j++)
+						{
+							if (all(uvGridCoord == _DamageCoords[j]))
+							{
+								blobCoord = FindBlobCoordFromBlobIndex(_DamageIndices[j]);
+								break;
+							}
+						}
+
+						if (blobCoord.x != -1)
+						{
+							float2 worldUv = float2(i.uv.x * _GridWidthInTiles, i.uv.y * _GridHeightInTiles);
+							float2 outUv = (blobCoord + frac(worldUv)) / float2(8.0, 6.0);
+
+							fixed4 addCol = _DamageBlobColor * tex2D(_DamageBlobTileset, outUv);
+							col = addCol * addCol.a + col * (1 - addCol.a);
+						}
+					}
+
+					return col;
 				}
 
-				if (blobCoord.x == -1)
-				{
-					discard;
-				}
-
-				float2 worldUv = float2(i.uv.x * _GridWidthInTiles, i.uv.y * _GridHeightInTiles);
-				float2 outUv = (blobCoord + frac(worldUv)) / float2(8.0, 6.0);
 				if (_RenderAttackZone)
 				{
+					int2 blobCoord = int2(-1, -1);
+					for (int j = 0; j < _AttackCoordsCount; j++)
+					{
+						if (all(uvGridCoord == _AttackCoords[j]))
+						{
+							blobCoord = FindBlobCoordFromBlobIndex(_AttackIndices[j]);
+							break;
+						}
+					}
+
+					if (blobCoord.x == -1)
+					{
+						discard;
+					}
+
+					float2 worldUv = float2(i.uv.x * _GridWidthInTiles, i.uv.y * _GridHeightInTiles);
+					float2 outUv = (blobCoord + frac(worldUv)) / float2(8.0, 6.0);
+
 					fixed4 col = tex2D(_AttackBlobTileset, outUv);
 					return _AttackBlobColor * col;
 				}
+				else if (_RenderDamageZone)
+				{
+					int2 blobCoord = int2(-1, -1);
+					for (int j = 0; j < _DamageCoordsCount; j++)
+					{
+						if (all(uvGridCoord == _DamageCoords[j]))
+						{
+							blobCoord = FindBlobCoordFromBlobIndex(_DamageIndices[j]);
+							break;
+						}
+					}
+
+					if (blobCoord.x == -1)
+					{
+						discard;
+					}
+
+					float2 worldUv = float2(i.uv.x * _GridWidthInTiles, i.uv.y * _GridHeightInTiles);
+					float2 outUv = (blobCoord + frac(worldUv)) / float2(8.0, 6.0);
+
+					fixed4 col = tex2D(_DamageBlobTileset, outUv);
+					return _DamageBlobColor * col;
+				}
 				else if (_RenderMoveZone)
 				{
+					int2 blobCoord = int2(-1, -1);
+					for (int j = 0; j < _MoveCoordsCount; j++)
+					{
+						if (all(uvGridCoord == _MoveCoords[j]))
+						{
+							blobCoord = FindBlobCoordFromBlobIndex(_MoveIndices[j]);
+							break;
+						}
+					}
+
+					if (blobCoord.x == -1)
+					{
+						discard;
+					}
+
+					float2 worldUv = float2(i.uv.x * _GridWidthInTiles, i.uv.y * _GridHeightInTiles);
+					float2 outUv = (blobCoord + frac(worldUv)) / float2(8.0, 6.0);
+
 					fixed4 col = tex2D(_MoveBlobTileset, outUv);
 					return _MoveBlobColor * col;
 				}
