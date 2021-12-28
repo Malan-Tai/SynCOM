@@ -38,3 +38,4 @@ MonoBehaviour:
   admirationChangeSTT: 0
   trustChangeSTT: 0
   sympathyChangeSTT: 0
+  refusalChance: 0

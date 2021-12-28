@@ -4,11 +4,16 @@ using UnityEngine;
 
 public abstract class BaseAllyAbility : BaseAbility
 {
-    public delegate void EndAbility(bool executed);
-    public event EndAbility OnAbilityEnded;
+    protected const float FOCUS_TARGET_TIME = 1f;
+
+    public delegate void EndAbilityEvent(bool executed);
+    public event EndAbilityEvent OnAbilityEnded;
 
     protected bool _uiConfirmed = false;
     protected bool _uiCancelled = false;
+
+    protected bool _needsFinalization = false;
+    protected bool _executed;
 
     protected GridBasedUnit _hoveredUnit = null;
     protected new AllyUnit _effector;
@@ -114,21 +119,30 @@ public abstract class BaseAllyAbility : BaseAbility
 
     protected abstract void EnemyTargetingInput();
 
-    protected virtual void FinalizeAbility(bool executed)
+    protected void FinalizeAbility(bool executed)
     {
-        if (!executed)
-        {
-            CombatGameManager.Instance.Camera.SwitchParenthood(_effector);
-        }
+        _needsFinalization = true;
+        _executed = executed;
+    }
+
+    protected virtual void EndAbility()
+    {
+        if (!_executed) CombatGameManager.Instance.Camera.SwitchParenthood(_effector);
 
         _hoveredUnit = null;
         _effector = null;
-        if (OnAbilityEnded != null) OnAbilityEnded(executed);
+        _needsFinalization = false;
+        if (OnAbilityEnded != null) OnAbilityEnded(_executed);
     }
 
     public virtual void InputControl()
     {
         if (!_interruptionQueue.IsEmpty()) return;
+        if (_needsFinalization)
+        {
+            EndAbility();
+            return;
+        }
 
         EnemyTargetingInput();
 
@@ -219,19 +233,24 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         }*/
     }
 
-    protected override void FinalizeAbility(bool executed)
+    protected override void EndAbility()
     {
-        if (_chosenAlly != null) _chosenAlly.StopUsingAbilityAsAlly(executed);
+        if (_chosenAlly != null) _chosenAlly.StopUsingAbilityAsAlly(_executed);
 
         _temporaryChosenAlly = null;
         _chosenAlly = null;
         _possibleAllies.Clear();
-        base.FinalizeAbility(executed);
+        base.EndAbility();
     }
 
     public override void InputControl()
     {
         if (!_interruptionQueue.IsEmpty()) return;
+        if (_needsFinalization)
+        {
+            EndAbility();
+            return;
+        }
 
         if (_chosenAlly == null)
         {
