@@ -26,9 +26,14 @@ public class TileDisplay : MonoBehaviour
         _mouseHovertileSpriteRenderer.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
 
         _gridMaterial.SetInt("_RenderMoveZone", 0);
+        _gridMaterial.SetInt("_RenderDamageZone", 0);
         _gridMaterial.SetInt("_RenderAttackZone", 0);
-        _gridMaterial.SetVectorArray("_ReachableCoords", new Vector4[500]);
-        _gridMaterial.SetFloatArray("_BlobIndices", new float[500]);
+        _gridMaterial.SetVectorArray("_MoveCoords", new Vector4[500]);
+        _gridMaterial.SetVectorArray("_DamageCoords", new Vector4[500]);
+        _gridMaterial.SetVectorArray("_AttackCoords", new Vector4[500]);
+        _gridMaterial.SetFloatArray("_MoveIndices", new float[500]);
+        _gridMaterial.SetFloatArray("_DamageIndices", new float[500]);
+        _gridMaterial.SetFloatArray("_AttackIndices", new float[500]);
     }
 
     #region Tile display
