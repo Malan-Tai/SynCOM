@@ -125,13 +125,17 @@ public class BasicShot : BaseAllyAbility
             AttackHitOrMiss(_effector, target as EnemyUnit, false);
             Debug.Log("Dice got " + randShot + " and had to be lower than " + (_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover)) + ": Missed");
         }
+
+        Interruption interruption = Interruption.GetInterruption(InterruptionType.FocusTargetForGivenTime);
+        interruption.Init(new InterruptionParameters { target = target, time = FOCUS_TARGET_TIME });
+        _interruptionQueue.Enqueue(interruption);
     }
 
-    protected override void FinalizeAbility(bool executed)
+    protected override void EndAbility()
     {
         _targetIndex = -1;
         _possibleTargets = null;
-        base.FinalizeAbility(executed);
+        base.EndAbility();
     }
 
     public override string GetName()

@@ -96,6 +96,10 @@ public class BasicDuoShot : BaseDuoAbility
         Debug.Log("we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
         SelfShoot(target, _selfShotStats);
         AllyShoot(target, _allyShotStats);
+
+        Interruption interruption = Interruption.GetInterruption(InterruptionType.FocusTargetForGivenTime);
+        interruption.Init(new InterruptionParameters { target = target, time = FOCUS_TARGET_TIME });
+        _interruptionQueue.Enqueue(interruption);
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)
