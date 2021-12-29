@@ -12,6 +12,13 @@ public abstract class BaseAbility
         _effector = effector;
         _interruptionQueue = effector.InterruptionQueue;
     }
+    protected void EnqueueInterruptions(RelationshipEventsResult result)
+    {
+        foreach (InterruptionParameters param in result.interruptions)
+        {
+            _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(param));
+        }
+    }
 
     public abstract bool CanExecute();
     public abstract void Execute();

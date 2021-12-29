@@ -55,6 +55,8 @@ public class RelationshipEvent : ScriptableObject
     [Range(0, 1)]
     public float refusalChance;
 
+    // interruption
+    public InterruptionScriptableObject[] interruptions;
 
     public bool CorrespondsToTrigger(RelationshipEvent trigger, bool allyIsDuo, bool allyIsTarget, float healthRatio, bool isBestDamager)
     {

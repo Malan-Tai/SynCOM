@@ -54,6 +54,9 @@ public class RelationshipEventEditor : Editor
     // refuse to duo
     private SerializedProperty _refusalChance;
 
+    // interruptions
+    private SerializedProperty _interruptions;
+
     #endregion
 
     // is called once when according object gains focus in the hierachy
@@ -94,6 +97,8 @@ public class RelationshipEventEditor : Editor
         _sympathyChangeSTT              = serializedObject.FindProperty("sympathyChangeSTT");
 
         _refusalChance                  = serializedObject.FindProperty("refusalChance");
+
+        _interruptions                  = serializedObject.FindProperty("interruptions");
 }
 
     public override void OnInspectorGUI()
@@ -167,7 +172,7 @@ public class RelationshipEventEditor : Editor
         }
         EditorGUILayout.Space();
 
-        if (_foldEffect = EditorGUILayout.BeginFoldoutHeaderGroup(_foldEffect, "Effect"))
+        if (_foldEffect = EditorGUILayout.Foldout(_foldEffect, "Effect", true))
         {
             EditorGUILayout.PropertyField(_effectType);
             EditorGUILayout.PropertyField(_interrupts);
@@ -194,8 +199,12 @@ public class RelationshipEventEditor : Editor
             {
                 EditorGUILayout.PropertyField(_refusalChance);
             }
+
+            if (_interrupts.boolValue)
+            {
+                EditorGUILayout.PropertyField(_interruptions);
+            }
         }
-        EditorGUILayout.EndFoldoutHeaderGroup();
 
         // write back serialized values to the real instance
         // automatically handles all marking dirty and undo/redo

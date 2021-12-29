@@ -36,7 +36,7 @@ public class RelationshipEventsManager : MonoBehaviour
         RelationshipEventsResult result = new RelationshipEventsResult
         {
             refusedDuo = false,
-            interrupts = false
+            interruptions = new List<InterruptionParameters>()
         };
 
         foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
@@ -52,7 +52,7 @@ public class RelationshipEventsManager : MonoBehaviour
                 if (relationshipEvent.CorrespondsToTrigger(dummyTrigger, isDuo, isTarget, allyCharacter.HealthPoints / allyCharacter.MaxHealth, isBestDamager) &&
                     relationshipEvent.MeetsRelationshipRequirements(source, allyTarget, allyCharacter))
                 {
-                    Execute(relationshipEvent, source, allyCharacter, ref result);
+                    Execute(relationshipEvent, source, allyCharacter, ally, ref result);
                 }
             }
         }
@@ -60,28 +60,28 @@ public class RelationshipEventsManager : MonoBehaviour
         return result;
     }
 
-    private void Execute(RelationshipEvent relationshipEvent, AllyCharacter source, AllyCharacter current, ref RelationshipEventsResult result)
+    private void Execute(RelationshipEvent relationshipEvent, AllyCharacter source, AllyCharacter currentCharacter, AllyUnit currentUnit, ref RelationshipEventsResult result)
     {
         print("executed " + relationshipEvent);
 
         switch (relationshipEvent.effectType)
         {
             case RelationshipEventEffectType.RelationshipGaugeChange:
-                Relationship currentToSource = current.Relationships[source];
+                Relationship currentToSource = currentCharacter.Relationships[source];
                 currentToSource.IncreaseSentiment(EnumSentiment.Admiration, relationshipEvent.admirationChange);
                 currentToSource.IncreaseSentiment(EnumSentiment.Trust, relationshipEvent.trustChange);
                 currentToSource.IncreaseSentiment(EnumSentiment.Sympathy, relationshipEvent.sympathyChange);
 
                 if (relationshipEvent.reciprocal)
                 {
-                    Relationship sourceToCurrent = source.Relationships[current];
+                    Relationship sourceToCurrent = source.Relationships[currentCharacter];
                     sourceToCurrent.IncreaseSentiment(EnumSentiment.Admiration, relationshipEvent.admirationChange);
                     sourceToCurrent.IncreaseSentiment(EnumSentiment.Trust, relationshipEvent.trustChange);
                     sourceToCurrent.IncreaseSentiment(EnumSentiment.Sympathy, relationshipEvent.sympathyChange);
                 }
                 else if (relationshipEvent.sourceToTarget)
                 {
-                    Relationship sourceToCurrent = source.Relationships[current];
+                    Relationship sourceToCurrent = source.Relationships[currentCharacter];
                     sourceToCurrent.IncreaseSentiment(EnumSentiment.Admiration, relationshipEvent.admirationChangeSTT);
                     sourceToCurrent.IncreaseSentiment(EnumSentiment.Trust, relationshipEvent.trustChangeSTT);
                     sourceToCurrent.IncreaseSentiment(EnumSentiment.Sympathy, relationshipEvent.sympathyChangeSTT);
@@ -97,7 +97,13 @@ public class RelationshipEventsManager : MonoBehaviour
                 break;
         }
 
-        result.interrupts |= relationshipEvent.interrupts;
+        if (relationshipEvent.interrupts)
+        {
+            foreach (InterruptionScriptableObject interruption in relationshipEvent.interruptions)
+            {
+                result.interruptions.Add(interruption.ToParameters(currentUnit));
+            }
+        }
     }
 
     private AllyCharacter GetBestDamagerOf(EnemyCharacter enemy)

@@ -15,10 +15,7 @@ public abstract class BaseEnemyAbility : BaseAbility
     #region RelationshipEvents
     protected void AttackHitOrMiss(AllyUnit target, bool hit)
     {
-        if (RelationshipEventsManager.Instance.EnemyOnAllyAttackHitOrMiss(target.AllyCharacter, hit).interrupts)
-        {
-            Debug.Log("interrupted");
-        }
+        EnqueueInterruptions(RelationshipEventsManager.Instance.EnemyOnAllyAttackHitOrMiss(target.AllyCharacter, hit));
 
         // TODO : change target ?
         if (!hit) target.Missed();
@@ -26,10 +23,7 @@ public abstract class BaseEnemyAbility : BaseAbility
 
     protected void AttackDamage(AllyUnit target, float damage, bool crit)
     {
-        if (RelationshipEventsManager.Instance.EnemyOnAllyAttackDamage(target.AllyCharacter, damage, crit).interrupts)
-        {
-            Debug.Log("interrupted");
-        }
+        EnqueueInterruptions(RelationshipEventsManager.Instance.EnemyOnAllyAttackDamage(target.AllyCharacter, damage, crit)) ;
 
         // TODO : change target if protection
         bool killed = target.TakeDamage(damage);
