@@ -126,9 +126,8 @@ public class BasicShot : BaseAllyAbility
             Debug.Log("Dice got " + randShot + " and had to be lower than " + (_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover)) + ": Missed");
         }
 
-        Interruption interruption = Interruption.GetInterruption(InterruptionType.FocusTargetForGivenTime);
-        interruption.Init(new InterruptionParameters { target = target, time = FOCUS_TARGET_TIME });
-        _interruptionQueue.Enqueue(interruption);
+        var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = FOCUS_TARGET_TIME };
+        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
     }
 
     protected override void EndAbility()

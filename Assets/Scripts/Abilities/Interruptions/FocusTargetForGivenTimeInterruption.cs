@@ -6,7 +6,7 @@ public class FocusTargetForGivenTimeInterruption : Interruption
 {
     private float _time;
 
-    public override void Init(InterruptionParameters parameters)
+    protected override void Init(InterruptionParameters parameters)
     {
         CombatGameManager.Instance.Camera.SwitchParenthood(parameters.target);
         _time = parameters.time;

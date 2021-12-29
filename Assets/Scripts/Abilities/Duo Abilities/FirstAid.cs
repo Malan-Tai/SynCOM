@@ -27,9 +27,8 @@ public class FirstAid : BaseDuoAbility
     {
         Heal(_effector, _chosenAlly, 5, _chosenAlly.AllyCharacter);
 
-        Interruption interruption = Interruption.GetInterruption(InterruptionType.FocusTargetForGivenTime);
-        interruption.Init(new InterruptionParameters { target = _chosenAlly, time = FOCUS_TARGET_TIME });
-        _interruptionQueue.Enqueue(interruption);
+        var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = _chosenAlly, time = FOCUS_TARGET_TIME };
+        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
 
         Relationship relationshipAllyToSelf = _chosenAlly.AllyCharacter.Relationships[this._effector.AllyCharacter];
         Relationship relationshipSelfToAlly = this._effector.AllyCharacter.Relationships[_chosenAlly.AllyCharacter];

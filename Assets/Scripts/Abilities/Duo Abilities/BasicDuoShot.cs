@@ -97,9 +97,8 @@ public class BasicDuoShot : BaseDuoAbility
         SelfShoot(target, _selfShotStats);
         AllyShoot(target, _allyShotStats);
 
-        Interruption interruption = Interruption.GetInterruption(InterruptionType.FocusTargetForGivenTime);
-        interruption.Init(new InterruptionParameters { target = target, time = FOCUS_TARGET_TIME });
-        _interruptionQueue.Enqueue(interruption);
+        var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = FOCUS_TARGET_TIME };
+        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)
