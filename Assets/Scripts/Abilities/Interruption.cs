@@ -7,11 +7,11 @@ public abstract class Interruption
     public bool HasStarted { get; private set; }
     public bool IsDone { get; protected set; }
 
-    public static Interruption GetInterruption(InterruptionType type)
+    public static Interruption GetInitializedInterruption(InterruptionParameters parameters)
     {
         Interruption interruption;
 
-        switch (type)
+        switch (parameters.interruptionType)
         {
             case InterruptionType.FocusTargetForGivenTime:
                 interruption = new FocusTargetForGivenTimeInterruption();
@@ -24,6 +24,8 @@ public abstract class Interruption
         interruption.HasStarted = false;
         interruption.IsDone = false;
 
+        interruption.Init(parameters);
+
         return interruption;
     }
 
@@ -35,5 +37,5 @@ public abstract class Interruption
 
     protected abstract IEnumerator InterruptionCoroutine();
 
-    public abstract void Init(InterruptionParameters parameters);
+    protected abstract void Init(InterruptionParameters parameters);
 }
