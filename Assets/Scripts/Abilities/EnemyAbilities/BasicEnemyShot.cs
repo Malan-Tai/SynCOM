@@ -34,6 +34,10 @@ public class BasicEnemyShot : BaseEnemyAbility
             AttackHitOrMiss(_bestTarget as AllyUnit, false);
             Debug.Log($"Dice got {randShot} and had to be lower than {accuratyShot}: Missed");
         }
+
+        Interruption interruption = Interruption.GetInterruption(InterruptionType.FocusTargetForGivenTime);
+        interruption.Init(new InterruptionParameters { target = _bestTarget, time = FOCUS_TARGET_TIME });
+        _interruptionQueue.Enqueue(interruption);
     }
 
     public override void CalculateBestTarget()

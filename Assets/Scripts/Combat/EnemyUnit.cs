@@ -13,6 +13,7 @@ public class EnemyUnit : GridBasedUnit
 
     private void Awake()
     {
+        InterruptionQueue = GetComponent<InterruptionQueue>();
         _renderer = GetComponentInChildren<GeneralRenderer>();
         _basicEnemyShot = new BasicEnemyShot();
         _basicEnemyShot.SetEffector(this);

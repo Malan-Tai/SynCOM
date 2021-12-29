@@ -4,8 +4,6 @@ using UnityEngine;
 
 public abstract class BaseAllyAbility : BaseAbility
 {
-    protected const float FOCUS_TARGET_TIME = 1f;
-
     public delegate void EndAbilityEvent(bool executed);
     public event EndAbilityEvent OnAbilityEnded;
 

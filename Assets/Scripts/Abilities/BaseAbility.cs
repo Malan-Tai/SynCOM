@@ -4,6 +4,8 @@ using UnityEngine;
 
 public abstract class BaseAbility
 {
+    protected const float FOCUS_TARGET_TIME = 1f;
+
     protected GridBasedUnit _effector;
     protected InterruptionQueue _interruptionQueue;
 
