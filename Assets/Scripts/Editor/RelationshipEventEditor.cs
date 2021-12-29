@@ -57,6 +57,11 @@ public class RelationshipEventEditor : Editor
     // interruptions
     private SerializedProperty _interruptions;
 
+    // free action
+    public SerializedProperty _freeActionChance;
+    public SerializedProperty _freeAction;
+    public SerializedProperty _freeActionForDuo;
+
     #endregion
 
     // is called once when according object gains focus in the hierachy
@@ -99,6 +104,11 @@ public class RelationshipEventEditor : Editor
         _refusalChance                  = serializedObject.FindProperty("refusalChance");
 
         _interruptions                  = serializedObject.FindProperty("interruptions");
+
+
+        _freeActionChance               = serializedObject.FindProperty("freeActionChance");
+        _freeAction                     = serializedObject.FindProperty("freeAction");
+        _freeActionForDuo               = serializedObject.FindProperty("freeActionForDuo");
 }
 
     public override void OnInspectorGUI()
@@ -133,7 +143,7 @@ public class RelationshipEventEditor : Editor
 
         if (_foldInvolved = EditorGUILayout.Foldout(_foldInvolved, "Involved Units", true))
         {
-            if (_triggerType.enumValueIndex == (int)RelationshipEventTriggerType.BeginDuo)
+            if (_triggerType.enumValueIndex == (int)RelationshipEventTriggerType.BeginDuo || _triggerType.enumValueIndex == (int)RelationshipEventTriggerType.EndExecutedDuo)
             {
                 _onlyCheckDuoAlly.boolValue = true;
                 EditorGUILayout.PropertyField(_onlyCheckDuoAlly);
@@ -198,6 +208,12 @@ public class RelationshipEventEditor : Editor
             else if (_effectType.enumValueIndex == (int)RelationshipEventEffectType.RefuseToDuo)
             {
                 EditorGUILayout.PropertyField(_refusalChance);
+            }
+            else if (_effectType.enumValueIndex == (int)RelationshipEventEffectType.FreeAction)
+            {
+                EditorGUILayout.PropertyField(_freeActionChance);
+                EditorGUILayout.PropertyField(_freeAction);
+                EditorGUILayout.PropertyField(_freeActionForDuo);
             }
 
             if (_interrupts.boolValue)

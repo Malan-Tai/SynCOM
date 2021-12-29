@@ -5,5 +5,6 @@ public enum RelationshipEventTriggerType
     FriendlyFire,
     Kill,
     Heal,
-    BeginDuo
+    BeginDuo,
+    EndExecutedDuo
 }

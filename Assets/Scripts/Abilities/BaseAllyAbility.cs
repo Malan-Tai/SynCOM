@@ -14,6 +14,7 @@ public abstract class BaseAllyAbility : BaseAbility
 
     protected bool _needsFinalization = false;
     protected bool _executed;
+    protected bool _free = false;
 
     protected GridBasedUnit _hoveredUnit = null;
     protected new AllyUnit _effector;
@@ -49,25 +50,30 @@ public abstract class BaseAllyAbility : BaseAbility
     }
 
     #region RelationshipEvents
+    protected override void HandleRelationshipEventResult(RelationshipEventsResult result)
+    {
+        base.HandleRelationshipEventResult(result);
+        _free = result.freeActionForSource;
+    }
 
     protected void AttackHitOrMiss(AllyUnit source, EnemyUnit target, bool hit, AllyCharacter duo = null)
     {
         if (!hit) target.Missed();
-        EnqueueInterruptions(RelationshipEventsManager.Instance.AllyOnEnemyAttackHitOrMiss(source.AllyCharacter, hit, duo));
+        HandleRelationshipEventResult(RelationshipEventsManager.Instance.AllyOnEnemyAttackHitOrMiss(source.AllyCharacter, hit, duo));
     }
 
     protected void AttackDamage(AllyUnit source, EnemyUnit target, float damage, bool crit, AllyCharacter duo = null)
     {
         bool killed = target.TakeDamage(damage);
-        EnqueueInterruptions(RelationshipEventsManager.Instance.AllyOnEnemyAttackDamage(source.AllyCharacter, target.EnemyCharacter, damage, crit, duo));
+        HandleRelationshipEventResult(RelationshipEventsManager.Instance.AllyOnEnemyAttackDamage(source.AllyCharacter, target.EnemyCharacter, damage, crit, duo));
 
-        if (killed) EnqueueInterruptions(RelationshipEventsManager.Instance.KillEnemy(source.AllyCharacter, target.EnemyCharacter, duo));
+        if (killed) HandleRelationshipEventResult(RelationshipEventsManager.Instance.KillEnemy(source.AllyCharacter, target.EnemyCharacter, duo));
     }
 
     protected void FriendlyFireDamage(AllyUnit source, AllyUnit target, float damage, AllyCharacter duo = null)
     {
         bool killed = target.TakeDamage(damage);
-        EnqueueInterruptions(RelationshipEventsManager.Instance.FriendlyFireDamage(source.AllyCharacter, target.AllyCharacter, duo));
+        HandleRelationshipEventResult(RelationshipEventsManager.Instance.FriendlyFireDamage(source.AllyCharacter, target.AllyCharacter, duo));
 
         // TODO : kill ally ?
     }
@@ -75,17 +81,7 @@ public abstract class BaseAllyAbility : BaseAbility
     protected void Heal(AllyUnit source, AllyUnit target, float healAmount, AllyCharacter duo = null)
     {
         target.Heal(healAmount);
-        EnqueueInterruptions(RelationshipEventsManager.Instance.HealAlly(source.AllyCharacter, target.AllyCharacter, duo));
-    }
-
-    protected bool TryBeginDuo(AllyUnit source, AllyUnit duo)
-    {
-        RelationshipEventsResult eventResult            = RelationshipEventsManager.Instance.BeginDuo(source.AllyCharacter, duo.AllyCharacter);
-        RelationshipEventsResult invertedEventResult    = RelationshipEventsManager.Instance.BeginDuo(duo.AllyCharacter, source.AllyCharacter);
-
-        EnqueueInterruptions(eventResult); // TODO : what happens if both interrupt ?
-
-        return eventResult.refusedDuo || invertedEventResult.refusedDuo;
+        HandleRelationshipEventResult(RelationshipEventsManager.Instance.HealAlly(source.AllyCharacter, target.AllyCharacter, duo));
     }
     #endregion
 
@@ -110,12 +106,13 @@ public abstract class BaseAllyAbility : BaseAbility
 
     protected virtual void EndAbility()
     {
-        if (!_executed) CombatGameManager.Instance.Camera.SwitchParenthood(_effector);
+        if (!_executed || _free) CombatGameManager.Instance.Camera.SwitchParenthood(_effector);
 
         _hoveredUnit = null;
         _effector = null;
         _needsFinalization = false;
-        if (OnAbilityEnded != null) OnAbilityEnded(_executed);
+        if (OnAbilityEnded != null) OnAbilityEnded(_executed && !_free);
+        _free = false;
     }
 
     public virtual void InputControl()
@@ -170,6 +167,32 @@ public abstract class BaseDuoAbility : BaseAllyAbility
     protected AllyUnit _chosenAlly = null;
     private List<AllyUnit> _possibleAllies = null;
 
+    protected bool _freeForDuo = false;
+
+    #region Relationship events
+    protected override void HandleRelationshipEventResult(RelationshipEventsResult result)
+    {
+        base.HandleRelationshipEventResult(result);
+        _freeForDuo = result.freeActionForDuo;
+    }
+
+    protected bool TryBeginDuo(AllyUnit source, AllyUnit duo)
+    {
+        RelationshipEventsResult eventResult = RelationshipEventsManager.Instance.BeginDuo(source.AllyCharacter, duo.AllyCharacter);
+        RelationshipEventsResult invertedEventResult = RelationshipEventsManager.Instance.BeginDuo(duo.AllyCharacter, source.AllyCharacter);
+
+        HandleRelationshipEventResult(eventResult); // TODO : what happens if both interrupt ?
+
+        return eventResult.refusedDuo || invertedEventResult.refusedDuo;
+    }
+
+    protected void EndExecutedDuo(AllyUnit source, AllyUnit duo)
+    {
+        RelationshipEventsResult eventResult = RelationshipEventsManager.Instance.EndExecutedDuo(source.AllyCharacter, duo.AllyCharacter);
+        HandleRelationshipEventResult(eventResult);
+    }
+    #endregion
+
     protected abstract bool IsAllyCompatible(AllyUnit unit);
     protected abstract void ChooseAlly();
 
@@ -216,11 +239,15 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
     protected override void EndAbility()
     {
-        if (_chosenAlly != null) _chosenAlly.StopUsingAbilityAsAlly(_executed);
+        if (_executed) EndExecutedDuo(_effector, _chosenAlly);
+
+        if (_chosenAlly != null) _chosenAlly.StopUsingAbilityAsAlly(_executed && !_freeForDuo);
 
         _temporaryChosenAlly = null;
         _chosenAlly = null;
         _possibleAllies = null;
+
+        _freeForDuo = false;
         base.EndAbility();
     }
 

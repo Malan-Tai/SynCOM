@@ -58,6 +58,12 @@ public class RelationshipEvent : ScriptableObject
     // interruption
     public InterruptionScriptableObject[] interruptions;
 
+    // free action
+    [Range(0, 1)]
+    public float freeActionChance;
+    public bool freeAction;
+    public bool freeActionForDuo;
+
     public bool CorrespondsToTrigger(RelationshipEvent trigger, bool allyIsDuo, bool allyIsTarget, float healthRatio, bool isBestDamager)
     {
         if (triggerType != trigger.triggerType) return false;
