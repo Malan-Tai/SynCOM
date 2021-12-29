@@ -8,6 +8,11 @@ public class RelationshipDebugGUI : MonoBehaviour
     {
         AllyUnit current = CombatGameManager.Instance.CurrentUnit;
 
+        if (current == null)
+        {
+            return;
+        }
+
         int i = 0;
         foreach (AllyUnit unit in CombatGameManager.Instance.AllAllyUnits)
         {

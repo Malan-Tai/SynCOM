@@ -77,7 +77,7 @@ public class GridBasedUnit : MonoBehaviour
         InterruptionQueue = GetComponent<InterruptionQueue>();
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         if (_updatePathfinder)
         {

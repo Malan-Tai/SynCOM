@@ -5,8 +5,9 @@ using UnityEngine;
 public class EnemyUnit : GridBasedUnit
 {
     private GeneralRenderer _renderer;
-    private Color _originalColor;
 
+    public bool IsMakingTurn { get; protected set; }
+    public bool IsTurnDone { get; protected set; }
     public EnemyCharacter EnemyCharacter { get => (EnemyCharacter)_character; }
 
     private BasicEnemyShot _basicEnemyShot;
@@ -17,6 +18,42 @@ public class EnemyUnit : GridBasedUnit
         _renderer = GetComponentInChildren<GeneralRenderer>();
         _basicEnemyShot = new BasicEnemyShot();
         _basicEnemyShot.SetEffector(this);
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+
+        if (Character.IsAlive && IsMakingTurn && InterruptionQueue.IsEmpty())
+        {
+            /// TODO select best ability to use depending on priorities
+
+            _basicEnemyShot.CalculateBestTarget();
+
+            if (_basicEnemyShot.CanExecute())
+            {
+                var parameters = new InterruptionParameters
+                {
+                    interruptionType = InterruptionType.FocusTargetForGivenTime,
+                    target = _basicEnemyShot.BestTarget,
+                    time = Interruption.FOCUS_TARGET_TIME
+                };
+                InterruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
+
+                _basicEnemyShot.Execute();
+            }
+            else
+            {
+                Debug.Log("No target available: enemy skipping turn.");
+            }
+
+            IsMakingTurn = false;
+        }
+
+        if (!IsMakingTurn && InterruptionQueue.IsEmpty())
+        {
+            IsTurnDone = true;
+        }
     }
 
     protected override bool IsEnemy()
@@ -56,19 +93,22 @@ public class EnemyUnit : GridBasedUnit
         renderer.sprite = GlobalGameManager.Instance.GetEnemySprite();
     }
 
-    public void MakeTurn()
+    public override void NewTurn()
     {
-        /// TODO select best ability to use depending on priorities
+        base.NewTurn();
 
-        _basicEnemyShot.CalculateBestTarget();
-        
-        if (_basicEnemyShot.CanExecute())
+        IsMakingTurn = Character.IsAlive;
+        IsTurnDone = !Character.IsAlive;
+
+        if (IsMakingTurn)
         {
-            _basicEnemyShot.Execute();
-        }
-        else
-        {
-            Debug.Log("No target available: enemy skipping turn.");
+            var parameters = new InterruptionParameters
+            {
+                interruptionType = InterruptionType.FocusTargetForGivenTime,
+                target = this,
+                time = Interruption.FOCUS_TARGET_TIME
+            };
+            InterruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
         }
     }
 }

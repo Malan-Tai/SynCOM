@@ -37,7 +37,7 @@ public class Slap : BaseDuoAbility
 
         FriendlyFireDamage(_effector, _chosenAlly, 1, _chosenAlly.AllyCharacter);
 
-        var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = _chosenAlly, time = FOCUS_TARGET_TIME };
+        var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = _chosenAlly, time = Interruption.FOCUS_TARGET_TIME };
         _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
 
         // Actual effect of the ability
