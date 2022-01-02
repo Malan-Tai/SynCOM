@@ -40,6 +40,6 @@ MonoBehaviour:
   sympathyChangeSTT: 0
   refusalChance: 0
   interruptions: []
-  freeActionChance: 1
+  freeActionChance: 0.3
   freeAction: 1
   freeActionForDuo: 0
