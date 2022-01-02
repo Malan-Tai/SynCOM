@@ -41,8 +41,8 @@ public class AllyCharacter : Character
         base(maxHealth, damage, accuracy, dodge, critChances, rangeShot, movementPoints, weight)
     {
         _class = characterClass;
-        addMandatoryTraits(_class);
-        addRandomTrait(_class);
+        AddMandatoryTraits(_class);
+        AddRandomTrait(_class);
 
         Debug.Log(_traits.Count);
 
@@ -71,7 +71,7 @@ public class AllyCharacter : Character
         _relationships.Add(ally, new Relationship(this, ally));
     }
 
-    private void addMandatoryTraits(EnumClasses characterClass)
+    private void AddMandatoryTraits(EnumClasses characterClass)
     {
         for (int i = 0; i < s_mandatoryTraits[characterClass].Count; i++)
         {
@@ -79,7 +79,7 @@ public class AllyCharacter : Character
         }
     }
 
-    private void addRandomTrait(EnumClasses characterClass)
+    private void AddRandomTrait(EnumClasses characterClass)
     {
         int indice = Random.Range(0, s_commonPossibleTraits[characterClass].Count);
         _traits.Add(s_commonPossibleTraits[characterClass][indice].GetClone(this));

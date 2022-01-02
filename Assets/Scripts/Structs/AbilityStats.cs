@@ -170,7 +170,6 @@ public struct AbilityStats
 
         damageBuff = Mathf.Clamp(damageBuff, -1, 2);
         returnDamage *= (1 + damageBuff);
-
         return returnDamage;
     }
 

@@ -8,6 +8,8 @@ public class BasicShot : BaseAllyAbility
     private List<GridBasedUnit> _possibleTargets;
     private int _targetIndex = -1;
 
+    private AbilityStats _selfShotStats;
+
     public override string GetDescription()
     {
         string res = "Shoot at the target.";
@@ -104,21 +106,22 @@ public class BasicShot : BaseAllyAbility
     public override void Execute()
     {
         GridBasedUnit target = _possibleTargets[_targetIndex];
-        int randShot = UnityEngine.Random.Range(0, 100);
+        _selfShotStats = new AbilityStats(0, 0, 1f, 0, _effector);
+
+        int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
         int randCrit = UnityEngine.Random.Range(0, 100);
 
-        if (_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover) > randShot) {
+        if (randShot < _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover)) {
             Debug.Log("i am shooting at " + _possibleTargets[_targetIndex].GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
             AttackHitOrMiss(_effector, target as EnemyUnit, true);
 
-            if (_effector.Character.CritChances > randCrit) {
+            if (randCrit < _selfShotStats.GetCritRate()) {
                 AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage * 1.5f, true);
             }
             else
             {
                 AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage, false);
             }
-            Debug.Log("Ennemy has" + _possibleTargets[_targetIndex].Character.HealthPoints + "HP left");
         }
         else
         {

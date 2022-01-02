@@ -392,14 +392,14 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         relationshipAllyToSelf.IncreaseSentiment(sentiment, gain);
     }
 
-    protected virtual void SelfShoot(GridBasedUnit target, AbilityStats selfShotStats)
+    protected virtual void SelfShoot(GridBasedUnit target, AbilityStats selfShotStats, bool alwaysHit = false)
     {
         int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
         int randCrit = UnityEngine.Random.Range(0, 100);
 
         Debug.Log("self to hit: " + randShot + " for " + selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover));
 
-        if (randShot < selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
+        if (alwaysHit || randShot < selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
         {
             AttackHitOrMiss(_effector, target as EnemyUnit, true, _chosenAlly.AllyCharacter);
 
@@ -419,14 +419,14 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         }
     }
 
-    protected virtual void AllyShoot(GridBasedUnit target, AbilityStats allyShotStats)
+    protected virtual void AllyShoot(GridBasedUnit target, AbilityStats allyShotStats, bool alwaysHit = false)
     {
         int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
         int randCrit = UnityEngine.Random.Range(0, 100);
 
         Debug.Log("ally to hit: " + randShot + " for " + allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover));
 
-        if (randShot < allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover))
+        if (alwaysHit || randShot < allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover))
         {
             AttackHitOrMiss(_chosenAlly, target as EnemyUnit, true, _effector.AllyCharacter);
 

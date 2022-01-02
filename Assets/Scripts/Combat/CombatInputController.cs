@@ -101,5 +101,9 @@ public class CombatInputController : MonoBehaviour
         {
             CombatGameManager.Instance.CurrentUnit.UseAbility(new Devouring());
         }
+        else if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            CombatGameManager.Instance.CurrentUnit.UseAbility(new SkipTurn());
+        }
     }
 }
