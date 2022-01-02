@@ -152,7 +152,7 @@ public struct AbilityStats
 
         if (considerBuffs)
         {
-            foreach (Buff buff in this._unit.CurrentBuffs)
+            foreach (Buff buff in this._unit.Character.CurrentBuffs)
             {
                 float bonus = buff.GetDamageModifier();
                 if (bonus > 0) damageBuff += bonus;
@@ -161,7 +161,7 @@ public struct AbilityStats
 
         if (considerDebuffs)
         {
-            foreach (Buff buff in this._unit.CurrentBuffs)
+            foreach (Buff buff in this._unit.Character.CurrentBuffs)
             {
                 float malus = buff.GetDamageModifier();
                 if (malus < 0) damageBuff += malus;
@@ -192,7 +192,7 @@ public struct AbilityStats
 
         if (considerBuffs)
         {
-            foreach (Buff buff in this._unit.CurrentBuffs)
+            foreach (Buff buff in this._unit.Character.CurrentBuffs)
             {
                 float bonus = buff.GetHitRateModifier();
                 if (bonus > 0) hitMissReductionFromBuff *= 1 - bonus;
@@ -201,7 +201,7 @@ public struct AbilityStats
 
         if (considerDebuffs)
         {
-            foreach (Buff buff in this._unit.CurrentBuffs)
+            foreach (Buff buff in this._unit.Character.CurrentBuffs)
             {
                 float malus = buff.GetHitRateModifier();
                 if (malus < 0) hitSucessReductionFromDebuff *= 1 + malus;
@@ -235,7 +235,7 @@ public struct AbilityStats
 
         if (considerBuffs)
         {
-            foreach (Buff buff in this._unit.CurrentBuffs)
+            foreach (Buff buff in this._unit.Character.CurrentBuffs)
             {
                 float bonus = buff.GetCritRateModifier();
                 if (bonus > 0) critMissReductionFromBuff *= 1 - bonus;
@@ -244,7 +244,7 @@ public struct AbilityStats
 
         if (considerDebuffs)
         {
-            foreach (Buff buff in this._unit.CurrentBuffs)
+            foreach (Buff buff in this._unit.Character.CurrentBuffs)
             {
                 float malus = buff.GetCritRateModifier();
                 if (malus < 0) critSucessReductionFromDebuff *= 1 + malus;

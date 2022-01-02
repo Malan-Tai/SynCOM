@@ -26,12 +26,6 @@ public class GridBasedUnit : MonoBehaviour
         }
     }
 
-    private List<Buff> _currentBuffs = new List<Buff>();
-    public List<Buff> CurrentBuffs
-    {
-        get { return _currentBuffs; }
-    }
-
     [SerializeField]
     private float _moveSpeed;
 

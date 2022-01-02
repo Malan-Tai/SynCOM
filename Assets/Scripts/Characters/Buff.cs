@@ -63,7 +63,7 @@ public class Buff : Trait
         /// override in derived classes to implement special effects on expiration
 
         CombatGameManager.OnNewTurn -= HandleNewTurn;
-        this._ownerUnit.CurrentBuffs.Remove(this);
+        this._ownerUnit.Character.CurrentBuffs.Remove(this);
     }
 
     public override int GetAllyToSelfSentimentGain(EnumSentiment sentiment, int baseSentiment)
@@ -104,5 +104,10 @@ public class Buff : Trait
     public override float GetMoveModifier()
     {
         return _moveBuff;
+    }
+
+    public override string GetDescription()
+    {
+        return "A basic buff";
     }
 }

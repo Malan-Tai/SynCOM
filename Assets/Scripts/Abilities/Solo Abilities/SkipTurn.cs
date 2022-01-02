@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-class SkipTurn : BaseAbility
+class SkipTurn : BaseAllyAbility
 {
     public override string GetDescription()
     {
@@ -15,7 +15,7 @@ class SkipTurn : BaseAbility
         return "Skip Turn";
     }
 
-    protected override bool CanExecute()
+    public override bool CanExecute()
     {
         return true;
     }
@@ -25,7 +25,7 @@ class SkipTurn : BaseAbility
         // no target needed
     }
 
-    protected override void Execute()
+    public override void Execute()
     {
         Debug.Log("[" + _effector.AllyCharacter.Name + "] SKIPS their turn");
     }

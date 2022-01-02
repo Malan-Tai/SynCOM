@@ -23,6 +23,12 @@ public class Character
     public delegate void DieEvent();
     public event DieEvent OnDeath;
 
+    private List<Buff> _currentBuffs = new List<Buff>();
+    public List<Buff> CurrentBuffs
+    {
+        get { return _currentBuffs; }
+    }
+
     //constructor 
     public Character()
     {
