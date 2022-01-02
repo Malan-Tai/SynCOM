@@ -278,7 +278,7 @@ public class CombatGameManager : MonoBehaviour
             newReachable.Clear();
         }
 
-        _tileDisplay.UpdateTileZoneDisplay(newReachable, TileZoneDisplayEnum.MoveZoneDisplay);
+        _tileDisplay.DisplayTileZone("MoveZone", newReachable, true);
     }
 
     public void UpdatePathfinders(GridBasedUnit movedUnit, Vector2Int finalPos)

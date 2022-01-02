@@ -1,5 +1,5 @@
 ﻿
-public enum TileZoneDisplayEnum
+public enum TileZoneEnum
 {
     MoveZoneDisplay,
     DamageZoneDisplay,
