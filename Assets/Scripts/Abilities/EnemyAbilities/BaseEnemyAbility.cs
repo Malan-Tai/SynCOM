@@ -25,7 +25,7 @@ public abstract class BaseEnemyAbility : BaseAbility
     {
         HandleRelationshipEventResult(RelationshipEventsManager.Instance.EnemyOnAllyAttackDamage(target.AllyCharacter, damage, crit)) ;
 
-        // TODO : change target if protection
+        // TODO : change target if sacrifice
         bool killed = target.TakeDamage(damage);
 
         // TODO : if killed ?

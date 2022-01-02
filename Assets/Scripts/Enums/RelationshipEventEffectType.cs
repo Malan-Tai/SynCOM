@@ -2,7 +2,7 @@ public enum RelationshipEventEffectType
 {
     None,
     RelationshipGaugeChange,
-    Protect,
+    Sacrifice,
     FreeAction,
     RefuseToDuo,
     Buff
