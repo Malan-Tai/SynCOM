@@ -137,6 +137,10 @@ public class RelationshipEventEditor : Editor
             {
                 EditorGUILayout.PropertyField(_killSteal);
             }
+            else if (_triggerType.enumValueIndex == (int)RelationshipEventTriggerType.FriendlyFire)
+            {
+                EditorGUILayout.PropertyField(_onFatal);
+            }
         }
         EditorGUILayout.EndFoldoutHeaderGroup();
         EditorGUILayout.Space();

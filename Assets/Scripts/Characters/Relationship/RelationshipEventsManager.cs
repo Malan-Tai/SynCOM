@@ -167,10 +167,11 @@ public class RelationshipEventsManager : MonoBehaviour
         return CheckTriggersAndExecute(dummyTrigger, target);
     }
 
-    public RelationshipEventsResult FriendlyFireDamage(AllyCharacter source, AllyCharacter target, AllyCharacter duo = null)
+    public RelationshipEventsResult FriendlyFireDamage(AllyCharacter source, AllyCharacter target, bool fatal, AllyCharacter duo = null)
     {
         RelationshipEvent dummyTrigger = ScriptableObject.CreateInstance("RelationshipEvent") as RelationshipEvent;
         dummyTrigger.triggerType = RelationshipEventTriggerType.FriendlyFire;
+        dummyTrigger.onFatal = fatal;
 
         return CheckTriggersAndExecute(dummyTrigger, source, allyTarget: target, duo: duo);
     }

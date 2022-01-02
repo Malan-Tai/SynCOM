@@ -88,6 +88,9 @@ public class RelationshipEvent : ScriptableObject
             case RelationshipEventTriggerType.Kill:
                 return !killSteal || isBestDamager;
 
+            case RelationshipEventTriggerType.FriendlyFire:
+                return onFatal == trigger.onFatal;
+
             default:
                 // when nothing more than the status of the relationship is needed, returns true by default
                 return true;

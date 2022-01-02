@@ -4,5 +4,6 @@ public enum RelationshipEventEffectType
     RelationshipGaugeChange,
     Protect,
     FreeAction,
-    RefuseToDuo
+    RefuseToDuo,
+    Buff
 }

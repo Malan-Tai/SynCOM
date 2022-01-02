@@ -73,7 +73,7 @@ public abstract class BaseAllyAbility : BaseAbility
     protected void FriendlyFireDamage(AllyUnit source, AllyUnit target, float damage, AllyCharacter duo = null)
     {
         bool killed = target.TakeDamage(damage);
-        HandleRelationshipEventResult(RelationshipEventsManager.Instance.FriendlyFireDamage(source.AllyCharacter, target.AllyCharacter, duo));
+        HandleRelationshipEventResult(RelationshipEventsManager.Instance.FriendlyFireDamage(source.AllyCharacter, target.AllyCharacter, killed, duo));
 
         // TODO : kill ally ?
     }
