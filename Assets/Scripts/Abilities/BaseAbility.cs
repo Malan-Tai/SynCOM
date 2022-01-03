@@ -80,7 +80,7 @@ public abstract class BaseAbility
         else if (confirmed)
         {
             Debug.Log("cant use this ability");
-            FinalizeAbility(false);
+            //FinalizeAbility(false);
         }
         else if (cancelled)
         {
@@ -200,7 +200,7 @@ public abstract class BaseDuoAbility : BaseAbility
         else if (confirmed)
         {
             Debug.Log("cant use this ability");
-            FinalizeAbility(false);
+            //FinalizeAbility(false);
         }
         else if (cancelled)
         {

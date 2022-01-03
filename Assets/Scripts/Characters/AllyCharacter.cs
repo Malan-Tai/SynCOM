@@ -48,7 +48,7 @@ public class AllyCharacter : Character
 
         for (int i = 0; i < _traits.Count; i++)
         {
-            Debug.Log(_traits[i].GetName());
+            //Debug.Log(_traits[i].GetName());
         }
     }
 

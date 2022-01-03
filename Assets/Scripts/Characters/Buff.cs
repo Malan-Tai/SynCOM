@@ -105,4 +105,9 @@ public class Buff : Trait
     {
         return _moveBuff;
     }
+
+    public override string GetDescription()
+    {
+        return "";
+    }
 }

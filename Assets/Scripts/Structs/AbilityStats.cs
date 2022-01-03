@@ -217,6 +217,49 @@ public struct AbilityStats
     }
 
     /// <summary>
+    /// Returns the chance to hit independantly from the target (ignores target's dodge and cover)
+    /// </summary>
+    public float GetAccuracy(bool considerBuffs = true, bool considerDebuffs = true)
+    {
+        float finalAccuracy = this._unit.Character.Accuracy + _innateAccuracy;
+
+        float hitMissReductionFromBuff = 1;
+        float hitSucessReductionFromDebuff = 1;
+
+        foreach (Trait trait in this._unit.AllyCharacter.Traits)
+        {
+            float mod = trait.GetHitRateModifier();
+            if (mod > 0) hitMissReductionFromBuff *= 1 - mod;
+            else hitSucessReductionFromDebuff *= 1 + mod;
+        }
+
+        if (considerBuffs)
+        {
+            foreach (Buff buff in this._unit.CurrentBuffs)
+            {
+                float bonus = buff.GetHitRateModifier();
+                if (bonus > 0) hitMissReductionFromBuff *= 1 - bonus;
+            }
+        }
+
+        if (considerDebuffs)
+        {
+            foreach (Buff buff in this._unit.CurrentBuffs)
+            {
+                float malus = buff.GetHitRateModifier();
+                if (malus < 0) hitSucessReductionFromDebuff *= 1 + malus;
+            }
+        }
+
+        // Apply relationship modifiers
+        finalAccuracy = 100 - ((100 - (_selfSuccessModifier * finalAccuracy)) * _selfMissModifier);
+        // Apply traits, buffs and debuffs
+        finalAccuracy = 100 - ((100 - (hitSucessReductionFromDebuff * finalAccuracy)) * hitMissReductionFromBuff);
+
+        return Mathf.Clamp(finalAccuracy, 5, 100);
+    }
+
+    /// <summary>
     /// Returns the chance to get a critical hit, if the attack hits
     /// </summary>
     public float GetCritRate(bool considerBuffs = true, bool considerDebuffs = true)
