@@ -6,7 +6,13 @@ public class CharacterDebugGUI : MonoBehaviour
 {
     private void OnGUI()
     {
-        AllyCharacter current = CombatGameManager.Instance.CurrentUnit.AllyCharacter;
+        AllyCharacter current = CombatGameManager.Instance.CurrentUnit?.AllyCharacter;
+
+        if (current == null)
+        {
+            return;
+        }
+
         float ratio = current.HealthPoints / current.MaxHealth;
 
         GUI.Box(new Rect(1500, 10, 100, 90), "Character");

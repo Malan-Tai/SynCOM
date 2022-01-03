@@ -42,12 +42,24 @@ public class CombatGameManager : MonoBehaviour
     private List<AllyUnit> _allAllyUnits;
     public List<AllyUnit> AllAllyUnits { get { return _allAllyUnits; } }
 
-    public AllyUnit CurrentUnit { get { return _controllableUnits[_currentUnitIndex]; } }
+    public AllyUnit CurrentUnit
+    {
+        get
+        {
+            if (_currentUnitIndex < 0 || _currentUnitIndex >= _controllableUnits.Count)
+            {
+                return null;
+            }
+
+            return _controllableUnits[_currentUnitIndex];
+        }
+    }
 
     public BaseAllyAbility CurrentAbility { get { return _controllableUnits[_currentUnitIndex].CurrentAbility; } }
 
     [SerializeField]
     private List<EnemyUnit> _enemyUnits;
+    private int _currentEnemyUnit;
 
     [SerializeField]
     private CharacterSheet _characterSheet;
@@ -55,7 +67,8 @@ public class CombatGameManager : MonoBehaviour
     public List<AllyUnit> ControllableUnits { get { return _controllableUnits; } }
     public List<EnemyUnit> EnemyUnits { get { return _enemyUnits; } }
 
-    private List<Tile> _previousReachableTiles;
+    public bool IsAllyTurn { get; private set; }
+    public bool IsEnemyTurn { get; private set; }
 
 
     #region Events
@@ -87,7 +100,6 @@ public class CombatGameManager : MonoBehaviour
         GlobalGameManager.Instance.StartCurrentMission();
 
         _currentUnitIndex = 0;
-        _previousReachableTiles = new List<Tile>();
 
         
 
@@ -102,6 +114,8 @@ public class CombatGameManager : MonoBehaviour
         if (OnUnitSelected != null) OnUnitSelected(_currentUnitIndex);
 
         _characterSheet.InitEventsFromCombat();
+
+        IsAllyTurn = true;
     }
 
     private void InitCharacters()
@@ -190,6 +204,33 @@ public class CombatGameManager : MonoBehaviour
         GridBasedUnit.OnDeath -= UnitDie;
     }
 
+    private void Update()
+    {
+        if (IsAllyTurn) return;
+
+        if (!IsEnemyTurn)
+        {
+            NewEnemyTurn();
+            _enemyUnits[_currentEnemyUnit].NewTurn();
+        }
+
+        if (_enemyUnits[_currentEnemyUnit].IsMakingTurn) return;
+
+        if (_enemyUnits[_currentEnemyUnit].IsTurnDone)
+        {
+            _currentEnemyUnit++;
+
+            if (_currentEnemyUnit == _enemyUnits.Count)
+            {
+                FinishEnemyUnitTurn();
+                NewAllyTurn();
+                return;
+            }
+
+            _enemyUnits[_currentEnemyUnit].NewTurn();
+        }
+    }
+
     public void NextControllableUnit()
     {
         _currentUnitIndex++;
@@ -231,8 +272,13 @@ public class CombatGameManager : MonoBehaviour
     public void UpdateReachableTiles()
     {
         List<Tile> newReachable = CurrentUnit.GetReachableTiles();
-        _tileDisplay.UpdateTileZoneDisplay(newReachable, TileZoneDisplayEnum.MoveZoneDisplay);
-        _previousReachableTiles = newReachable;
+        if (newReachable.Count == 1)
+        {
+            // Remove the unit tile if it is the only one in the reachable tiles
+            newReachable.Clear();
+        }
+
+        _tileDisplay.DisplayTileZone("MoveZone", newReachable, true);
     }
 
     public void UpdatePathfinders(GridBasedUnit movedUnit, Vector2Int finalPos)
@@ -250,9 +296,9 @@ public class CombatGameManager : MonoBehaviour
     {
         if (movedUnit == CurrentUnit)
         {
-            foreach (GridBasedUnit unit in _enemyUnits)
+            foreach (EnemyUnit unit in _enemyUnits)
             {
-                ((EnemyUnit)unit).UpdateVisibility(false);
+                unit.UpdateVisibility(false);
             }
 
             ((AllyUnit)movedUnit).UpdateEnemyVisibilities();
@@ -261,9 +307,9 @@ public class CombatGameManager : MonoBehaviour
 
     public void UpdateVisibilities()
     {
-        foreach (GridBasedUnit unit in _enemyUnits)
+        foreach (EnemyUnit unit in _enemyUnits)
         {
-            ((EnemyUnit)unit).UpdateVisibility(false);
+            unit.UpdateVisibility(false);
         }
 
         CurrentUnit.UpdateEnemyVisibilities();
@@ -286,8 +332,7 @@ public class CombatGameManager : MonoBehaviour
         if (_controllableUnits.Count <= 0)
         {
             print("end turn");
-            NewEnemyTurn();
-            NewAllyTurn();
+            IsAllyTurn = false;
             return;
         }
 
@@ -299,6 +344,7 @@ public class CombatGameManager : MonoBehaviour
 
     public void NewAllyTurn()
     {
+        IsAllyTurn = true;
         print("new ally turn");
         if (OnNewTurn != null) OnNewTurn();
 
@@ -333,26 +379,18 @@ public class CombatGameManager : MonoBehaviour
         print("new enemy turn");
         if (OnNewTurn != null) OnNewTurn();
 
-        foreach (EnemyUnit unit in _enemyUnits)
-        {
-            if (unit.Character.IsAlive)
-            {
-                _camera.SwitchParenthood(unit);
-
-                unit.NewTurn();
-                unit.MakeTurn();
-                FinishEnemyUnitTurn();
-            }
-        }
+        _currentEnemyUnit = 0;
+        IsEnemyTurn = true;
     }
 
     public void FinishEnemyUnitTurn()
     {
+        IsEnemyTurn = false;
+
         // Check mission end
         if (CheckMissionEnd())
         {
             print("end");
-            return;
         }
     }
 

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public abstract class Interruption
 {
+    public const float FOCUS_TARGET_TIME = 1f;
+
     public bool HasStarted { get; private set; }
     public bool IsDone { get; protected set; }
 

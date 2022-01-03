@@ -44,18 +44,7 @@ Shader "Custom/WorldTextureShader"
         void surf (Input IN, inout SurfaceOutputStandard o)
         {
             // World tiling
-            if (abs(IN.worldNormal.y) > 0.5)
-            {
-                _Color *= tex2D(_MainTex, (1 / _Scale) * IN.worldPos.xz);
-            }
-            else if (abs(IN.worldNormal.x) > 0.5)
-            {
-                _Color *= tex2D(_MainTex, (1 / _Scale) * IN.worldPos.yz);
-            }
-            else
-            {
-                _Color *= tex2D(_MainTex, (1 / _Scale) * IN.worldPos.xy);
-            }
+            _Color *= tex2D(_MainTex, (1 / _Scale) * (IN.worldPos.xz - (IN.worldPos.yy - float2(0.5, 0.5)) * IN.worldNormal.xz));
 
             // Albedo comes from a texture tinted by color
             o.Albedo = _Color;

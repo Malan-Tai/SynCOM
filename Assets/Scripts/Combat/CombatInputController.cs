@@ -69,7 +69,10 @@ public class CombatInputController : MonoBehaviour
         {
             Vector2Int tileCoord = CombatGameManager.Instance.GridMap.WorldToGrid(hitData.point);
             //CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(tileCoord);
-            CombatGameManager.Instance.CurrentUnit.ChoosePathTo(tileCoord);
+            if (tileCoord != CombatGameManager.Instance.CurrentUnit.GridPosition)
+            {
+                CombatGameManager.Instance.CurrentUnit.ChoosePathTo(tileCoord);
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.Tab) && !changedUnitThisFrame)
