@@ -23,6 +23,12 @@ public class Character
     public delegate void DieEvent();
     public event DieEvent OnDeath;
 
+    private List<Buff> _currentBuffs = new List<Buff>();
+    public List<Buff> CurrentBuffs
+    {
+        get { return _currentBuffs; }
+    }
+
     //constructor 
     public Character()
     {
@@ -54,6 +60,11 @@ public class Character
     {
         get { return this._healthPoints; }
         set { this._healthPoints = value; }
+    }
+
+    public bool IsAlive
+    {
+        get => _healthPoints > 0;
     }
 
     public float Damage
@@ -115,20 +126,21 @@ public class Character
         get { return this._rangeShot; }
         set { this._rangeShot = value; }
     }
-
     public string Name
     {
         get { return this._name; }
     }
 
-    public void TakeDamage(float damage)
+    public bool TakeDamage(float damage)
     {
         Debug.Log("oof, took " + damage + " dmg");
         _healthPoints -= damage;
         if (_healthPoints <= 0)
         {
             Die();
+            return true;
         }
+        return false;
     }
 
     public void Kill()

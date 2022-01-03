@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HunkerDown : BaseAbility
+public class HunkerDown : BaseAllyAbility
 {
     public override string GetDescription()
     {
         return "Increases the efficiency of your cover, if you have one.";
     }
 
-    protected override bool CanExecute()
+    public override bool CanExecute()
     {
         return CombatGameManager.Instance.GridMap.GetBestCoverAt(_effector.GridPosition) != EnumCover.None;
     }
@@ -19,7 +19,7 @@ public class HunkerDown : BaseAbility
         // no target needed
     }
 
-    protected override void Execute()
+    public override void Execute()
     {
         Debug.Log("i hunker down");
     }

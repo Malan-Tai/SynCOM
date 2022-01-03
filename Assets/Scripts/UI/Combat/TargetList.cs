@@ -24,13 +24,13 @@ public class TargetList : MonoBehaviour
 
     private void OnEnable()
     {
-        BaseAbility.OnTargetsUpdateRequest += Show;
+        BaseAllyAbility.OnTargetsUpdateRequest += Show;
         AllyUnit.OnStoppedUsingAbility += Hide;
     }
 
     private void OnDisable()
     {
-        BaseAbility.OnTargetsUpdateRequest -= Show;
+        BaseAllyAbility.OnTargetsUpdateRequest -= Show;
         AllyUnit.OnStoppedUsingAbility -= Hide;
     }
 

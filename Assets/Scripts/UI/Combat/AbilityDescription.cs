@@ -44,7 +44,7 @@ public class AbilityDescription : MonoBehaviour
         AbilityButton.OnMouseEnter += StartUsing;
         AbilityButton.OnMouseExit += StopUsing;
 
-        BaseAbility.OnDescriptionUpdateRequest += UpdateDescription;
+        BaseAllyAbility.OnDescriptionUpdateRequest += UpdateDescription;
     }
 
     private void OnDisable()
@@ -55,10 +55,10 @@ public class AbilityDescription : MonoBehaviour
         AbilityButton.OnMouseEnter -= StartUsing;
         AbilityButton.OnMouseExit -= StopUsing;
 
-        BaseAbility.OnDescriptionUpdateRequest -= UpdateDescription;
+        BaseAllyAbility.OnDescriptionUpdateRequest -= UpdateDescription;
     }
 
-    private void StartUsing(BaseAbility ability)
+    private void StartUsing(BaseAllyAbility ability)
     {
         BaseDuoAbility duo = ability as BaseDuoAbility;
         if ((_descriptionType == EnumAbilityDescription.Solo && duo != null)
@@ -122,7 +122,7 @@ public class AbilityDescription : MonoBehaviour
         _hidden = true;
     }
 
-    private void UpdateDescription(BaseAbility ability)
+    private void UpdateDescription(BaseAllyAbility ability)
     {
         if (_hidden) return;
 

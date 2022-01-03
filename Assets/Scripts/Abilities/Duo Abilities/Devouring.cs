@@ -18,7 +18,7 @@ public class Devouring : BaseDuoAbility
         return "Devouring";
     }
 
-    protected override bool CanExecute()
+    public override bool CanExecute()
     {
         return _chosenAlly != null && _targetIndex >= 0;
     }
@@ -31,8 +31,8 @@ public class Devouring : BaseDuoAbility
 
         foreach (GridBasedUnit unit in tempTargets)
         {
-            if ((_chosenAlly.LinesOfSight.ContainsKey(unit))
-                && ((unit.GridPosition - this._effector.GridPosition).magnitude <= 1))
+            if (    (_chosenAlly.LinesOfSight.ContainsKey(unit)) 
+                &&  ((unit.GridPosition - this._effector.GridPosition).magnitude < 2))
             {
                 _possibleTargets.Add(unit);
             }
@@ -93,7 +93,7 @@ public class Devouring : BaseDuoAbility
         }
     }
 
-    protected override void Execute()
+    public override void Execute()
     {
         // Impact on the sentiments
         // Ally -> Self relationship
@@ -103,34 +103,17 @@ public class Devouring : BaseDuoAbility
         GridBasedUnit target = _possibleTargets[_targetIndex];
 
         Debug.Log("DEVOURING : we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
-        SelfShoot(target);
-        _effector.Character.Heal(6);
-        _effector.CurrentBuffs.Add(new Buff(3, _effector, damageBuff: 2f, critBuff: 0.5f, mitigationBuff: -0.5f));
-    }
+        SelfShoot(target, _selfShotStats, true);
+        _effector.Heal(6);
+        _effector.Character.CurrentBuffs.Add(new Buff(3, _effector, damageBuff: 2f, critBuff: 0.5f, mitigationBuff: -0.5f));
 
-    private void SelfShoot(GridBasedUnit target)
-    {
-        int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
-        int randCrit = UnityEngine.Random.Range(0, 100);
-
-        // Cannot miss
-        if (randCrit < _selfShotStats.GetCritRate())
-        {
-            target.Character.TakeDamage(_selfShotStats.GetDamage() * 1.5f);
-            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
-            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
-            Debug.Log(this._effector.AllyCharacter.Name + " (self) : CRIT hit ! " + _selfShotStats.GetDamage() * 1.5f + " damage dealt");
-        }
-        else
-        {
-            target.Character.TakeDamage(_selfShotStats.GetDamage());
-            Debug.Log(this._effector.AllyCharacter.Name + " (self) : hit ! " + _selfShotStats.GetDamage() + " damage dealt");
-        }
+        var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = FOCUS_TARGET_TIME };
+        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)
     {
-        return (unit.GridPosition - this._effector.GridPosition).magnitude <= 1;
+        return (unit.GridPosition - this._effector.GridPosition).magnitude < 2;
     }
 
     public override string GetAllyDescription()

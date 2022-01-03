@@ -7,9 +7,15 @@ public class EnemyUnit : GridBasedUnit
     private GeneralRenderer _renderer;
     private Color _originalColor;
 
+    public EnemyCharacter EnemyCharacter { get => (EnemyCharacter)_character; }
+
+    private BasicEnemyShot _basicEnemyShot;
+
     private void Awake()
     {
         _renderer = GetComponentInChildren<GeneralRenderer>();
+        _basicEnemyShot = new BasicEnemyShot();
+        _basicEnemyShot.SetEffector(this);
     }
 
     protected override bool IsEnemy()
@@ -47,5 +53,21 @@ public class EnemyUnit : GridBasedUnit
     {
         SpriteRenderer renderer = GetComponentInChildren<SpriteRenderer>();
         renderer.sprite = GlobalGameManager.Instance.GetEnemySprite();
+    }
+
+    public void MakeTurn()
+    {
+        /// TODO select best ability to use depending on priorities
+
+        _basicEnemyShot.CalculateBestTarget();
+        
+        if (_basicEnemyShot.CanExecute())
+        {
+            _basicEnemyShot.Execute();
+        }
+        else
+        {
+            Debug.Log("No target available: enemy skipping turn.");
+        }
     }
 }

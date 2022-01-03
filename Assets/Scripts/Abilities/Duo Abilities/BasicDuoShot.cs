@@ -43,7 +43,7 @@ public class BasicDuoShot : BaseDuoAbility
         _allyShotStats.UpdateWithEmotionModifiers(_effector);
     }
 
-    protected override bool CanExecute()
+    public override bool CanExecute()
     {
         return _chosenAlly != null && _targetIndex >= 0;
     }
@@ -89,13 +89,16 @@ public class BasicDuoShot : BaseDuoAbility
         }
     }
 
-    protected override void Execute()
+    public override void Execute()
     {
         GridBasedUnit target = _possibleTargets[_targetIndex];
 
         Debug.Log("we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
         SelfShoot(target, _selfShotStats);
         AllyShoot(target, _allyShotStats);
+
+        var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = FOCUS_TARGET_TIME };
+        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)

@@ -16,6 +16,7 @@ public class Relationship
     }
 
     private AllyCharacter _source;
+
     [Serializable]
     private class Gauge
     {
@@ -44,6 +45,9 @@ public class Relationship
 
     private List<EnumEmotions> _listEmotions;
     public List<EnumEmotions> ListEmotions { get { return _listEmotions; } }
+
+    public bool CheckedDuoRefusal { get; set; } = false;
+    public bool AcceptedDuo { get; set; }
 
     /// <summary>
     /// Returns the current value of the gauge representing the <c>sentiment</c>.
@@ -78,10 +82,48 @@ public class Relationship
     /// indicated by <c>gain</c>, and updates the level of the gauge
     /// if necessary.
     /// </summary>
-    public void IncreaseSentiment(EnumSentiment sentiment, int gain)
+    public void IncreaseSentiment(EnumSentiment sentiment, int gain, bool checkPrejudice = true)
     {
+        if (checkPrejudice && gain < 0 && IsFeeling(EnumEmotions.Prejudice))
+        {
+            List<EnumClasses> against = new List<EnumClasses> { _target.CharacterClass };
+            switch (_target.CharacterClass)
+            {
+                case EnumClasses.Berserker:
+                    against.Add(EnumClasses.Engineer);
+                    break;
+                case EnumClasses.Engineer:
+                    against.Add(EnumClasses.Berserker);
+                    break;
+                case EnumClasses.Sniper:
+                    against.Add(EnumClasses.Hitman);
+                    break;
+                case EnumClasses.Hitman:
+                    against.Add(EnumClasses.Sniper);
+                    break;
+                case EnumClasses.Bodyguard:
+                    against.Add(EnumClasses.Smuggler);
+                    break;
+                case EnumClasses.Smuggler:
+                    against.Add(EnumClasses.Bodyguard);
+                    break;
+                default:
+                    break;
+            }
+
+            foreach (AllyUnit unit in CombatGameManager.Instance.AllAllyUnits)
+            {
+                AllyCharacter character = unit.AllyCharacter;
+                if (character == _target || character == _source) continue;
+
+                if (against.Contains(character.CharacterClass))
+                {
+                    _source.Relationships[character].IncreaseSentiment(sentiment, gain, false);
+                }
+            }
+        }
+
         Gauge gauge = _gauges[sentiment];
-        
 
         List<Trait> listeSelfTrait = _source.Traits;
         foreach (Trait trait in listeSelfTrait)

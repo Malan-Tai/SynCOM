@@ -44,7 +44,7 @@ public class CombatGameManager : MonoBehaviour
 
     public AllyUnit CurrentUnit { get { return _controllableUnits[_currentUnitIndex]; } }
 
-    public BaseAbility CurrentAbility { get { return _controllableUnits[_currentUnitIndex].CurrentAbility; } }
+    public BaseAllyAbility CurrentAbility { get { return _controllableUnits[_currentUnitIndex].CurrentAbility; } }
 
     [SerializeField]
     private List<EnemyUnit> _enemyUnits;
@@ -62,6 +62,7 @@ public class CombatGameManager : MonoBehaviour
 
     public delegate void NewTurnEvent();
     public static event NewTurnEvent OnNewTurn;
+    // TODO : for now, OnNewTurn is called on every new ally AND enemy turn, this should be changed
 
     public delegate void EventSelectUnit(int squadIndex);
     public static event EventSelectUnit OnUnitSelected;
@@ -107,6 +108,37 @@ public class CombatGameManager : MonoBehaviour
     {
         List<AllyUnit> toRemove = new List<AllyUnit>();
 
+#if UNITY_EDITOR
+        bool allNull = true;
+        foreach (AllyCharacter charac in GlobalGameManager.Instance.currentSquad)
+        {
+            if (charac != null)
+            {
+                allNull = false;
+                break;
+            }
+        }
+
+        if (allNull)
+        {
+            List<AllyCharacter> characters = new List<AllyCharacter>();
+
+            int i = 0;
+            foreach (AllyUnit ally in _allAllyUnits)
+            {
+                ally.SetCharacter(new AllyCharacter((EnumClasses)i, 20, 2, 65, 10, 15, 20, 10, 60));
+                characters.Add(ally.AllyCharacter);
+                i++;
+            }
+
+            foreach (AllyUnit ally in _allAllyUnits)
+            {
+                ally.AllyCharacter.InitializeRelationships(characters);
+            }
+        }
+        else
+#endif
+        {
         int i = 0;
         foreach (AllyUnit ally in _allAllyUnits)
         {
@@ -118,10 +150,10 @@ public class CombatGameManager : MonoBehaviour
             }
             else
             {
-                ally.Character = GlobalGameManager.Instance.currentSquad[i];
-                ally.InitSprite();
+                ally.SetCharacter(GlobalGameManager.Instance.currentSquad[i]);
             }
             i++;
+        }
         }
 
         foreach (AllyUnit unit in toRemove)
@@ -133,8 +165,7 @@ public class CombatGameManager : MonoBehaviour
 
         foreach (EnemyUnit enemy in _enemyUnits)
         {
-            enemy.Character = new EnemyCharacter(5, 2, 65, 10, 15, 20, 4, 60);
-            enemy.InitSprite();
+            enemy.SetCharacter(new EnemyCharacter(6, 2, 65, 10, 15, 20, 4, 60));
         }
 
         foreach (AllyUnit ally in _allAllyUnits)
@@ -255,6 +286,7 @@ public class CombatGameManager : MonoBehaviour
         if (_controllableUnits.Count <= 0)
         {
             print("end turn");
+            NewEnemyTurn();
             NewAllyTurn();
             return;
         }
@@ -267,7 +299,7 @@ public class CombatGameManager : MonoBehaviour
 
     public void NewAllyTurn()
     {
-        print("new turn");
+        print("new ally turn");
         if (OnNewTurn != null) OnNewTurn();
 
         foreach (AllyUnit unit in _allAllyUnits)
@@ -298,7 +330,20 @@ public class CombatGameManager : MonoBehaviour
 
     public void NewEnemyTurn()
     {
+        print("new enemy turn");
+        if (OnNewTurn != null) OnNewTurn();
 
+        foreach (EnemyUnit unit in _enemyUnits)
+        {
+            if (unit.Character.IsAlive)
+            {
+                _camera.SwitchParenthood(unit);
+
+                unit.NewTurn();
+                unit.MakeTurn();
+                FinishEnemyUnitTurn();
+            }
+        }
     }
 
     public void FinishEnemyUnitTurn()
@@ -306,6 +351,7 @@ public class CombatGameManager : MonoBehaviour
         // Check mission end
         if (CheckMissionEnd())
         {
+            print("end");
             return;
         }
     }

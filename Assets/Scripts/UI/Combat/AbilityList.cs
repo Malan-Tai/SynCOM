@@ -19,7 +19,7 @@ public class AbilityList : MonoBehaviour
 
         _rectTransform = GetComponent<RectTransform>();
 
-        Populate(new List<BaseAbility>
+        Populate(new List<BaseAllyAbility>
         {
             new HunkerDown(),
             new BasicShot(),
@@ -42,7 +42,7 @@ public class AbilityList : MonoBehaviour
         AllyUnit.OnStoppedUsingAbility -= Show;
     }
 
-    public void Populate(List<BaseAbility> abilities)
+    public void Populate(List<BaseAllyAbility> abilities)
     {
         float x = 10;
         int i = 0;
@@ -50,7 +50,7 @@ public class AbilityList : MonoBehaviour
 
         _rectTransform.sizeDelta = new Vector2(10, 100);
         
-        foreach (BaseAbility ability in abilities)
+        foreach (BaseAllyAbility ability in abilities)
         {
             AbilityButton btn;
             if (i < _buttons.Length)
@@ -82,7 +82,7 @@ public class AbilityList : MonoBehaviour
         }
     }
 
-    private void Hide(BaseAbility ability)
+    private void Hide(BaseAllyAbility ability)
     {
         this.transform.localPosition += new Vector3(0, OFFSET_Y, 0);
     }

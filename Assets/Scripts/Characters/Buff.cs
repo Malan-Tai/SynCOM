@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 /// <summary>
-/// Buffs are temporary traits that affect performannces in combat.
+/// Buffs are temporary traits that affect performances in combat.
 /// Note that debuffs are just buffs with negative values.
 /// </summary>
 public class Buff : Trait
@@ -63,7 +63,7 @@ public class Buff : Trait
         /// override in derived classes to implement special effects on expiration
 
         CombatGameManager.OnNewTurn -= HandleNewTurn;
-        this._ownerUnit.CurrentBuffs.Remove(this);
+        this._ownerUnit.Character.CurrentBuffs.Remove(this);
     }
 
     public override int GetAllyToSelfSentimentGain(EnumSentiment sentiment, int baseSentiment)
@@ -108,6 +108,6 @@ public class Buff : Trait
 
     public override string GetDescription()
     {
-        return "";
+        return "A basic buff";
     }
 }
