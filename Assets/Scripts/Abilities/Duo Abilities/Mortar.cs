@@ -38,7 +38,7 @@ public class Mortar : BaseDuoAbility
         return "Mortar";
     }
 
-    protected override bool CanExecute()
+    public override bool CanExecute()
     {
         return _chosenAlly != null && targets.Count != 0;
     }
@@ -88,7 +88,8 @@ public class Mortar : BaseDuoAbility
                 _areaOfEffectTiles.Add(map[tileCoord]);
 
                 CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(tileCoord);
-                _target.UpdateTileZoneDisplay(_areaOfEffectTiles, TileZoneDisplayEnum.AttackZoneDisplay);
+                //_target.UpdateTileZoneDisplay(_areaOfEffectTiles, TileZoneDisplayEnum.AttackZoneDisplay);
+                _target.DisplayTileZone("DamageZone", _areaOfEffectTiles, false);
 
                 // Je parcours la liste des enemis pour récupérer les ennemis ciblés
 
@@ -106,7 +107,7 @@ public class Mortar : BaseDuoAbility
         }
     }
 
-    protected override void Execute()
+    public override void Execute()
     {
         
     }

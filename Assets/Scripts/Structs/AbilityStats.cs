@@ -235,7 +235,7 @@ public struct AbilityStats
 
         if (considerBuffs)
         {
-            foreach (Buff buff in this._unit.CurrentBuffs)
+            foreach (Buff buff in this._unit.Character.CurrentBuffs)
             {
                 float bonus = buff.GetHitRateModifier();
                 if (bonus > 0) hitMissReductionFromBuff *= 1 - bonus;
@@ -244,7 +244,7 @@ public struct AbilityStats
 
         if (considerDebuffs)
         {
-            foreach (Buff buff in this._unit.CurrentBuffs)
+            foreach (Buff buff in this._unit.Character.CurrentBuffs)
             {
                 float malus = buff.GetHitRateModifier();
                 if (malus < 0) hitSucessReductionFromDebuff *= 1 + malus;

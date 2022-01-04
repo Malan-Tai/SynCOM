@@ -51,7 +51,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
         return "Grenade Toss";
     }
 
-    protected override bool CanExecute()
+    public override bool CanExecute()
     {
         // position de la grenade :
         // - à 5 tiles de l'effector
@@ -85,7 +85,10 @@ public class GrenadeTossEngineer : BaseDuoAbility
             }
         }
         Debug.Log(_possibleTargetsTiles.Count);
-        _targetableTiles.UpdateTileZoneDisplay(_possibleTargetsTiles, TileZoneDisplayEnum.MoveZoneDisplay);
+        //_targetableTiles.UpdateTileZoneDisplay(_possibleTargetsTiles, TileZoneDisplayEnum.MoveZoneDisplay);
+        _targetableTiles.DisplayTileZone("AttackZone", _possibleTargetsTiles, false);
+
+
     }
 
     protected override void EnemyTargetingInput()
@@ -128,7 +131,8 @@ public class GrenadeTossEngineer : BaseDuoAbility
                 _areaOfEffectTiles.Add(map[tileCoord]);
 
                 CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(tileCoord);
-                _targetedTiles.UpdateTileZoneDisplay(_areaOfEffectTiles, TileZoneDisplayEnum.AttackZoneDisplay);
+                //_targetedTiles.UpdateTileZoneDisplay(_areaOfEffectTiles, TileZoneDisplayEnum.AttackZoneDisplay);
+                _targetableTiles.DisplayTileZone("DamageZone", _areaOfEffectTiles, false);
 
                 // Je parcours la liste des enemis pour récupérer les ennemis ciblés
                 // Facultatif ? devra être refait de toute façon - le radius réel est déterminé à  l'Execute()
@@ -148,7 +152,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
         }
     }
 
-    protected override void Execute()
+    public override void Execute()
     {
         // Premier test : le Sniper touche-t-il la grenade
 

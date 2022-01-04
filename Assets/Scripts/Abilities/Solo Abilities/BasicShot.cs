@@ -111,11 +111,13 @@ public class BasicShot : BaseAllyAbility
         int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
         int randCrit = UnityEngine.Random.Range(0, 100);
 
-        if (randShot < _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover)) {
+        if (randShot < _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
+        {
             Debug.Log("i am shooting at " + _possibleTargets[_targetIndex].GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
             AttackHitOrMiss(_effector, target as EnemyUnit, true);
 
-            if (randCrit < _selfShotStats.GetCritRate()) {
+            if (randCrit < _selfShotStats.GetCritRate())
+            {
                 AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage * 1.5f, true);
             }
             else
@@ -127,9 +129,6 @@ public class BasicShot : BaseAllyAbility
         {
             AttackHitOrMiss(_effector, target as EnemyUnit, false);
             Debug.Log(this._effector.AllyCharacter.Name + " (self) : missed");
-=========
-            target.Missed();
-            Debug.Log("Dice got " + randShot + " and had to be lower than " + (_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover)) + ": Missed");
         }
 
         var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
