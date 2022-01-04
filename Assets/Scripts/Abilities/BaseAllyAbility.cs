@@ -245,9 +245,8 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
         _temporaryChosenAlly = null;
         _chosenAlly = null;
-        _possibleAllies.Clear();
-
         _freeForDuo = false;
+        _possibleAllies.Clear();
         base.EndAbility();
     }
 
