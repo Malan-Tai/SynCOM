@@ -10,7 +10,7 @@ public class GridBasedUnit : MonoBehaviour
 
     public Vector2Int GridPosition { get { return _gridPosition; } }
 
-    public InterruptionQueue InterruptionQueue { get; private set; }
+    public InterruptionQueue InterruptionQueue { get; protected set; }
 
     protected Character _character;
     public Character Character
@@ -71,7 +71,7 @@ public class GridBasedUnit : MonoBehaviour
         InterruptionQueue = GetComponent<InterruptionQueue>();
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         if (_updatePathfinder)
         {

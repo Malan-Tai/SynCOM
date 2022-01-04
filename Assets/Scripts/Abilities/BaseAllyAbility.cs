@@ -4,8 +4,6 @@ using UnityEngine;
 
 public abstract class BaseAllyAbility : BaseAbility
 {
-    protected const float FOCUS_TARGET_TIME = 1f;
-
     public delegate void EndAbilityEvent(bool executed);
     public event EndAbilityEvent OnAbilityEnded;
 
@@ -165,7 +163,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 {
     protected AllyUnit _temporaryChosenAlly = null;
     protected AllyUnit _chosenAlly = null;
-    private List<AllyUnit> _possibleAllies = null;
+    private List<AllyUnit> _possibleAllies = new List<AllyUnit>();
 
     protected bool _freeForDuo = false;
 
@@ -213,7 +211,6 @@ public abstract class BaseDuoAbility : BaseAllyAbility
     {
         base.SetEffector(effector);
 
-        _possibleAllies = new List<AllyUnit>();
         foreach (AllyUnit unit in CombatGameManager.Instance.ControllableUnits)
         {
             if (unit != effector && IsAllyCompatible(unit))
@@ -234,7 +231,10 @@ public abstract class BaseDuoAbility : BaseAllyAbility
             RequestTargetsUpdate(_possibleAllies);
             RequestTargetSymbolUpdate(_temporaryChosenAlly);
         }
-        else FinalizeAbility(false);
+        /*else Caused some cursed nullpointer exception because it wasn't updating UI
+        {
+            FinalizeAbility(false);
+        }*/
     }
 
     protected override void EndAbility()
@@ -245,9 +245,8 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
         _temporaryChosenAlly = null;
         _chosenAlly = null;
-        _possibleAllies = null;
-
         _freeForDuo = false;
+        _possibleAllies.Clear();
         base.EndAbility();
     }
 

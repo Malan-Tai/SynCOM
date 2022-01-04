@@ -5335,7 +5335,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 508610111}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -5347,7 +5347,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ae87a24cc67e45946b0da86e7fd16267, type: 2}
+  - {fileID: 2100000, guid: bc9ae3c530f9fd640b2c46405cbdfdc7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -15490,8 +15490,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _displayHeight: 0.015
   _mouseHoverTileSprite: {fileID: 21300000, guid: 76bf20e64a169aa4c8a14c4730632f0b, type: 3}
-  _gridMaterial: {fileID: 2100000, guid: ae87a24cc67e45946b0da86e7fd16267, type: 2}
-  _gridRenderer: {fileID: 508610112}
+  _presets:
+  - {fileID: 11400000, guid: f417adb5653384c489a0d1b47ddd1033, type: 2}
+  - {fileID: 11400000, guid: 9a3f2be7300b5da4aa44ed567f4cb654, type: 2}
+  - {fileID: 11400000, guid: 2ce591c01a238d5409e9c87a3db6981a, type: 2}
+  - {fileID: 11400000, guid: 41c83cdc1dc640644bcad149e554e839, type: 2}
+  _tileZoneRendererPrefab: {fileID: 5751786864067872331, guid: 971dee6c24a576b4b987bd432e7f2a21, type: 3}
+  _gridLinesRenderer: {fileID: 508610112}
 --- !u!4 &1556033055
 Transform:
   m_ObjectHideFlags: 0

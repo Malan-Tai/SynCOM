@@ -107,7 +107,7 @@ public class Devouring : BaseDuoAbility
         _effector.Heal(6);
         _effector.Character.CurrentBuffs.Add(new Buff(3, _effector, damageBuff: 2f, critBuff: 0.5f, mitigationBuff: -0.5f));
 
-        var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = FOCUS_TARGET_TIME };
+        var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
         _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
     }
 
