@@ -90,11 +90,11 @@ public class RelationshipEventsManager : MonoBehaviour
                 break;
 
             case RelationshipEventEffectType.RefuseToDuo:
-                result.refusedDuo = Random.Range(0f, 1f) < relationshipEvent.refusalChance;
+                result.refusedDuo = Random.Range(0f, 1f) < relationshipEvent.chance;
                 break;
 
             case RelationshipEventEffectType.FreeAction:
-                bool rolledOk = Random.Range(0f, 1f) < relationshipEvent.freeActionChance;
+                bool rolledOk = Random.Range(0f, 1f) < relationshipEvent.chance;
                 result.freeActionForSource  = result.freeActionForSource    || (relationshipEvent.freeAction        && rolledOk);
                 result.freeActionForDuo     = result.freeActionForDuo       || (relationshipEvent.freeActionForDuo  && rolledOk);
                 break;

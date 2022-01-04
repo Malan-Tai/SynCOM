@@ -38,8 +38,7 @@ MonoBehaviour:
   admirationChangeSTT: 0
   trustChangeSTT: 0
   sympathyChangeSTT: 0
-  refusalChance: 0
+  chance: 0.3
   interruptions: []
-  freeActionChance: 0.3
   freeAction: 1
   freeActionForDuo: 0

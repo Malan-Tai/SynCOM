@@ -51,16 +51,14 @@ public class RelationshipEvent : ScriptableObject
     public int trustChangeSTT;
     public int sympathyChangeSTT;
 
-    // refuse to duo
+    // generic chance field
     [Range(0, 1)]
-    public float refusalChance;
+    public float chance;
 
     // interruption
     public InterruptionScriptableObject[] interruptions;
 
     // free action
-    [Range(0, 1)]
-    public float freeActionChance;
     public bool freeAction;
     public bool freeActionForDuo;
 

@@ -51,14 +51,13 @@ public class RelationshipEventEditor : Editor
     private SerializedProperty _trustChangeSTT;
     private SerializedProperty _sympathyChangeSTT;
 
-    // refuse to duo
-    private SerializedProperty _refusalChance;
+    // generic chance field
+    private SerializedProperty _chance;
 
     // interruptions
     private SerializedProperty _interruptions;
 
     // free action
-    public SerializedProperty _freeActionChance;
     public SerializedProperty _freeAction;
     public SerializedProperty _freeActionForDuo;
 
@@ -101,12 +100,10 @@ public class RelationshipEventEditor : Editor
         _trustChangeSTT                 = serializedObject.FindProperty("trustChangeSTT");
         _sympathyChangeSTT              = serializedObject.FindProperty("sympathyChangeSTT");
 
-        _refusalChance                  = serializedObject.FindProperty("refusalChance");
+        _chance                         = serializedObject.FindProperty("chance");
 
         _interruptions                  = serializedObject.FindProperty("interruptions");
 
-
-        _freeActionChance               = serializedObject.FindProperty("freeActionChance");
         _freeAction                     = serializedObject.FindProperty("freeAction");
         _freeActionForDuo               = serializedObject.FindProperty("freeActionForDuo");
 }
@@ -211,11 +208,11 @@ public class RelationshipEventEditor : Editor
             }
             else if (_effectType.enumValueIndex == (int)RelationshipEventEffectType.RefuseToDuo)
             {
-                EditorGUILayout.PropertyField(_refusalChance);
+                EditorGUILayout.PropertyField(_chance);
             }
             else if (_effectType.enumValueIndex == (int)RelationshipEventEffectType.FreeAction)
             {
-                EditorGUILayout.PropertyField(_freeActionChance);
+                EditorGUILayout.PropertyField(_chance);
                 EditorGUILayout.PropertyField(_freeAction);
                 EditorGUILayout.PropertyField(_freeActionForDuo);
             }
