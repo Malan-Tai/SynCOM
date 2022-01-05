@@ -12,6 +12,7 @@ public abstract class BaseAbility
         _effector = effector;
         _interruptionQueue = effector.InterruptionQueue;
     }
+
     protected virtual void HandleRelationshipEventResult(RelationshipEventsResult result)
     {
         foreach (InterruptionParameters param in result.interruptions)

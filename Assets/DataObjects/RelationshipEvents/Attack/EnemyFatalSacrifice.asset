@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f6c0a609471fce429c6b769d34b1e7d, type: 3}
+  m_Name: EnemyFatalSacrifice
+  m_EditorClassIdentifier: 
+  triggerType: 1
+  triggersOnlyOnce: 1
+  onlyCheckDuoAlly: 0
+  dontCheckDuoAlly: 0
+  onlyCheckTarget: 0
+  dontCheckTarget: 0
+  requiresEmotions: 1
+  requiredEmotionsTowardsSource: 060000000e000000
+  requiredEmotionsTowardsTarget: 
+  targetsAlly: 1
+  onMiss: 0
+  onHit: 0
+  onCrit: 0
+  onDamage: 1
+  onFatal: 1
+  minMaxHealthRatio: {x: 0, y: 1}
+  killSteal: 0
+  effectType: 2
+  interrupts: 1
+  reciprocal: 0
+  admirationChange: 0
+  trustChange: 0
+  sympathyChange: 0
+  sourceToTarget: 0
+  admirationChangeSTT: 0
+  trustChangeSTT: 0
+  sympathyChangeSTT: 0
+  chance: 1
+  interruptions:
+  - {fileID: 11400000, guid: c2c578f02e0d5e548b664f626f04d89b, type: 2}
+  freeAction: 0
+  freeActionForDuo: 0
+  maxRange: 99

@@ -19,6 +19,10 @@ public abstract class Interruption
                 interruption = new FocusTargetForGivenTimeInterruption();
                 break;
 
+            case InterruptionType.FocusTargetUntilEndOfMovement:
+                interruption = new FocusTargetUntilEndOfMovementInterruption();
+                break;
+
             default:
                 return null;
         }

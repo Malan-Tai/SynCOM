@@ -62,6 +62,9 @@ public class RelationshipEventEditor : Editor
     public SerializedProperty _freeAction;
     public SerializedProperty _freeActionForDuo;
 
+    // sacrifice
+    public SerializedProperty _maxRange;
+
     #endregion
 
     // is called once when according object gains focus in the hierachy
@@ -108,7 +111,9 @@ public class RelationshipEventEditor : Editor
 
         _freeAction                     = serializedObject.FindProperty("freeAction");
         _freeActionForDuo               = serializedObject.FindProperty("freeActionForDuo");
-}
+
+        _maxRange                       = serializedObject.FindProperty("maxRange");
+    }
 
     public override void OnInspectorGUI()
     {
@@ -218,6 +223,11 @@ public class RelationshipEventEditor : Editor
                 EditorGUILayout.PropertyField(_chance);
                 EditorGUILayout.PropertyField(_freeAction);
                 EditorGUILayout.PropertyField(_freeActionForDuo);
+            }
+            else if (_effectType.enumValueIndex == (int)RelationshipEventEffectType.Sacrifice)
+            {
+                EditorGUILayout.PropertyField(_chance);
+                EditorGUILayout.PropertyField(_maxRange);
             }
 
             if (_interrupts.boolValue)

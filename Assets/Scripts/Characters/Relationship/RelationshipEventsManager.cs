@@ -105,12 +105,17 @@ public class RelationshipEventsManager : MonoBehaviour
                 break;
 
             case RelationshipEventEffectType.Sacrifice:
+                bool rangeOk = Vector2.Distance(source.GridPosition, currentUnit.GridPosition) <= relationshipEvent.maxRange;
+                rolledOk = Random.Range(0f, 1f) < relationshipEvent.chance;
+                actuallyExecuted = rangeOk && rolledOk;
+                if (actuallyExecuted) result.sacrificedTarget = currentUnit;
+                break;
 
             default:
                 break;
         }
 
-        if (relationshipEvent.interrupts)
+        if (relationshipEvent.interrupts && actuallyExecuted)
         {
             foreach (InterruptionScriptableObject interruption in relationshipEvent.interruptions)
             {
