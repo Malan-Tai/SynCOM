@@ -37,6 +37,33 @@ public class RelationshipDebugGUI : MonoBehaviour
                 print(emotionString);
             }
 
+            if (GUI.Button(new Rect(120, i * 100 + 30, 45, 20), "-10"))
+            {
+                relationship.IncreaseSentiment(EnumSentiment.Trust, -10);
+            }
+            if (GUI.Button(new Rect(170, i * 100 + 30, 45, 20), "+10"))
+            {
+                relationship.IncreaseSentiment(EnumSentiment.Trust, 10);
+            }
+
+            if (GUI.Button(new Rect(120, i * 100 + 50, 45, 20), "-10"))
+            {
+                relationship.IncreaseSentiment(EnumSentiment.Admiration, -10);
+            }
+            if (GUI.Button(new Rect(170, i * 100 + 50, 45, 20), "+10"))
+            {
+                relationship.IncreaseSentiment(EnumSentiment.Admiration, 10);
+            }
+
+            if (GUI.Button(new Rect(120, i * 100 + 70, 45, 20), "-10"))
+            {
+                relationship.IncreaseSentiment(EnumSentiment.Sympathy, -10);
+            }
+            if (GUI.Button(new Rect(170, i * 100 + 70, 45, 20), "+10"))
+            {
+                relationship.IncreaseSentiment(EnumSentiment.Sympathy, 10);
+            }
+
             i++;
         }
     }
