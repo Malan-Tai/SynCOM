@@ -10,6 +10,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
     List<Tile> _areaOfEffectTiles = new List<Tile>();
     private Vector2Int _previousTileCoord;
     List<EnemyUnit> targets = new List<EnemyUnit>();
+    List<AllyUnit> allyTargets = new List<AllyUnit>();
     Vector2Int tileCoord;
 
     List<Tile> _possibleTargetsTiles = new List<Tile>();
@@ -43,7 +44,20 @@ public class GrenadeTossEngineer : BaseDuoAbility
 
     public override string GetDescription()
     {
-        return "You throw a grenade in the air for the Sniper to shoot at";
+        string res = "You throw a grenade in the air for the Sniper to shoot at";
+        if (_chosenAlly != null)
+        {
+            res += "\nAcc: 100%" +
+                    " | Crit: 0%" +
+                    " | Dmg: " + _selfShotStats.GetDamage();
+        }
+        else if (_chosenAlly == null)
+        {
+            res += "\nAcc: 100%" +
+                    " | Crit: 0%" +
+                    " | Dmg: " + _effector.AllyCharacter.Damage * 1.5;
+        }
+        return res;
     }
 
     public override string GetName()
@@ -104,7 +118,6 @@ public class GrenadeTossEngineer : BaseDuoAbility
 
             tileCoord = CombatGameManager.Instance.GridMap.WorldToGrid(hitData.point);
 
-            // TODO: ne pas déplacer le curseur s'il tombe sur une tile hors de portée ??? Faisable, mais souhaitable ?
             if (tileCoord == _previousTileCoord)
             {
                 return;
@@ -120,25 +133,11 @@ public class GrenadeTossEngineer : BaseDuoAbility
 
                 _areaOfEffectTiles.Clear();
 
-                // TODO: Faire une fonction : public List<Tile> GetAreaOfEffet[Shape](Vector2Int center, [additional params : int radius, etc.])
-                //       et qui prend en compte les bords de la Map pour éviter d'ajouter des Tiles qui n'existent pas.
-
                 
                 //GridMap map = CombatGameManager.Instance.GridMap;
                 _areaOfEffectTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(tileCoord, 3);
 
-                //_areaOfEffectTiles.Add(map[tileCoord - new Vector2Int(2, 0)]);
-                //_areaOfEffectTiles.Add(map[tileCoord - new Vector2Int(1, 0)]);
-                //_areaOfEffectTiles.Add(map[tileCoord + new Vector2Int(2, 0)]);
-                //_areaOfEffectTiles.Add(map[tileCoord + new Vector2Int(1, 0)]);
-                //_areaOfEffectTiles.Add(map[tileCoord - new Vector2Int(0, 2)]);
-                //_areaOfEffectTiles.Add(map[tileCoord - new Vector2Int(0, 1)]);
-                //_areaOfEffectTiles.Add(map[tileCoord + new Vector2Int(0, 2)]);
-                //_areaOfEffectTiles.Add(map[tileCoord + new Vector2Int(0, 1)]);
-                //_areaOfEffectTiles.Add(map[tileCoord]);
-
                 CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(tileCoord);
-                //_targetedTiles.UpdateTileZoneDisplay(_areaOfEffectTiles, TileZoneDisplayEnum.AttackZoneDisplay);
                 _targetableTiles.DisplayTileZone("DamageZone", _areaOfEffectTiles, false);
 
                 // Je parcours la liste des enemis pour récupérer les ennemis ciblés
@@ -146,6 +145,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
                 // Pour mettre les cibles en surbrillance
 
                 targets.Clear();
+                allyTargets.Clear();
                 foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
                 {
                     if ((enemy.GridPosition - tileCoord).magnitude <= _radius)
@@ -153,7 +153,13 @@ public class GrenadeTossEngineer : BaseDuoAbility
                         targets.Add(enemy);
                     }
                 }
-
+                foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
+                {
+                    if ((ally.GridPosition - tileCoord).magnitude <= _radius)
+                    {
+                        allyTargets.Add(ally);
+                    }
+                }
                 //Debug.Log(targets.Count);
             }
         }
@@ -183,7 +189,14 @@ public class GrenadeTossEngineer : BaseDuoAbility
         // Ne peux rater ni faire un coup critique
         foreach (EnemyUnit target in targets)
         {
-            target.Character.TakeDamage(_selfShotStats.GetDamage());
+            //target.Character.TakeDamage(_selfShotStats.GetDamage());
+            SelfShoot(target, _selfShotStats, alwaysHit: true, canCrit : false);
+        }
+        foreach (AllyUnit ally in allyTargets)
+        {
+            //target.Character.TakeDamage(_selfShotStats.GetDamage());
+            //SelfShoot(ally, _selfShotStats, alwaysHit: true, canCrit: false);
+            FriendlyFireDamage(_effector, ally, _selfShotStats.GetDamage(), ally.AllyCharacter);
         }
         Debug.Log("[Grenade Toss] Explosion");
     }
@@ -193,7 +206,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
         // The ally must be a Sniper
         // The grenade can be tossed at 5 tiles, and the sniper must be able to shoot it
         return
-            //(unit.AllyCharacter.CharacterClass == EnumClasses.Sniper) &&
+            //(unit.AllyCharacter.CharacterClass == EnumClasses.Sniper) && ----> à décommenter quand le debug sera fini
             (unit.GridPosition - this._effector.GridPosition).magnitude <= 5 + unit.AllyCharacter.RangeShot;
     }
 }

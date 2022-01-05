@@ -391,18 +391,18 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         relationshipAllyToSelf.IncreaseSentiment(sentiment, gain);
     }
 
-    protected virtual void SelfShoot(GridBasedUnit target, AbilityStats selfShotStats, bool alwaysHit = false)
+    protected virtual void SelfShoot(GridBasedUnit target, AbilityStats selfShotStats, bool alwaysHit = false, bool canCrit = true)
     {
         int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
         int randCrit = UnityEngine.Random.Range(0, 100);
 
-        Debug.Log("self to hit: " + randShot + " for " + selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover));
+        //Debug.Log("self to hit: " + randShot + " for " + selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover));
 
         if (alwaysHit || randShot < selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
         {
             AttackHitOrMiss(_effector, target as EnemyUnit, true, _chosenAlly.AllyCharacter);
 
-            if (randCrit < selfShotStats.GetCritRate())
+            if (canCrit && randCrit < selfShotStats.GetCritRate())
             {
                 AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage() * 1.5f, true, _chosenAlly.AllyCharacter);
             }
@@ -418,7 +418,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         }
     }
 
-    protected virtual void AllyShoot(GridBasedUnit target, AbilityStats allyShotStats, bool alwaysHit = false)
+    protected virtual void AllyShoot(GridBasedUnit target, AbilityStats allyShotStats, bool alwaysHit = false, bool canCrit = true)
     {
         int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
         int randCrit = UnityEngine.Random.Range(0, 100);
@@ -429,7 +429,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         {
             AttackHitOrMiss(_chosenAlly, target as EnemyUnit, true, _effector.AllyCharacter);
 
-            if (randCrit < allyShotStats.GetCritRate())
+            if (canCrit && randCrit < allyShotStats.GetCritRate())
             {
                 AttackDamage(_chosenAlly, target as EnemyUnit, allyShotStats.GetDamage() * 1.5f, true, _effector.AllyCharacter);
             }
