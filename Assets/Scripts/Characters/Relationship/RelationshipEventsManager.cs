@@ -119,7 +119,7 @@ public class RelationshipEventsManager : MonoBehaviour
         {
             foreach (InterruptionScriptableObject interruption in relationshipEvent.interruptions)
             {
-                result.interruptions.Add(interruption.ToParameters(currentUnit));
+                result.interruptions.Add(interruption.ToParameters(currentUnit, source));
             }
         }
 

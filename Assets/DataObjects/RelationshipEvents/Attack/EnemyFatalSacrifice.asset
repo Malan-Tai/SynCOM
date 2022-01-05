@@ -19,7 +19,7 @@ MonoBehaviour:
   onlyCheckTarget: 0
   dontCheckTarget: 0
   requiresEmotions: 1
-  requiredEmotionsTowardsSource: 060000000e000000
+  requiredEmotionsTowardsSource: 060000000e00000007000000
   requiredEmotionsTowardsTarget: 
   targetsAlly: 1
   onMiss: 0
@@ -39,9 +39,9 @@ MonoBehaviour:
   admirationChangeSTT: 0
   trustChangeSTT: 0
   sympathyChangeSTT: 0
-  chance: 1
+  chance: 0.4
   interruptions:
   - {fileID: 11400000, guid: c2c578f02e0d5e548b664f626f04d89b, type: 2}
   freeAction: 0
   freeActionForDuo: 0
-  maxRange: 99
+  maxRange: 6

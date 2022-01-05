@@ -9,13 +9,14 @@ public class InterruptionScriptableObject : ScriptableObject
 
     public float time;
 
-    public InterruptionParameters ToParameters(GridBasedUnit unit)
+    public InterruptionParameters ToParameters(GridBasedUnit currentUnit, GridBasedUnit sourceUnit)
     {
         return new InterruptionParameters
         {
             interruptionType = interruptionType,
-            target = unit,
-            time = time
+            time = time,
+            target = currentUnit,
+            position = sourceUnit.GridPosition
         };
     }
 }
