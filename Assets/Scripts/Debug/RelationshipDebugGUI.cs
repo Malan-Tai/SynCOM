@@ -19,7 +19,7 @@ public class RelationshipDebugGUI : MonoBehaviour
             if (current == unit) continue;
             Relationship relationship = current.AllyCharacter.Relationships[unit.AllyCharacter];
 
-            GUI.Box(new Rect(10, i * 100 + 10, 100, 90), "Relationship #" + i);
+            GUI.Box(new Rect(10, i * 100 + 10, 100, 90), "To " + unit.Character.Name);
 
             GUI.Label(new Rect(20, i * 100 + 30, 80, 20), new GUIContent("TRU" + relationship.GetGaugeLevel(EnumSentiment.Trust) + ": " + relationship.GetGaugeValue(EnumSentiment.Trust)));
             GUI.Label(new Rect(20, i * 100 + 50, 80, 20), new GUIContent("ADM" + relationship.GetGaugeLevel(EnumSentiment.Admiration) + ": " + relationship.GetGaugeValue(EnumSentiment.Admiration)));
@@ -37,29 +37,29 @@ public class RelationshipDebugGUI : MonoBehaviour
                 print(emotionString);
             }
 
-            if (GUI.Button(new Rect(120, i * 100 + 30, 45, 20), "-10"))
+            if (GUI.Button(new Rect(120, i * 100 + 32, 45, 20), "-10"))
             {
                 relationship.IncreaseSentiment(EnumSentiment.Trust, -10);
             }
-            if (GUI.Button(new Rect(170, i * 100 + 30, 45, 20), "+10"))
+            if (GUI.Button(new Rect(170, i * 100 + 32, 45, 20), "+10"))
             {
                 relationship.IncreaseSentiment(EnumSentiment.Trust, 10);
             }
 
-            if (GUI.Button(new Rect(120, i * 100 + 50, 45, 20), "-10"))
+            if (GUI.Button(new Rect(120, i * 100 + 54, 45, 20), "-10"))
             {
                 relationship.IncreaseSentiment(EnumSentiment.Admiration, -10);
             }
-            if (GUI.Button(new Rect(170, i * 100 + 50, 45, 20), "+10"))
+            if (GUI.Button(new Rect(170, i * 100 + 54, 45, 20), "+10"))
             {
                 relationship.IncreaseSentiment(EnumSentiment.Admiration, 10);
             }
 
-            if (GUI.Button(new Rect(120, i * 100 + 70, 45, 20), "-10"))
+            if (GUI.Button(new Rect(120, i * 100 + 76, 45, 20), "-10"))
             {
                 relationship.IncreaseSentiment(EnumSentiment.Sympathy, -10);
             }
-            if (GUI.Button(new Rect(170, i * 100 + 70, 45, 20), "+10"))
+            if (GUI.Button(new Rect(170, i * 100 + 76, 45, 20), "+10"))
             {
                 relationship.IncreaseSentiment(EnumSentiment.Sympathy, 10);
             }
