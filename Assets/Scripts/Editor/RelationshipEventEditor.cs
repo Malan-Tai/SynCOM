@@ -13,6 +13,7 @@ public class RelationshipEventEditor : Editor
     #region properties
     /// trigger
     private SerializedProperty _triggerType;
+    private SerializedProperty _triggersOnlyOnce;
 
     // involved
     private SerializedProperty _onlyCheckDuoAlly;
@@ -67,6 +68,7 @@ public class RelationshipEventEditor : Editor
     private void OnEnable()
     {
         _triggerType                    = serializedObject.FindProperty("triggerType");
+        _triggersOnlyOnce               = serializedObject.FindProperty("triggersOnlyOnce");
 
         _onlyCheckDuoAlly               = serializedObject.FindProperty("onlyCheckDuoAlly");
         _dontCheckDuoAlly               = serializedObject.FindProperty("dontCheckDuoAlly");
@@ -116,6 +118,7 @@ public class RelationshipEventEditor : Editor
         if (_foldTrigger = EditorGUILayout.BeginFoldoutHeaderGroup(_foldTrigger, "Trigger"))
         {
             EditorGUILayout.PropertyField(_triggerType);
+            EditorGUILayout.PropertyField(_triggersOnlyOnce);
 
             if (_triggerType.enumValueIndex == (int)RelationshipEventTriggerType.Attack)
             {

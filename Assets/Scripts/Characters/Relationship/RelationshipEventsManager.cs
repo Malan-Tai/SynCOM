@@ -39,20 +39,20 @@ public class RelationshipEventsManager : MonoBehaviour
             interruptions = new List<InterruptionParameters>()
         };
 
-        foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
+        foreach (RelationshipEvent relationshipEvent in _allEvents)
         {
-            AllyCharacter allyCharacter = ally.Character as AllyCharacter;
-            if (allyCharacter == source) continue;
-            bool isDuo = allyCharacter == duo;
-            bool isTarget = allyTarget != null && allyCharacter == allyTarget;
-            bool isBestDamager = allyCharacter == GetBestDamagerOf(enemyTarget);
-
-            foreach (RelationshipEvent relationshipEvent in _allEvents)
+            foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
             {
+                AllyCharacter allyCharacter = ally.Character as AllyCharacter;
+                if (allyCharacter == source) continue;
+                bool isDuo = allyCharacter == duo;
+                bool isTarget = allyTarget != null && allyCharacter == allyTarget;
+                bool isBestDamager = allyCharacter == GetBestDamagerOf(enemyTarget);
+
                 if (relationshipEvent.CorrespondsToTrigger(dummyTrigger, isDuo, isTarget, allyCharacter.HealthPoints / allyCharacter.MaxHealth, isBestDamager) &&
                     relationshipEvent.MeetsRelationshipRequirements(source, allyTarget, allyCharacter))
                 {
-                    Execute(relationshipEvent, source, allyCharacter, ally, ref result);
+                    if (Execute(relationshipEvent, source, allyCharacter, ally, ref result) && relationshipEvent.triggersOnlyOnce) break;
                 }
             }
         }
@@ -60,9 +60,10 @@ public class RelationshipEventsManager : MonoBehaviour
         return result;
     }
 
-    private void Execute(RelationshipEvent relationshipEvent, AllyCharacter source, AllyCharacter currentCharacter, AllyUnit currentUnit, ref RelationshipEventsResult result)
+    private bool Execute(RelationshipEvent relationshipEvent, AllyCharacter source, AllyCharacter currentCharacter, AllyUnit currentUnit, ref RelationshipEventsResult result)
     {
         print("executed " + relationshipEvent);
+        bool actuallyExecuted = true;
 
         switch (relationshipEvent.effectType)
         {
@@ -110,6 +111,8 @@ public class RelationshipEventsManager : MonoBehaviour
                 result.interruptions.Add(interruption.ToParameters(currentUnit));
             }
         }
+
+        return actuallyExecuted;
     }
 
     private AllyCharacter GetBestDamagerOf(EnemyCharacter enemy)

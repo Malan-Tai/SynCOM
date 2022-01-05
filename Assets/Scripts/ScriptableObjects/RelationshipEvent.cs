@@ -7,6 +7,8 @@ public class RelationshipEvent : ScriptableObject
 {
     /// trigger
     public RelationshipEventTriggerType triggerType;
+    [Tooltip("True if the event should only trigger once per opportunity : e.g. don't trigger multiple protection (it is therefore useless if you only check for duo ally)")]
+    public bool triggersOnlyOnce;
 
     // involved
     public bool onlyCheckDuoAlly;
