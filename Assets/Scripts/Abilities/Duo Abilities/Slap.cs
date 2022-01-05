@@ -35,7 +35,7 @@ public class Slap : BaseDuoAbility
         //AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Sympathy, -3);
         //AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, -3);
 
-        FriendlyFireDamage(_effector, _chosenAlly, 1, _chosenAlly.AllyCharacter);
+        FriendlyFireDamage(_effector, _chosenAlly, 1, _chosenAlly);
 
         var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = _chosenAlly, time = Interruption.FOCUS_TARGET_TIME };
         _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));

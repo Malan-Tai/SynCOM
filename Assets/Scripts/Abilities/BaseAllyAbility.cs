@@ -54,32 +54,32 @@ public abstract class BaseAllyAbility : BaseAbility
         _free = result.freeActionForSource;
     }
 
-    protected void AttackHitOrMiss(AllyUnit source, EnemyUnit target, bool hit, AllyCharacter duo = null)
+    protected void AttackHitOrMiss(AllyUnit source, EnemyUnit target, bool hit, AllyUnit duo = null)
     {
         if (!hit) target.Missed();
-        HandleRelationshipEventResult(RelationshipEventsManager.Instance.AllyOnEnemyAttackHitOrMiss(source.AllyCharacter, hit, duo));
+        HandleRelationshipEventResult(RelationshipEventsManager.Instance.AllyOnEnemyAttackHitOrMiss(source, hit, duo));
     }
 
-    protected void AttackDamage(AllyUnit source, EnemyUnit target, float damage, bool crit, AllyCharacter duo = null)
+    protected void AttackDamage(AllyUnit source, EnemyUnit target, float damage, bool crit, AllyUnit duo = null)
     {
         bool killed = target.TakeDamage(damage);
-        HandleRelationshipEventResult(RelationshipEventsManager.Instance.AllyOnEnemyAttackDamage(source.AllyCharacter, target.EnemyCharacter, damage, crit, duo));
+        HandleRelationshipEventResult(RelationshipEventsManager.Instance.AllyOnEnemyAttackDamage(source, target, damage, crit, duo));
 
-        if (killed) HandleRelationshipEventResult(RelationshipEventsManager.Instance.KillEnemy(source.AllyCharacter, target.EnemyCharacter, duo));
+        if (killed) HandleRelationshipEventResult(RelationshipEventsManager.Instance.KillEnemy(source, target, duo));
     }
 
-    protected void FriendlyFireDamage(AllyUnit source, AllyUnit target, float damage, AllyCharacter duo = null)
+    protected void FriendlyFireDamage(AllyUnit source, AllyUnit target, float damage, AllyUnit duo = null)
     {
         bool killed = target.TakeDamage(damage);
-        HandleRelationshipEventResult(RelationshipEventsManager.Instance.FriendlyFireDamage(source.AllyCharacter, target.AllyCharacter, killed, duo));
+        HandleRelationshipEventResult(RelationshipEventsManager.Instance.FriendlyFireDamage(source, target, killed, duo));
 
         // TODO : kill ally ?
     }
 
-    protected void Heal(AllyUnit source, AllyUnit target, float healAmount, AllyCharacter duo = null)
+    protected void Heal(AllyUnit source, AllyUnit target, float healAmount, AllyUnit duo = null)
     {
         target.Heal(healAmount);
-        HandleRelationshipEventResult(RelationshipEventsManager.Instance.HealAlly(source.AllyCharacter, target.AllyCharacter, duo));
+        HandleRelationshipEventResult(RelationshipEventsManager.Instance.HealAlly(source, target, duo));
     }
     #endregion
 
@@ -176,8 +176,8 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
     protected bool TryBeginDuo(AllyUnit source, AllyUnit duo)
     {
-        RelationshipEventsResult eventResult = RelationshipEventsManager.Instance.BeginDuo(source.AllyCharacter, duo.AllyCharacter);
-        RelationshipEventsResult invertedEventResult = RelationshipEventsManager.Instance.BeginDuo(duo.AllyCharacter, source.AllyCharacter);
+        RelationshipEventsResult eventResult = RelationshipEventsManager.Instance.BeginDuo(source, duo);
+        RelationshipEventsResult invertedEventResult = RelationshipEventsManager.Instance.BeginDuo(duo, source);
 
         HandleRelationshipEventResult(eventResult); // TODO : what happens if both interrupt ?
 
@@ -186,7 +186,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
     protected void EndExecutedDuo(AllyUnit source, AllyUnit duo)
     {
-        RelationshipEventsResult eventResult = RelationshipEventsManager.Instance.EndExecutedDuo(source.AllyCharacter, duo.AllyCharacter);
+        RelationshipEventsResult eventResult = RelationshipEventsManager.Instance.EndExecutedDuo(source, duo);
         HandleRelationshipEventResult(eventResult);
     }
     #endregion
@@ -400,21 +400,21 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
         if (alwaysHit || randShot < selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
         {
-            AttackHitOrMiss(_effector, target as EnemyUnit, true, _chosenAlly.AllyCharacter);
+            AttackHitOrMiss(_effector, target as EnemyUnit, true, _chosenAlly);
 
             if (canCrit && randCrit < selfShotStats.GetCritRate())
             {
-                AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage() * 1.5f, true, _chosenAlly.AllyCharacter);
+                AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage() * 1.5f, true, _chosenAlly);
             }
             else
             {
-                AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage(), false, _chosenAlly.AllyCharacter);
+                AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage(), false, _chosenAlly);
             }
         }
         else
         {
             Debug.Log("self missed");
-            AttackHitOrMiss(_effector, target as EnemyUnit, false, _chosenAlly.AllyCharacter);
+            AttackHitOrMiss(_effector, target as EnemyUnit, false, _chosenAlly);
         }
     }
 
@@ -427,21 +427,21 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
         if (alwaysHit || randShot < allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover))
         {
-            AttackHitOrMiss(_chosenAlly, target as EnemyUnit, true, _effector.AllyCharacter);
+            AttackHitOrMiss(_chosenAlly, target as EnemyUnit, true, _effector);
 
             if (canCrit && randCrit < allyShotStats.GetCritRate())
             {
-                AttackDamage(_chosenAlly, target as EnemyUnit, allyShotStats.GetDamage() * 1.5f, true, _effector.AllyCharacter);
+                AttackDamage(_chosenAlly, target as EnemyUnit, allyShotStats.GetDamage() * 1.5f, true, _effector);
             }
             else
             {
-                AttackDamage(_chosenAlly, target as EnemyUnit, allyShotStats.GetDamage(), false, _effector.AllyCharacter);
+                AttackDamage(_chosenAlly, target as EnemyUnit, allyShotStats.GetDamage(), false, _effector);
             }
         }
         else
         {
             Debug.Log("ally missed");
-            AttackHitOrMiss(_chosenAlly, target as EnemyUnit, false, _effector.AllyCharacter);
+            AttackHitOrMiss(_chosenAlly, target as EnemyUnit, false, _effector);
         }
     }
 

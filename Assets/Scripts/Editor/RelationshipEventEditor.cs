@@ -13,6 +13,7 @@ public class RelationshipEventEditor : Editor
     #region properties
     /// trigger
     private SerializedProperty _triggerType;
+    private SerializedProperty _triggersOnlyOnce;
 
     // involved
     private SerializedProperty _onlyCheckDuoAlly;
@@ -51,16 +52,18 @@ public class RelationshipEventEditor : Editor
     private SerializedProperty _trustChangeSTT;
     private SerializedProperty _sympathyChangeSTT;
 
-    // refuse to duo
-    private SerializedProperty _refusalChance;
+    // generic chance field
+    private SerializedProperty _chance;
 
     // interruptions
     private SerializedProperty _interruptions;
 
     // free action
-    public SerializedProperty _freeActionChance;
     public SerializedProperty _freeAction;
     public SerializedProperty _freeActionForDuo;
+
+    // sacrifice
+    public SerializedProperty _maxRange;
 
     #endregion
 
@@ -68,6 +71,7 @@ public class RelationshipEventEditor : Editor
     private void OnEnable()
     {
         _triggerType                    = serializedObject.FindProperty("triggerType");
+        _triggersOnlyOnce               = serializedObject.FindProperty("triggersOnlyOnce");
 
         _onlyCheckDuoAlly               = serializedObject.FindProperty("onlyCheckDuoAlly");
         _dontCheckDuoAlly               = serializedObject.FindProperty("dontCheckDuoAlly");
@@ -101,15 +105,15 @@ public class RelationshipEventEditor : Editor
         _trustChangeSTT                 = serializedObject.FindProperty("trustChangeSTT");
         _sympathyChangeSTT              = serializedObject.FindProperty("sympathyChangeSTT");
 
-        _refusalChance                  = serializedObject.FindProperty("refusalChance");
+        _chance                         = serializedObject.FindProperty("chance");
 
         _interruptions                  = serializedObject.FindProperty("interruptions");
 
-
-        _freeActionChance               = serializedObject.FindProperty("freeActionChance");
         _freeAction                     = serializedObject.FindProperty("freeAction");
         _freeActionForDuo               = serializedObject.FindProperty("freeActionForDuo");
-}
+
+        _maxRange                       = serializedObject.FindProperty("maxRange");
+    }
 
     public override void OnInspectorGUI()
     {
@@ -119,6 +123,7 @@ public class RelationshipEventEditor : Editor
         if (_foldTrigger = EditorGUILayout.BeginFoldoutHeaderGroup(_foldTrigger, "Trigger"))
         {
             EditorGUILayout.PropertyField(_triggerType);
+            EditorGUILayout.PropertyField(_triggersOnlyOnce);
 
             if (_triggerType.enumValueIndex == (int)RelationshipEventTriggerType.Attack)
             {
@@ -211,13 +216,18 @@ public class RelationshipEventEditor : Editor
             }
             else if (_effectType.enumValueIndex == (int)RelationshipEventEffectType.RefuseToDuo)
             {
-                EditorGUILayout.PropertyField(_refusalChance);
+                EditorGUILayout.PropertyField(_chance);
             }
             else if (_effectType.enumValueIndex == (int)RelationshipEventEffectType.FreeAction)
             {
-                EditorGUILayout.PropertyField(_freeActionChance);
+                EditorGUILayout.PropertyField(_chance);
                 EditorGUILayout.PropertyField(_freeAction);
                 EditorGUILayout.PropertyField(_freeActionForDuo);
+            }
+            else if (_effectType.enumValueIndex == (int)RelationshipEventEffectType.Sacrifice)
+            {
+                EditorGUILayout.PropertyField(_chance);
+                EditorGUILayout.PropertyField(_maxRange);
             }
 
             if (_interrupts.boolValue)

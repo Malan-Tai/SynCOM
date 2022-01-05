@@ -10,26 +10,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f6c0a609471fce429c6b769d34b1e7d, type: 3}
-  m_Name: RefuseDuoWhenTerrorized
+  m_Name: EnemyFatalSacrifice
   m_EditorClassIdentifier: 
-  triggerType: 5
-  onlyCheckDuoAlly: 1
+  triggerType: 1
+  triggersOnlyOnce: 1
+  onlyCheckDuoAlly: 0
   dontCheckDuoAlly: 0
   onlyCheckTarget: 0
   dontCheckTarget: 0
   requiresEmotions: 1
-  requiredEmotionsTowardsSource: 04000000
+  requiredEmotionsTowardsSource: 060000000e000000
   requiredEmotionsTowardsTarget: 
-  targetsAlly: 0
+  targetsAlly: 1
   onMiss: 0
   onHit: 0
   onCrit: 0
-  onDamage: 0
-  onFatal: 0
+  onDamage: 1
+  onFatal: 1
   minMaxHealthRatio: {x: 0, y: 1}
   killSteal: 0
-  effectType: 4
-  interrupts: 0
+  effectType: 2
+  interrupts: 1
   reciprocal: 0
   admirationChange: 0
   trustChange: 0
@@ -38,7 +39,9 @@ MonoBehaviour:
   admirationChangeSTT: 0
   trustChangeSTT: 0
   sympathyChangeSTT: 0
-  chance: 0.3
-  interruptions: []
+  chance: 1
+  interruptions:
+  - {fileID: 11400000, guid: c2c578f02e0d5e548b664f626f04d89b, type: 2}
   freeAction: 0
   freeActionForDuo: 0
+  maxRange: 99

@@ -2,5 +2,5 @@ public enum InterruptionType
 {
     None,
     FocusTargetForGivenTime,
-    FocusTargetUntil
+    FocusTargetUntilEndOfMovement
 }

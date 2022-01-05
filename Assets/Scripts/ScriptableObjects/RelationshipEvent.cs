@@ -7,6 +7,8 @@ public class RelationshipEvent : ScriptableObject
 {
     /// trigger
     public RelationshipEventTriggerType triggerType;
+    [Tooltip("True if the event should only trigger once per opportunity : e.g. don't trigger multiple protection (it is therefore useless if you only check for duo ally)")]
+    public bool triggersOnlyOnce;
 
     // involved
     public bool onlyCheckDuoAlly;
@@ -51,18 +53,19 @@ public class RelationshipEvent : ScriptableObject
     public int trustChangeSTT;
     public int sympathyChangeSTT;
 
-    // refuse to duo
+    // generic chance field
     [Range(0, 1)]
-    public float refusalChance;
+    public float chance;
 
     // interruption
     public InterruptionScriptableObject[] interruptions;
 
     // free action
-    [Range(0, 1)]
-    public float freeActionChance;
     public bool freeAction;
     public bool freeActionForDuo;
+
+    // sacrifice
+    public float maxRange;
 
     public bool CorrespondsToTrigger(RelationshipEvent trigger, bool allyIsDuo, bool allyIsTarget, float healthRatio, bool isBestDamager)
     {

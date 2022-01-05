@@ -25,7 +25,7 @@ public class FirstAid : BaseDuoAbility
 
     public override void Execute()
     {
-        Heal(_effector, _chosenAlly, 5, _chosenAlly.AllyCharacter);
+        Heal(_effector, _chosenAlly, 5, _chosenAlly);
 
         var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = _chosenAlly, time = Interruption.FOCUS_TARGET_TIME };
         _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
