@@ -84,7 +84,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
                 }
             }
         }
-        Debug.Log(_possibleTargetsTiles.Count);
+        //Debug.Log(_possibleTargetsTiles.Count);
         //_targetableTiles.UpdateTileZoneDisplay(_possibleTargetsTiles, TileZoneDisplayEnum.MoveZoneDisplay);
         _targetableTiles.DisplayTileZone("AttackZone", _possibleTargetsTiles, false);
 
@@ -109,6 +109,11 @@ public class GrenadeTossEngineer : BaseDuoAbility
             {
                 return;
             }
+            if (!_possibleTargetsTiles.Contains(CombatGameManager.Instance.GridMap[tileCoord]))
+            {
+                //Debug.Log("Taget out of range");
+                return;
+            }
             else
             {
                 _previousTileCoord = tileCoord;
@@ -119,8 +124,8 @@ public class GrenadeTossEngineer : BaseDuoAbility
                 //       et qui prend en compte les bords de la Map pour éviter d'ajouter des Tiles qui n'existent pas.
 
                 
-                GridMap map = CombatGameManager.Instance.GridMap;
-                _areaOfEffectTiles = map.GetAreaOfEffectDiamond(tileCoord, 4);
+                //GridMap map = CombatGameManager.Instance.GridMap;
+                _areaOfEffectTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(tileCoord, 3);
 
                 //_areaOfEffectTiles.Add(map[tileCoord - new Vector2Int(2, 0)]);
                 //_areaOfEffectTiles.Add(map[tileCoord - new Vector2Int(1, 0)]);
