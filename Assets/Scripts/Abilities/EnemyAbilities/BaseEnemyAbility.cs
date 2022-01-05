@@ -15,7 +15,7 @@ public abstract class BaseEnemyAbility : BaseAbility
     #region RelationshipEvents
     protected void AttackHitOrMiss(AllyUnit target, bool hit)
     {
-        HandleRelationshipEventResult(RelationshipEventsManager.Instance.EnemyOnAllyAttackHitOrMiss(target.AllyCharacter, hit));
+        HandleRelationshipEventResult(RelationshipEventsManager.Instance.EnemyOnAllyAttackHitOrMiss(target, hit));
 
         // TODO : change target ?
         if (!hit) target.Missed();
@@ -23,7 +23,7 @@ public abstract class BaseEnemyAbility : BaseAbility
 
     protected void AttackDamage(AllyUnit target, float damage, bool crit)
     {
-        HandleRelationshipEventResult(RelationshipEventsManager.Instance.EnemyOnAllyAttackDamage(target.AllyCharacter, damage, crit)) ;
+        HandleRelationshipEventResult(RelationshipEventsManager.Instance.EnemyOnAllyAttackDamage(target, damage, crit)) ;
 
         // TODO : change target if sacrifice
         bool killed = target.TakeDamage(damage);

@@ -64,6 +64,9 @@ public class RelationshipEvent : ScriptableObject
     public bool freeAction;
     public bool freeActionForDuo;
 
+    // sacrifice
+    public float maxRange;
+
     public bool CorrespondsToTrigger(RelationshipEvent trigger, bool allyIsDuo, bool allyIsTarget, float healthRatio, bool isBestDamager)
     {
         if (triggerType != trigger.triggerType) return false;
