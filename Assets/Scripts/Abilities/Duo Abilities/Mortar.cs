@@ -9,8 +9,12 @@ public class Mortar : BaseDuoAbility
     List<Tile> _areaOfEffectTiles = new List<Tile>();
     private Vector2Int _previousTileCoord;
     List<EnemyUnit> targets = new List<EnemyUnit>();
+    List<AllyUnit> allyTargets = new List<AllyUnit>();
 
-    private int _radius = 2;
+    private AbilityStats _selfShotStats;
+
+
+    private int _radius = 3;
 
     public Mortar()
     {
@@ -40,76 +44,59 @@ public class Mortar : BaseDuoAbility
 
     public override bool CanExecute()
     {
-        return _chosenAlly != null && targets.Count != 0;
+        return _chosenAlly != null;
     }
 
     protected override void ChooseAlly()
     {
-        
-    }
+        _selfShotStats = new AbilityStats(0, 0, 1.5f, 0, _effector);
+        _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
 
-    protected override void EnemyTargetingInput()
-    {
-        ///Système de visée ici !
-        ///
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hitData;
+        _areaOfEffectTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(_chosenAlly.GridPosition, _radius);
+        _target.DisplayTileZone("DamageZone", _areaOfEffectTiles, false);
 
-        if (Physics.Raycast(ray, out hitData, 1000, _groundLayerMask) && hitData.transform.CompareTag("Ground"))
+        targets.Clear();
+        foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
         {
-            // J'affiche la zone ciblée, en mettant à jour les tiles (ce sont celles situées à portée de la tile ciblée)
-            
-
-            Vector2Int tileCoord = CombatGameManager.Instance.GridMap.WorldToGrid(hitData.point);
-
-            if (tileCoord == _previousTileCoord)
+            if ((enemy.GridPosition - _chosenAlly.GridPosition).magnitude <= _radius) //That's a circle not a diamond
             {
-                return;
+                targets.Add(enemy);
             }
-            else
+        }
+        allyTargets.Clear();
+        foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
+        {
+            if ((ally.GridPosition - _chosenAlly.GridPosition).magnitude <= _radius) //That's a circle not a diamond
             {
-                _previousTileCoord = tileCoord;
-
-                _areaOfEffectTiles.Clear();
-
-                // TODO: Faire une fonction : public List<Tile> GetAreaOfEffet[Shape](Vector2Int center, [additional params : int radius, etc.])
-                //       et qui prend en compte les bords de la Map pour éviter d'ajouter des Tiles qui n'existent pas.
-
-                //_areaOfEffectTiles = GetAreaOfEffectDiamond(tileCoord, 3);
-                GridMap map = CombatGameManager.Instance.GridMap;
-                _areaOfEffectTiles.Add(map[tileCoord - new Vector2Int(2, 0)]);
-                _areaOfEffectTiles.Add(map[tileCoord - new Vector2Int(1, 0)]);
-                _areaOfEffectTiles.Add(map[tileCoord + new Vector2Int(2, 0)]);
-                _areaOfEffectTiles.Add(map[tileCoord + new Vector2Int(1, 0)]);
-                _areaOfEffectTiles.Add(map[tileCoord - new Vector2Int(0, 2)]);
-                _areaOfEffectTiles.Add(map[tileCoord - new Vector2Int(0, 1)]);
-                _areaOfEffectTiles.Add(map[tileCoord + new Vector2Int(0, 2)]);
-                _areaOfEffectTiles.Add(map[tileCoord + new Vector2Int(0, 1)]);
-                _areaOfEffectTiles.Add(map[tileCoord]);
-
-                CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(tileCoord);
-                //_target.UpdateTileZoneDisplay(_areaOfEffectTiles, TileZoneDisplayEnum.AttackZoneDisplay);
-                _target.DisplayTileZone("DamageZone", _areaOfEffectTiles, false);
-
-                // Je parcours la liste des enemis pour récupérer les ennemis ciblés
-
-                targets.Clear();
-                foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
-                {
-                    if ( (enemy.GridPosition - tileCoord).magnitude <= _radius )
-                    {
-                        targets.Add(enemy);
-                    }
-                }
-
-                Debug.Log(targets.Count);
+                allyTargets.Add(ally);
             }
         }
     }
 
+    protected override void EnemyTargetingInput()
+    {
+
+    }
+
     public override void Execute()
     {
-        
+        allyTargets.Remove(_chosenAlly);
+
+        // Only the _chosenAlly knows the attack is incomming and (almost) always take cover
+        if (UnityEngine.Random.Range(0, 100) > 90)
+        {
+            Debug.Log("[Mortar] Ally didn't take cover in time");
+            FriendlyFireDamage(_effector, _chosenAlly, _selfShotStats.GetDamage(), _chosenAlly.AllyCharacter);
+        }
+
+        foreach (EnemyUnit target in targets)
+        {
+            SelfShoot(target, _selfShotStats, alwaysHit: true, canCrit: false);
+        }
+        foreach (AllyUnit ally in allyTargets)
+        {
+            FriendlyFireDamage(_effector, ally, _selfShotStats.GetDamage(), ally.AllyCharacter);
+        }
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)

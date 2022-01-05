@@ -135,7 +135,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
 
                 
                 //GridMap map = CombatGameManager.Instance.GridMap;
-                _areaOfEffectTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(tileCoord, 3);
+                _areaOfEffectTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(tileCoord, _radius);
 
                 CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(tileCoord);
                 _targetableTiles.DisplayTileZone("DamageZone", _areaOfEffectTiles, false);
@@ -148,14 +148,14 @@ public class GrenadeTossEngineer : BaseDuoAbility
                 allyTargets.Clear();
                 foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
                 {
-                    if ((enemy.GridPosition - tileCoord).magnitude <= _radius)
+                    if ((enemy.GridPosition - tileCoord).magnitude <= _radius) //That's a circle not a diamond...
                     {
                         targets.Add(enemy);
                     }
                 }
                 foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
                 {
-                    if ((ally.GridPosition - tileCoord).magnitude <= _radius)
+                    if ((ally.GridPosition - tileCoord).magnitude <= _radius) //That's a circle not a diamond...
                     {
                         allyTargets.Add(ally);
                     }
@@ -180,22 +180,27 @@ public class GrenadeTossEngineer : BaseDuoAbility
         targets.Clear();
         foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
         {
-            if ((enemy.GridPosition - tileCoord).magnitude <= explosionRadius)
+            if ((enemy.GridPosition - tileCoord).magnitude <= explosionRadius) //That's a circle not a diamond...
             {
-                targets.Add(enemy);
+                targets.Add(enemy); 
+            }
+        }
+        allyTargets.Clear();
+        foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
+        {
+            if ((ally.GridPosition - tileCoord).magnitude <= explosionRadius) //That's a circle not a diamond...
+            {
+                allyTargets.Add(ally);
             }
         }
 
         // Ne peux rater ni faire un coup critique
         foreach (EnemyUnit target in targets)
         {
-            //target.Character.TakeDamage(_selfShotStats.GetDamage());
             SelfShoot(target, _selfShotStats, alwaysHit: true, canCrit : false);
         }
         foreach (AllyUnit ally in allyTargets)
         {
-            //target.Character.TakeDamage(_selfShotStats.GetDamage());
-            //SelfShoot(ally, _selfShotStats, alwaysHit: true, canCrit: false);
             FriendlyFireDamage(_effector, ally, _selfShotStats.GetDamage(), ally.AllyCharacter);
         }
         Debug.Log("[Grenade Toss] Explosion");
