@@ -201,7 +201,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
         }
         foreach (AllyUnit ally in allyTargets)
         {
-            FriendlyFireDamage(_effector, ally, _selfShotStats.GetDamage(), ally.AllyCharacter);
+            FriendlyFireDamage(_effector, ally, _selfShotStats.GetDamage(), ally);
         }
         Debug.Log("[Grenade Toss] Explosion");
     }

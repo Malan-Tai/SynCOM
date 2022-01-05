@@ -86,7 +86,7 @@ public class Mortar : BaseDuoAbility
         if (UnityEngine.Random.Range(0, 100) > 90)
         {
             Debug.Log("[Mortar] Ally didn't take cover in time");
-            FriendlyFireDamage(_effector, _chosenAlly, _selfShotStats.GetDamage(), _chosenAlly.AllyCharacter);
+            FriendlyFireDamage(_effector, _chosenAlly, _selfShotStats.GetDamage(), _chosenAlly);
         }
 
         foreach (EnemyUnit target in targets)
@@ -95,7 +95,7 @@ public class Mortar : BaseDuoAbility
         }
         foreach (AllyUnit ally in allyTargets)
         {
-            FriendlyFireDamage(_effector, ally, _selfShotStats.GetDamage(), ally.AllyCharacter);
+            FriendlyFireDamage(_effector, ally, _selfShotStats.GetDamage(), ally);
         }
     }
 

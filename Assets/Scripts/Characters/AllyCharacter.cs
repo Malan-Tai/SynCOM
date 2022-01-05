@@ -60,8 +60,8 @@ public class AllyCharacter : Character
     {
         EnumClasses characterClass = (EnumClasses) Random.Range(0,6);
         _class = characterClass;
-        addMandatoryTraits(_class);
-        addRandomTrait(_class);
+        AddMandatoryTraits(_class);
+        AddRandomTrait(_class);
 
         Debug.Log(_traits.Count);
 
