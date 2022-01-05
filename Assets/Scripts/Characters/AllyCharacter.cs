@@ -44,7 +44,7 @@ public class AllyCharacter : Character
         AddMandatoryTraits(_class);
         AddRandomTrait(_class);
 
-        Debug.Log(_traits.Count);
+        //Debug.Log(_traits.Count);
 
         for (int i = 0; i < _traits.Count; i++)
         {

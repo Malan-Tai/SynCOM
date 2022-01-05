@@ -118,17 +118,19 @@ public class GrenadeTossEngineer : BaseDuoAbility
                 // TODO: Faire une fonction : public List<Tile> GetAreaOfEffet[Shape](Vector2Int center, [additional params : int radius, etc.])
                 //       et qui prend en compte les bords de la Map pour éviter d'ajouter des Tiles qui n'existent pas.
 
-                //_areaOfEffectTiles = GetAreaOfEffectDiamond(tileCoord, 4);
+                
                 GridMap map = CombatGameManager.Instance.GridMap;
-                _areaOfEffectTiles.Add(map[tileCoord - new Vector2Int(2, 0)]);
-                _areaOfEffectTiles.Add(map[tileCoord - new Vector2Int(1, 0)]);
-                _areaOfEffectTiles.Add(map[tileCoord + new Vector2Int(2, 0)]);
-                _areaOfEffectTiles.Add(map[tileCoord + new Vector2Int(1, 0)]);
-                _areaOfEffectTiles.Add(map[tileCoord - new Vector2Int(0, 2)]);
-                _areaOfEffectTiles.Add(map[tileCoord - new Vector2Int(0, 1)]);
-                _areaOfEffectTiles.Add(map[tileCoord + new Vector2Int(0, 2)]);
-                _areaOfEffectTiles.Add(map[tileCoord + new Vector2Int(0, 1)]);
-                _areaOfEffectTiles.Add(map[tileCoord]);
+                _areaOfEffectTiles = map.GetAreaOfEffectDiamond(tileCoord, 4);
+
+                //_areaOfEffectTiles.Add(map[tileCoord - new Vector2Int(2, 0)]);
+                //_areaOfEffectTiles.Add(map[tileCoord - new Vector2Int(1, 0)]);
+                //_areaOfEffectTiles.Add(map[tileCoord + new Vector2Int(2, 0)]);
+                //_areaOfEffectTiles.Add(map[tileCoord + new Vector2Int(1, 0)]);
+                //_areaOfEffectTiles.Add(map[tileCoord - new Vector2Int(0, 2)]);
+                //_areaOfEffectTiles.Add(map[tileCoord - new Vector2Int(0, 1)]);
+                //_areaOfEffectTiles.Add(map[tileCoord + new Vector2Int(0, 2)]);
+                //_areaOfEffectTiles.Add(map[tileCoord + new Vector2Int(0, 1)]);
+                //_areaOfEffectTiles.Add(map[tileCoord]);
 
                 CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(tileCoord);
                 //_targetedTiles.UpdateTileZoneDisplay(_areaOfEffectTiles, TileZoneDisplayEnum.AttackZoneDisplay);
@@ -161,7 +163,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
         if (UnityEngine.Random.Range(0, 100) < _allyShotStats.GetAccuracy())
         {
             explosionRadius = 5;
-
+            Debug.Log("[Grenade Toss] Bonus radius");
         }
 
         targets.Clear();
@@ -178,7 +180,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
         {
             target.Character.TakeDamage(_selfShotStats.GetDamage());
         }
-
+        Debug.Log("[Grenade Toss] Explosion");
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)

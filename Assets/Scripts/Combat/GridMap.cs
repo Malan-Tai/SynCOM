@@ -318,6 +318,25 @@ public class GridMap : MonoBehaviour
         _map = _gridInitializer.CreateGrid(CellSize);
     }
 
+    public List<Tile> GetAreaOfEffectDiamond(Vector2Int center, int radius)
+    {
+        List<Tile> diamond = new List<Tile>();
+
+        for (int i = -radius; i <= radius; i++)
+        {
+            for (int j = Mathf.Abs(i) - radius; j <= radius - Mathf.Abs(i); j++)
+            {
+                Tile tile = this[center.x + i, center.y + j];
+                if (tile != null)
+                {
+                    diamond.Add(tile);
+                }
+            }
+        }
+
+        return diamond;
+    }
+
 
 #if UNITY_EDITOR
 
