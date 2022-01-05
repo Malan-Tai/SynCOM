@@ -19,13 +19,13 @@ MonoBehaviour:
   onlyCheckTarget: 0
   dontCheckTarget: 0
   requiresEmotions: 1
-  requiredEmotionsTowardsSource: 060000000e00000007000000
+  requiredEmotionsTowardsSource: 060000000e000000
   requiredEmotionsTowardsTarget: 
   targetsAlly: 1
   onMiss: 0
   onHit: 0
   onCrit: 0
-  onDamage: 1
+  onDamage: 0
   onFatal: 1
   minMaxHealthRatio: {x: 0, y: 1}
   killSteal: 0
