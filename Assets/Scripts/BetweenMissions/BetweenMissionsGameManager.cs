@@ -79,9 +79,9 @@ public class BetweenMissionsGameManager : MonoBehaviour
 
         _newRecruits = new List<AllyCharacter>
         {
-            new AllyCharacter(EnumClasses.Berserker, 20, 2, 65, 10, 15, 20, 4, 60),
-            new AllyCharacter(EnumClasses.Engineer, 20, 2, 65, 10, 15, 20, 4, 60),
-            new AllyCharacter(EnumClasses.Sniper, 20, 2, 65, 10, 15, 20, 4, 60)
+            new AllyCharacter(),
+            new AllyCharacter(),
+            new AllyCharacter()
         };
 
         _recruitUnitList.Populate(_newRecruits);

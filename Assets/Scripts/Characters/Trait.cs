@@ -12,7 +12,7 @@ public abstract class Trait
         set { _owner = value; }
     }
 
-    public Trait GetClone(AllyCharacter allyCharacter)
+    public virtual Trait GetClone(AllyCharacter allyCharacter)
     {
         Type t = GetType();
         Trait returnValue = (Trait)Activator.CreateInstance(t);

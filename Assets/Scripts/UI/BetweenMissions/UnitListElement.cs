@@ -46,9 +46,8 @@ public class UnitListElement : MonoBehaviour
     public void SetCharacter(AllyCharacter character)
     {
         _character = character;
-
-        // TODO : name
-        _unitName.text = "Name";
+        string v = character.Name?.Substring(0, character.Name.IndexOf(" "));
+        _unitName.text = v;
         _unitClass.text = character.CharacterClass.ToString();
         _unitPortrait.sprite = character.GetPortrait();
     }

@@ -9,7 +9,7 @@ public class AllyCharacter : Character
         {EnumClasses.Berserker, new List<Trait> {new Brave()}},
         {EnumClasses.Engineer, new List<Trait> {new Brave()}},
         {EnumClasses.Hitman, new List<Trait> {new Handsome(),new Contemptuous()}},
-        {EnumClasses.Sniper, new List<Trait> {new Handsome(), new Contemptuous()}},
+        {EnumClasses.Sniper, new List<Trait> {new Handsome(), new Contemptuous(), new Lucky()}},
         {EnumClasses.Bodyguard, new List<Trait> {new Ugly(), new Fearless()}},
         {EnumClasses.Smuggler, new List<Trait> {new Ugly(), new Fearless()}}
     };
@@ -26,6 +26,8 @@ public class AllyCharacter : Character
     //Character's archetype
     private EnumClasses _class;
     public EnumClasses CharacterClass { get => _class; }
+
+   
 
     private List<Trait> _traits = new List<Trait>();
     public List<Trait> Traits
@@ -49,6 +51,23 @@ public class AllyCharacter : Character
         for (int i = 0; i < _traits.Count; i++)
         {
             //Debug.Log(_traits[i].GetName());
+        }
+
+    }
+
+   public AllyCharacter() :
+        base()
+    {
+        EnumClasses characterClass = (EnumClasses) Random.Range(0,6);
+        _class = characterClass;
+        addMandatoryTraits(_class);
+        addRandomTrait(_class);
+
+        Debug.Log(_traits.Count);
+
+        for (int i = 0; i < _traits.Count; i++)
+        {
+            Debug.Log(_traits[i].GetName());
         }
     }
 

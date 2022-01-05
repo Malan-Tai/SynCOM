@@ -5,10 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Erwan_Lobby.unity
     guid: f5918070b89203242ba5e0e4f4b2495e
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 46c250f481c774748a51cf8193443c1d
   - enabled: 0
@@ -20,4 +20,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Lucas.unity
     guid: a583c17ca00d13c48997a8f5bab7398c
+  - enabled: 1
+    path: Assets/Scenes/Guillaume_lobby.unity
+    guid: dc831d2782a318f46b86cb0931a7cb69
+  - enabled: 1
+    path: Assets/Scenes/Guillaume.unity
+    guid: b5a16729c5ef9a44984c3a0b27ae8217
   m_configObjects: {}
