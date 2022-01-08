@@ -36,7 +36,8 @@ public class RelationshipEventsManager : MonoBehaviour
         RelationshipEventsResult result = new RelationshipEventsResult
         {
             refusedDuo = false,
-            interruptions = new List<InterruptionParameters>()
+            interruptions = new List<InterruptionParameters>(),
+            buffs = new List<Buff>()
         };
 
         AllyCharacter   sourceCharacter         = sourceUnit        == null ? null : sourceUnit.AllyCharacter;
@@ -109,6 +110,17 @@ public class RelationshipEventsManager : MonoBehaviour
                 rolledOk = Random.Range(0f, 1f) < relationshipEvent.chance;
                 actuallyExecuted = rangeOk && rolledOk;
                 if (actuallyExecuted) result.sacrificedTarget = currentUnit;
+                break;
+
+            case RelationshipEventEffectType.Buff:
+                foreach (BaseBuffScriptableObject buff in relationshipEvent.buffsOnSource)
+                {
+                    result.buffs.Add(buff.GetBuff(source));
+                }
+                foreach (BaseBuffScriptableObject buff in relationshipEvent.buffsOnTarget)
+                {
+                    result.buffs.Add(buff.GetBuff(currentUnit));
+                }
                 break;
 
             default:

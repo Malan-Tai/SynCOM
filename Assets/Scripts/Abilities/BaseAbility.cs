@@ -19,6 +19,11 @@ public abstract class BaseAbility
         {
             _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(param));
         }
+
+        foreach (Buff buff in result.buffs)
+        {
+            buff.Owner.CurrentBuffs.Add(buff);
+        }
     }
 
     public abstract bool CanExecute();
