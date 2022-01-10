@@ -57,6 +57,8 @@ public class Mortar : BaseDuoAbility
                 allyTargets.Add(ally);
             }
         }
+
+        //CombatGameManager.Instance.Camera.SwitchParenthood(_chosenAlly);
     }
 
     protected override void EnemyTargetingInput()

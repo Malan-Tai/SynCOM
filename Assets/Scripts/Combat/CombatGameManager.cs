@@ -24,6 +24,10 @@ public class CombatGameManager : MonoBehaviour
     #endregion
 
     [SerializeField]
+    private GridBasedUnit _cameraPointer;
+    public GridBasedUnit CameraPointer { get => _cameraPointer; }
+
+    [SerializeField]
     private GridMap _gridMap;
     public GridMap GridMap { get => _gridMap; }
 
