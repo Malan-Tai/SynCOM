@@ -5,8 +5,6 @@ using UnityEngine;
 public class GrenadeTossEngineer : BaseDuoAbility
 {
     private LayerMask _groundLayerMask = LayerMask.GetMask("Ground");
-    private TileDisplay _targetedTiles;
-    private TileDisplay _targetableTiles;
     List<Tile> _areaOfEffectTiles = new List<Tile>();
     private Vector2Int _previousTileCoord;
     List<EnemyUnit> targets = new List<EnemyUnit>();
@@ -21,20 +19,6 @@ public class GrenadeTossEngineer : BaseDuoAbility
     private AbilityStats _selfShotStats;
 
     private int _radius = 3;
-
-    public GrenadeTossEngineer()
-    {
-        GameObject map = GameObject.Find("Map");
-        if (map == null)
-        {
-            Debug.Log("GameObject [Map] not found");
-        }
-        else
-        {
-            _targetedTiles = map.transform.Find("TileDisplay").GetComponent<TileDisplay>();
-            _targetableTiles = map.transform.Find("TileDisplay").GetComponent<TileDisplay>();
-        }
-    }
 
     public override string GetAllyDescription()
     {
@@ -83,7 +67,6 @@ public class GrenadeTossEngineer : BaseDuoAbility
         _selfShotStats = new AbilityStats(0, 0, 1.5f, 0, _effector);
         _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
 
-        // TODO: afficher les tiles qu'on peut cibler
         _possibleTargetsTiles.Clear();
         GridMap map = CombatGameManager.Instance.GridMap;
         for (int i = 0; i < map.GridTileWidth; i++)
@@ -98,16 +81,13 @@ public class GrenadeTossEngineer : BaseDuoAbility
                 }
             }
         }
-        //Debug.Log(_possibleTargetsTiles.Count);
-        //_targetableTiles.UpdateTileZoneDisplay(_possibleTargetsTiles, TileZoneDisplayEnum.MoveZoneDisplay);
-        _targetableTiles.DisplayTileZone("AttackZone", _possibleTargetsTiles, false);
+        CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", _possibleTargetsTiles, false);
 
 
     }
 
     protected override void EnemyTargetingInput()
     {
-        // TODO: Détection des alliés
         // Système de visée ici !
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitData;
@@ -134,11 +114,10 @@ public class GrenadeTossEngineer : BaseDuoAbility
                 _areaOfEffectTiles.Clear();
 
                 
-                //GridMap map = CombatGameManager.Instance.GridMap;
                 _areaOfEffectTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(tileCoord, _radius);
 
                 CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(tileCoord);
-                _targetableTiles.DisplayTileZone("DamageZone", _areaOfEffectTiles, false);
+                CombatGameManager.Instance.TileDisplay.DisplayTileZone("DamageZone", _areaOfEffectTiles, false);
 
                 // Je parcours la liste des enemis pour récupérer les ennemis ciblés
                 // Facultatif ? devra être refait de toute façon - le radius réel est déterminé à  l'Execute()
@@ -160,7 +139,6 @@ public class GrenadeTossEngineer : BaseDuoAbility
                         allyTargets.Add(ally);
                     }
                 }
-                //Debug.Log(targets.Count);
             }
         }
     }
@@ -213,5 +191,12 @@ public class GrenadeTossEngineer : BaseDuoAbility
         return
             //(unit.AllyCharacter.CharacterClass == EnumClasses.Sniper) && ----> à décommenter quand le debug sera fini
             (unit.GridPosition - this._effector.GridPosition).magnitude <= 5 + unit.AllyCharacter.RangeShot;
+    }
+
+    protected override void EndAbility()
+    {
+        base.EndAbility();
+        CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
+        CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
     }
 }

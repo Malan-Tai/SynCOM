@@ -5,7 +5,6 @@ using UnityEngine;
 public class Mortar : BaseDuoAbility
 {
     private LayerMask _groundLayerMask = LayerMask.GetMask("Ground");
-    private TileDisplay _target;
     List<Tile> _areaOfEffectTiles = new List<Tile>();
     private Vector2Int _previousTileCoord;
     List<EnemyUnit> targets = new List<EnemyUnit>();
@@ -15,19 +14,6 @@ public class Mortar : BaseDuoAbility
 
 
     private int _radius = 3;
-
-    public Mortar()
-    {
-        GameObject map = GameObject.Find("Map");
-        if (map == null)
-        {
-            Debug.Log("GameObject [Map] not found");
-        }
-        else
-        {
-            _target = map.transform.Find("TileDisplay").GetComponent<TileDisplay>();
-        }
-    }
 
     public override string GetAllyDescription()
     {
@@ -53,7 +39,7 @@ public class Mortar : BaseDuoAbility
         _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
 
         _areaOfEffectTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(_chosenAlly.GridPosition, _radius);
-        _target.DisplayTileZone("DamageZone", _areaOfEffectTiles, false);
+        CombatGameManager.Instance.TileDisplay.DisplayTileZone("DamageZone", _areaOfEffectTiles, false);
 
         targets.Clear();
         foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
@@ -102,5 +88,11 @@ public class Mortar : BaseDuoAbility
     protected override bool IsAllyCompatible(AllyUnit unit)
     {
         return true;
+    }
+
+    protected override void EndAbility()
+    {
+        base.EndAbility();
+        CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
     }
 }
