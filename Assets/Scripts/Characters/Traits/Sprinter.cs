@@ -10,7 +10,7 @@ public class Sprinter : Trait
         Type t = GetType();
         Trait returnValue = (Trait)Activator.CreateInstance(t);
         returnValue.Owner = allyCharacter;
-        returnValue.Owner.MovementPoints = 30;
+        returnValue.Owner.MovementPoints += 5;
         return returnValue;
     }
     public override int GetSelfToAllySentimentGain(EnumSentiment sentiment, int baseSentiment)

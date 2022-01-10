@@ -52,15 +52,15 @@ public class Character
     };
 
     //Character's statistics
-    [SerializeField] private float _maxHealth;
-    [SerializeField] private float _healthPoints;
-    [SerializeField] private float _damage;                  //amount of damages dealt
-    [SerializeField] private float _accuracy;                //value between 0 and 1
+    [SerializeField] protected float _maxHealth;
+    [SerializeField] protected float _healthPoints;
+    [SerializeField] protected float _damage;                  //amount of damages dealt
+    [SerializeField] protected float _accuracy;                //value between 0 and 1
     [SerializeField] protected float _dodge;                 // value between 0 and 1. Probability of successful attack is accuracy-dodge
-    [SerializeField] private float _movementPoints;          // how far can a charcater move in one turn
-    [SerializeField] private float _weigth;                  //can be a condition for some actions
-    [SerializeField] private float _critChances;
-    [SerializeField] private float _rangeShot;
+    [SerializeField] protected float _movementPoints;          // how far can a charcater move in one turn
+    [SerializeField] protected float _weigth;                  //can be a condition for some actions
+    [SerializeField] protected float _critChances;
+    [SerializeField] protected float _rangeShot;
     [SerializeField] private EnumGender _gender;
     [SerializeField] private string _name;
 
@@ -73,36 +73,41 @@ public class Character
         get { return _currentBuffs; }
     }
 
+    public List<BaseAbility> Abilities { get; private set; }
+
     //constructor 
-    public Character()  //random values
+    public static Character GetRandomCharacter(Character preinstanciated = null)  //random values
     {
-        _maxHealth = Random.Range(17,23);
-        _healthPoints = _maxHealth;
-        _damage = Random.Range(2,5);
-        _accuracy = Random.Range(55,75);
-        _dodge = Random.Range(10, 20);
-        _critChances = Random.Range(10, 20);
-        _movementPoints = 20;
-        _weigth = Random.Range(50,110);
-        _rangeShot = Random.Range(17,25);
-        _gender = (EnumGender) Random.Range(0, 3);
-        switch (_gender)
+        if (preinstanciated == null) preinstanciated = new Character(6, 2, 65, 10, 15, 20, 0, 60);
+
+        // keep range shot and movement points as is
+        preinstanciated._maxHealth      += Random.Range(-10, 11);
+        preinstanciated._damage         += Random.Range(-2, 3);
+        preinstanciated._accuracy       += Random.Range(-10, 11);
+        preinstanciated._dodge          += Random.Range(-5, 6);
+        preinstanciated._critChances    += Random.Range(-5, 6);
+        preinstanciated._weigth         += Random.Range(-25, 26);
+        preinstanciated._gender         = (EnumGender) Random.Range(0, 3);
+        preinstanciated._healthPoints = preinstanciated._maxHealth;
+        switch (preinstanciated._gender)
         {
 
             case EnumGender.Female:
-                _name = _femaleNames[Random.Range(0, _femaleNames.Length)];
+                preinstanciated._name = _femaleNames[Random.Range(0, _femaleNames.Length)];
                 break;
             case EnumGender.Male:
-                _name = _maleNames[Random.Range(0, _maleNames.Length)];
+                preinstanciated._name = _maleNames[Random.Range(0, _maleNames.Length)];
                 break;
             default:
                 int coin = Random.Range(0, 2);
                 if (coin == 0)
-                    _name = _femaleNames[Random.Range(0, _femaleNames.Length)];
+                    preinstanciated._name = _femaleNames[Random.Range(0, _femaleNames.Length)];
                 else
-                    _name = _maleNames[Random.Range(0, _maleNames.Length)];
+                    preinstanciated._name = _maleNames[Random.Range(0, _maleNames.Length)];
                 break;
         }
+
+        return preinstanciated;
     }
 
     public Character(float maxHealth,float damage, float accuracy, float dodge,float critChances,float rangeShot, float movementPoints, float weight)

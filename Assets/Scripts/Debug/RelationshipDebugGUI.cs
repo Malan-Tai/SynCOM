@@ -25,7 +25,7 @@ public class RelationshipDebugGUI : MonoBehaviour
             GUI.Label(new Rect(20, i * 100 + 50, 80, 20), new GUIContent("ADM" + relationship.GetGaugeLevel(EnumSentiment.Admiration) + ": " + relationship.GetGaugeValue(EnumSentiment.Admiration)));
             GUI.Label(new Rect(20, i * 100 + 70, 80, 20), new GUIContent("SYM" + relationship.GetGaugeLevel(EnumSentiment.Sympathy) + ": " + relationship.GetGaugeValue(EnumSentiment.Sympathy)));
 
-            if (GUI.Button(new Rect(120, i * 100 + 10, 100, 20), "Update & Print"))
+            if (GUI.Button(new Rect(120, i * 100 + 10, 100, 20), "Print"))
             {
                 //relationship.UpdateEmotions();
 
