@@ -167,6 +167,8 @@ public class Relationship
         {
             gauge.value = sentimentTotal;
         }
+
+        UpdateEmotions();
     }
 
     /// <summary>

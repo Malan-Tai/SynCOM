@@ -27,7 +27,7 @@ public class RelationshipDebugGUI : MonoBehaviour
 
             if (GUI.Button(new Rect(120, i * 100 + 10, 100, 20), "Update & Print"))
             {
-                relationship.UpdateEmotions();
+                //relationship.UpdateEmotions();
 
                 string emotionString = "emotions: ";
                 foreach (EnumEmotions emotion in relationship.ListEmotions)
