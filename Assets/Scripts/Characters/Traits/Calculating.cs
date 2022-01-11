@@ -10,8 +10,8 @@ public class Calculating : Trait
         Type t = GetType();
         Trait returnValue = (Trait)Activator.CreateInstance(t);
         returnValue.Owner = allyCharacter;
-        returnValue.Owner.Accuracy = 80;
-        returnValue.Owner.MovementPoints = 15;
+        returnValue.Owner.Accuracy += 10;
+        returnValue.Owner.MovementPoints -= 5;
         return returnValue;
     }
     public override int GetSelfToAllySentimentGain(EnumSentiment sentiment, int baseSentiment)

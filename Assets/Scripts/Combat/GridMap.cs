@@ -166,6 +166,45 @@ public class GridMap : MonoBehaviour
         return finalNeigh;
     }
 
+    public Tile[] MovementNeighbors(Vector2Int centerCell, Vector2Int goalCell)
+    {
+        Tile[] neighbors = new Tile[8];
+        int i = 0;
+
+        int x = centerCell.x;
+        int y = centerCell.y;
+
+        Vector2Int[] neighborCoords = new Vector2Int[]
+        {
+            new Vector2Int(x - 1, y - 1),
+            new Vector2Int(x - 1, y    ),
+            new Vector2Int(x - 1, y + 1),
+            new Vector2Int(x    , y - 1),
+            new Vector2Int(x    , y + 1),
+            new Vector2Int(x + 1, y - 1),
+            new Vector2Int(x + 1, y    ),
+            new Vector2Int(x + 1, y + 1)
+        };
+
+        foreach (Vector2Int coords in neighborCoords)
+        {
+            if (CanMoveFromCellToCell(centerCell, coords, goalCell))
+            {
+                neighbors[i] = this[coords];
+                i++;
+            }
+        }
+
+        Tile[] finalNeigh = new Tile[i];
+        int j;
+        for (j = 0; j < i; j++)
+        {
+            finalNeigh[j] = neighbors[j];
+        }
+
+        return finalNeigh;
+    }
+
     public Tile[] CoverNeighbors(Vector2Int centerCell)
     {
         Tile[] neighbors = new Tile[4];
@@ -249,6 +288,25 @@ public class GridMap : MonoBehaviour
         Tile sideTileB = _map[cellB.x, cellA.y];
 
         return _map[cellB.x, cellB.y].IsWalkable && !_occupiedTiles.Contains(cellB) &&
+                ((tileA.Cover == EnumCover.None && (tileB.Cover == EnumCover.Half || tileB.Cover == EnumCover.None)) ||
+                (tileA.Cover == EnumCover.Half && tileB.Cover == EnumCover.None)) &&
+                (sideTileA.Cover != EnumCover.Full || sideTileB.Cover != EnumCover.Full);
+    }
+
+    public bool CanMoveFromCellToCell(Vector2Int cellA, Vector2Int cellB, Vector2Int goalCell)
+    {
+        if (!CellIsValid(cellA) || !CellIsValid(cellB))
+        {
+            return false;
+        }
+
+        Tile tileA = _map[cellA.x, cellA.y];
+        Tile tileB = _map[cellB.x, cellB.y];
+
+        Tile sideTileA = _map[cellA.x, cellB.y];
+        Tile sideTileB = _map[cellB.x, cellA.y];
+
+        return _map[cellB.x, cellB.y].IsWalkable && (cellB == goalCell || !_occupiedTiles.Contains(cellB)) &&
                 ((tileA.Cover == EnumCover.None && (tileB.Cover == EnumCover.Half || tileB.Cover == EnumCover.None)) ||
                 (tileA.Cover == EnumCover.Half && tileB.Cover == EnumCover.None)) &&
                 (sideTileA.Cover != EnumCover.Full || sideTileB.Cover != EnumCover.Full);

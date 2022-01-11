@@ -34,12 +34,14 @@ public class AbilityList : MonoBehaviour
     {
         AllyUnit.OnStartedUsingAbility += Hide;
         AllyUnit.OnStoppedUsingAbility += Show;
+        CombatGameManager.OnUnitSelected += PopulateFromUnit;
     }
 
     private void OnDisable()
     {
         AllyUnit.OnStartedUsingAbility -= Hide;
         AllyUnit.OnStoppedUsingAbility -= Show;
+        CombatGameManager.OnUnitSelected -= PopulateFromUnit;
     }
 
     public void Populate(List<BaseAllyAbility> abilities)
@@ -73,8 +75,8 @@ public class AbilityList : MonoBehaviour
 
         while (i < _buttons.Length)
         {
-            float width = _buttons[i].GetComponent<RectTransform>().rect.width + 10;
-            _rectTransform.sizeDelta -= new Vector2(width, 0);
+            //float width = _buttons[i].GetComponent<RectTransform>().rect.width + 10;
+            //_rectTransform.sizeDelta -= new Vector2(width, 0);
 
             Destroy(_buttons[i].gameObject);
 
@@ -90,5 +92,10 @@ public class AbilityList : MonoBehaviour
     private void Show()
     {
         this.transform.position = _basePosition;
+    }
+
+    private void PopulateFromUnit(int squadIndex)
+    {
+        Populate(CombatGameManager.Instance.ControllableUnits[squadIndex].AllyCharacter.Abilities);
     }
 }

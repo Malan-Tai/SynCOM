@@ -79,9 +79,9 @@ public class BetweenMissionsGameManager : MonoBehaviour
 
         _newRecruits = new List<AllyCharacter>
         {
-            new AllyCharacter(),
-            new AllyCharacter(),
-            new AllyCharacter()
+            AllyCharacter.GetRandomAllyCharacter(),
+            AllyCharacter.GetRandomAllyCharacter(),
+            AllyCharacter.GetRandomAllyCharacter()
         };
 
         _recruitUnitList.Populate(_newRecruits);

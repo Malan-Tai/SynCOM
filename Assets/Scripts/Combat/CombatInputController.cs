@@ -82,35 +82,43 @@ public class CombatInputController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            CombatGameManager.Instance.CurrentUnit.UseAbility(new HunkerDown());
+            CombatGameManager.Instance.CurrentUnit.UseAbility(0);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            CombatGameManager.Instance.CurrentUnit.UseAbility(new BasicShot());
+            CombatGameManager.Instance.CurrentUnit.UseAbility(1);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            CombatGameManager.Instance.CurrentUnit.UseAbility(new BasicDuoShot());
+            CombatGameManager.Instance.CurrentUnit.UseAbility(2);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha4))
         {
-            CombatGameManager.Instance.CurrentUnit.UseAbility(new FirstAid());
+            CombatGameManager.Instance.CurrentUnit.UseAbility(3);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha5))
         {
-            CombatGameManager.Instance.CurrentUnit.UseAbility(new Slap());
+            CombatGameManager.Instance.CurrentUnit.UseAbility(4);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha6))
+        {
+            CombatGameManager.Instance.CurrentUnit.UseAbility(5);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha7))
+        {
+            CombatGameManager.Instance.CurrentUnit.UseAbility(6);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha8))
         {
-            CombatGameManager.Instance.CurrentUnit.UseAbility(new GrenadeTossEngineer());
+            CombatGameManager.Instance.CurrentUnit.UseAbility(7);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha9))
         {
-            CombatGameManager.Instance.CurrentUnit.UseAbility(new Mortar());
+            CombatGameManager.Instance.CurrentUnit.UseAbility(8);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha0))
         {
-            CombatGameManager.Instance.CurrentUnit.UseAbility(new SkipTurn());
+            CombatGameManager.Instance.CurrentUnit.UseAbility(9);
         }
     }
 }

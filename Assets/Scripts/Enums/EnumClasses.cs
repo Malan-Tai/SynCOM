@@ -3,7 +3,7 @@ public enum EnumClasses
     Berserker,
     Engineer,
     Sniper,
-    Hitman,
+    Alchemist,
     Bodyguard,
     Smuggler
 }

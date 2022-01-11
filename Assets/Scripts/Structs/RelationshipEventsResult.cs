@@ -10,4 +10,5 @@ public struct RelationshipEventsResult
     public bool freeActionForDuo;
     public GridBasedUnit sacrificedTarget;
     public List<InterruptionParameters> interruptions;
+    public List<Buff> buffs;
 }
