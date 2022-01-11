@@ -144,7 +144,7 @@ public class CombatGameManager : MonoBehaviour
             int i = 0;
             foreach (AllyUnit ally in _allAllyUnits)
             {
-                ally.SetCharacter(new AllyCharacter((EnumClasses)i, 20, 2, 65, 10, 15, 20, 10, 60));
+                ally.SetCharacter(AllyCharacter.GetRandomAllyCharacter());
                 characters.Add(ally.AllyCharacter);
                 i++;
             }

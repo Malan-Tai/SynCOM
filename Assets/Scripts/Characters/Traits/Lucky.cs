@@ -10,7 +10,7 @@ public class Lucky : Trait
         Type t = GetType();
         Trait returnValue = (Trait)Activator.CreateInstance(t);
         returnValue.Owner = allyCharacter;
-        returnValue.Owner.CritChances = 30;
+        returnValue.Owner.CritChances += 7;
         return returnValue;
     }
     public override int GetSelfToAllySentimentGain(EnumSentiment sentiment, int baseSentiment)

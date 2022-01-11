@@ -67,6 +67,10 @@ public class RelationshipEvent : ScriptableObject
     // sacrifice
     public float maxRange;
 
+    // buff
+    public BaseBuffScriptableObject[] buffsOnSource;
+    public BaseBuffScriptableObject[] buffsOnTarget;
+
     public bool CorrespondsToTrigger(RelationshipEvent trigger, bool allyIsDuo, bool allyIsTarget, float healthRatio, bool isBestDamager)
     {
         if (triggerType != trigger.triggerType) return false;

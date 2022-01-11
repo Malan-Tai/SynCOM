@@ -96,9 +96,9 @@ public class Relationship
                     against.Add(EnumClasses.Berserker);
                     break;
                 case EnumClasses.Sniper:
-                    against.Add(EnumClasses.Hitman);
+                    against.Add(EnumClasses.Alchemist);
                     break;
-                case EnumClasses.Hitman:
+                case EnumClasses.Alchemist:
                     against.Add(EnumClasses.Sniper);
                     break;
                 case EnumClasses.Bodyguard:
@@ -167,6 +167,8 @@ public class Relationship
         {
             gauge.value = sentimentTotal;
         }
+
+        UpdateEmotions();
     }
 
     /// <summary>

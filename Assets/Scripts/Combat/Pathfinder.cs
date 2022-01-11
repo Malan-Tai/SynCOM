@@ -62,8 +62,16 @@ public class Pathfinder
                 break;
             }
 
-            foreach (Tile next in map.MovementNeighbors(current.Coords))
+            bool breakWhile = false;
+            foreach (Tile next in map.MovementNeighbors(current.Coords, goal))
             {
+                if (next == goalTile && !CombatGameManager.Instance.GridMap.CanMoveFromCellToCell(current.Coords, goal))
+                {
+                    // if next is the goal but cannot be walked, stop the pathfinding here : we are the closest to an unatteignable goal
+                    breakWhile = true;
+                    break;
+                }
+
                 float newCost = costSoFar[current] + next.MoveCost(current.Coords);
                 if (!costSoFar.ContainsKey(next) || newCost < costSoFar[next])
                 {
@@ -75,6 +83,8 @@ public class Pathfinder
                     cameFrom[next] = current;
                 }
             }
+
+            if (breakWhile) break;
         }
 
         Stack<Vector2Int> path = new Stack<Vector2Int>();
