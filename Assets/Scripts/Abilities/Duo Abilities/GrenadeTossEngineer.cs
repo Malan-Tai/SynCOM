@@ -5,13 +5,12 @@ using UnityEngine;
 public class GrenadeTossEngineer : BaseDuoAbility
 {
     private LayerMask _groundLayerMask = LayerMask.GetMask("Ground");
-    private TileDisplay _targetedTiles;
     private TileDisplay _targetableTiles;
-    List<Tile> _areaOfEffectTiles = new List<Tile>();
+    private List<Tile> _areaOfEffectTiles = new List<Tile>();
     private Vector2Int _previousTileCoord;
-    List<EnemyUnit> targets = new List<EnemyUnit>();
-    List<AllyUnit> allyTargets = new List<AllyUnit>();
-    Vector2Int tileCoord;
+    private List<EnemyUnit> _targets = new List<EnemyUnit>();
+    private List<AllyUnit> _allyTargets = new List<AllyUnit>();
+    private Vector2Int _tileCoord;
 
     List<Tile> _possibleTargetsTiles = new List<Tile>();
 
@@ -31,7 +30,6 @@ public class GrenadeTossEngineer : BaseDuoAbility
         }
         else
         {
-            _targetedTiles = map.transform.Find("TileDisplay").GetComponent<TileDisplay>();
             _targetableTiles = map.transform.Find("TileDisplay").GetComponent<TileDisplay>();
         }
     }
@@ -71,8 +69,8 @@ public class GrenadeTossEngineer : BaseDuoAbility
         // - à 5 tiles de l'effector
         // - à porté de l'ally
         return _chosenAlly != null
-            && (tileCoord - _effector.GridPosition).magnitude <= 5
-            && (tileCoord - _chosenAlly.GridPosition).magnitude <= _chosenAlly.AllyCharacter.RangeShot;
+            && (_tileCoord - _effector.GridPosition).magnitude <= 5
+            && (_tileCoord - _chosenAlly.GridPosition).magnitude <= _chosenAlly.AllyCharacter.RangeShot;
     }
 
     protected override void ChooseAlly()
@@ -116,48 +114,48 @@ public class GrenadeTossEngineer : BaseDuoAbility
         {
             // J'affiche la zone ciblée, en mettant à jour les tiles (ce sont celles situées à portée de la tile ciblée)
 
-            tileCoord = CombatGameManager.Instance.GridMap.WorldToGrid(hitData.point);
+            _tileCoord = CombatGameManager.Instance.GridMap.WorldToGrid(hitData.point);
 
-            if (tileCoord == _previousTileCoord)
+            if (_tileCoord == _previousTileCoord)
             {
                 return;
             }
-            if (!_possibleTargetsTiles.Contains(CombatGameManager.Instance.GridMap[tileCoord]))
+            if (!_possibleTargetsTiles.Contains(CombatGameManager.Instance.GridMap[_tileCoord]))
             {
                 //Debug.Log("Taget out of range");
                 return;
             }
             else
             {
-                _previousTileCoord = tileCoord;
+                _previousTileCoord = _tileCoord;
 
                 _areaOfEffectTiles.Clear();
 
                 
                 //GridMap map = CombatGameManager.Instance.GridMap;
-                _areaOfEffectTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(tileCoord, _radius);
+                _areaOfEffectTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(_tileCoord, _radius);
 
-                CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(tileCoord);
+                CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(_tileCoord);
                 _targetableTiles.DisplayTileZone("DamageZone", _areaOfEffectTiles, false);
 
                 // Je parcours la liste des enemis pour récupérer les ennemis ciblés
                 // Facultatif ? devra être refait de toute façon - le radius réel est déterminé à  l'Execute()
                 // Pour mettre les cibles en surbrillance
 
-                targets.Clear();
-                allyTargets.Clear();
+                _targets.Clear();
+                _allyTargets.Clear();
                 foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
                 {
-                    if ((enemy.GridPosition - tileCoord).magnitude <= _radius) //That's a circle not a diamond...
+                    if ((enemy.GridPosition - _tileCoord).magnitude <= _radius) //That's a circle not a diamond...
                     {
-                        targets.Add(enemy);
+                        _targets.Add(enemy);
                     }
                 }
                 foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
                 {
-                    if ((ally.GridPosition - tileCoord).magnitude <= _radius) //That's a circle not a diamond...
+                    if ((ally.GridPosition - _tileCoord).magnitude <= _radius) //That's a circle not a diamond...
                     {
-                        allyTargets.Add(ally);
+                        _allyTargets.Add(ally);
                     }
                 }
                 //Debug.Log(targets.Count);
@@ -177,29 +175,29 @@ public class GrenadeTossEngineer : BaseDuoAbility
             Debug.Log("[Grenade Toss] Bonus radius");
         }
 
-        targets.Clear();
+        _targets.Clear();
         foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
         {
-            if ((enemy.GridPosition - tileCoord).magnitude <= explosionRadius) //That's a circle not a diamond...
+            if ((enemy.GridPosition - _tileCoord).magnitude <= explosionRadius) //That's a circle not a diamond...
             {
-                targets.Add(enemy); 
+                _targets.Add(enemy); 
             }
         }
-        allyTargets.Clear();
+        _allyTargets.Clear();
         foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
         {
-            if ((ally.GridPosition - tileCoord).magnitude <= explosionRadius) //That's a circle not a diamond...
+            if ((ally.GridPosition - _tileCoord).magnitude <= explosionRadius) //That's a circle not a diamond...
             {
-                allyTargets.Add(ally);
+                _allyTargets.Add(ally);
             }
         }
 
         // Ne peux rater ni faire un coup critique
-        foreach (EnemyUnit target in targets)
+        foreach (EnemyUnit target in _targets)
         {
             SelfShoot(target, _selfShotStats, alwaysHit: true, canCrit : false);
         }
-        foreach (AllyUnit ally in allyTargets)
+        foreach (AllyUnit ally in _allyTargets)
         {
             FriendlyFireDamage(_effector, ally, _selfShotStats.GetDamage(), ally);
         }
@@ -213,5 +211,10 @@ public class GrenadeTossEngineer : BaseDuoAbility
         return
             //(unit.AllyCharacter.CharacterClass == EnumClasses.Sniper) && ----> à décommenter quand le debug sera fini
             (unit.GridPosition - this._effector.GridPosition).magnitude <= 5 + unit.AllyCharacter.RangeShot;
+    }
+
+    public override string GetShortDescription()
+    {
+        return "Throws a grenade and lets an ally shoot at it for increased efficiency.";
     }
 }

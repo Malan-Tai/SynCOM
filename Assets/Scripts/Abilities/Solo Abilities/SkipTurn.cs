@@ -29,5 +29,10 @@ class SkipTurn : BaseAllyAbility
     {
         Debug.Log("[" + _effector.AllyCharacter.Name + "] SKIPS their turn");
     }
+
+    public override string GetShortDescription()
+    {
+        return "Skips turn";
+    }
 }
 

@@ -132,4 +132,9 @@ public class Devouring : BaseDuoAbility
         }
         else base.UISelectUnit(unit);
     }
+
+    public override string GetShortDescription()
+    {
+        return "A terrifying attack that heals and buffs.";
+    }
 }

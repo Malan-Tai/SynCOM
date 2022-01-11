@@ -88,4 +88,9 @@ public class PepTalk : BaseDuoAbility
         }
         else base.UISelectUnit(unit);
     }
+
+    public override string GetShortDescription()
+    {
+        return "A small stat buff to an ally.";
+    }
 }
