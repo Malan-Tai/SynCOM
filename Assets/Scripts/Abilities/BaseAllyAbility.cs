@@ -171,7 +171,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
     protected override void HandleRelationshipEventResult(RelationshipEventsResult result)
     {
         base.HandleRelationshipEventResult(result);
-        _freeForDuo = result.freeActionForDuo;
+        _freeForDuo = _freeForDuo || result.freeActionForDuo;
     }
 
     protected bool TryBeginDuo(AllyUnit source, AllyUnit duo)

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Mortar : BaseDuoAbility
 {
-    private TileDisplay _target;
     private List<Tile> _areaOfEffectTiles = new List<Tile>();
     private List<EnemyUnit> _targets = new List<EnemyUnit>();
     private List<AllyUnit> _allyTargets = new List<AllyUnit>();
@@ -12,19 +11,6 @@ public class Mortar : BaseDuoAbility
     private AbilityStats _selfShotStats;
 
     private int _radius = 3;
-
-    public Mortar()
-    {
-        GameObject map = GameObject.Find("Map");
-        if (map == null)
-        {
-            Debug.Log("GameObject [Map] not found");
-        }
-        else
-        {
-            _target = map.transform.Find("TileDisplay").GetComponent<TileDisplay>();
-        }
-    }
 
     public override string GetAllyDescription()
     {
@@ -50,7 +36,7 @@ public class Mortar : BaseDuoAbility
         _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
 
         _areaOfEffectTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(_chosenAlly.GridPosition, _radius);
-        _target.DisplayTileZone("DamageZone", _areaOfEffectTiles, false);
+        CombatGameManager.Instance.TileDisplay.DisplayTileZone("DamageZone", _areaOfEffectTiles, false);
 
         _targets.Clear();
         foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
@@ -68,6 +54,8 @@ public class Mortar : BaseDuoAbility
                 _allyTargets.Add(ally);
             }
         }
+
+        //CombatGameManager.Instance.Camera.SwitchParenthood(_chosenAlly);
     }
 
     protected override void EnemyTargetingInput()
@@ -104,5 +92,11 @@ public class Mortar : BaseDuoAbility
     public override string GetShortDescription()
     {
         return "Fires a grenade to a beacon thrown by an ally, who has a chance to be hit.";
+    }
+
+    protected override void EndAbility()
+    {
+        base.EndAbility();
+        CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
     }
 }

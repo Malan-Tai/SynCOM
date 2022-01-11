@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class MoveableCamera : MonoBehaviour
 {
     private Vector3 _startingOffset;
+    private Vector3 _startingCameraOffset;
     private Camera _camera;
     private float _startingCamSize;
 
@@ -33,12 +35,47 @@ public class MoveableCamera : MonoBehaviour
     {
         _startingOffset = this.transform.localPosition;
         _camera = GetComponentInChildren<Camera>();
+        _startingCameraOffset = _camera.transform.localPosition;
         _startingCamSize = _camera.orthographicSize;
         _targetRotationY = this.transform.localEulerAngles.y;
+
+        _currentlyViewedUnit = GetComponentInParent<GridBasedUnit>();
+        _parentViewedUnit = _currentlyViewedUnit;
     }
 
     private void Update()
     {
+#if UNITY_EDITOR
+        float x = Input.mousePosition.x;
+        float y = Input.mousePosition.y;
+        Vector3 mouseDelta = Vector3.zero;
+
+        if (x <= 0)
+        {
+            mouseDelta.x = -1f;
+        }
+        else if (x >= Handles.GetMainGameViewSize().x - 1)
+        {
+            mouseDelta.x = 1f;
+        }
+        if (y <= 0)
+        {
+            mouseDelta.y = -1f;
+        }
+        else if (y >= Handles.GetMainGameViewSize().y - 1)
+        {
+            mouseDelta.y = 1f;
+        }
+
+        if (mouseDelta != Vector3.zero)
+        {
+            _followTarget = false;
+            _camera.transform.localPosition += mouseDelta.normalized * _moveSpeed / 100;
+        }
+#else
+        if (Input.mousePosition.x <= 0 || Input.mousePosition.y <= 0 || Input.mousePosition.x >= Screen.width - 1 || Input.mousePosition.y >= Screen.height - 1) return;
+#endif
+
         if (_followRotation)
         {
             float currentY = this.transform.localEulerAngles.y;
@@ -65,9 +102,13 @@ public class MoveableCamera : MonoBehaviour
             Vector3 delta = (_targetPosition - this.transform.localPosition) * _moveSpeed * Time.deltaTime;
             this.transform.localPosition += delta;
 
-            if ((_targetPosition - this.transform.localPosition).magnitude <= 0.1f)
+            delta = (_startingCameraOffset - _camera.transform.localPosition) * _moveSpeed * Time.deltaTime;
+            _camera.transform.localPosition += delta;
+
+            if ((_targetPosition - this.transform.localPosition).magnitude <= 0.1f && (_startingCameraOffset - _camera.transform.localPosition).magnitude <= 0.1f)
             {
                 this.transform.localPosition = _targetPosition;
+                _camera.transform.localPosition = _startingCameraOffset;
                 _followTarget = false;
             }
         }
@@ -108,7 +149,7 @@ public class MoveableCamera : MonoBehaviour
     {
         if (unit == _parentViewedUnit) return;
 
-        _targetPosition = unit.transform.position + _startingOffset - transform.position;
+        _targetPosition = unit.transform.position + _startingOffset - _currentlyViewedUnit.transform.position;
         _followTarget = true;
 
         _currentlyViewedUnit = unit;

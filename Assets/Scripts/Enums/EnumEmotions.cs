@@ -1,21 +1,32 @@
 public enum EnumEmotions
 {
-    Scorn,
-    Esteem,
+    // Combination of level 2 emotions
     Prejudice,
     Submission,
-    Terror,
     ConflictedFeelings,
     Faith,
-    Respect,
     Condescension,
     Recognition,
     Hate,
     ReluctantTrust,
-    Hostility,
     Pity,
     Devotion,
     Apprehension,
     Friendship,
-    Empathy
+
+    // Level 2 emotions
+    Scorn,
+    Esteem,
+    Terror,
+    Respect,
+    Hostility,
+    Empathy,
+
+    // Level 1 emotions
+    Disdain,
+    Admiration,
+    Fear,
+    Trust,
+    Antipathy,
+    Sympathy
 }

@@ -172,7 +172,7 @@ public class Relationship
     }
 
     /// <summary>
-    /// Return the limit of the value of a gauge, depdning on the gauge level.
+    /// Return the limit of the value of a gauge, depending on the gauge level.
     /// If the value reaches the limit, the level is increased of decreased accordingly.
     /// </summary>
     private int GetGaugeLimit(int level)
@@ -213,6 +213,7 @@ public class Relationship
     {
         _listEmotions.Clear();
 
+        // Combination of level 2 emotions
         if (_admirationGauge.level == 2)
         {
             if (_trustGauge.level == 2) _listEmotions.Add(EnumEmotions.Faith);
@@ -241,6 +242,7 @@ public class Relationship
             else if (_sympathyGauge.level == -2) _listEmotions.Add(EnumEmotions.Hate);
         }
 
+        // If there are no combinations, then there is maximum one level 2 emotion
         if (_listEmotions.Count == 0)
         {
             if (_admirationGauge.level == 2) _listEmotions.Add(EnumEmotions.Esteem);
@@ -250,5 +252,13 @@ public class Relationship
             else if (_sympathyGauge.level == 2) _listEmotions.Add(EnumEmotions.Empathy);
             else if (_sympathyGauge.level == -2) _listEmotions.Add(EnumEmotions.Hostility);
         }
+
+        // Finally, we add the level 1 emotions
+        if (_admirationGauge.level == 1) _listEmotions.Add(EnumEmotions.Admiration);
+        if (_admirationGauge.level == -1) _listEmotions.Add(EnumEmotions.Disdain);
+        if (_trustGauge.level == 1) _listEmotions.Add(EnumEmotions.Trust);
+        if (_trustGauge.level == -1) _listEmotions.Add(EnumEmotions.Fear);
+        if (_sympathyGauge.level == 1) _listEmotions.Add(EnumEmotions.Sympathy);
+        if (_sympathyGauge.level == -1) _listEmotions.Add(EnumEmotions.Antipathy);
     }
 }
