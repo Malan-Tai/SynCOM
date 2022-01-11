@@ -128,8 +128,8 @@ public class GrenadeTossEngineer : BaseDuoAbility
                 _previousTileCoord = temporaryTileCoord;
                 _tileCoord = temporaryTileCoord;
 
-                CombatGameManager.Instance.CameraPointer.MoveToCell(_tileCoord);
-                CombatGameManager.Instance.Camera.SwitchParenthood(CombatGameManager.Instance.CameraPointer);
+                //CombatGameManager.Instance.CameraPointer.MoveToCell(_tileCoord);
+                //CombatGameManager.Instance.Camera.SwitchParenthood(CombatGameManager.Instance.CameraPointer);
 
                 //Debug.Log("Target : " + tileCoord
                 //        + " + | Ally : " + _chosenAlly.GridPosition

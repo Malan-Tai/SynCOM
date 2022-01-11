@@ -170,7 +170,7 @@ public class Relationship
     }
 
     /// <summary>
-    /// Return the limit of the value of a gauge, depdning on the gauge level.
+    /// Return the limit of the value of a gauge, depending on the gauge level.
     /// If the value reaches the limit, the level is increased of decreased accordingly.
     /// </summary>
     private int GetGaugeLimit(int level)
