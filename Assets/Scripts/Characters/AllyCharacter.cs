@@ -142,10 +142,10 @@ public class AllyCharacter : Character
 
         Debug.Log(instance._traits.Count);
 
-        for (int i = 0; i < instance._traits.Count; i++)
-        {
-            Debug.Log(instance._traits[i].GetName());
-        }
+        //for (int i = 0; i < instance._traits.Count; i++)
+        //{
+        //    Debug.Log(instance._traits[i].GetName());
+        //}
 
         return instance;
    }
