@@ -140,7 +140,7 @@ public class AllyCharacter : Character
         instance.AddMandatoryTraits(characterClass);
         instance.AddRandomTrait(characterClass);
 
-        Debug.Log(instance._traits.Count);
+        //Debug.Log(instance._traits.Count);
 
         //for (int i = 0; i < instance._traits.Count; i++)
         //{
