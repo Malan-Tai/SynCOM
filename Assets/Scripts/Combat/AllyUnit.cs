@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class AllyUnit : GridBasedUnit
 {
-    private BaseAbility _currentAbility = null;
-    public BaseAbility CurrentAbility { get { return _currentAbility; } }
+    private BaseAllyAbility _currentAbility = null;
+    public BaseAllyAbility CurrentAbility { get { return _currentAbility; } }
 
     public AllyCharacter AllyCharacter { get => (AllyCharacter)_character; }
 
-    public delegate void EventStartUsingAbility(BaseAbility ability);
+    public delegate void EventStartUsingAbility(BaseAllyAbility ability);
     public static event EventStartUsingAbility OnStartedUsingAbility;
 
     public delegate void EventStopUsingAbility();
@@ -29,7 +29,7 @@ public class AllyUnit : GridBasedUnit
         }
     }
 
-    public void UseAbility(BaseAbility ability)
+    public void UseAbility(BaseAllyAbility ability)
     {
         if (ability == _currentAbility) return;
 
@@ -69,11 +69,16 @@ public class AllyUnit : GridBasedUnit
         }
     }
 
-    public void NewTurn()
+    public override void NewTurn()
     {
-        _movesLeft = 10f;
+        _movesLeft = AllyCharacter.MovementPoints;
         NeedsPathfinderUpdate();
         UpdateLineOfSights(!IsEnemy());
+
+        foreach (Relationship relationship in AllyCharacter.Relationships.Values)
+        {
+            relationship.CheckedDuoRefusal = false;
+        }
     }
 
     public override void InitSprite()

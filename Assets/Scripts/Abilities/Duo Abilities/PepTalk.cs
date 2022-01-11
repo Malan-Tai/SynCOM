@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 public class PepTalk : BaseDuoAbility
 {
     private List<GridBasedUnit> _possibleTargets;
@@ -18,7 +19,7 @@ public class PepTalk : BaseDuoAbility
         return "Pep Talk";
     }
 
-    protected override bool CanExecute()
+    public override bool CanExecute()
     {
         return _chosenAlly != null && _targetIndex >= 0;
     }
@@ -58,48 +59,12 @@ public class PepTalk : BaseDuoAbility
         
     }
 
-    protected override void Execute()
+    public override void Execute()
     {
         // Impact on the sentiments
         // Ally -> Self relationship
         AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, -10);
-
-        // Actual effect of the ability
-        GridBasedUnit target = _possibleTargets[_targetIndex];
-
-        Debug.Log("DEVOURING : we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
-        SelfShoot(target);
         _effector.Character.Heal(6);
-    }
-
-    private void SelfShoot(GridBasedUnit target)
-    {
-        int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
-        int randCrit = UnityEngine.Random.Range(0, 100);
-
-        Debug.Log("self to hit: " + randShot + " for " + _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover));
-
-        if (randShot < _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
-        {
-            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, 5);
-
-            if (randCrit < _selfShotStats.GetCritRate())
-            {
-                target.Character.TakeDamage(_selfShotStats.GetDamage() * 1.5f);
-                SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
-                AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
-            }
-            else
-            {
-                target.Character.TakeDamage(_selfShotStats.GetDamage());
-            }
-        }
-        else
-        {
-            Debug.Log("self missed");
-            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
-            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
-        }
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)

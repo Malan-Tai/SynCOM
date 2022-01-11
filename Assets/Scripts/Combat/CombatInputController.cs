@@ -10,6 +10,15 @@ public class CombatInputController : MonoBehaviour
     {
         if (CombatGameManager.Instance.ControllableUnits.Count <= 0) return;
 
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitData;
+
+        if (Physics.Raycast(ray, out hitData, 1000, _groundLayerMask) && hitData.transform.CompareTag("Ground"))
+        {
+            Vector2Int tileCoord = CombatGameManager.Instance.GridMap.WorldToGrid(hitData.point);
+            CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(tileCoord);
+        }
+
         if (CombatGameManager.Instance.CurrentAbility != null)
         {
             CombatGameManager.Instance.CurrentAbility.InputControl();
@@ -56,12 +65,11 @@ public class CombatInputController : MonoBehaviour
                 clicked = false;
             }
         }
-        if (Physics.Raycast(ray, out hitData, 1000, _groundLayerMask) && hitData.transform.CompareTag("Ground"))
+        if (Physics.Raycast(ray, out hitData, 1000, _groundLayerMask) && hitData.transform.CompareTag("Ground") && clicked)
         {
             Vector2Int tileCoord = CombatGameManager.Instance.GridMap.WorldToGrid(hitData.point);
-            CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(tileCoord);
-
-            if (clicked)
+            //CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(tileCoord);
+            if (tileCoord != CombatGameManager.Instance.CurrentUnit.GridPosition)
             {
                 CombatGameManager.Instance.CurrentUnit.ChoosePathTo(tileCoord);
             }
@@ -92,9 +100,17 @@ public class CombatInputController : MonoBehaviour
         {
             CombatGameManager.Instance.CurrentUnit.UseAbility(new Slap());
         }
+        else if (Input.GetKeyDown(KeyCode.Alpha8))
+        {
+            CombatGameManager.Instance.CurrentUnit.UseAbility(new GrenadeTossEngineer());
+        }
         else if (Input.GetKeyDown(KeyCode.Alpha9))
         {
-            CombatGameManager.Instance.CurrentUnit.UseAbility(new Devouring());
+            CombatGameManager.Instance.CurrentUnit.UseAbility(new Mortar());
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            CombatGameManager.Instance.CurrentUnit.UseAbility(new SkipTurn());
         }
     }
 }

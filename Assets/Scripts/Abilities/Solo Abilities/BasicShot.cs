@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class BasicShot : BaseAbility
+public class BasicShot : BaseAllyAbility
 {
     private List<GridBasedUnit> _possibleTargets;
     private int _targetIndex = -1;
+
+    private AbilityStats _selfShotStats;
 
     public override string GetDescription()
     {
@@ -29,7 +31,7 @@ public class BasicShot : BaseAbility
         return res;
     }
 
-    public override void SetEffector(AllyUnit effector)
+    public override void SetEffector(GridBasedUnit effector)
     {
         _possibleTargets = new List<GridBasedUnit>();
         
@@ -55,7 +57,7 @@ public class BasicShot : BaseAbility
         base.SetEffector(effector);
     }
 
-    protected override bool CanExecute()
+    public override bool CanExecute()
     {
         return _targetIndex >= 0;
     }
@@ -101,36 +103,43 @@ public class BasicShot : BaseAbility
         }
     }
 
-    protected override void Execute()
+    public override void Execute()
     {
         GridBasedUnit target = _possibleTargets[_targetIndex];
-        int randShot = UnityEngine.Random.Range(0, 100);
+        _selfShotStats = new AbilityStats(0, 0, 1f, 0, _effector);
+
+        int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
         int randCrit = UnityEngine.Random.Range(0, 100);
 
-        if (_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover) > randShot) {
+        if (randShot < _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
+        {
             Debug.Log("i am shooting at " + _possibleTargets[_targetIndex].GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
+            AttackHitOrMiss(_effector, target as EnemyUnit, true);
 
-            if (_effector.Character.CritChances > randCrit) {
-                target.TakeDamage(_effector.Character.Damage * 1.5f);
+            if (randCrit < _selfShotStats.GetCritRate())
+            {
+                AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage * 1.5f, true);
             }
             else
             {
-                target.TakeDamage(_effector.Character.Damage);
+                AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage, false);
             }
-            Debug.Log("Ennemy has" + _possibleTargets[_targetIndex].Character.HealthPoints + "HP left");
         }
         else
         {
-            target.Missed();
-            Debug.Log("Dice got " + randShot + " and had to be lower than " + (_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover)) + ": Missed");
+            AttackHitOrMiss(_effector, target as EnemyUnit, false);
+            Debug.Log(this._effector.AllyCharacter.Name + " (self) : missed");
         }
+
+        var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
+        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
     }
 
-    protected override void FinalizeAbility(bool executed)
+    protected override void EndAbility()
     {
         _targetIndex = -1;
         _possibleTargets = null;
-        base.FinalizeAbility(executed);
+        base.EndAbility();
     }
 
     public override string GetName()

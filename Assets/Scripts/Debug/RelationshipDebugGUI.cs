@@ -8,9 +8,17 @@ public class RelationshipDebugGUI : MonoBehaviour
     {
         AllyUnit current = CombatGameManager.Instance.CurrentUnit;
 
-        int i = 0;
-        foreach (Relationship relationship in current.AllyCharacter.Relationships.Values)
+        if (current == null)
         {
+            return;
+        }
+
+        int i = 0;
+        foreach (AllyUnit unit in CombatGameManager.Instance.AllAllyUnits)
+        {
+            if (current == unit) continue;
+            Relationship relationship = current.AllyCharacter.Relationships[unit.AllyCharacter];
+
             GUI.Box(new Rect(10, i * 100 + 10, 100, 90), "Relationship #" + i);
 
             GUI.Label(new Rect(20, i * 100 + 30, 80, 20), new GUIContent("TRU" + relationship.GetGaugeLevel(EnumSentiment.Trust) + ": " + relationship.GetGaugeValue(EnumSentiment.Trust)));

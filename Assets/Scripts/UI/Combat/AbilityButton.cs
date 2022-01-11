@@ -8,15 +8,15 @@ using TMPro;
 public class AbilityButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     private bool _duo;
-    private BaseAbility _ability;
+    private BaseAllyAbility _ability;
 
-    public delegate void MouseEnter(BaseAbility ability);
+    public delegate void MouseEnter(BaseAllyAbility ability);
     public static event MouseEnter OnMouseEnter;
 
     public delegate void MouseExit();
     public static event MouseExit OnMouseExit;
 
-    public void SetAbility(BaseAbility ability)
+    public void SetAbility(BaseAllyAbility ability)
     {
         _duo = ability is BaseDuoAbility;
         _ability = ability;

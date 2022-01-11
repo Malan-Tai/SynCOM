@@ -50,8 +50,9 @@ public class Character
             "Lillie 'The Bull' Paternoster",
             "Kasandra 'The Clown' Bolter",
     };
-//Character's statistics
-[SerializeField] private float _maxHealth;
+
+    //Character's statistics
+    [SerializeField] private float _maxHealth;
     [SerializeField] private float _healthPoints;
     [SerializeField] private float _damage;                  //amount of damages dealt
     [SerializeField] private float _accuracy;                //value between 0 and 1
@@ -63,10 +64,14 @@ public class Character
     [SerializeField] private EnumGender _gender;
     [SerializeField] private string _name;
 
-    
-
-public delegate void DieEvent();
+    public delegate void DieEvent();
     public event DieEvent OnDeath;
+
+    private List<Buff> _currentBuffs = new List<Buff>();
+    public List<Buff> CurrentBuffs
+    {
+        get { return _currentBuffs; }
+    }
 
     //constructor 
     public Character()  //random values
@@ -126,6 +131,11 @@ public delegate void DieEvent();
     {
         get { return this._healthPoints; }
         set { this._healthPoints = value; }
+    }
+
+    public bool IsAlive
+    {
+        get => _healthPoints > 0;
     }
 
     public float Damage
@@ -194,14 +204,16 @@ public delegate void DieEvent();
         set { this._name = value; }
     }
 
-    public void TakeDamage(float damage)
+    public bool TakeDamage(float damage)
     {
         Debug.Log("oof, took " + damage + " dmg");
         _healthPoints -= damage;
         if (_healthPoints <= 0)
         {
             Die();
+            return true;
         }
+        return false;
     }
 
     public void Kill()

@@ -152,7 +152,7 @@ public struct AbilityStats
 
         if (considerBuffs)
         {
-            foreach (Buff buff in this._unit.CurrentBuffs)
+            foreach (Buff buff in this._unit.Character.CurrentBuffs)
             {
                 float bonus = buff.GetDamageModifier();
                 if (bonus > 0) damageBuff += bonus;
@@ -161,7 +161,7 @@ public struct AbilityStats
 
         if (considerDebuffs)
         {
-            foreach (Buff buff in this._unit.CurrentBuffs)
+            foreach (Buff buff in this._unit.Character.CurrentBuffs)
             {
                 float malus = buff.GetDamageModifier();
                 if (malus < 0) damageBuff += malus;
@@ -170,7 +170,6 @@ public struct AbilityStats
 
         damageBuff = Mathf.Clamp(damageBuff, -1, 2);
         returnDamage *= (1 + damageBuff);
-
         return returnDamage;
     }
 
@@ -193,7 +192,7 @@ public struct AbilityStats
 
         if (considerBuffs)
         {
-            foreach (Buff buff in this._unit.CurrentBuffs)
+            foreach (Buff buff in this._unit.Character.CurrentBuffs)
             {
                 float bonus = buff.GetHitRateModifier();
                 if (bonus > 0) hitMissReductionFromBuff *= 1 - bonus;
@@ -202,7 +201,50 @@ public struct AbilityStats
 
         if (considerDebuffs)
         {
-            foreach (Buff buff in this._unit.CurrentBuffs)
+            foreach (Buff buff in this._unit.Character.CurrentBuffs)
+            {
+                float malus = buff.GetHitRateModifier();
+                if (malus < 0) hitSucessReductionFromDebuff *= 1 + malus;
+            }
+        }
+
+        // Apply relationship modifiers
+        finalAccuracy = 100 - ((100 - (_selfSuccessModifier * finalAccuracy)) * _selfMissModifier);
+        // Apply traits, buffs and debuffs
+        finalAccuracy = 100 - ((100 - (hitSucessReductionFromDebuff * finalAccuracy)) * hitMissReductionFromBuff);
+
+        return Mathf.Clamp(finalAccuracy, 5, 100);
+    }
+
+    /// <summary>
+    /// Returns the chance to hit independantly from the target (ignores target's dodge and cover)
+    /// </summary>
+    public float GetAccuracy(bool considerBuffs = true, bool considerDebuffs = true)
+    {
+        float finalAccuracy = this._unit.Character.Accuracy + _innateAccuracy;
+
+        float hitMissReductionFromBuff = 1;
+        float hitSucessReductionFromDebuff = 1;
+
+        foreach (Trait trait in this._unit.AllyCharacter.Traits)
+        {
+            float mod = trait.GetHitRateModifier();
+            if (mod > 0) hitMissReductionFromBuff *= 1 - mod;
+            else hitSucessReductionFromDebuff *= 1 + mod;
+        }
+
+        if (considerBuffs)
+        {
+            foreach (Buff buff in this._unit.Character.CurrentBuffs)
+            {
+                float bonus = buff.GetHitRateModifier();
+                if (bonus > 0) hitMissReductionFromBuff *= 1 - bonus;
+            }
+        }
+
+        if (considerDebuffs)
+        {
+            foreach (Buff buff in this._unit.Character.CurrentBuffs)
             {
                 float malus = buff.GetHitRateModifier();
                 if (malus < 0) hitSucessReductionFromDebuff *= 1 + malus;
@@ -236,7 +278,7 @@ public struct AbilityStats
 
         if (considerBuffs)
         {
-            foreach (Buff buff in this._unit.CurrentBuffs)
+            foreach (Buff buff in this._unit.Character.CurrentBuffs)
             {
                 float bonus = buff.GetCritRateModifier();
                 if (bonus > 0) critMissReductionFromBuff *= 1 - bonus;
@@ -245,7 +287,7 @@ public struct AbilityStats
 
         if (considerDebuffs)
         {
-            foreach (Buff buff in this._unit.CurrentBuffs)
+            foreach (Buff buff in this._unit.Character.CurrentBuffs)
             {
                 float malus = buff.GetCritRateModifier();
                 if (malus < 0) critSucessReductionFromDebuff *= 1 + malus;

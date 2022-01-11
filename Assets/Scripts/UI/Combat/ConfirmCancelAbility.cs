@@ -29,7 +29,7 @@ public class ConfirmCancelAbility : MonoBehaviour
         AllyUnit.OnStoppedUsingAbility -= StopUsing;
     }
 
-    private void StartUsing(BaseAbility ability)
+    private void StartUsing(BaseAllyAbility ability)
     {
         if (_hidden)
         {

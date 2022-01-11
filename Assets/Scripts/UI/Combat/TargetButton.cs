@@ -22,12 +22,12 @@ public class TargetButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
 
     private void OnEnable()
     {
-        BaseAbility.OnTargetSymbolUpdateRequest += SetSelected;
+        BaseAllyAbility.OnTargetSymbolUpdateRequest += SetSelected;
     }
 
     private void OnDisable()
     {
-        BaseAbility.OnTargetSymbolUpdateRequest -= SetSelected;
+        BaseAllyAbility.OnTargetSymbolUpdateRequest -= SetSelected;
     }
 
     public void SetUnit(GridBasedUnit unit)
