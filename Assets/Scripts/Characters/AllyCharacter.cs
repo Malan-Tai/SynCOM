@@ -27,7 +27,7 @@ public class AllyCharacter : Character
     private EnumClasses _class;
     public EnumClasses CharacterClass { get => _class; }
 
-   
+    public List<BaseAllyAbility> Abilities { get; protected set; }
 
     private List<Trait> _traits = new List<Trait>();
     public List<Trait> Traits
@@ -56,6 +56,16 @@ public class AllyCharacter : Character
         EnumClasses characterClass = (EnumClasses)Random.Range(0, 6);
         AllyCharacter instance = new AllyCharacter(characterClass, 0, 0, 0, 0, 0, 0, 0, 0, false);
 
+        instance.Abilities = new List<BaseAllyAbility>
+        {
+            new SkipTurn(),
+            new BasicShot(),
+            new HunkerDown(),
+            new BasicDuoShot(),
+            new FirstAid(),
+            //new PepTalk()
+        };
+
         switch (characterClass)
         {
             case EnumClasses.Berserker:
@@ -67,6 +77,8 @@ public class AllyCharacter : Character
                 instance._rangeShot         = 3;
                 instance._movementPoints    = 15;
                 instance._weigth            = 90;
+
+                instance.Abilities.Add(new Devouring());
                 break;
             case EnumClasses.Engineer:
                 instance._maxHealth         = 25;
@@ -77,6 +89,9 @@ public class AllyCharacter : Character
                 instance._rangeShot         = 20;
                 instance._movementPoints    = 11;
                 instance._weigth            = 90;
+
+                instance.Abilities.Add(new GrenadeTossEngineer());
+                instance.Abilities.Add(new Mortar());
                 break;
             case EnumClasses.Sniper:
                 instance._maxHealth         = 10;

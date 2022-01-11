@@ -73,8 +73,6 @@ public class Character
         get { return _currentBuffs; }
     }
 
-    public List<BaseAbility> Abilities { get; private set; }
-
     //constructor 
     public static Character GetRandomCharacter(Character preinstanciated = null)  //random values
     {

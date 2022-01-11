@@ -39,6 +39,12 @@ public class AllyUnit : GridBasedUnit
         if (OnStartedUsingAbility != null) OnStartedUsingAbility(ability);
     }
 
+    public void UseAbility(int i)
+    {
+        if (i >= AllyCharacter.Abilities.Count) return;
+        UseAbility(AllyCharacter.Abilities[i]);
+    }
+
     //public void UseAbilityAsAlly(BaseAbility ability)
     //{
     //    _currentAbility = ability;
