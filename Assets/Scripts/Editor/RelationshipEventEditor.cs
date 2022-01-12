@@ -221,7 +221,7 @@ public class RelationshipEventEditor : Editor
                     }
                 }
             }
-            else if (_effectType.enumValueIndex == (int)RelationshipEventEffectType.RefuseToDuo)
+            else if (_effectType.enumValueIndex == (int)RelationshipEventEffectType.RefuseToDuo || _effectType.enumValueIndex == (int)RelationshipEventEffectType.StealDuo)
             {
                 EditorGUILayout.PropertyField(_chance);
             }

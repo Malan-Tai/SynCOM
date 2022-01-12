@@ -171,7 +171,10 @@ public abstract class BaseDuoAbility : BaseAllyAbility
     protected override void HandleRelationshipEventResult(RelationshipEventsResult result)
     {
         base.HandleRelationshipEventResult(result);
+
         _freeForDuo = _freeForDuo || result.freeActionForDuo;
+
+        if (result.stolenDuoUnit != null) _chosenAlly = result.stolenDuoUnit;
     }
 
     protected bool TryBeginDuo(AllyUnit source, AllyUnit duo)
@@ -184,10 +187,14 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         return eventResult.refusedDuo || invertedEventResult.refusedDuo;
     }
 
+    protected void ConfirmDuoExecution(AllyUnit source, AllyUnit duo)
+    {
+        HandleRelationshipEventResult(RelationshipEventsManager.Instance.ConfirmDuoExecution(source, duo));
+    }
+
     protected void EndExecutedDuo(AllyUnit source, AllyUnit duo)
     {
-        RelationshipEventsResult eventResult = RelationshipEventsManager.Instance.EndExecutedDuo(source, duo);
-        HandleRelationshipEventResult(eventResult);
+        HandleRelationshipEventResult(RelationshipEventsManager.Instance.EndExecutedDuo(source, duo));
     }
     #endregion
 
@@ -273,6 +280,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
         if (confirmed && CanExecute())
         {
+            ConfirmDuoExecution(_effector, _chosenAlly);
             Execute();
             FinalizeAbility(true);
         }

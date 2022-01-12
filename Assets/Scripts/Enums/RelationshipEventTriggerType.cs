@@ -6,5 +6,6 @@ public enum RelationshipEventTriggerType
     Kill,
     Heal,
     BeginDuo,
+    ConfirmDuoExecution,
     EndExecutedDuo
 }

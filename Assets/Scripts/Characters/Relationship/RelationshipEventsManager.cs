@@ -99,6 +99,10 @@ public class RelationshipEventsManager : MonoBehaviour
                 result.refusedDuo = Random.Range(0f, 1f) < relationshipEvent.chance;
                 break;
 
+            case RelationshipEventEffectType.StealDuo:
+                if (Random.Range(0f, 1f) < relationshipEvent.chance) result.stolenDuoUnit = currentUnit;
+                break;
+
             case RelationshipEventEffectType.FreeAction:
                 bool rolledOk = Random.Range(0f, 1f) < relationshipEvent.chance;
                 result.freeActionForSource  = result.freeActionForSource    || (relationshipEvent.freeAction        && rolledOk);
@@ -254,5 +258,13 @@ public class RelationshipEventsManager : MonoBehaviour
         dummyTrigger.triggerType = RelationshipEventTriggerType.EndExecutedDuo;
 
         return CheckTriggersAndExecute(dummyTrigger, source, duoUnit: duo);
+    }
+
+    public RelationshipEventsResult ConfirmDuoExecution(AllyUnit source, AllyUnit duo)
+    {
+        RelationshipEvent dummyTrigger = ScriptableObject.CreateInstance("RelationshipEvent") as RelationshipEvent;
+        dummyTrigger.triggerType = RelationshipEventTriggerType.ConfirmDuoExecution;
+
+        return CheckTriggersAndExecute(dummyTrigger, source, allyTargetUnit: duo, duoUnit: duo);
     }
 }

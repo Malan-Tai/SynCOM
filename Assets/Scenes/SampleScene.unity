@@ -6691,6 +6691,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32d4184a2f256664f9a40e0e796d8521, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _cameraPointer: {fileID: 0}
   _gridMap: {fileID: 1726654979}
   _tileDisplay: {fileID: 840574980}
   _camera: {fileID: 71073694}
@@ -6756,6 +6757,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4a480e74696e4124a9c584973e9b64c1, type: 2}
   - {fileID: 11400000, guid: 7a4475220f7545c429cc20bd4ef7eb7d, type: 2}
   - {fileID: 11400000, guid: c7329894fb7d3654581ac5fd724cf6eb, type: 2}
+  - {fileID: 11400000, guid: e1876ed9dd71d6e499b993e9c49a7889, type: 2}
 --- !u!1 &795293727
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f6c0a609471fce429c6b769d34b1e7d, type: 3}
-  m_Name: RefuseDuoWhenTerrorized
+  m_Name: StealDuo
   m_EditorClassIdentifier: 
-  triggerType: 5
-  triggersOnlyOnce: 0
-  onlyCheckDuoAlly: 1
-  dontCheckDuoAlly: 0
+  triggerType: 6
+  triggersOnlyOnce: 1
+  onlyCheckDuoAlly: 0
+  dontCheckDuoAlly: 1
   onlyCheckTarget: 0
   dontCheckTarget: 0
   requiresEmotions: 1
-  requiredEmotionsTowardsSource: 0e000000
-  requiredEmotionsTowardsTarget: 
+  requiredEmotionsTowardsSource: 0d00000003000000090000000b00000011000000
+  requiredEmotionsTowardsTarget: 0c00000000000000040000000600000010000000
   targetsAlly: 0
   onMiss: 0
   onHit: 0
@@ -29,8 +29,8 @@ MonoBehaviour:
   onFatal: 0
   minMaxHealthRatio: {x: 0, y: 1}
   killSteal: 0
-  effectType: 4
-  interrupts: 0
+  effectType: 5
+  interrupts: 1
   reciprocal: 0
   admirationChange: 0
   trustChange: 0
@@ -39,8 +39,9 @@ MonoBehaviour:
   admirationChangeSTT: 0
   trustChangeSTT: 0
   sympathyChangeSTT: 0
-  chance: 0.3
-  interruptions: []
+  chance: 1
+  interruptions:
+  - {fileID: 11400000, guid: 4766f0301e0289f4f903d7335ea3c389, type: 2}
   freeAction: 0
   freeActionForDuo: 0
   maxRange: 0
