@@ -63,7 +63,7 @@ public class AbilityList : MonoBehaviour
             else
             {
                 btn = Instantiate(_abilityBtnPrefab, transform).GetComponent<AbilityButton>();
-                btn.transform.localPosition += new Vector3(x, 0, 0);
+                btn.transform.localPosition += new Vector3(x, -10, 0);
             }
 
             float width = btn.GetComponent<RectTransform>().rect.width + 10;
