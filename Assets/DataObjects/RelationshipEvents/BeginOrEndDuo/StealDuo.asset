@@ -39,7 +39,7 @@ MonoBehaviour:
   admirationChangeSTT: 0
   trustChangeSTT: 0
   sympathyChangeSTT: 0
-  chance: 1
+  chance: 0.25
   interruptions:
   - {fileID: 11400000, guid: 4766f0301e0289f4f903d7335ea3c389, type: 2}
   freeAction: 0
