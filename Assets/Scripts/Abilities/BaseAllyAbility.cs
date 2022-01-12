@@ -174,7 +174,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
         _freeForDuo = _freeForDuo || result.freeActionForDuo;
 
-        if (result.stolenDuoUnit != null) _chosenAlly = result.stolenDuoUnit;
+        if (_possibleAllies.Contains(result.stolenDuoUnit)) _chosenAlly = result.stolenDuoUnit;
     }
 
     protected bool TryBeginDuo(AllyUnit source, AllyUnit duo)
