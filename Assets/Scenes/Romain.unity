@@ -7761,6 +7761,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2ce591c01a238d5409e9c87a3db6981a, type: 2}
   - {fileID: 11400000, guid: 41c83cdc1dc640644bcad149e554e839, type: 2}
   - {fileID: 11400000, guid: f417adb5653384c489a0d1b47ddd1033, type: 2}
+  - {fileID: 11400000, guid: 336cffd7bc18e5447a3d584e64ea11c0, type: 2}
+  - {fileID: 11400000, guid: 39d57cff9e2cce642b3a6ec403349a35, type: 2}
   _tileZoneRendererPrefab: {fileID: 5751786864067872331, guid: 971dee6c24a576b4b987bd432e7f2a21, type: 3}
   _gridLinesRenderer: {fileID: 1433990336}
 --- !u!1 &846976604
@@ -10137,7 +10139,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1159244997
 MonoBehaviour:
   m_ObjectHideFlags: 0
