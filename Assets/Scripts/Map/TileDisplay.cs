@@ -100,8 +100,8 @@ public class TileDisplay : MonoBehaviour
 
         MeshRenderer zoneRenderer = Instantiate(_tileZoneRendererPrefab, transform);
         Material zoneMaterial = new Material(_tileZoneRendererPrefab.sharedMaterial);
-        zoneMaterial.SetVectorArray("_Coords", new Vector4[500]);
-        zoneMaterial.SetFloatArray("_BlobIndices", new float[500]);
+        zoneMaterial.SetVectorArray("_Coords", new Vector4[1000]);
+        zoneMaterial.SetFloatArray("_BlobIndices", new float[1000]);
         zoneMaterial.SetTexture("_Tileset", tileset);
         zoneMaterial.SetColor("_Color", color);
         zoneRenderer.material = zoneMaterial;
