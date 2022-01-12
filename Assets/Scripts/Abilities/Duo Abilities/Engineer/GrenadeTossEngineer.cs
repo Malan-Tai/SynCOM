@@ -13,6 +13,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
     private List<AllyUnit> _allyTargets = new List<AllyUnit>();
     
     private List<Tile> _areaOfEffectTiles = new List<Tile>();
+    private List<Tile> _areaOfEffectBonusTiles = new List<Tile>();
     private List<Tile> _possibleTargetsTiles = new List<Tile>();
 
     // Utilisé pour déterminer l'accuracy de l'allié
@@ -138,11 +139,11 @@ public class GrenadeTossEngineer : BaseDuoAbility
                 //        + " + | Effector : " + _effector.GridPosition);
 
                 _areaOfEffectTiles.Clear();
+                _areaOfEffectTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(_tileCoord, _explosionBaseRadius);
+                _areaOfEffectBonusTiles.Clear();
+                _areaOfEffectBonusTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(_tileCoord, _explosionImprovedRadius);
 
-                
-                _areaOfEffectTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(_tileCoord, _explosionImprovedRadius);
-
-                
+                CombatGameManager.Instance.TileDisplay.DisplayTileZone("BonusDamageZone", _areaOfEffectBonusTiles, false);
                 CombatGameManager.Instance.TileDisplay.DisplayTileZone("DamageZone", _areaOfEffectTiles, false);
 
                 // Je parcours la liste des enemis pour récupérer les ennemis ciblés
