@@ -231,4 +231,9 @@ public class GrenadeTossEngineer : BaseDuoAbility
         CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
         CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
     }
+
+    public override string GetShortDescription()
+    {
+        return "Throws a grenade and lets an ally shoot at it for increased efficiency.";
+    }
 }

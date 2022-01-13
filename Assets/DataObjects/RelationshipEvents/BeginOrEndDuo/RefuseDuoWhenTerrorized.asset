@@ -13,12 +13,13 @@ MonoBehaviour:
   m_Name: RefuseDuoWhenTerrorized
   m_EditorClassIdentifier: 
   triggerType: 5
+  triggersOnlyOnce: 0
   onlyCheckDuoAlly: 1
   dontCheckDuoAlly: 0
   onlyCheckTarget: 0
   dontCheckTarget: 0
   requiresEmotions: 1
-  requiredEmotionsTowardsSource: 04000000
+  requiredEmotionsTowardsSource: 0e000000
   requiredEmotionsTowardsTarget: 
   targetsAlly: 0
   onMiss: 0
@@ -42,3 +43,6 @@ MonoBehaviour:
   interruptions: []
   freeAction: 0
   freeActionForDuo: 0
+  maxRange: 0
+  buffsOnSource: []
+  buffsOnTarget: []

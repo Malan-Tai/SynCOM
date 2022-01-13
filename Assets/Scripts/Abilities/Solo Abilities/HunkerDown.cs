@@ -28,4 +28,9 @@ public class HunkerDown : BaseAllyAbility
     {
         return "Hunker Down";
     }
+
+    public override string GetShortDescription()
+    {
+        return "Increases cover";
+    }
 }

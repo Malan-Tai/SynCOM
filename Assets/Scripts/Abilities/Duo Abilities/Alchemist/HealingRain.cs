@@ -71,12 +71,17 @@ public class HealingRain : BaseDuoAbility
     }
     public override string GetDescription()
     {
-        return "You throw a grenade filled with a healing concoction in the air for your ally to shoot at." +
+        return "You throw a vial filled with a healing concoction in the air for your ally to shoot at." +
                "\nHeal: " + _healingValue;
     }
     public override string GetName()
     {
         return "Healing Rain";
+    }
+
+    public override string GetShortDescription()
+    {
+        return "Throws a healing vial and lets an ally shoot at it for increased efficiency.";
     }
 
     protected override void ChooseAlly()

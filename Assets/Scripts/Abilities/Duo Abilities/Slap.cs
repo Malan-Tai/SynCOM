@@ -69,4 +69,9 @@ public class Slap : BaseDuoAbility
     {
         return "Get slapped, dislike your ally.";
     }
+
+    public override string GetShortDescription()
+    {
+        return "A small friendly fire";
+    }
 }

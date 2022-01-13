@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: FriendlyFireOnDislikedAlly
   m_EditorClassIdentifier: 
   triggerType: 2
+  triggersOnlyOnce: 0
   onlyCheckDuoAlly: 0
   dontCheckDuoAlly: 0
   onlyCheckTarget: 0
   dontCheckTarget: 1
   requiresEmotions: 1
   requiredEmotionsTowardsSource: 
-  requiredEmotionsTowardsTarget: 000000000200000004000000080000000a0000000c000000
+  requiredEmotionsTowardsTarget: 0000000004000000060000000c0000000e00000010000000
   targetsAlly: 0
   onMiss: 0
   onHit: 0
@@ -38,3 +39,10 @@ MonoBehaviour:
   admirationChangeSTT: 0
   trustChangeSTT: 0
   sympathyChangeSTT: 0
+  chance: 0
+  interruptions: []
+  freeAction: 0
+  freeActionForDuo: 0
+  maxRange: 0
+  buffsOnSource: []
+  buffsOnTarget: []

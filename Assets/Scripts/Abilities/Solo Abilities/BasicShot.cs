@@ -16,16 +16,16 @@ public class BasicShot : BaseAllyAbility
         if (_hoveredUnit != null)
         {
             res += "\nAcc:" + (_effector.Character.Accuracy - _hoveredUnit.Character.GetDodge(_effector.LinesOfSight[_hoveredUnit].cover)) +
-                    " | Crit:" + _effector.Character.CritChances +
-                    " | Dmg:" + _effector.Character.Damage;
+                    "% | Crit:" + _effector.Character.CritChances +
+                    "% | Dmg:" + _effector.Character.Damage;
         }
         else if (_targetIndex >= 0)
         {
             GridBasedUnit target = _possibleTargets[_targetIndex];
 
             res += "\nAcc:" + (_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover)) +
-                    " | Crit:" + _effector.Character.CritChances +
-                    " | Dmg:" + _effector.Character.Damage;
+                    "% | Crit:" + _effector.Character.CritChances +
+                    "% | Dmg:" + _effector.Character.Damage;
         }
 
         return res;
@@ -153,5 +153,10 @@ public class BasicShot : BaseAllyAbility
         CombatGameManager.Instance.Camera.SwitchParenthood(unit);
         RequestDescriptionUpdate();
         RequestTargetSymbolUpdate(unit);
+    }
+
+    public override string GetShortDescription()
+    {
+        return "A basic attack";
     }
 }

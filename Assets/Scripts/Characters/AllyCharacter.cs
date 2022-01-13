@@ -5,6 +5,8 @@ using UnityEngine;
 [System.Serializable]
 public class AllyCharacter : Character
 {
+    private static int _commonAbilitiesCount = 5;
+
     private static Dictionary<EnumClasses, List<Trait>> s_mandatoryTraits = new Dictionary<EnumClasses, List<Trait>>(){
         {EnumClasses.Berserker, new List<Trait> {new Brave()}},
         {EnumClasses.Engineer, new List<Trait> {new Brave()}},
@@ -28,16 +30,19 @@ public class AllyCharacter : Character
     public EnumClasses CharacterClass { get => _class; }
 
     public List<BaseAllyAbility> Abilities { get; protected set; }
+    public List<BaseAllyAbility> SpecialAbilities
+    {
+        get
+        {
+            return Abilities.GetRange(_commonAbilitiesCount, Abilities.Count - _commonAbilitiesCount);
+        }
+    }
 
     private List<Trait> _traits = new List<Trait>();
-    public List<Trait> Traits
-    {
-        get { return _traits; }
-    }
+    public List<Trait> Traits { get { return _traits; } }
    
     private Dictionary<AllyCharacter, Relationship> _relationships;
     public Dictionary<AllyCharacter, Relationship> Relationships { get { return _relationships; } }
-
 
     public AllyCharacter(EnumClasses characterClass, float maxHealth, float damage, float accuracy, float dodge, float critChances, float rangeShot, float movementPoints, float weight, bool addTraits = true) :
         base(maxHealth, damage, accuracy, dodge, critChances, rangeShot, movementPoints, weight)
@@ -48,7 +53,6 @@ public class AllyCharacter : Character
             AddMandatoryTraits(_class);
             AddRandomTrait(_class);
         }
-
     }
 
    public static AllyCharacter GetRandomAllyCharacter()
@@ -65,6 +69,8 @@ public class AllyCharacter : Character
             new FirstAid(),
             //new PepTalk()
         };
+
+        _commonAbilitiesCount = instance.Abilities.Count;
 
         switch (characterClass)
         {

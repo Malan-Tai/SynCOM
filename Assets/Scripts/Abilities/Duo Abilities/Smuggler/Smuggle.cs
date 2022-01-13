@@ -12,10 +12,10 @@ public class Smuggle : BaseDuoAbility
     private List<Tile> _possibleTargetsTiles = new List<Tile>();
 
     private int _targetingRadius = 10;
-    //private int _arrivalRadius = 1;
+
     public override string GetAllyDescription()
     {
-        return "get smuggled";
+        return "Get smuggled";
     }
     public override string GetDescription()
     {
@@ -96,5 +96,10 @@ public class Smuggle : BaseDuoAbility
     protected override bool IsAllyCompatible(AllyUnit unit)
     {
         return (unit.GridPosition - this._effector.GridPosition).magnitude <= _targetingRadius;
+    }
+
+    public override string GetShortDescription()
+    {
+        return "Transports an ally next to you.";
     }
 }
