@@ -10,11 +10,12 @@ public class HistoryConsole : MonoBehaviour
 {
     public static readonly Color UNIT_LINK_COLOR = Color.red;
 
+    public static bool IsVisible { get => _instance._consoleRootGO.activeInHierarchy; }
+
+    [SerializeField] private GameObject _consoleRootGO;
     [SerializeField] private Transform _entriesParent;
     [SerializeField] private TMP_Text _entryTemplate;
-
-    private ScrollRect _consoleScrollRect;
-    private Image _consoleBackground;
+    [SerializeField] private ScrollRect _consoleScrollRect;
 
     private delegate void ExecuteLinkAction();
     private readonly Dictionary<string, ExecuteLinkAction> _linkActions = new Dictionary<string, ExecuteLinkAction>();
@@ -30,13 +31,6 @@ public class HistoryConsole : MonoBehaviour
     }
     #endregion
 
-
-    private void Start()
-    {
-        _consoleBackground = GetComponent<Image>();
-        _consoleScrollRect = GetComponent<ScrollRect>();
-        _consoleBackground.enabled = _entriesParent.childCount > 0;
-    }
 
     public static void AddEntry(List<EntryPart> entry)
     {
@@ -74,10 +68,15 @@ public class HistoryConsole : MonoBehaviour
         textObject.text = stringBuilder.ToString().Trim();
         Canvas.ForceUpdateCanvases();
         _instance._consoleScrollRect.verticalNormalizedPosition = 0f;
+    }
 
-        if (!_instance._consoleBackground.enabled)
+    public static void Display(bool display)
+    {
+        _instance._consoleRootGO.SetActive(display);
+
+        if (display)
         {
-            _instance._consoleBackground.enabled = true;
+            _instance._consoleScrollRect.verticalNormalizedPosition = 0f;
         }
     }
 
