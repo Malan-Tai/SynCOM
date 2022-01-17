@@ -161,4 +161,9 @@ public class SuppressiveFire : BaseDuoAbility
     {
         return true;
     }
+
+    public override string GetShortDescription()
+    {
+        return "Distract a distant enemy while you ally land a critical hit";
+    }
 }
