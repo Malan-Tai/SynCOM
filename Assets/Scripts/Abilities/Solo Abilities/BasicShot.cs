@@ -125,6 +125,7 @@ public class BasicShot : BaseAllyAbility
                 new LinkUnitEntryPart(target.Character.Name, target, HistoryConsole.UNIT_LINK_COLOR, HistoryConsole.UNIT_LINK_HOVER_COLOR),
                 new EntryPart("with"),
                 new ColorEntryPart($"{_effector.LinesOfSight[target].cover} cover", Color.yellow),
+                new IconEntryPart($"{_effector.LinesOfSight[target].cover}Cover", HistoryConsole.CoverColor(_effector.LinesOfSight[target].cover)),
                 new EntryPart(": did"),
             };
 

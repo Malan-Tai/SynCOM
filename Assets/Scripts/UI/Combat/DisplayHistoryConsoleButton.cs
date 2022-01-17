@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class DisplayHistoryConsoleButton : MonoBehaviour
@@ -9,6 +10,7 @@ public class DisplayHistoryConsoleButton : MonoBehaviour
     [SerializeField] private Image _iconImage;
     [SerializeField] private Sprite _shownIconSprite;
     [SerializeField] private Sprite _hiddenIconSprite;
+
 
     private void Start()
     {
@@ -39,5 +41,7 @@ public class DisplayHistoryConsoleButton : MonoBehaviour
             HistoryConsole.Display(true);
             _iconImage.sprite = _shownIconSprite;
         }
+
+        EventSystem.current.SetSelectedGameObject(null);
     }
 }
