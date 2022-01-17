@@ -40,8 +40,8 @@ public static class EntryBuilder
             new EntryPart("on"),
             new LinkUnitEntryPart(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER),
             new EntryPart("with"),
-            new ColorEntryPart($"{effector.LinesOfSight[target].cover} cover", EntryColors.TEXT_IMPORTANT),
             new IconEntryPart($"{effector.LinesOfSight[target].cover}Cover", EntryColors.CoverColor(effector.LinesOfSight[target].cover)),
+            new ColorEntryPart($"{effector.LinesOfSight[target].cover} cover", EntryColors.TEXT_IMPORTANT),
             new EntryPart(": did"),
             new ColorEntryPart($"{damage}{criticalText} damage", EntryColors.TEXT_IMPORTANT)
         };
@@ -58,13 +58,13 @@ public static class EntryBuilder
             new EntryPart("and"),
             new LinkUnitEntryPart(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER),
             new EntryPart("used"),
-            new ColorEntryPart(ability.GetName(), EntryColors.TEXT_ABILITY),
             new IconEntryPart($"Duo", EntryColors.ICON_DUO_ABILITY),
+            new ColorEntryPart(ability.GetName(), EntryColors.TEXT_ABILITY),
             new EntryPart("on"),
             new LinkUnitEntryPart(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER),
             new EntryPart("with"),
-            new ColorEntryPart($"{effector.LinesOfSight[target].cover} cover", EntryColors.TEXT_IMPORTANT),
             new IconEntryPart($"{effector.LinesOfSight[target].cover}Cover", EntryColors.CoverColor(effector.LinesOfSight[target].cover)),
+            new ColorEntryPart($"{effector.LinesOfSight[target].cover} cover", EntryColors.TEXT_IMPORTANT),
             new EntryPart(":"),
             new LinkUnitEntryPart(effector.Character.Name, effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER),
         };
@@ -107,8 +107,8 @@ public static class EntryBuilder
             new EntryPart("on"),
             new LinkUnitEntryPart(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER),
             new EntryPart("with"),
-            new ColorEntryPart($"{effector.LinesOfSight[target].cover} cover", EntryColors.TEXT_IMPORTANT),
             new IconEntryPart($"{effector.LinesOfSight[target].cover}Cover", EntryColors.CoverColor(effector.LinesOfSight[target].cover)),
+            new ColorEntryPart($"{effector.LinesOfSight[target].cover} cover", EntryColors.TEXT_IMPORTANT),
         };
     }
 
