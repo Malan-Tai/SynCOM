@@ -40,12 +40,17 @@ public class GrenadeTossEngineer : BaseDuoAbility
                     " | Crit: 0%" +
                     " | Dmg: " + _selfShotStats.GetDamage();
         }
-        //else
-        //{
-        //    res += "\nAcc: 100%" +
-        //            " | Crit: 0%" +
-        //            " | Dmg: " + _effector.AllyCharacter.Damage * 1.5;
-        //}
+        else if (_effector != null)
+        {
+            res += "\nAcc: 100%" +
+                    " | Crit: 0%" +
+                    " | Dmg: " + _effector.AllyCharacter.Damage * 1.5;
+        }
+        else
+        {
+            res += "\nAcc: 100%" +
+                    " | Crit: 0%";
+        }
         return res;
     }
 
