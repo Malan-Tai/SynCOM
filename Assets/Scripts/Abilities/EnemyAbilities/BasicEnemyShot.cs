@@ -29,12 +29,12 @@ public class BasicEnemyShot : BaseEnemyAbility
             if (randCrit < _effector.Character.CritChances)
             {
                 AttackDamage(BestTarget as AllyUnit, 1.5f * _effector.Character.Damage, true);
-                HistoryConsole.AddEntry(EntryBuilder.GetSingleDamageEntry(_effector, BestTarget, this, _effector.Character.Damage * 1.5f, true));
+                HistoryConsole.AddEntry(EntryBuilder.GetDamageEntry(_effector, BestTarget, this, _effector.Character.Damage * 1.5f, true));
             }
             else
             {
                 AttackDamage(BestTarget as AllyUnit, _effector.Character.Damage, true);
-                HistoryConsole.AddEntry(EntryBuilder.GetSingleDamageEntry(_effector, BestTarget, this, _effector.Character.Damage, false));
+                HistoryConsole.AddEntry(EntryBuilder.GetDamageEntry(_effector, BestTarget, this, _effector.Character.Damage, false));
             }
         }
         else

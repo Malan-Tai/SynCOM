@@ -1,5 +1,6 @@
 using UnityEngine;
 using EntryParts;
+using System.Collections.Generic;
 
 public static class EntryColors
 {
@@ -27,7 +28,7 @@ public static class EntryColors
 
 public static class EntryBuilder
 {
-    public static EntryPart[] GetSingleDamageEntry(GridBasedUnit effector, GridBasedUnit target, BaseAbility ability, float damage, bool critical)
+    public static EntryPart[] GetDamageEntry(GridBasedUnit effector, GridBasedUnit target, BaseAbility ability, float damage, bool critical)
     {
         string criticalText = critical ? " critical" : " ";
 
@@ -44,6 +45,56 @@ public static class EntryBuilder
             new EntryPart(": did"),
             new ColorEntryPart($"{damage}{criticalText} damage", EntryColors.TEXT_IMPORTANT)
         };
+    }
+
+    public static EntryPart[] GetDuoDamageEntry(
+        GridBasedUnit effector, GridBasedUnit duo,
+        GridBasedUnit target, BaseAbility ability,
+        in ShootResult selfResults, in ShootResult allyResults)
+    {
+        List<EntryPart> entry = new List<EntryPart>
+        {
+            new LinkUnitEntryPart(effector.Character.Name, effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER),
+            new EntryPart("and"),
+            new LinkUnitEntryPart(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER),
+            new EntryPart("used"),
+            new ColorEntryPart(ability.GetName(), EntryColors.TEXT_ABILITY),
+            new IconEntryPart($"Duo", EntryColors.ICON_DUO_ABILITY),
+            new EntryPart("on"),
+            new LinkUnitEntryPart(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER),
+            new EntryPart("with"),
+            new ColorEntryPart($"{effector.LinesOfSight[target].cover} cover", EntryColors.TEXT_IMPORTANT),
+            new IconEntryPart($"{effector.LinesOfSight[target].cover}Cover", EntryColors.CoverColor(effector.LinesOfSight[target].cover)),
+            new EntryPart(":"),
+            new LinkUnitEntryPart(effector.Character.Name, effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER),
+        };
+
+        if (selfResults.Landed)
+        {
+            string selfCriticalText = selfResults.Critical ? " critical" : " ";
+            entry.Add(new EntryPart("did"));
+            entry.Add(new ColorEntryPart($"{selfResults.Damage}{selfCriticalText} damage", EntryColors.TEXT_IMPORTANT));
+        }
+        else
+        {
+            entry.Add(new ColorEntryPart("missed", EntryColors.TEXT_IMPORTANT));
+        }
+
+        entry.Add(new EntryPart("and"));
+        entry.Add(new LinkUnitEntryPart(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER));
+
+        if (allyResults.Landed)
+        {
+            string allyCriticalText = allyResults.Critical ? " critical" : " ";
+            entry.Add(new EntryPart("did"));
+            entry.Add(new ColorEntryPart($"{allyResults.Damage}{allyCriticalText} damage", EntryColors.TEXT_IMPORTANT));
+        }
+        else
+        {
+            entry.Add(new ColorEntryPart("missed", EntryColors.TEXT_IMPORTANT));
+        }
+
+        return entry.ToArray();
     }
 
     public static EntryPart[] GetMissedEntry(GridBasedUnit effector, GridBasedUnit target, BaseAbility ability)

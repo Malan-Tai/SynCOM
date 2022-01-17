@@ -118,12 +118,12 @@ public class BasicShot : BaseAllyAbility
             if (randCrit < _selfShotStats.GetCritRate())
             {
                 AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage * 1.5f, true);
-                HistoryConsole.AddEntry(EntryBuilder.GetSingleDamageEntry(_effector, target, this, _effector.Character.Damage * 1.5f, true));
+                HistoryConsole.AddEntry(EntryBuilder.GetDamageEntry(_effector, target, this, _effector.Character.Damage * 1.5f, true));
             }
             else
             {
                 AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage, false);
-                HistoryConsole.AddEntry(EntryBuilder.GetSingleDamageEntry(_effector, target, this, _effector.Character.Damage, false));
+                HistoryConsole.AddEntry(EntryBuilder.GetDamageEntry(_effector, target, this, _effector.Character.Damage, false));
             }
 
         }
