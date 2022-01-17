@@ -18,7 +18,25 @@ public class Mortar : BaseDuoAbility
     }
     public override string GetDescription()
     {
-        return "Fire a splinter-filled grenade on you ally's position, hoping they’ll take cover in time.";
+        string res = "Fire a splinter-filled grenade on you ally's position, hoping they’ll take cover in time.";
+        if (_chosenAlly != null)
+        {
+            res += "\nAcc: 100%" +
+                    " | Crit: 0%" +
+                    " | Dmg: " + _selfShotStats.GetDamage();
+        }
+        else if (_effector != null)
+        {
+            res += "\nAcc: 100%" +
+                    " | Crit: 0%" +
+                    " | Dmg: " + _effector.AllyCharacter.Damage * 1.5;
+        }
+        else
+        {
+            res += "\nAcc: 100%" +
+                    " | Crit: 0%";
+        }
+        return res;
     }
     public override string GetName()
     {
