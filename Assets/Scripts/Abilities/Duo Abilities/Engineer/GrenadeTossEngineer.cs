@@ -23,7 +23,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
 
     private int _explosionBaseRadius = 3;
     private int _explosionImprovedRadius = 5;
-    private int _trowingRadius = 10;
+    private int _throwingRadius = 10;
 
     public override string GetAllyDescription()
     {
@@ -40,12 +40,12 @@ public class GrenadeTossEngineer : BaseDuoAbility
                     " | Crit: 0%" +
                     " | Dmg: " + _selfShotStats.GetDamage();
         }
-        else if (_chosenAlly == null)
-        {
-            res += "\nAcc: 100%" +
-                    " | Crit: 0%" +
-                    " | Dmg: "; //+ _effector.AllyCharacter.Damage * 1.5;
-        }
+        //else
+        //{
+        //    res += "\nAcc: 100%" +
+        //            " | Crit: 0%" +
+        //            " | Dmg: " + _effector.AllyCharacter.Damage * 1.5;
+        //}
         return res;
     }
 
@@ -66,8 +66,8 @@ public class GrenadeTossEngineer : BaseDuoAbility
         //                   + " + | Effector : " + _effector.GridPosition);
         //    Debug.Log("distance from effector : " + (tileCoord - _effector.GridPosition).magnitude + " / 10 | distance from ally : " + (tileCoord - _chosenAlly.GridPosition).magnitude + " / " + _chosenAlly.AllyCharacter.RangeShot);
         //}
-            return _chosenAlly != null
-            && (_tileCoord - _effector.GridPosition).magnitude <= _trowingRadius
+        return _chosenAlly != null
+            && (_tileCoord - _effector.GridPosition).magnitude <= _throwingRadius
             && (_tileCoord - _chosenAlly.GridPosition).magnitude <= _chosenAlly.AllyCharacter.RangeShot;
     }
 
@@ -86,7 +86,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
             for (int j = 0; j < map.GridTileHeight; j++)
             {
                 Vector2Int tile = new Vector2Int(i, j);
-                if ((tile - _effector.GridPosition).magnitude <= _trowingRadius &&
+                if ((tile - _effector.GridPosition).magnitude <= _throwingRadius &&
                     (tile - _chosenAlly.GridPosition).magnitude <= _chosenAlly.AllyCharacter.RangeShot)
                 {
                     _possibleTargetsTiles.Add(map[i, j]);
@@ -226,7 +226,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
         // The grenade can be tossed at 5 tiles, and the sniper must be able to shoot it
         return
             //(unit.AllyCharacter.CharacterClass == EnumClasses.Sniper) && ----> à décommenter quand le debug sera fini
-            (unit.GridPosition - this._effector.GridPosition).magnitude <= _trowingRadius + unit.AllyCharacter.RangeShot;
+            (unit.GridPosition - this._effector.GridPosition).magnitude <= _throwingRadius + unit.AllyCharacter.RangeShot;
     }
 
     protected override void EndAbility()
