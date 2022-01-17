@@ -120,9 +120,9 @@ public class BasicShot : BaseAllyAbility
 
             List<EntryPart> entry = new List<EntryPart>
             {
-                new LinkUnitEntryPart(_effector.Character.Name, HistoryConsole.UNIT_LINK_COLOR, _effector),
+                new LinkUnitEntryPart(_effector.Character.Name, _effector, HistoryConsole.UNIT_LINK_COLOR, HistoryConsole.UNIT_LINK_HOVER_COLOR),
                 new ColorEntryPart("shot", Color.yellow),
-                new LinkUnitEntryPart(target.Character.Name, HistoryConsole.UNIT_LINK_COLOR, target),
+                new LinkUnitEntryPart(target.Character.Name, target, HistoryConsole.UNIT_LINK_COLOR, HistoryConsole.UNIT_LINK_HOVER_COLOR),
                 new EntryPart("with"),
                 new ColorEntryPart($"{_effector.LinesOfSight[target].cover} cover", Color.yellow),
                 new EntryPart(": did"),
@@ -148,10 +148,10 @@ public class BasicShot : BaseAllyAbility
 
             EntryPart[] entry = new EntryPart[4]
             {
-                new LinkUnitEntryPart(_effector.Character.Name, HistoryConsole.UNIT_LINK_COLOR, _effector),
+                new LinkUnitEntryPart(_effector.Character.Name, _effector, HistoryConsole.UNIT_LINK_COLOR, HistoryConsole.UNIT_LINK_HOVER_COLOR),
                 new ColorEntryPart("missed", Color.yellow),
                 new EntryPart("his shot on"),
-                new LinkUnitEntryPart(target.Character.Name, HistoryConsole.UNIT_LINK_COLOR, target),
+                new LinkUnitEntryPart(target.Character.Name, target, HistoryConsole.UNIT_LINK_COLOR, HistoryConsole.UNIT_LINK_HOVER_COLOR),
             };
             HistoryConsole.AddEntry(entry);
         }

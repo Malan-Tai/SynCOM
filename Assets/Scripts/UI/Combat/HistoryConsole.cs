@@ -9,6 +9,7 @@ using EntryParts;
 public class HistoryConsole : MonoBehaviour
 {
     public static readonly Color UNIT_LINK_COLOR = Color.red;
+    public static readonly Color UNIT_LINK_HOVER_COLOR = Color.Lerp(Color.red, Color.black, 0.2f);
 
     public static bool IsVisible { get => _instance._consoleRootGO.activeInHierarchy; }
 
@@ -52,7 +53,9 @@ public class HistoryConsole : MonoBehaviour
                 // Add HistoryLinkedLine component only once per entry
                 if (!isLinked)
                 {
-                    textObject.gameObject.AddComponent<HistoryLinkedLine>();
+                    HistoryLinkedLine line = textObject.gameObject.AddComponent<HistoryLinkedLine>();
+                    line.HoverColor = luep.HoverColor;
+                    line.BaseColor = luep.Color;
                     isLinked = true;
                 }
 

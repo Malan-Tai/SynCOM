@@ -36,11 +36,14 @@ namespace EntryParts
     public class LinkUnitEntryPart : ColorEntryPart
     {
         public readonly GridBasedUnit TargetUnit;
+        public readonly Color HoverColor;
+        public Color Color { get => _color; }
 
-        public LinkUnitEntryPart(string text, Color color, GridBasedUnit targetUnit) :
+        public LinkUnitEntryPart(string text, GridBasedUnit targetUnit, Color color, Color hoverColor) :
             base(text, color)
         {
             TargetUnit = targetUnit;
+            HoverColor = hoverColor;
         }
 
         public override string ToString()
