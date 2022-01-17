@@ -8,23 +8,6 @@ using EntryParts;
 
 public class HistoryConsole : MonoBehaviour
 {
-    public static readonly Color UNIT_LINK_COLOR = Color.red;
-    public static readonly Color UNIT_LINK_HOVER_COLOR = Color.Lerp(Color.red, Color.black, 0.2f);
-    public static Color CoverColor(EnumCover cover)
-    {
-        switch (cover)
-        {
-            case EnumCover.None:
-                return Color.red;
-            case EnumCover.Half:
-                return Color.yellow;
-            case EnumCover.Full:
-                return Color.green;
-        }
-
-        return Color.white;
-    }
-
     public static bool IsVisible { get => _instance._consoleRootGO.activeInHierarchy; }
 
     [SerializeField] private GameObject _consoleRootGO;

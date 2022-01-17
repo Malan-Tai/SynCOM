@@ -25,14 +25,22 @@ public class BasicEnemyShot : BaseEnemyAbility
         if (accuratyShot > randShot)
         {
             AttackHitOrMiss(BestTarget as AllyUnit, true);
-            Debug.Log($"i am shooting at {BestTarget.GridPosition} with cover {(int)_effector.LinesOfSight[BestTarget].cover}");
 
-            AttackDamage(BestTarget as AllyUnit, _effector.Character.CritChances > randCrit ? _effector.Character.Damage * 1.5f : _effector.Character.Damage, randCrit < _effector.Character.CritChances);
+            if (randCrit < _effector.Character.CritChances)
+            {
+                AttackDamage(BestTarget as AllyUnit, 1.5f * _effector.Character.Damage, true);
+                HistoryConsole.AddEntry(EntryBuilder.GetSingleDamageEntry(_effector, BestTarget, this, _effector.Character.Damage * 1.5f, true));
+            }
+            else
+            {
+                AttackDamage(BestTarget as AllyUnit, _effector.Character.Damage, true);
+                HistoryConsole.AddEntry(EntryBuilder.GetSingleDamageEntry(_effector, BestTarget, this, _effector.Character.Damage, false));
+            }
         }
         else
         {
             AttackHitOrMiss(BestTarget as AllyUnit, false);
-            Debug.Log($"Dice got {randShot} and had to be lower than {accuratyShot}: Missed");
+            HistoryConsole.AddEntry(EntryBuilder.GetMissedEntry(_effector, BestTarget, this));
         }
     }
 

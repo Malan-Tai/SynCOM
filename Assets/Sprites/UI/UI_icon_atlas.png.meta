@@ -11,6 +11,9 @@ TextureImporter:
   - first:
       213: -3826307679702587978
     second: UI_icon_atlas_2
+  - first:
+      213: 4792065932108942848
+    second: UI_icon_atlas_3
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -170,6 +173,27 @@ TextureImporter:
       bones: []
       spriteID: 6b56afd107936eac0800000000000000
       internalID: -3826307679702587978
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_icon_atlas_3
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 00eca976396d08240800000000000000
+      internalID: 4792065932108942848
       vertices: []
       indices: 
       edges: []
