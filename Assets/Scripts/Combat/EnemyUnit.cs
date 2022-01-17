@@ -44,7 +44,7 @@ public class EnemyUnit : GridBasedUnit
             }
             else
             {
-                Debug.Log("No target available: enemy skipping turn.");
+                HistoryConsole.AddEntry(EntryBuilder.GetSkipTurnEntry(this));
             }
 
             IsMakingTurn = false;
