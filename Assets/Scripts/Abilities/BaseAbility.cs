@@ -19,6 +19,11 @@ public abstract class BaseAbility
         {
             _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(param));
         }
+
+        foreach (Buff buff in result.buffs)
+        {
+            buff.Owner.CurrentBuffs.Add(buff);
+        }
     }
 
     public abstract bool CanExecute();
@@ -35,4 +40,9 @@ public abstract class BaseAbility
     /// The description of the ability is not an attribute : it's determined by the return value of this function.
     /// </summary>
     public abstract string GetDescription();
+
+    /// <summary>
+    /// The description for UI list
+    /// </summary>
+    public abstract string GetShortDescription();
 }

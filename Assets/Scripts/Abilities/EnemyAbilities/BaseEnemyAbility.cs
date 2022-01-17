@@ -42,4 +42,9 @@ public abstract class BaseEnemyAbility : BaseAbility
     }
 
     public abstract void CalculateBestTarget();
+
+    public override string GetShortDescription()
+    {
+        return "Enemy ability";
+    }
 }

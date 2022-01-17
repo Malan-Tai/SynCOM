@@ -10,10 +10,10 @@ public class HeavyBones : Trait
         Type t = GetType();
         Trait returnValue = (Trait)Activator.CreateInstance(t);
         returnValue.Owner = allyCharacter;
-        returnValue.Owner.Weigth = 120;
-        returnValue.Owner.MaxHealth = 30;
-        returnValue.Owner.HealthPoints = 30;
-        returnValue.Owner.Dodge = 5;
+        returnValue.Owner.Weigth += 20;
+        returnValue.Owner.MaxHealth += 5;
+        returnValue.Owner.HealthPoints = returnValue.Owner.MaxHealth;
+        returnValue.Owner.Dodge -= 5;
         return returnValue;
     }
     public override int GetSelfToAllySentimentGain(EnumSentiment sentiment, int baseSentiment)

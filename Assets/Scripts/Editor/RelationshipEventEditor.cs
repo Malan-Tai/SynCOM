@@ -59,11 +59,15 @@ public class RelationshipEventEditor : Editor
     private SerializedProperty _interruptions;
 
     // free action
-    public SerializedProperty _freeAction;
-    public SerializedProperty _freeActionForDuo;
+    private SerializedProperty _freeAction;
+    private SerializedProperty _freeActionForDuo;
 
     // sacrifice
-    public SerializedProperty _maxRange;
+    private SerializedProperty _maxRange;
+
+    // buff
+    private SerializedProperty _buffsOnSource;
+    private SerializedProperty _buffsOnTarget;
 
     #endregion
 
@@ -113,6 +117,9 @@ public class RelationshipEventEditor : Editor
         _freeActionForDuo               = serializedObject.FindProperty("freeActionForDuo");
 
         _maxRange                       = serializedObject.FindProperty("maxRange");
+
+        _buffsOnSource                  = serializedObject.FindProperty("buffsOnSource");
+        _buffsOnTarget                  = serializedObject.FindProperty("buffsOnTarget");
     }
 
     public override void OnInspectorGUI()
@@ -214,7 +221,7 @@ public class RelationshipEventEditor : Editor
                     }
                 }
             }
-            else if (_effectType.enumValueIndex == (int)RelationshipEventEffectType.RefuseToDuo)
+            else if (_effectType.enumValueIndex == (int)RelationshipEventEffectType.RefuseToDuo || _effectType.enumValueIndex == (int)RelationshipEventEffectType.StealDuo)
             {
                 EditorGUILayout.PropertyField(_chance);
             }
@@ -228,6 +235,11 @@ public class RelationshipEventEditor : Editor
             {
                 EditorGUILayout.PropertyField(_chance);
                 EditorGUILayout.PropertyField(_maxRange);
+            }
+            else if (_effectType.enumValueIndex == (int)RelationshipEventEffectType.Buff)
+            {
+                EditorGUILayout.PropertyField(_buffsOnSource);
+                EditorGUILayout.PropertyField(_buffsOnTarget);
             }
 
             if (_interrupts.boolValue)

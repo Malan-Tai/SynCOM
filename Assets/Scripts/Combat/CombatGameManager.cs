@@ -24,6 +24,10 @@ public class CombatGameManager : MonoBehaviour
     #endregion
 
     [SerializeField]
+    private GridBasedUnit _cameraPointer;
+    public GridBasedUnit CameraPointer { get => _cameraPointer; }
+
+    [SerializeField]
     private GridMap _gridMap;
     public GridMap GridMap { get => _gridMap; }
 
@@ -140,7 +144,7 @@ public class CombatGameManager : MonoBehaviour
             int i = 0;
             foreach (AllyUnit ally in _allAllyUnits)
             {
-                ally.SetCharacter(new AllyCharacter((EnumClasses)i, 20, 2, 65, 10, 15, 20, 10, 60));
+                ally.SetCharacter(AllyCharacter.GetRandomAllyCharacter());
                 characters.Add(ally.AllyCharacter);
                 ally.AllyCharacter.Name = $"Ally {i+1}";
                 i++;

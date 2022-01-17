@@ -97,13 +97,13 @@ public class BasicDuoShot : BaseDuoAbility
         if (relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Sympathy) < 0 || relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Admiration) < 0 || relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Trust) < 0)
         {
             Debug.Log("OUI BINJOUR");
-            SoundManager.PlaySound(SoundManager.Sound.RetentlessFoe);
+            //SoundManager.PlaySound(SoundManager.Sound.RetentlessFoe);
         }
         
         else
         {
             Debug.Log("NON");
-            SoundManager.PlaySound(SoundManager.Sound.RetentlessNeutral);
+            //SoundManager.PlaySound(SoundManager.Sound.RetentlessNeutral);
         }
         Debug.Log("we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
         SelfShoot(target, _selfShotStats);
@@ -129,16 +129,16 @@ public class BasicDuoShot : BaseDuoAbility
         if (_chosenAlly != null && _hoveredUnit != null)
         {
             res += "\nAcc:" + _selfShotStats.GetAccuracy(_hoveredUnit, _effector.LinesOfSight[_hoveredUnit].cover) +
-                    " | Crit:" + _selfShotStats.GetCritRate() +
-                    " | Dmg:" + _selfShotStats.GetDamage();
+                    "% | Crit:" + _selfShotStats.GetCritRate() +
+                    "% | Dmg:" + _selfShotStats.GetDamage();
         }
         else if (_targetIndex >= 0 && _chosenAlly != null)
         {
             GridBasedUnit target = _possibleTargets[_targetIndex];
 
             res += "\nAcc:" + _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover) +
-                    " | Crit:" + _selfShotStats.GetCritRate() +
-                    " | Dmg:" + _selfShotStats.GetDamage();
+                    "% | Crit:" + _selfShotStats.GetCritRate() +
+                    "% | Dmg:" + _selfShotStats.GetDamage();
         }
 
         return res;
@@ -150,16 +150,16 @@ public class BasicDuoShot : BaseDuoAbility
         if (_chosenAlly != null && _hoveredUnit != null)
         {
             res += "\nAcc:" + _allyShotStats.GetAccuracy(_hoveredUnit, _chosenAlly.LinesOfSight[_hoveredUnit].cover) +
-                    " | Crit:" + _allyShotStats.GetCritRate() +
-                    " | Dmg:" + _allyShotStats.GetDamage();
+                    "% | Crit:" + _allyShotStats.GetCritRate() +
+                    "% | Dmg:" + _allyShotStats.GetDamage();
         }
         else if (_targetIndex >= 0 && _chosenAlly != null)
         {
             GridBasedUnit target = _possibleTargets[_targetIndex];
 
             res += "\nAcc:" + _allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover) +
-                    " | Crit:" + _allyShotStats.GetCritRate() +
-                    " | Dmg:" + _allyShotStats.GetDamage();
+                    "% | Crit:" + _allyShotStats.GetCritRate() +
+                    "% | Dmg:" + _allyShotStats.GetDamage();
         }
 
         return res;
@@ -175,5 +175,10 @@ public class BasicDuoShot : BaseDuoAbility
             RequestTargetSymbolUpdate(unit);
         }
         else base.UISelectUnit(unit);
+    }
+
+    public override string GetShortDescription()
+    {
+        return "A basic duo attack";
     }
 }

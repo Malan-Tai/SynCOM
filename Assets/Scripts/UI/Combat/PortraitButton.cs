@@ -70,7 +70,8 @@ public class PortraitButton : MonoBehaviour, IPointerClickHandler, IPointerEnter
         _sprite.sprite = unit.AllyCharacter.GetPortrait();
         if (_isSelected)
         {
-            // TODO : name
+            string firstName = unit.AllyCharacter.Name?.Substring(0, unit.AllyCharacter.Name.IndexOf(" "));
+            _name.text = firstName;
             _class.text = unit.AllyCharacter.CharacterClass.ToString();
         }
     }

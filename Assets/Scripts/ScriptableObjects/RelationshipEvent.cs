@@ -67,6 +67,10 @@ public class RelationshipEvent : ScriptableObject
     // sacrifice
     public float maxRange;
 
+    // buff
+    public BaseBuffScriptableObject[] buffsOnSource;
+    public BaseBuffScriptableObject[] buffsOnTarget;
+
     public bool CorrespondsToTrigger(RelationshipEvent trigger, bool allyIsDuo, bool allyIsTarget, float healthRatio, bool isBestDamager)
     {
         if (triggerType != trigger.triggerType) return false;
@@ -119,8 +123,9 @@ public class RelationshipEvent : ScriptableObject
 
     public bool MeetsRelationshipRequirements(AllyCharacter source, AllyCharacter target, AllyCharacter current)
     {
-        if (target == null) return MeetsRelationshipRequirements(source, current);
-        if (!requiresEmotions) return true;
+        if (target == current)  return false;
+        if (target == null)     return MeetsRelationshipRequirements(source, current);
+        if (!requiresEmotions)  return true;
 
         Relationship toSource = current.Relationships[source];
         bool isSourceOk = requiredEmotionsTowardsSource.Length == 0; // true if no emtions needed, else false until checked

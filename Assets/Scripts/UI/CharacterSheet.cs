@@ -23,6 +23,8 @@ public class CharacterSheet : MonoBehaviour
 
     [SerializeField]
     private TraitScrollList _traitList;
+    [SerializeField]
+    private AbilityScrollList _abilityList;
 
     private Vector3 _basePos;
 
@@ -100,6 +102,7 @@ public class CharacterSheet : MonoBehaviour
         _relationships.HoverCharacter(character, false);
 
         _traitList.Populate(character.Traits);
+        _abilityList.Populate(character.SpecialAbilities);
     }
 
     public void SetInvisible()

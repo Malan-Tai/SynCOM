@@ -36,7 +36,8 @@ public class RelationshipEventsManager : MonoBehaviour
         RelationshipEventsResult result = new RelationshipEventsResult
         {
             refusedDuo = false,
-            interruptions = new List<InterruptionParameters>()
+            interruptions = new List<InterruptionParameters>(),
+            buffs = new List<Buff>()
         };
 
         AllyCharacter   sourceCharacter         = sourceUnit        == null ? null : sourceUnit.AllyCharacter;
@@ -98,6 +99,10 @@ public class RelationshipEventsManager : MonoBehaviour
                 result.refusedDuo = Random.Range(0f, 1f) < relationshipEvent.chance;
                 break;
 
+            case RelationshipEventEffectType.StealDuo:
+                if (Random.Range(0f, 1f) < relationshipEvent.chance) result.stolenDuoUnit = currentUnit;
+                break;
+
             case RelationshipEventEffectType.FreeAction:
                 bool rolledOk = Random.Range(0f, 1f) < relationshipEvent.chance;
                 result.freeActionForSource  = result.freeActionForSource    || (relationshipEvent.freeAction        && rolledOk);
@@ -111,6 +116,17 @@ public class RelationshipEventsManager : MonoBehaviour
                 if (actuallyExecuted) result.sacrificedTarget = currentUnit;
                 break;
 
+            case RelationshipEventEffectType.Buff:
+                foreach (BaseBuffScriptableObject buff in relationshipEvent.buffsOnSource)
+                {
+                    result.buffs.Add(buff.GetBuff(source));
+                }
+                foreach (BaseBuffScriptableObject buff in relationshipEvent.buffsOnTarget)
+                {
+                    result.buffs.Add(buff.GetBuff(currentUnit));
+                }
+                break;
+
             default:
                 break;
         }
@@ -119,7 +135,7 @@ public class RelationshipEventsManager : MonoBehaviour
         {
             foreach (InterruptionScriptableObject interruption in relationshipEvent.interruptions)
             {
-                result.interruptions.Add(interruption.ToParameters(currentUnit));
+                result.interruptions.Add(interruption.ToParameters(currentUnit, source));
             }
         }
 
@@ -242,5 +258,13 @@ public class RelationshipEventsManager : MonoBehaviour
         dummyTrigger.triggerType = RelationshipEventTriggerType.EndExecutedDuo;
 
         return CheckTriggersAndExecute(dummyTrigger, source, duoUnit: duo);
+    }
+
+    public RelationshipEventsResult ConfirmDuoExecution(AllyUnit source, AllyUnit duo)
+    {
+        RelationshipEvent dummyTrigger = ScriptableObject.CreateInstance("RelationshipEvent") as RelationshipEvent;
+        dummyTrigger.triggerType = RelationshipEventTriggerType.ConfirmDuoExecution;
+
+        return CheckTriggersAndExecute(dummyTrigger, source, allyTargetUnit: duo, duoUnit: duo);
     }
 }

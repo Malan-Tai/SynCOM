@@ -119,6 +119,26 @@ public struct AbilityStats
                 case (EnumEmotions.Empathy):
                     // chance of free action, not calculated here
                     break;
+
+                // Level 1 Emotions
+                case (EnumEmotions.Disdain):
+                    Up(ref protLevelNeg, 1);
+                    break;
+                case (EnumEmotions.Admiration):
+                    Up(ref protLevelPos, 1);
+                    break;
+                case (EnumEmotions.Fear):
+                    Up(ref accLevelNeg, 1);
+                    break;
+                case (EnumEmotions.Trust):
+                    Up(ref accLevelPos, 1);
+                    break;
+                case (EnumEmotions.Antipathy):
+                    Up(ref damageLevelNeg, 1);
+                    break;
+                case (EnumEmotions.Sympathy):
+                    // small chance of free action
+                    break;
                 default:
                     break;
             }

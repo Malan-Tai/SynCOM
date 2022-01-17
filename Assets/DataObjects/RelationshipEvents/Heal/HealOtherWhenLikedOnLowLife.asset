@@ -13,12 +13,13 @@ MonoBehaviour:
   m_Name: HealOtherWhenLikedOnLowLife
   m_EditorClassIdentifier: 
   triggerType: 4
+  triggersOnlyOnce: 0
   onlyCheckDuoAlly: 0
   dontCheckDuoAlly: 0
   onlyCheckTarget: 0
   dontCheckTarget: 1
   requiresEmotions: 1
-  requiredEmotionsTowardsSource: 0100000006000000070000000e0000001000000011000000
+  requiredEmotionsTowardsSource: 0b0000000f000000
   requiredEmotionsTowardsTarget: 
   targetsAlly: 0
   onMiss: 0
@@ -38,4 +39,10 @@ MonoBehaviour:
   admirationChangeSTT: 0
   trustChangeSTT: 0
   sympathyChangeSTT: 0
-  refusalChance: 0
+  chance: 0
+  interruptions: []
+  freeAction: 0
+  freeActionForDuo: 0
+  maxRange: 0
+  buffsOnSource: []
+  buffsOnTarget: []
