@@ -11,10 +11,15 @@ public class AbilityDescription : MonoBehaviour
     [SerializeField]
     private EnumAbilityDescription _descriptionType;
 
+    [SerializeField]
+    [Tooltip("leav empty if not left or right duo description")]
+    private Sprite[] _emojis;
+
     private TMP_Text _title;
     private TMP_Text _description;
 
     private Image _portrait;
+    private Image _emoji;
 
     private bool _hidden;
 
@@ -36,6 +41,7 @@ public class AbilityDescription : MonoBehaviour
             default: // ally or self
                 _portrait = transform.Find("Portrait").GetComponent<Image>();
                 _description = transform.Find("Description").GetComponent<TMP_Text>();
+                _emoji = transform.Find("Emoji").GetComponent<Image>();
                 break;
 
         }
@@ -102,11 +108,23 @@ public class AbilityDescription : MonoBehaviour
                 _description.text = duo.GetDescription();
 
                 Sprite portrait = duo.GetSelfPortrait();
-                if (portrait == null) _portrait.gameObject.SetActive(false);
+                if (portrait == null)
+                {
+                    _portrait.gameObject.SetActive(false);
+                    _emoji.gameObject.SetActive(false);
+                }
                 else
                 {
                     _portrait.gameObject.SetActive(true);
                     _portrait.sprite = portrait;
+
+                    int relationshipStatus = duo.GetRelationshipStatus(true);
+                    if (relationshipStatus <= -2) _emoji.gameObject.SetActive(false);
+                    else
+                    {
+                        _emoji.gameObject.SetActive(true);
+                        _emoji.sprite = _emojis[1 + relationshipStatus];
+                    }
                 }
 
                 break;
@@ -115,11 +133,23 @@ public class AbilityDescription : MonoBehaviour
                 _description.text = duo.GetAllyDescription();
 
                 portrait = duo.GetAllyPortrait();
-                if (portrait == null) _portrait.gameObject.SetActive(false);
+                if (portrait == null)
+                {
+                    _portrait.gameObject.SetActive(false);
+                    _emoji.gameObject.SetActive(false);
+                }
                 else
                 {
                     _portrait.gameObject.SetActive(true);
                     _portrait.sprite = portrait;
+
+                    int relationshipStatus = duo.GetRelationshipStatus(false);
+                    if (relationshipStatus <= -2) _emoji.gameObject.SetActive(false);
+                    else
+                    {
+                        _emoji.gameObject.SetActive(true);
+                        _emoji.sprite = _emojis[1 + relationshipStatus];
+                    }
                 }
 
                 break;
@@ -151,11 +181,23 @@ public class AbilityDescription : MonoBehaviour
                 _description.text = duo.GetDescription();
 
                 Sprite portrait = duo.GetSelfPortrait();
-                if (portrait == null) _portrait.gameObject.SetActive(false);
+                if (portrait == null)
+                {
+                    _portrait.gameObject.SetActive(false);
+                    _emoji.gameObject.SetActive(false);
+                }
                 else
                 {
                     _portrait.gameObject.SetActive(true);
                     _portrait.sprite = portrait;
+
+                    int relationshipStatus = duo.GetRelationshipStatus(true);
+                    if (relationshipStatus <= -2) _emoji.gameObject.SetActive(false);
+                    else
+                    {
+                        _emoji.gameObject.SetActive(true);
+                        _emoji.sprite = _emojis[1 + relationshipStatus];
+                    }
                 }
 
                 break;
@@ -163,11 +205,23 @@ public class AbilityDescription : MonoBehaviour
                 _description.text = duo.GetAllyDescription();
 
                 portrait = duo.GetAllyPortrait();
-                if (portrait == null) _portrait.gameObject.SetActive(false);
+                if (portrait == null)
+                {
+                    _portrait.gameObject.SetActive(false);
+                    _emoji.gameObject.SetActive(false);
+                }
                 else
                 {
                     _portrait.gameObject.SetActive(true);
                     _portrait.sprite = portrait;
+
+                    int relationshipStatus = duo.GetRelationshipStatus(false);
+                    if (relationshipStatus <= -2) _emoji.gameObject.SetActive(false);
+                    else
+                    {
+                        _emoji.gameObject.SetActive(true);
+                        _emoji.sprite = _emojis[1 + relationshipStatus];
+                    }
                 }
 
                 break;

@@ -466,4 +466,15 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         else if (_temporaryChosenAlly != null) return _temporaryChosenAlly.GetPortrait();
         else return null;
     }
+
+    public int GetRelationshipStatus(bool selfToAlly)
+    {
+        if (_effector == null || (_temporaryChosenAlly == null && _chosenAlly == null)) return -2;
+
+        AllyCharacter ally = _temporaryChosenAlly == null ? _chosenAlly.AllyCharacter : _temporaryChosenAlly.AllyCharacter;
+        Relationship relationshipSelfToAlly = this._effector.AllyCharacter.Relationships[ally];
+        Relationship relationshipAllyToSelf = ally.Relationships[this._effector.AllyCharacter];
+
+        return selfToAlly ? relationshipSelfToAlly.Status() : relationshipAllyToSelf.Status();
+    }
 }
