@@ -54,6 +54,10 @@ public class GridBasedUnit : MonoBehaviour
 
     private FeedbackDisplay _feedback;
 
+    private SpriteRenderer _unitRenderer;
+    private int _highlightPropertyHash;
+    private int _highlightColorPropertyHash;
+
     protected void Start()
     {
         GridMap gridMap = CombatGameManager.Instance.GridMap;
@@ -67,6 +71,10 @@ public class GridBasedUnit : MonoBehaviour
         _linesOfSight = new Dictionary<GridBasedUnit, LineOfSight>();
 
         _feedback = GetComponent<FeedbackDisplay>();
+
+        _unitRenderer = GetComponentInChildren<SpriteRenderer>();
+        _highlightPropertyHash = Shader.PropertyToID("_Highlight");
+        _highlightColorPropertyHash = Shader.PropertyToID("_HighlightColor");
 
         InterruptionQueue = GetComponent<InterruptionQueue>();
     }
@@ -312,5 +320,16 @@ public class GridBasedUnit : MonoBehaviour
     public virtual Sprite GetPortrait()
     {
         return _character.GetPortrait();
+    }
+
+    public void HighlightUnit(Color highlightColor)
+    {
+        _unitRenderer.material.SetInt(_highlightPropertyHash, 1);
+        _unitRenderer.material.SetColor(_highlightColorPropertyHash, highlightColor);
+    }
+
+    public void DontHighlightUnit()
+    {
+        _unitRenderer.material.SetInt(_highlightPropertyHash, 0);
     }
 }
