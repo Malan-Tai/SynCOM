@@ -11,7 +11,7 @@ public class PepTalk : BaseDuoAbility
 
     public override string GetDescription()
     {
-        return "Your words of encouragement strengthen you both, increasing damage, move and aim for the following 2 turn." +
+        return "Your words of encouragement strengthen you both, increasing damage, move and aim for the next 2 turn." +
                "\nDMG +20%" +
                "\nACC +50%" +
                "\nMOVE +3";
@@ -24,7 +24,7 @@ public class PepTalk : BaseDuoAbility
 
     public override string GetAllyDescription()
     {
-        return "You ally's words of encouragement strengthen you, increasing damage, move and aim for the following 2 turn.";
+        return "You ally's words of encouragement strengthen you, increasing damage, move and aim for the next 2 turn.";
     }
     public override string GetName()
     {
@@ -53,8 +53,8 @@ public class PepTalk : BaseDuoAbility
         SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
 
         // Ally -> Self relationship
-        _effector.Character.CurrentBuffs.Add(new Buff(duration: 4, _effector, moveBuff: 3, damageBuff: 0.2f, accuracyBuff: 0.5f));
-        _chosenAlly.Character.CurrentBuffs.Add(new Buff(duration: 4, _chosenAlly, moveBuff: 3, damageBuff: 0.2f, accuracyBuff: 0.5f));
+        _effector.Character.CurrentBuffs.Add(new Buff(duration: 6, _effector, moveBuff: 3, damageBuff: 0.2f, accuracyBuff: 0.5f));
+        _chosenAlly.Character.CurrentBuffs.Add(new Buff(duration: 6, _chosenAlly, moveBuff: 3, damageBuff: 0.2f, accuracyBuff: 0.5f));
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)
