@@ -118,6 +118,8 @@ public class AllyCharacter : Character
                 instance._rangeShot         = 20;
                 instance._movementPoints    = 13;
                 instance._weigth            = 65;
+
+                instance.Abilities.Add(new HealingRain());
                 break;
             case EnumClasses.Bodyguard:
                 instance._maxHealth         = 40;
@@ -138,6 +140,8 @@ public class AllyCharacter : Character
                 instance._rangeShot         = 20;
                 instance._movementPoints    = 12;
                 instance._weigth            = 150;
+
+                instance.Abilities.Add(new Smuggle());
                 break;
         }
 
