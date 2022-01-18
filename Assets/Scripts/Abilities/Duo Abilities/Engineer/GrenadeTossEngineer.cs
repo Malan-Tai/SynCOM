@@ -163,7 +163,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
                 foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
                 {
                     //if ((ally.GridPosition - tileCoord).magnitude <= _radius) //That's a circle not a diamond...
-                    Debug.Log(Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y));
+                    //Debug.Log(Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y));
                     if ( Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
                     {
                         _allyTargets.Add(ally);
@@ -208,10 +208,14 @@ public class GrenadeTossEngineer : BaseDuoAbility
         foreach (EnemyUnit target in _targets)
         {
             SelfShoot(target, _selfShotStats, alwaysHit: true, canCrit : false);
+            var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
+            _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
         }
         foreach (AllyUnit ally in _allyTargets)
         {
             FriendlyFireDamage(_effector, ally, _selfShotStats.GetDamage(), ally);
+            var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = ally, time = Interruption.FOCUS_TARGET_TIME };
+            _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
         }
         Debug.Log("[Grenade Toss] Explosion");
     }
