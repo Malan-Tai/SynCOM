@@ -162,6 +162,15 @@ public class Character
     public virtual float GetDodge(EnumCover cover)
     {
         float dodge = _dodge;
+
+        float dodgeBuff = 0f;
+        foreach (Buff buff in _currentBuffs)
+        {
+            dodgeBuff += buff.GetDodgeModifier();
+        }
+        dodgeBuff = Mathf.Clamp(dodgeBuff, -1, 2);
+        dodge *= (1 + dodgeBuff);
+
         switch (cover)
         {
             case EnumCover.Full:
@@ -185,7 +194,16 @@ public class Character
 
     public float MovementPoints
     {
-        get { return this._movementPoints; }
+        get
+        {
+            float mvt = _movementPoints;
+            foreach (Buff buff in _currentBuffs)
+            {
+                mvt += buff.GetMoveModifier();
+            }
+
+            return this._movementPoints;
+        }
         set { this._movementPoints = value; }
     }
 
@@ -207,8 +225,14 @@ public class Character
         set { this._name = value; }
     }
 
-    public bool TakeDamage(float damage)
+    public bool TakeDamage(ref float damage)
     {
+        foreach (Buff buff in _currentBuffs)
+        {
+            damage *= buff.GetMitigationModifier();
+        }
+
+        damage = Mathf.Round(damage);
         Debug.Log("oof, took " + damage + " dmg");
         _healthPoints -= damage;
         if (_healthPoints <= 0)
@@ -225,8 +249,9 @@ public class Character
         Die();
     }
 
-    public void Heal(float heal)
+    public void Heal(ref float heal)
     {
+        heal = Mathf.Round(heal);
         Debug.Log("mmh, recovered " + heal + " HP");
         _healthPoints = Mathf.Min(_maxHealth, _healthPoints + heal);
         if (_healthPoints == _maxHealth)

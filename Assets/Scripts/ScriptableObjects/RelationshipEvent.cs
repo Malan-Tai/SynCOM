@@ -90,7 +90,8 @@ public class RelationshipEvent : ScriptableObject
                         (onFatal     && trigger.onFatal));
 
             case RelationshipEventTriggerType.Heal:
-                return minMaxHealthRatio.x <= healthRatio && healthRatio <= minMaxHealthRatio.y;
+                bool inRange = minMaxHealthRatio.x <= healthRatio && healthRatio <= minMaxHealthRatio.y;
+                return inRange;
 
             case RelationshipEventTriggerType.Kill:
                 return !killSteal || isBestDamager;
@@ -123,8 +124,7 @@ public class RelationshipEvent : ScriptableObject
 
     public bool MeetsRelationshipRequirements(AllyCharacter source, AllyCharacter target, AllyCharacter current)
     {
-        if (target == current)  return false;
-        if (target == null)     return MeetsRelationshipRequirements(source, current);
+        if (target == current || target == null) return MeetsRelationshipRequirements(source, current);
         if (!requiresEmotions)  return true;
 
         Relationship toSource = current.Relationships[source];

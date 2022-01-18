@@ -8,9 +8,12 @@ using UnityEngine;
 /// </summary>
 public class FirstAid : BaseDuoAbility
 {
+    private AbilityStats _healStats;
+
     protected override void ChooseAlly()
     {
-        
+        _healStats = new AbilityStats(0, 0, 0, 0, 5, _effector);
+        _healStats.UpdateWithEmotionModifiers(_chosenAlly);
     }
 
     public override bool CanExecute()
@@ -25,17 +28,10 @@ public class FirstAid : BaseDuoAbility
 
     public override void Execute()
     {
-        Heal(_effector, _chosenAlly, 5, _chosenAlly);
+        Heal(_effector, _chosenAlly, _healStats.GetHeal(), _chosenAlly);
 
         var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = _chosenAlly, time = Interruption.FOCUS_TARGET_TIME };
         _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
-
-        Relationship relationshipAllyToSelf = _chosenAlly.AllyCharacter.Relationships[this._effector.AllyCharacter];
-        Relationship relationshipSelfToAlly = this._effector.AllyCharacter.Relationships[_chosenAlly.AllyCharacter];
-        Debug.Log(  "i am healing ally" +
-                    "\nally -> self : TRU" + relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Trust) + " = " + relationshipAllyToSelf.GetGaugeValue(EnumSentiment.Trust) +
-                    " | self -> ally : SYM" + relationshipSelfToAlly.GetGaugeLevel(EnumSentiment.Sympathy) + " = " + relationshipSelfToAlly.GetGaugeValue(EnumSentiment.Sympathy));
-        
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)

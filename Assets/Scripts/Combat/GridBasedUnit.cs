@@ -289,14 +289,16 @@ public class GridBasedUnit : MonoBehaviour
 
     public bool TakeDamage(float damage)
     {
+        bool died = _character.TakeDamage(ref damage);
         _feedback.DisplayFeedback("-" + damage.ToString());
-        return _character.TakeDamage(damage);
+
+        return died;
     }
 
     public void Heal(float healAmount)
     {
+        _character.Heal(ref healAmount);
         _feedback.DisplayFeedback("+" + healAmount.ToString());
-        _character.Heal(healAmount);
     }
 
     private void Die()

@@ -82,8 +82,8 @@ public class SuppressiveFire : BaseDuoAbility
         }
         else RequestTargetSymbolUpdate(null);
 
-        _selfShotStats = new AbilityStats(0, 0, 1f, 0, _effector);
-        _allyShotStats = new AbilityStats(0, 9999, 2f, 0, _chosenAlly);
+        _selfShotStats = new AbilityStats(0, 0, 1f, 0, 0, _effector);
+        _allyShotStats = new AbilityStats(0, 9999, 2f, 0, 0, _chosenAlly);
 
         _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
         _allyShotStats.UpdateWithEmotionModifiers(_effector);

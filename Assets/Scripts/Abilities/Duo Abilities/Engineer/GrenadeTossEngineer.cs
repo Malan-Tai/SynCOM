@@ -73,10 +73,10 @@ public class GrenadeTossEngineer : BaseDuoAbility
 
     protected override void ChooseAlly()
     {
-        _allyShotStats = new AbilityStats(0, 0, 0, 0, _chosenAlly);
+        _allyShotStats = new AbilityStats(0, 0, 0, 0, 0, _chosenAlly);
         _allyShotStats.UpdateWithEmotionModifiers(_effector);
 
-        _selfShotStats = new AbilityStats(0, 0, 1.5f, 0, _effector);
+        _selfShotStats = new AbilityStats(0, 0, 1.5f, 0, 0, _effector);
         _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
 
         _possibleTargetsTiles.Clear();

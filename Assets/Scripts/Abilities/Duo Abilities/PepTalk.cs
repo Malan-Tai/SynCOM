@@ -49,7 +49,7 @@ public class PepTalk : BaseDuoAbility
         }
         else RequestTargetSymbolUpdate(null);
 
-        _selfShotStats = new AbilityStats(200, 0, 1.5f, 0, _effector);
+        _selfShotStats = new AbilityStats(200, 0, 1.5f, 0, 0, _effector);
 
         _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
     }
@@ -64,7 +64,6 @@ public class PepTalk : BaseDuoAbility
         // Impact on the sentiments
         // Ally -> Self relationship
         AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, -10);
-        _effector.Character.Heal(6);
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)

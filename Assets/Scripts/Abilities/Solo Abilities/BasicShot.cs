@@ -107,7 +107,7 @@ public class BasicShot : BaseAllyAbility
     public override void Execute()
     {
         GridBasedUnit target = _possibleTargets[_targetIndex];
-        _selfShotStats = new AbilityStats(0, 0, 1f, 0, _effector);
+        _selfShotStats = new AbilityStats(0, 0, 1f, 0, 0, _effector);
 
         int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
         int randCrit = UnityEngine.Random.Range(0, 100);

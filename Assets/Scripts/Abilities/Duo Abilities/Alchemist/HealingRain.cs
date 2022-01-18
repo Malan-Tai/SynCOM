@@ -46,6 +46,9 @@ public class HealingRain : BaseDuoAbility
             Debug.Log("[Healing Rain] Bonus radius");
         }
 
+        var selfHealStats = new AbilityStats(0, 0, 0, 0, healingValue, _effector);
+        selfHealStats.UpdateWithEmotionModifiers(_chosenAlly);
+
         _allyTargets.Clear();
         foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
         {
@@ -86,7 +89,7 @@ public class HealingRain : BaseDuoAbility
 
     protected override void ChooseAlly()
     {
-        _allyShotStats = new AbilityStats(0, 0, 0, 0, _chosenAlly);
+        _allyShotStats = new AbilityStats(0, 0, 0, 0, 0, _chosenAlly);
         _allyShotStats.UpdateWithEmotionModifiers(_effector);
 
         _possibleTargetsTiles.Clear();

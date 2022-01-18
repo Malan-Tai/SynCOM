@@ -130,6 +130,8 @@ public class AllyCharacter : Character
                 instance._rangeShot         = 15;
                 instance._movementPoints    = 11;
                 instance._weigth            = 150;
+
+                instance.Abilities.Add(new ShieldAndStrike());
                 break;
             case EnumClasses.Smuggler:
                 instance._maxHealth         = 35;

@@ -32,7 +32,7 @@ public class Mortar : BaseDuoAbility
 
     protected override void ChooseAlly()
     {
-        _selfShotStats = new AbilityStats(0, 0, 1.5f, 0, _effector);
+        _selfShotStats = new AbilityStats(0, 0, 1.5f, 0, 0, _effector);
         _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
 
         _areaOfEffectTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(_chosenAlly.GridPosition, _radius);
