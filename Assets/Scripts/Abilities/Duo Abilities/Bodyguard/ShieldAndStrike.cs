@@ -104,14 +104,16 @@ public class ShieldAndStrike : BaseDuoAbility
 
         AllyShoot(target, _allyShotStats);
 
-        if (StartAction(ActionTypes.Protect, _effector, _chosenAlly) == ChangeActionTypes.DidntChange)
+        if (!StartAction(ActionTypes.Protect, _effector, _chosenAlly))
+        {
             _chosenAlly.Character.CurrentBuffs.Add(new ProtectedByBuff(2, _chosenAlly, _effector, _selfProtStats.GetProtection()));
+
+            // Impact on the sentiments
+            // Ally -> Self relationship
+            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, 5);
+        }
         else
             Debug.Log("refused to protecc");
-
-        // Impact on the sentiments
-        // Ally -> Self relationship
-        AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, 5);
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)

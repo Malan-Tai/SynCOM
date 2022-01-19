@@ -72,6 +72,23 @@ public abstract class BaseAllyAbility : BaseAbility
         HandleRelationshipEventResult(result);
     }
 
+    protected void AttackOnAllyHitOrMiss(AllyUnit source, AllyUnit target, bool hit, AllyUnit duo = null)
+    {
+        RelationshipEventsResult result = RelationshipEventsManager.Instance.AllyOnAllyAttackHitOrMiss(source, target, hit, duo);
+        if (!hit)
+        {
+            AddInterruptionBeforeResult(ref result, new InterruptionParameters
+            {
+                interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback,
+                target = target,
+                time = Interruption.FOCUS_TARGET_TIME,
+                text = "Miss"
+            });
+        }
+
+        HandleRelationshipEventResult(result);
+    }
+
     protected void AttackDamage(AllyUnit source, EnemyUnit target, float damage, bool crit, AllyUnit duo = null)
     {
         bool killed = target.TakeDamage(ref damage, false);
@@ -239,12 +256,29 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         HandleRelationshipEventResult(RelationshipEventsManager.Instance.EndExecutedDuo(source, duo));
     }
 
-    protected ChangeActionTypes StartAction(ActionTypes action, AllyUnit source, AllyUnit duo)
+    /// <summary>
+    /// returns true if the action has been changed
+    /// </summary>
+    protected bool StartAction(ActionTypes action, AllyUnit source, AllyUnit duo)
     {
         RelationshipEventsResult result = RelationshipEventsManager.Instance.StartAction(action, source, duo);
         HandleRelationshipEventResult(result);
 
-        return result.changedActionTo;
+        bool changedAction = result.changedActionTo != ChangeActionTypes.DidntChange;
+        switch (result.changedActionTo)
+        {
+            case ChangeActionTypes.AttackAlly:
+                changedAction = AllyOnAllyShot(source, duo);
+                break;
+
+            case ChangeActionTypes.Positive:
+                break;
+
+            default:
+                break;
+        }
+
+        return changedAction;
     }
     #endregion
 
@@ -469,10 +503,10 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
     protected virtual void SelfShoot(GridBasedUnit target, AbilityStats selfShotStats, bool alwaysHit = false, bool canCrit = true)
     {
+        if (StartAction(ActionTypes.Attack, _effector, _chosenAlly)) return;
+
         int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
         int randCrit = UnityEngine.Random.Range(0, 100);
-
-        //Debug.Log("self to hit: " + randShot + " for " + selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover));
 
         if (alwaysHit || randShot < selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
         {
@@ -489,17 +523,16 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         }
         else
         {
-            Debug.Log("self missed");
             AttackHitOrMiss(_effector, target as EnemyUnit, false, _chosenAlly);
         }
     }
 
     protected virtual void AllyShoot(GridBasedUnit target, AbilityStats allyShotStats, bool alwaysHit = false, bool canCrit = true)
     {
+        if (StartAction(ActionTypes.Attack, _chosenAlly, _effector)) return;
+
         int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
         int randCrit = UnityEngine.Random.Range(0, 100);
-
-        Debug.Log("ally to hit: " + randShot + " for " + allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover));
 
         if (alwaysHit || randShot < allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover))
         {
@@ -516,9 +549,39 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         }
         else
         {
-            Debug.Log("ally missed");
             AttackHitOrMiss(_chosenAlly, target as EnemyUnit, false, _effector);
         }
+    }
+
+    protected bool AllyOnAllyShot(AllyUnit shooterUnit, AllyUnit shotUnit)
+    {
+        Dictionary<GridBasedUnit, LineOfSight> los = shooterUnit.GetLineOfSights(false);
+        if (!los.ContainsKey(shotUnit) || (shooterUnit.GridPosition - shotUnit.GridPosition).magnitude > shooterUnit.Character.RangeShot) return false;
+
+        int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
+        int randCrit = UnityEngine.Random.Range(0, 100);
+
+        var shotStats = new AbilityStats(0, 0, 1f, 0, 0, shooterUnit);
+
+        if (randShot < shotStats.GetAccuracy(shotUnit, los[shotUnit].cover))
+        {
+            AttackOnAllyHitOrMiss(shooterUnit, shotUnit, true, shotUnit);
+
+            if (randCrit < shotStats.GetCritRate())
+            {
+                FriendlyFireDamage(shooterUnit, shotUnit, shotStats.GetDamage() * 1.5f, shotUnit);
+            }
+            else
+            {
+                FriendlyFireDamage(shooterUnit, shotUnit, shotStats.GetDamage(), shotUnit);
+            }
+        }
+        else
+        {
+            AttackOnAllyHitOrMiss(shooterUnit, shotUnit, false, shotUnit);
+        }
+
+        return true;
     }
 
     public Sprite GetSelfPortrait()

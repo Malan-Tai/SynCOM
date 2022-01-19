@@ -15,6 +15,5 @@ public struct RelationshipEventsResult
     public List<InterruptionParameters>     interruptions;
     public List<Buff>                       buffs;
 
-    public bool                 changedAction;
-    public ChangeActionTypes    changedActionTo;
+    public ChangeActionTypes changedActionTo;
 }
