@@ -238,6 +238,14 @@ public abstract class BaseDuoAbility : BaseAllyAbility
     {
         HandleRelationshipEventResult(RelationshipEventsManager.Instance.EndExecutedDuo(source, duo));
     }
+
+    protected ChangeActionTypes StartAction(ActionTypes action, AllyUnit source, AllyUnit duo)
+    {
+        RelationshipEventsResult result = RelationshipEventsManager.Instance.StartAction(action, source, duo);
+        HandleRelationshipEventResult(result);
+
+        return result.changedActionTo;
+    }
     #endregion
 
     protected abstract bool IsAllyCompatible(AllyUnit unit);

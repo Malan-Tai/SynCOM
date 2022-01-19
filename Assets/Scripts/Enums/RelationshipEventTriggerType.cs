@@ -7,5 +7,13 @@ public enum RelationshipEventTriggerType
     Heal,
     BeginDuo,
     ConfirmDuoExecution,
-    EndExecutedDuo
+    EndExecutedDuo,
+    StartAction
+}
+
+public enum ActionTypes
+{
+    None,
+    Attack,
+    Protect
 }

@@ -27,6 +27,7 @@ public class RelationshipEvent : ScriptableObject
     public bool onDamage;
     [Tooltip("Fatal is to detect a fatal hit before it is dealt : e.g. to protect an ally, not to detect a kill")]
     public bool onFatal;
+    //public bool isBeingProtected;
 
     // heal
     [Tooltip("Health Ratio of the surveyed unit, not the healed one")]
@@ -36,6 +37,9 @@ public class RelationshipEvent : ScriptableObject
     // kill
     [Tooltip("Kill Steal true means the trigger will only check the best damager of the killed entity")]
     public bool killSteal;
+
+    // start action
+    public ActionTypes startedAction;
 
     /// effect
     public RelationshipEventEffectType effectType;
@@ -71,7 +75,10 @@ public class RelationshipEvent : ScriptableObject
     public BaseBuffScriptableObject[] buffsOnSource;
     public BaseBuffScriptableObject[] buffsOnTarget;
 
-    public bool CorrespondsToTrigger(RelationshipEvent trigger, bool allyIsDuo, bool allyIsTarget, float healthRatio, bool isBestDamager)
+    // change action
+    public ChangeActionTypes changeActionTo;
+
+    public bool CorrespondsToTrigger(RelationshipEvent trigger, bool allyIsDuo, bool allyIsTarget, float healthRatio, bool isBestDamager) //, bool isProtected)
     {
         if (triggerType != trigger.triggerType) return false;
         if (onlyCheckDuoAlly && !allyIsDuo) return false;
@@ -87,7 +94,8 @@ public class RelationshipEvent : ScriptableObject
                         (onHit       && trigger.onHit)          ||
                         (onCrit      && trigger.onCrit)         ||
                         (onDamage    && trigger.onDamage)       ||
-                        (onFatal     && trigger.onFatal));
+                        (onFatal     && trigger.onFatal));//       &&
+                        //(isBeingProtected == isProtected);
 
             case RelationshipEventTriggerType.Heal:
                 bool inRange = minMaxHealthRatio.x <= healthRatio && healthRatio <= minMaxHealthRatio.y;
@@ -98,6 +106,9 @@ public class RelationshipEvent : ScriptableObject
 
             case RelationshipEventTriggerType.FriendlyFire:
                 return onFatal == trigger.onFatal;
+
+            case RelationshipEventTriggerType.StartAction:
+                return startedAction == trigger.startedAction;
 
             default:
                 // when nothing more than the status of the relationship is needed, returns true by default

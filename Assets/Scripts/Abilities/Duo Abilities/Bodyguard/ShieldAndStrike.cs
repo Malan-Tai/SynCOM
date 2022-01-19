@@ -99,15 +99,19 @@ public class ShieldAndStrike : BaseDuoAbility
 
     public override void Execute()
     {
-        // Impact on the sentiments
-        // Ally -> Self relationship
-        AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, 5);
-
         // Actual effect of the ability
         GridBasedUnit target = _possibleTargets[_targetIndex];
 
         AllyShoot(target, _allyShotStats);
-        _chosenAlly.Character.CurrentBuffs.Add(new ProtectedByBuff(2, _chosenAlly, _effector, _selfProtStats.GetProtection()));
+
+        if (StartAction(ActionTypes.Protect, _effector, _chosenAlly) == ChangeActionTypes.DidntChange)
+            _chosenAlly.Character.CurrentBuffs.Add(new ProtectedByBuff(2, _chosenAlly, _effector, _selfProtStats.GetProtection()));
+        else
+            Debug.Log("refused to protecc");
+
+        // Impact on the sentiments
+        // Ally -> Self relationship
+        AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, 5);
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)
