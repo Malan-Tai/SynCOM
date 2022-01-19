@@ -118,7 +118,7 @@ public class CombatInputController : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Alpha0))
         {
-            CombatGameManager.Instance.CurrentUnit.UseAbility(new SuppressiveFire());
+            CombatGameManager.Instance.CurrentUnit.UseAbility(new HealingRain());
         }
     }
 }

@@ -12,11 +12,11 @@ public class SuppressiveFire : BaseDuoAbility
 
     public override string GetAllyDescription()
     {
-        string res = "Launch a sneak attack on the distracted enemy.";
+        string res = "Launch a sneak attack on the distracted enemy, dealing critical damage.";
         if (_chosenAlly != null && _hoveredUnit != null)
         {
             res += "\nAcc:" + _allyShotStats.GetAccuracy(_hoveredUnit, _chosenAlly.LinesOfSight[_hoveredUnit].cover) + "%" + 
-                    " | Crit:" + _allyShotStats.GetCritRate() + "%" +
+                    " | Crit: 100%" +
                     " | Dmg:" + _allyShotStats.GetDamage();
         }
         else if (_targetIndex >= 0 && _chosenAlly != null)
@@ -24,7 +24,7 @@ public class SuppressiveFire : BaseDuoAbility
             GridBasedUnit target = _possibleTargets[_targetIndex];
 
             res += "\nAcc:" + _allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover) + "%" +
-                    " | Crit:" + _allyShotStats.GetCritRate() + "%" +
+                    " | Crit: 100%" +
                     " | Dmg:" + _allyShotStats.GetDamage();
         }
 
@@ -35,7 +35,7 @@ public class SuppressiveFire : BaseDuoAbility
         string res = "Shoot at a distant enemy to distract them.";
         if (_chosenAlly != null && _hoveredUnit != null)
         {
-            res += "\nAcc:" + _selfShotStats.GetAccuracy(_hoveredUnit, _effector.LinesOfSight[_hoveredUnit].cover) + "%" +
+            res += "\nAcc:" + SniperAccuracy(_hoveredUnit) + "%" +
                     " | Crit:" + _selfShotStats.GetCritRate() + "%" +
                     " | Dmg:" + _selfShotStats.GetDamage();
         }
@@ -43,7 +43,7 @@ public class SuppressiveFire : BaseDuoAbility
         {
             GridBasedUnit target = _possibleTargets[_targetIndex];
 
-            res += "\nAcc:" + _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover) + "%" +
+            res += "\nAcc:" + SniperAccuracy(target) + "%" +
                     " | Crit:" + _selfShotStats.GetCritRate() + "%" +
                     " | Dmg:" + _selfShotStats.GetDamage();
         }
@@ -66,7 +66,7 @@ public class SuppressiveFire : BaseDuoAbility
             float distanceToSelf = Vector2.Distance(unit.GridPosition, _effector.GridPosition);
             float distanceToAlly = Vector2.Distance(unit.GridPosition, _chosenAlly.GridPosition);
             // TODO:    Check if the unit can be targetted : must NOT be too close
-            if (distanceToSelf > _effector.Character.RangeShot && distanceToAlly <= _effector.Character.RangeShot && _chosenAlly.LinesOfSight.ContainsKey(unit))
+            if (distanceToSelf > _effector.Character.RangeShot && distanceToAlly <= _chosenAlly.Character.RangeShot && _chosenAlly.LinesOfSight.ContainsKey(unit))
             {
                 _possibleTargets.Add(unit);
             }
@@ -162,5 +162,21 @@ public class SuppressiveFire : BaseDuoAbility
     public override string GetShortDescription()
     {
         return "Distract a distant enemy while you ally land a critical hit";
+    }
+
+    /// <summary>
+    /// Returns the accuracy of the Sniper. As they shoot outside of range, the farther away the target is the more accuracy they lose.
+    /// </summary>
+    private float SniperAccuracy(GridBasedUnit target)
+    {
+        float acc = _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover);
+
+        float dist = (target.GridPosition - _effector.GridPosition).magnitude - _effector.AllyCharacter.RangeShot;
+
+        float distPenalty = Mathf.Clamp01(dist / 10);
+
+        acc = acc * (1 - distPenalty);
+
+        return acc;
     }
 }
