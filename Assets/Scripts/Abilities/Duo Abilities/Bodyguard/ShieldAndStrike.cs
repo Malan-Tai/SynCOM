@@ -108,9 +108,6 @@ public class ShieldAndStrike : BaseDuoAbility
 
         AllyShoot(target, _allyShotStats);
         _chosenAlly.Character.CurrentBuffs.Add(new ProtectedByBuff(2, _chosenAlly, _effector, _selfProtStats.GetProtection()));
-
-        var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
-        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)

@@ -77,14 +77,10 @@ public class Mortar : BaseDuoAbility
         foreach (EnemyUnit target in _targets)
         {
             SelfShoot(target, _selfShotStats, alwaysHit: true, canCrit: false);
-            var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
-            _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
         }
         foreach (AllyUnit ally in _allyTargets)
         {
             FriendlyFireDamage(_effector, ally, _selfShotStats.GetDamage(), ally);
-            var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = ally, time = Interruption.FOCUS_TARGET_TIME };
-            _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
         }
     }
 

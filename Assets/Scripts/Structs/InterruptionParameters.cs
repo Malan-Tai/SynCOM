@@ -9,4 +9,6 @@ public struct InterruptionParameters
     // parameters computed at runtime
     public GridBasedUnit target;
     public Vector2Int position;
+
+    public string text;
 }

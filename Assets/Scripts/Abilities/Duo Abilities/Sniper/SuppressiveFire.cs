@@ -112,9 +112,6 @@ public class SuppressiveFire : BaseDuoAbility
         Debug.Log("we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
         SelfShoot(target, _selfShotStats);
         AllyShoot(target, _allyShotStats);
-
-        var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
-        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
     }
     protected override void EnemyTargetingInput()
     {

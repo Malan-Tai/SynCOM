@@ -155,9 +155,6 @@ public class BasicShot : BaseAllyAbility
             };
             HistoryConsole.AddEntry(entry);
         }
-
-        var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
-        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
     }
 
     protected override void EndAbility()

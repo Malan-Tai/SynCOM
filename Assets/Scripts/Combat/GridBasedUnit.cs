@@ -287,18 +287,23 @@ public class GridBasedUnit : MonoBehaviour
         _feedback.DisplayFeedback("Miss");
     }
 
-    public bool TakeDamage(float damage)
+    public bool TakeDamage(ref float damage, bool feedback = true)
     {
         bool died = _character.TakeDamage(ref damage);
-        _feedback.DisplayFeedback("-" + damage.ToString());
+        if (feedback) _feedback.DisplayFeedback("-" + damage.ToString());
 
         return died;
     }
 
-    public void Heal(float healAmount)
+    public void Heal(ref float healAmount, bool feedback = true)
     {
         _character.Heal(ref healAmount);
-        _feedback.DisplayFeedback("+" + healAmount.ToString());
+        if (feedback) _feedback.DisplayFeedback("+" + healAmount.ToString());
+    }
+
+    public void DisplayFeedback(string text)
+    {
+        _feedback.DisplayFeedback(text);
     }
 
     private void Die()

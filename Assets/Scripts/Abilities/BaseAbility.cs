@@ -26,6 +26,16 @@ public abstract class BaseAbility
         }
     }
 
+    protected void AddInterruptionBeforeResult(ref RelationshipEventsResult result, InterruptionParameters parameters)
+    {
+        result.interruptions.Insert(0, parameters);
+    }
+
+    protected void AddInterruptionAfterResult(ref RelationshipEventsResult result, InterruptionParameters parameters)
+    {
+        result.interruptions.Add(parameters);
+    }
+
     public abstract bool CanExecute();
     public abstract void Execute();
 

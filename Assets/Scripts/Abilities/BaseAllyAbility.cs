@@ -56,30 +56,72 @@ public abstract class BaseAllyAbility : BaseAbility
 
     protected void AttackHitOrMiss(AllyUnit source, EnemyUnit target, bool hit, AllyUnit duo = null)
     {
-        if (!hit) target.Missed();
-        HandleRelationshipEventResult(RelationshipEventsManager.Instance.AllyOnEnemyAttackHitOrMiss(source, hit, duo));
+        RelationshipEventsResult result = RelationshipEventsManager.Instance.AllyOnEnemyAttackHitOrMiss(source, hit, duo);
+        if (!hit)
+        {
+            AddInterruptionBeforeResult(ref result, new InterruptionParameters
+            {
+                interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback,
+                target = target,
+                time = Interruption.FOCUS_TARGET_TIME,
+                text = "Miss"
+            });
+            //target.Missed();
+        }
+
+        HandleRelationshipEventResult(result);
     }
 
     protected void AttackDamage(AllyUnit source, EnemyUnit target, float damage, bool crit, AllyUnit duo = null)
     {
-        bool killed = target.TakeDamage(damage);
-        HandleRelationshipEventResult(RelationshipEventsManager.Instance.AllyOnEnemyAttackDamage(source, target, damage, crit, duo));
+        bool killed = target.TakeDamage(ref damage, false);
+
+        RelationshipEventsResult result = RelationshipEventsManager.Instance.AllyOnEnemyAttackDamage(source, target, damage, crit, duo);
+        AddInterruptionBeforeResult(ref result, new InterruptionParameters
+        {
+            interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback,
+            target = target,
+            time = Interruption.FOCUS_TARGET_TIME,
+            text = "-" + damage
+        });
+
+        HandleRelationshipEventResult(result);
 
         if (killed) HandleRelationshipEventResult(RelationshipEventsManager.Instance.KillEnemy(source, target, duo));
     }
 
     protected void FriendlyFireDamage(AllyUnit source, AllyUnit target, float damage, AllyUnit duo = null)
     {
-        bool killed = target.TakeDamage(damage);
-        HandleRelationshipEventResult(RelationshipEventsManager.Instance.FriendlyFireDamage(source, target, killed, duo));
+        bool killed = target.TakeDamage(ref damage, false);
+
+        RelationshipEventsResult result = RelationshipEventsManager.Instance.FriendlyFireDamage(source, target, killed, duo);
+        AddInterruptionBeforeResult(ref result, new InterruptionParameters
+        {
+            interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback,
+            target = target,
+            time = Interruption.FOCUS_TARGET_TIME,
+            text = "-" + damage
+        });
+
+        HandleRelationshipEventResult(result);
 
         // TODO : kill ally ?
     }
 
     protected void Heal(AllyUnit source, AllyUnit target, float healAmount, AllyUnit duo = null)
     {
-        target.Heal(healAmount);
-        HandleRelationshipEventResult(RelationshipEventsManager.Instance.HealAlly(source, target, duo));
+        target.Heal(ref healAmount, false);
+
+        RelationshipEventsResult result = RelationshipEventsManager.Instance.HealAlly(source, target, duo);
+        AddInterruptionBeforeResult(ref result, new InterruptionParameters
+        {
+            interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback,
+            target = target,
+            time = Interruption.FOCUS_TARGET_TIME,
+            text = "+" + healAmount
+        });
+
+        HandleRelationshipEventResult(result);
     }
     #endregion
 
@@ -391,12 +433,30 @@ public abstract class BaseDuoAbility : BaseAllyAbility
     {
         Relationship relationshipSelfToAlly = this._effector.AllyCharacter.Relationships[ally.AllyCharacter];
         relationshipSelfToAlly.IncreaseSentiment(sentiment, gain);
+
+        var parameters = new InterruptionParameters
+        {
+            interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback,
+            target = _effector,
+            time = Interruption.FOCUS_TARGET_TIME,
+            text = gain >= 0 ? ":)" : ":("
+        };
+        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
     }
 
     protected void AllyToSelfModifySentiment(AllyUnit ally, EnumSentiment sentiment, int gain)
     {
         Relationship relationshipAllyToSelf = ally.AllyCharacter.Relationships[this._effector.AllyCharacter];
         relationshipAllyToSelf.IncreaseSentiment(sentiment, gain);
+
+        var parameters = new InterruptionParameters
+        {
+            interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback,
+            target = ally,
+            time = Interruption.FOCUS_TARGET_TIME,
+            text = gain >= 0 ? ":)" : ":("
+        };
+        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
     }
 
     protected virtual void SelfShoot(GridBasedUnit target, AbilityStats selfShotStats, bool alwaysHit = false, bool canCrit = true)
