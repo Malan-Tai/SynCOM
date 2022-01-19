@@ -65,11 +65,11 @@ public class HealingRain : BaseDuoAbility
             Heal(_effector, ally, healingValue, _chosenAlly);
         }
 
-        HistoryConsole.AddEntry(CreateHealingRainEntry(_chosenAlly, healingValue, critical));
+        HistoryConsole.AddEntry(CreateHealingRainEntry(healingValue, critical));
         Debug.Log("[Healing Rain] Explosion");
     }
 
-    public EntryPart[] CreateHealingRainEntry(AllyUnit duo, int healValue, bool critical)
+    public EntryPart[] CreateHealingRainEntry(int healValue, bool critical)
     {
         string criticalText = critical ? " critical" : "";
 
@@ -77,7 +77,7 @@ public class HealingRain : BaseDuoAbility
         {
             new LinkUnitEntryPart(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER),
             new EntryPart("and"),
-            new LinkUnitEntryPart(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER),
+            new LinkUnitEntryPart(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER),
             new EntryPart("used"),
             new ColorEntryPart(GetName(), EntryColors.TEXT_ABILITY),
             new EntryPart(":"),
