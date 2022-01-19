@@ -121,4 +121,13 @@ public static class EntryBuilder
             new EntryPart("his turn"),
         };
     }
+
+    public static EntryPart[] GetHunkerDownEntry(GridBasedUnit effector)
+    {
+        return new EntryPart[2]
+        {
+            new LinkUnitEntryPart(effector.Character.Name, effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER),
+            new ColorEntryPart("hunkered down", EntryColors.TEXT_IMPORTANT),
+        };
+    }
 }
