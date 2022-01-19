@@ -22,6 +22,7 @@ public class HunkerDown : BaseAllyAbility
     public override void Execute()
     {
         Debug.Log("i hunker down");
+        HistoryConsole.AddEntry(EntryBuilder.GetHunkerDownEntry(_effector));
     }
 
     public override string GetName()

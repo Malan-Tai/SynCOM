@@ -186,7 +186,7 @@ public class CombatGameManager : MonoBehaviour
         foreach (EnemyUnit enemy in _enemyUnits)
         {
             enemy.SetCharacter(new EnemyCharacter(6, 2, 65, 10, 15, 20, 4, 60));
-            enemy.Character.Name = $"Enemy {enemyIndex}";
+            enemy.Character.Name = $"Enemy {enemyIndex++}";
         }
 
         foreach (AllyUnit ally in _allAllyUnits)

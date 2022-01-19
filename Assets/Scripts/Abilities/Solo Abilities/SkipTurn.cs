@@ -28,6 +28,7 @@ class SkipTurn : BaseAllyAbility
     public override void Execute()
     {
         Debug.Log("[" + _effector.AllyCharacter.Name + "] SKIPS their turn");
+        HistoryConsole.AddEntry(EntryBuilder.GetSkipTurnEntry(_effector));
     }
 
     public override string GetShortDescription()

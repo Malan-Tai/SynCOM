@@ -6,6 +6,9 @@ Shader "Custom/SpriteWallCutout"
 		_MainTex("Texture", 2D) = "white" {}
 		_CutoutColor("Cutout color", Color) = (0, 0, 0, 1)
 		_CutoutTex("Cutout texture", 2D) = "white" {}
+		_HighlightSpeed("Speed of highlight oscillation", Float) = 1.0
+		_MinHighlightAlpha("Minimum alpha of the highlight", Float) = 0.2
+		_MaxHighlightAlpha("Maximum alpha of the highlight", Float) = 0.8
 	}
 
 	SubShader
@@ -88,6 +91,11 @@ Shader "Custom/SpriteWallCutout"
 			float4 _MainTex_ST;
 
 			fixed4 _Color;
+			fixed4 _HighlightColor;
+			int _Highlight;
+			float _HighlightSpeed;
+			float _MinHighlightAlpha;
+			float _MaxHighlightAlpha;
 
 			struct appdata
 			{
@@ -116,7 +124,11 @@ Shader "Custom/SpriteWallCutout"
 			{
 				fixed4 col = tex2D(_MainTex, i.uv);
 				col *= _Color * i.color;
-				return col;
+				float highlightAlpha =
+					_Highlight * (1 - floor(1 - col.a)) *
+					(_MinHighlightAlpha + (_MaxHighlightAlpha - _MinHighlightAlpha) * 0.5 * (1 + sin(_HighlightSpeed * _Time.y)));
+				col = col + highlightAlpha * _HighlightColor;
+				return fixed4(col.rgb, min(1, col.a));
 			}
 
 			ENDCG

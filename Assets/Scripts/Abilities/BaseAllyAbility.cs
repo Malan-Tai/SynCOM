@@ -501,9 +501,9 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
     }
 
-    protected virtual void SelfShoot(GridBasedUnit target, AbilityStats selfShotStats, bool alwaysHit = false, bool canCrit = true)
+    protected virtual ShootResult SelfShoot(GridBasedUnit target, AbilityStats selfShotStats, bool alwaysHit = false, bool canCrit = true)
     {
-        if (StartAction(ActionTypes.Attack, _effector, _chosenAlly)) return;
+        if (StartAction(ActionTypes.Attack, _effector, _chosenAlly)) return new ShootResult(false, 0f, false); // TODO : fix this return
 
         int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
         int randCrit = UnityEngine.Random.Range(0, 100);
@@ -515,21 +515,24 @@ public abstract class BaseDuoAbility : BaseAllyAbility
             if (canCrit && randCrit < selfShotStats.GetCritRate())
             {
                 AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage() * 1.5f, true, _chosenAlly);
+                return new ShootResult(true, selfShotStats.GetDamage() * 1.5f, true);
             }
             else
             {
                 AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage(), false, _chosenAlly);
+                return new ShootResult(true, selfShotStats.GetDamage(), false);
             }
         }
         else
         {
             AttackHitOrMiss(_effector, target as EnemyUnit, false, _chosenAlly);
+            return new ShootResult(false, 0f, false);
         }
     }
 
-    protected virtual void AllyShoot(GridBasedUnit target, AbilityStats allyShotStats, bool alwaysHit = false, bool canCrit = true)
+    protected virtual ShootResult AllyShoot(GridBasedUnit target, AbilityStats allyShotStats, bool alwaysHit = false, bool canCrit = true)
     {
-        if (StartAction(ActionTypes.Attack, _chosenAlly, _effector)) return;
+        if (StartAction(ActionTypes.Attack, _chosenAlly, _effector)) return new ShootResult(false, 0f, false); // TODO : fix this return
 
         int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
         int randCrit = UnityEngine.Random.Range(0, 100);
@@ -541,15 +544,18 @@ public abstract class BaseDuoAbility : BaseAllyAbility
             if (canCrit && randCrit < allyShotStats.GetCritRate())
             {
                 AttackDamage(_chosenAlly, target as EnemyUnit, allyShotStats.GetDamage() * 1.5f, true, _effector);
+                return new ShootResult(true, allyShotStats.GetDamage() * 1.5f, true);
             }
             else
             {
                 AttackDamage(_chosenAlly, target as EnemyUnit, allyShotStats.GetDamage(), false, _effector);
+                return new ShootResult(true, allyShotStats.GetDamage(), false);
             }
         }
         else
         {
             AttackHitOrMiss(_chosenAlly, target as EnemyUnit, false, _effector);
+            return new ShootResult(false, 0f, false);
         }
     }
 

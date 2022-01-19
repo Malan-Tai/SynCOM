@@ -105,9 +105,10 @@ public class BasicDuoShot : BaseDuoAbility
             Debug.Log("NON");
             //SoundManager.PlaySound(SoundManager.Sound.RetentlessNeutral);
         }
-        Debug.Log("we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
-        SelfShoot(target, _selfShotStats);
-        AllyShoot(target, _allyShotStats);
+
+        ShootResult selfResults = SelfShoot(target, _selfShotStats);
+        ShootResult allyResults = AllyShoot(target, _allyShotStats);
+        HistoryConsole.AddEntry(EntryBuilder.GetDuoDamageEntry(_effector, _chosenAlly, target, this, selfResults, allyResults));
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)

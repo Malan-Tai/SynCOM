@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using EntryParts;
 
 public class BasicShot : BaseAllyAbility
 {
@@ -116,46 +115,24 @@ public class BasicShot : BaseAllyAbility
 
         if (randShot < _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
         {
-            Debug.Log("i am shooting at " + _possibleTargets[_targetIndex].GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
-
             AttackHitOrMiss(_effector, target as EnemyUnit, true);
-
-            List<EntryPart> entry = new List<EntryPart>
-            {
-                new LinkUnitEntryPart(_effector.Character.Name, HistoryConsole.UNIT_LINK_COLOR, _effector),
-                new ColorEntryPart("shot", Color.yellow),
-                new LinkUnitEntryPart(target.Character.Name, HistoryConsole.UNIT_LINK_COLOR, target),
-                new EntryPart("with"),
-                new ColorEntryPart($"{_effector.LinesOfSight[target].cover} cover", Color.yellow),
-                new EntryPart(": did"),
-            };
 
             if (randCrit < _selfShotStats.GetCritRate())
             {
                 AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage * 1.5f, true);
-                entry.Add(new ColorEntryPart($"{_effector.Character.Damage * 1.5f} damage", Color.yellow));
+                HistoryConsole.AddEntry(EntryBuilder.GetDamageEntry(_effector, target, this, _effector.Character.Damage * 1.5f, true));
             }
             else
             {
                 AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage, false);
-                entry.Add(new ColorEntryPart($"{_effector.Character.Damage} damage", Color.yellow));
+                HistoryConsole.AddEntry(EntryBuilder.GetDamageEntry(_effector, target, this, _effector.Character.Damage, false));
             }
 
-            HistoryConsole.AddEntry(entry);
         }
         else
         {
             AttackHitOrMiss(_effector, target as EnemyUnit, false);
-            Debug.Log(this._effector.AllyCharacter.Name + " (self) : missed");
-
-            EntryPart[] entry = new EntryPart[4]
-            {
-                new LinkUnitEntryPart(_effector.Character.Name, HistoryConsole.UNIT_LINK_COLOR, _effector),
-                new ColorEntryPart("missed", Color.yellow),
-                new EntryPart("their shot on"),
-                new LinkUnitEntryPart(target.Character.Name, HistoryConsole.UNIT_LINK_COLOR, target),
-            };
-            HistoryConsole.AddEntry(entry);
+            HistoryConsole.AddEntry(EntryBuilder.GetMissedEntry(_effector, target, this));
         }
     }
 

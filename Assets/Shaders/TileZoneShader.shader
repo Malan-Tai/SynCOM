@@ -31,8 +31,8 @@ Shader "Custom/TileZone"
 			sampler2D _Tileset;
 			fixed4 _Color;
 			int _CoordsCount;
-			int2 _Coords[500];
-			int _BlobIndices[500];
+			int2 _Coords[1023];
+			int _BlobIndices[1023];
 
 			struct appdata
 			{
