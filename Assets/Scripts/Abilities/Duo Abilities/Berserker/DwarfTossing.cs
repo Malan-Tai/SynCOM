@@ -1,0 +1,184 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class DwarfTossing : BaseDuoAbility
+{
+    private AbilityStats _selfShotStats;
+    private AbilityStats _allyShotStats;
+
+    private LayerMask _groundLayerMask = LayerMask.GetMask("Ground");
+
+    private List<EnemyUnit> _targets = new List<EnemyUnit>();
+
+    private Vector2Int _previousTileCoord;
+    private Vector2Int _tileCoord;
+
+    private List<Tile> _areaOfEffectTiles = new List<Tile>();
+    private List<Tile> _possibleTargetsTiles = new List<Tile>();
+
+    private int _throwingRadius = 10;
+    private float _launchingAccuracy;
+
+    public override bool CanExecute()
+    {
+        return _chosenAlly != null;
+    }
+
+    public override void Execute()
+    {
+        int randLaunch = UnityEngine.Random.Range(0, 100);
+        if (randLaunch <= _launchingAccuracy)
+        {
+            // Launch successful
+            CombatGameManager.Instance.Camera.SwitchParenthood(_chosenAlly);
+            _chosenAlly.ChooseAstarPathTo(_tileCoord);
+
+
+            // Dégâts
+            foreach (EnemyUnit target in _targets)
+            {
+                SelfShoot(target, _selfShotStats, alwaysHit: true, canCrit: false);
+                var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
+                _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
+            }
+        }
+        else
+        {
+            // Launch failed
+            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, -10);
+            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
+        }
+
+        
+    }
+
+    public override string GetAllyDescription()
+    {
+        return "Acc: " + (int)_launchingAccuracy;
+    }
+
+    public override string GetDescription()
+    {
+        string res = "Your ally launches you in the air to land a devastating blow in the ennemy.";
+        if (_chosenAlly != null)
+        {
+            res += "\nAcc: ~" + (int)_selfShotStats.GetAccuracy() + "%" +
+                    " | Crit: " + (int)_selfShotStats.GetCritRate() + "%" +
+                    " | Dmg: " + (int)_selfShotStats.GetDamage();
+        }
+        else if (_effector != null)
+        {
+            res += "\nAcc: 100%" + 
+                    " | Crit: 0%" +
+                    " | Dmg: " + (int)_effector.AllyCharacter.Damage * 3;
+        }
+        else
+        {
+            res += "\nAcc: 100%" +
+                    " | Crit: 0%";
+        }
+        return res;
+    }
+
+    public override string GetName()
+    {
+        return "Dwarf Tossing";
+    }
+
+    public override string GetShortDescription()
+    {
+        return "Get launched by an ally.";
+    }
+
+    protected override void ChooseAlly()
+    {
+        _allyShotStats = new AbilityStats(0, 0, 3f, 0, _chosenAlly);
+        _allyShotStats.UpdateWithEmotionModifiers(_effector);
+
+        _selfShotStats = new AbilityStats(0, 0, 0, 0, _effector);
+        _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
+
+        _possibleTargetsTiles.Clear();
+        GridMap map = CombatGameManager.Instance.GridMap;
+        for (int i = 0; i < map.GridTileWidth; i++)
+        {
+            for (int j = 0; j < map.GridTileHeight; j++)
+            {
+                Vector2Int tile = new Vector2Int(i, j);
+                if ((tile - _effector.GridPosition).magnitude <= _throwingRadius &&
+                    (tile - _chosenAlly.GridPosition).magnitude <= _chosenAlly.AllyCharacter.RangeShot)
+                {
+                    _possibleTargetsTiles.Add(map[i, j]);
+                }
+            }
+        }
+        CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", _possibleTargetsTiles, false);
+    }
+
+    protected override void EnemyTargetingInput()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitData;
+
+        if (Physics.Raycast(ray, out hitData, 1000, _groundLayerMask) && hitData.transform.CompareTag("Ground"))
+        {
+            // J'affiche la zone ciblée, en mettant à jour les tiles (ce sont celles situées à portée de la tile ciblée)
+
+            var temporaryTileCoord = CombatGameManager.Instance.GridMap.WorldToGrid(hitData.point);
+            if (!_possibleTargetsTiles.Contains(CombatGameManager.Instance.GridMap[temporaryTileCoord]))
+            {
+                return;
+            }
+            else
+            {
+                // La caméra se déplace bien, mais du coup la tile visée se déplace aussi. Voir le TODO plus haut.
+
+                bool clicked = Input.GetMouseButtonUp(0);
+                if (clicked)
+                {
+                    UIConfirm();
+                }
+
+                CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(temporaryTileCoord);
+
+                if (temporaryTileCoord == _previousTileCoord)
+                {
+                    return;
+                }
+                _previousTileCoord = temporaryTileCoord;
+                _tileCoord = temporaryTileCoord;
+
+                _launchingAccuracy = 100 * (1 - (_chosenAlly.GridPosition - _tileCoord).magnitude / 20);
+                RequestDescriptionUpdate();
+
+                _areaOfEffectTiles.Clear();
+                _areaOfEffectTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(_tileCoord, 1);
+
+                CombatGameManager.Instance.TileDisplay.DisplayTileZone("DamageZone", _areaOfEffectTiles, false);
+
+                _targets.Clear();
+                foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
+                {
+                    if (Mathf.Abs(enemy.GridPosition.x - _tileCoord.x) + Mathf.Abs(enemy.GridPosition.y - _tileCoord.y) <= 1)
+                    {
+                        _targets.Add(enemy);
+                    }
+                }
+            }
+        }
+    }
+
+    protected override bool IsAllyCompatible(AllyUnit unit)
+    {
+        return //unit.AllyCharacter.Weigth >= 80 &&
+               (unit.GridPosition - _effector.GridPosition).magnitude <= 1;
+    }
+
+    protected override void EndAbility()
+    {
+        base.EndAbility();
+        CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
+        CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
+    }
+}

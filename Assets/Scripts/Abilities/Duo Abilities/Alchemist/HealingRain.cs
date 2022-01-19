@@ -182,4 +182,11 @@ public class HealingRain : BaseDuoAbility
     {
         return (unit.GridPosition - this._effector.GridPosition).magnitude <= _trowingRadius + unit.AllyCharacter.RangeShot;
     }
+
+    protected override void EndAbility()
+    {
+        base.EndAbility();
+        CombatGameManager.Instance.TileDisplay.HideTileZone("HealZone");
+        CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
+    }
 }
