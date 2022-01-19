@@ -1,4 +1,3 @@
-using EntryParts;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -39,15 +38,16 @@ public class HealingRain : BaseDuoAbility
 
         int explosionRadius = _explosionBaseRadius;
         int healingValue = _healingValue;
-        bool critical = false;
+        AbilityResult result = new AbilityResult();
 
         if (UnityEngine.Random.Range(0, 100) < _allyShotStats.GetAccuracy())
         {
             explosionRadius = _explosionImprovedRadius;
             healingValue = _healingValueIncreased;
-            critical = true;
+            result.Critical = true;
             Debug.Log("[Healing Rain] Bonus radius");
         }
+
 
         _allyTargets.Clear();
         foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
@@ -65,43 +65,48 @@ public class HealingRain : BaseDuoAbility
             Heal(_effector, ally, healingValue, _chosenAlly);
         }
 
-        HistoryConsole.AddEntry(CreateHealingRainEntry(healingValue, critical));
+        result.Heal = healingValue;
+        SendResultToHistoryConsole(result);
         Debug.Log("[Healing Rain] Explosion");
     }
 
-    public EntryPart[] CreateHealingRainEntry(int healValue, bool critical)
+    protected override void SendResultToHistoryConsole(AbilityResult result)
     {
-        string criticalText = critical ? " critical" : "";
+        string criticalText = result.Critical ? " greatly" : "";
 
-        List<EntryPart> entry = new List<EntryPart>
-        {
-            new LinkUnitEntryPart(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER),
-            new EntryPart("and"),
-            new LinkUnitEntryPart(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER),
-            new EntryPart("used"),
-            new ColorEntryPart(GetName(), EntryColors.TEXT_ABILITY),
-            new EntryPart(":"),
-            new ColorEntryPart("healed", EntryColors.TEXT_IMPORTANT),
-        };
+        HistoryConsole.Instance
+            .BeginEntry()
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+            .AddText(" and ")
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+            .AddText(" used ")
+            .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+            .AddText(":")
+            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{criticalText} healed ").CloseTag();
 
         for (int i = 0; i < _allyTargets.Count; i++)
         {
-            if (i == _allyTargets.Count - 1)
+            if (i != 0)
             {
-                entry.Add(new EntryPart("and"));
-            }
-            else
-            {
-                entry.Add(new EntryPart(","));
+                if (i == _allyTargets.Count - 1)
+                {
+                    HistoryConsole.Instance.AddText(" and ");
+                }
+                else
+                {
+                    HistoryConsole.Instance.AddText(", ");
+                }
             }
 
-            entry.Add(new LinkUnitEntryPart(_allyTargets[i].Character.Name, _allyTargets[i], EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER));
+            HistoryConsole.Instance
+                .OpenLinkTag(_allyTargets[i].Character.Name, _allyTargets[i], EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_allyTargets[i].Character.Name).CloseTag();
         }
 
-        entry.Add(new EntryPart("for"));
-        entry.Add(new ColorEntryPart($"{healValue}{criticalText} damage", EntryColors.TEXT_IMPORTANT));
-
-        return entry.ToArray();
+        HistoryConsole.Instance
+            .AddText(" for ")
+            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Heal} health points").CloseTag()
+            .Submit();
     }
 
     public override string GetAllyDescription()

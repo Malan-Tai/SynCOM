@@ -35,7 +35,8 @@ public class Slap : BaseDuoAbility
         //AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Sympathy, -3);
         //AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, -3);
 
-        FriendlyFireDamage(_effector, _chosenAlly, 1, _chosenAlly);
+        float damage = 1f;
+        FriendlyFireDamage(_effector, _chosenAlly, damage, _chosenAlly);
 
         var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = _chosenAlly, time = Interruption.FOCUS_TARGET_TIME };
         _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
@@ -47,6 +48,21 @@ public class Slap : BaseDuoAbility
             " | ally -> self : TRU" + relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Trust) + " = " + relationshipAllyToSelf.GetGaugeValue(EnumSentiment.Trust) +
             " | ally -> self : SYM" + relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Sympathy) + " = " + relationshipAllyToSelf.GetGaugeValue(EnumSentiment.Sympathy));
 
+        AbilityResult result = new AbilityResult();
+        result.Damage = damage;
+        SendResultToHistoryConsole(result);
+    }
+
+    protected override void SendResultToHistoryConsole(AbilityResult result)
+    {
+        HistoryConsole.Instance
+            .BeginEntry()
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+            .AddText(" slapped ")
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" dealing ").CloseTag()
+            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage} damage").CloseTag()
+            .Submit();
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)

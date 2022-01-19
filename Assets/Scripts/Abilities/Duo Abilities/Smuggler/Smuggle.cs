@@ -36,6 +36,21 @@ public class Smuggle : BaseDuoAbility
     {
         _chosenAlly.ChooseAstarPathTo(_tileCoord);
         _freeForDuo = true;
+
+        SendResultToHistoryConsole(null);
+    }
+
+    protected override void SendResultToHistoryConsole(AbilityResult result)
+    {
+        HistoryConsole.Instance
+            .BeginEntry()
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+            .AddText(" used ")
+            .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+            .AddText(" to transport ")
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+            .AddText(" next to him")
+            .Submit();
     }
 
     protected override void ChooseAlly()

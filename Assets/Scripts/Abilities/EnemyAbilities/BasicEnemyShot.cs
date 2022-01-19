@@ -21,6 +21,8 @@ public class BasicEnemyShot : BaseEnemyAbility
         int randShot = Random.Range(0, 100);
         int randCrit = Random.Range(0, 100);
 
+        AbilityResult result = new AbilityResult();
+
         float accuratyShot = _effector.Character.Accuracy - BestTarget.Character.GetDodge(_effector.LinesOfSight[BestTarget].cover);
         if (accuratyShot > randShot)
         {
@@ -29,18 +31,58 @@ public class BasicEnemyShot : BaseEnemyAbility
             if (randCrit < _effector.Character.CritChances)
             {
                 AttackDamage(BestTarget as AllyUnit, 1.5f * _effector.Character.Damage, true);
-                HistoryConsole.AddEntry(EntryBuilder.GetDamageEntry(_effector, BestTarget, this, _effector.Character.Damage * 1.5f, true));
+
+                result.Damage = _effector.Character.Damage * 1.5f;
+                result.Critical = true;
+                SendResultToHistoryConsole(result);
             }
             else
             {
                 AttackDamage(BestTarget as AllyUnit, _effector.Character.Damage, true);
-                HistoryConsole.AddEntry(EntryBuilder.GetDamageEntry(_effector, BestTarget, this, _effector.Character.Damage, false));
+
+                result.Damage = _effector.Character.Damage * 1.5f;
+                result.Critical = true;
+                SendResultToHistoryConsole(result);
             }
         }
         else
         {
             AttackHitOrMiss(BestTarget as AllyUnit, false);
-            HistoryConsole.AddEntry(EntryBuilder.GetMissedEntry(_effector, BestTarget, this));
+
+            result.Miss = true;
+            SendResultToHistoryConsole(result);
+        }
+    }
+
+    protected override void SendResultToHistoryConsole(AbilityResult result)
+    {
+        if (result.Miss)
+        {
+            HistoryConsole.Instance
+                .BeginEntry()
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" missed ").CloseTag()
+                .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+                .AddText(" on ")
+                .OpenIconTag($"{_effector.LinesOfSight[BestTarget].cover}Cover", EntryColors.CoverColor(_effector.LinesOfSight[BestTarget].cover)).CloseTag()
+                .OpenLinkTag(BestTarget.Character.Name, BestTarget, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(BestTarget.Character.Name).CloseTag()
+                .CloseAllOpenedTags().Submit();
+        }
+        else
+        {
+            string criticalText = result.Critical ? " critical" : "";
+
+            HistoryConsole.Instance
+                .BeginEntry()
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+                .AddText(" used ")
+                .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+                .AddText(" on ")
+                .OpenIconTag($"{_effector.LinesOfSight[BestTarget].cover}Cover", EntryColors.CoverColor(_effector.LinesOfSight[BestTarget].cover)).CloseTag()
+                .OpenLinkTag(BestTarget.Character.Name, BestTarget, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(BestTarget.Character.Name).CloseTag()
+                .AddText(": did ")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage}{criticalText} damage").CloseTag()
+                .CloseAllOpenedTags().Submit();
         }
     }
 

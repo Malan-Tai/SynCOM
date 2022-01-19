@@ -67,6 +67,11 @@ public class PepTalk : BaseDuoAbility
         _effector.Character.Heal(6);
     }
 
+    protected override void SendResultToHistoryConsole(AbilityResult result)
+    {
+        /// TODO Fill
+    }
+
     protected override bool IsAllyCompatible(AllyUnit unit)
     {
         return (unit.GridPosition - this._effector.GridPosition).magnitude <= 1;

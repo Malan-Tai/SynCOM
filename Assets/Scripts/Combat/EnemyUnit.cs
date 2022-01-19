@@ -44,7 +44,7 @@ public class EnemyUnit : GridBasedUnit
             }
             else
             {
-                HistoryConsole.AddEntry(EntryBuilder.GetSkipTurnEntry(this));
+                //HistoryConsole.AddEntry(EntryBuilder.GetSkipTurnEntry(this));
             }
 
             IsMakingTurn = false;

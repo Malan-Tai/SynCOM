@@ -66,12 +66,13 @@ public class Mortar : BaseDuoAbility
     public override void Execute()
     {
         _allyTargets.Remove(_chosenAlly);
+        AbilityResult result = new AbilityResult();
 
         // Only the _chosenAlly knows the attack is incomming and (almost) always take cover
         if (UnityEngine.Random.Range(0, 100) > 90)
         {
             Debug.Log("[Mortar] Ally didn't take cover in time");
-            FriendlyFireDamage(_effector, _chosenAlly, _selfShotStats.GetDamage(), _chosenAlly);
+            _allyTargets.Add(_chosenAlly);
         }
 
         foreach (EnemyUnit target in _targets)
@@ -82,6 +83,49 @@ public class Mortar : BaseDuoAbility
         {
             FriendlyFireDamage(_effector, ally, _selfShotStats.GetDamage(), ally);
         }
+
+        result.Damage = _selfShotStats.GetDamage();
+        SendResultToHistoryConsole(result);
+    }
+
+    protected override void SendResultToHistoryConsole(AbilityResult result)
+    {
+        HistoryConsole.Instance
+            .BeginEntry()
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+            .AddText(" and ")
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+            .AddText(" used ")
+            .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+            .AddText(":")
+            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($" did ").CloseTag()
+            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage} damage").CloseTag()
+            .AddText(" to ");
+
+        List<GridBasedUnit> everyTarget = new List<GridBasedUnit>();
+        everyTarget.AddRange(_targets);
+        everyTarget.AddRange(_allyTargets);
+
+        for (int i = 0; i < everyTarget.Count; i++)
+        {
+            if (i != 0)
+            {
+                if (i == everyTarget.Count - 1)
+                {
+                    HistoryConsole.Instance.AddText(" and ");
+                }
+                else
+                {
+                    HistoryConsole.Instance.AddText(", ");
+                }
+            }
+
+            HistoryConsole.Instance
+                .OpenLinkTag(everyTarget[i].Character.Name, everyTarget[i], EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(everyTarget[i].Character.Name).CloseTag();
+        }
+
+        HistoryConsole.Instance.Submit();
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)

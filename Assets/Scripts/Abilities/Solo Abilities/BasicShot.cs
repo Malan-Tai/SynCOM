@@ -111,6 +111,8 @@ public class BasicShot : BaseAllyAbility
         int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
         int randCrit = UnityEngine.Random.Range(0, 100);
 
+        AbilityResult result = new AbilityResult();
+
         if (randShot < _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
         {
             AttackHitOrMiss(_effector, target as EnemyUnit, true);
@@ -118,23 +120,64 @@ public class BasicShot : BaseAllyAbility
             if (randCrit < _selfShotStats.GetCritRate())
             {
                 AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage * 1.5f, true);
-                HistoryConsole.AddEntry(EntryBuilder.GetDamageEntry(_effector, target, this, _effector.Character.Damage * 1.5f, true));
+
+                result.Damage = _effector.Character.Damage * 1.5f;
+                result.Critical = true;
+                SendResultToHistoryConsole(result);
             }
             else
             {
                 AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage, false);
-                HistoryConsole.AddEntry(EntryBuilder.GetDamageEntry(_effector, target, this, _effector.Character.Damage, false));
-            }
 
+                result.Damage = _effector.Character.Damage * 1.5f;
+                result.Critical = true;
+                SendResultToHistoryConsole(result);
+            }
         }
         else
         {
             AttackHitOrMiss(_effector, target as EnemyUnit, false);
-            HistoryConsole.AddEntry(EntryBuilder.GetMissedEntry(_effector, target, this));
+
+            result.Miss = true;
+            SendResultToHistoryConsole(result);
         }
 
         var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
         _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
+    }
+
+    protected override void SendResultToHistoryConsole(AbilityResult result)
+    {
+        GridBasedUnit target = _possibleTargets[_targetIndex];
+
+        if (result.Miss)
+        {
+            HistoryConsole.Instance
+                .BeginEntry()
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" missed ").CloseTag()
+                .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+                .AddText(" on ")
+                .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover", EntryColors.CoverColor(_effector.LinesOfSight[target].cover)).CloseTag()
+                .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag()
+                .CloseAllOpenedTags().Submit();
+        }
+        else
+        {
+            string criticalText = result.Critical ? " critical" : "";
+
+            HistoryConsole.Instance
+                .BeginEntry()
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+                .AddText(" used ")
+                .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+                .AddText(" on ")
+                .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover", EntryColors.CoverColor(_effector.LinesOfSight[target].cover)).CloseTag()
+                .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag()
+                .AddText(": did ")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage}{criticalText} damage").CloseTag()
+                .CloseAllOpenedTags().Submit();
+        }
     }
 
     protected override void EndAbility()
