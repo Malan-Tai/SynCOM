@@ -30,7 +30,7 @@ public static class EntryBuilder
 {
     public static EntryPart[] GetDamageEntry(GridBasedUnit effector, GridBasedUnit target, BaseAbility ability, float damage, bool critical)
     {
-        string criticalText = critical ? " critical" : " ";
+        string criticalText = critical ? " critical" : "";
 
         return new EntryPart[10]
         {
@@ -71,7 +71,7 @@ public static class EntryBuilder
 
         if (selfResults.Landed)
         {
-            string selfCriticalText = selfResults.Critical ? " critical" : " ";
+            string selfCriticalText = selfResults.Critical ? " critical" : "";
             entry.Add(new EntryPart("did"));
             entry.Add(new ColorEntryPart($"{selfResults.Damage}{selfCriticalText} damage", EntryColors.TEXT_IMPORTANT));
         }
@@ -85,7 +85,7 @@ public static class EntryBuilder
 
         if (allyResults.Landed)
         {
-            string allyCriticalText = allyResults.Critical ? " critical" : " ";
+            string allyCriticalText = allyResults.Critical ? " critical" : "";
             entry.Add(new EntryPart("did"));
             entry.Add(new ColorEntryPart($"{allyResults.Damage}{allyCriticalText} damage", EntryColors.TEXT_IMPORTANT));
         }
