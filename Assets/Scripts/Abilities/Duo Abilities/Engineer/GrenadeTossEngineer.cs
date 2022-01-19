@@ -109,6 +109,10 @@ public class GrenadeTossEngineer : BaseDuoAbility
         // 2- Quand je clique gauche, la caméra et la zone de visée se déplacent sur cette tile
         // 3- Quand je clique sur Confirm/appuie sur Entrer, la capacité s'exécute
 
+        // Nouveau :
+        // - l'AoE suit le souris
+        // - quand je clique, lance UIConfirm()
+
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitData;
 
@@ -127,9 +131,14 @@ public class GrenadeTossEngineer : BaseDuoAbility
                 // La caméra se déplace bien, mais du coup la tile visée se déplace aussi. Voir le TODO plus haut.
 
                 bool clicked = Input.GetMouseButtonUp(0);
+                if (clicked)
+                {
+                    UIConfirm();
+                }
+
                 CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(temporaryTileCoord);
                 
-                if ((!clicked) || temporaryTileCoord == _previousTileCoord)
+                if (temporaryTileCoord == _previousTileCoord)
                 {
                     return;
                 }
@@ -174,6 +183,8 @@ public class GrenadeTossEngineer : BaseDuoAbility
                         _allyTargets.Add(ally);
                     }
                 }
+
+                
             }
         }
     }

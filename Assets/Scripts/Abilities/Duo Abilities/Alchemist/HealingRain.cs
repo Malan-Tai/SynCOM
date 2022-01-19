@@ -132,9 +132,14 @@ public class HealingRain : BaseDuoAbility
                 // La caméra se déplace bien, mais du coup la tile visée se déplace aussi. Voir le TODO plus haut.
 
                 bool clicked = Input.GetMouseButtonUp(0);
+                if (clicked)
+                {
+                    UIConfirm();
+                }
+
                 CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(temporaryTileCoord);
 
-                if ((!clicked) || temporaryTileCoord == _previousTileCoord)
+                if (temporaryTileCoord == _previousTileCoord)
                 {
                     return;
                 }
