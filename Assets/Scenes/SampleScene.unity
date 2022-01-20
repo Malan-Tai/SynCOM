@@ -512,6 +512,22 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4249419490519674050, guid: 81c9f29c0734a5746922148b7c43c135, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4249419490519674050, guid: 81c9f29c0734a5746922148b7c43c135, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4249419490519674050, guid: 81c9f29c0734a5746922148b7c43c135, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4249419490519674050, guid: 81c9f29c0734a5746922148b7c43c135, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4249419491225415953, guid: 81c9f29c0734a5746922148b7c43c135, type: 3}
       propertyPath: m_Color.a
       value: 0.74509805
@@ -670,6 +686,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6042221290051757699, guid: 81c9f29c0734a5746922148b7c43c135, type: 3}
       propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6093972645497050237, guid: 81c9f29c0734a5746922148b7c43c135, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6093972645497050237, guid: 81c9f29c0734a5746922148b7c43c135, type: 3}
+      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6216653901561001961, guid: 81c9f29c0734a5746922148b7c43c135, type: 3}
@@ -8594,6 +8618,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 39d57cff9e2cce642b3a6ec403349a35, type: 2}
   _tileZoneRendererPrefab: {fileID: 5751786864067872331, guid: 971dee6c24a576b4b987bd432e7f2a21, type: 3}
   _gridLinesRenderer: {fileID: 1433990336}
+  _fullCoverSprite: {fileID: 21300000, guid: abe3e68381cb0ca4f8af2a4c6e3dce19, type: 3}
+  _halfCoverSprite: {fileID: 21300000, guid: d656ba2575bc53849b51c28c8f094d14, type: 3}
 --- !u!1 &846976604
 GameObject:
   m_ObjectHideFlags: 0
@@ -12299,7 +12325,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isWalkable: 0
-  _coverValue: 0
+  _coverValue: 1
 --- !u!65 &1278032209
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13441,7 +13467,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
+  m_Color: {r: 0.20558916, g: 0.22747776, b: 0.41509432, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
