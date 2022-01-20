@@ -67,7 +67,7 @@ public class AllyCharacter : Character
             new HunkerDown(),
             new BasicDuoShot(),
             new FirstAid(),
-            //new PepTalk()
+            new PepTalk()
         };
 
         _commonAbilitiesCount = instance.Abilities.Count;
@@ -108,6 +108,8 @@ public class AllyCharacter : Character
                 instance._rangeShot         = 30;
                 instance._movementPoints    = 7;
                 instance._weigth            = 65;
+
+                instance.Abilities.Add(new SuppressiveFire());
                 break;
             case EnumClasses.Alchemist:
                 instance._maxHealth         = 15;
