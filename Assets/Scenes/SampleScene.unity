@@ -6641,7 +6641,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32d4184a2f256664f9a40e0e796d8521, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cameraPointer: {fileID: 0}
   _gridMap: {fileID: 1726654979}
   _tileDisplay: {fileID: 840574980}
   _camera: {fileID: 71073694}
@@ -6649,6 +6648,7 @@ MonoBehaviour:
   - {fileID: 499266356}
   - {fileID: 379820155}
   - {fileID: 1788012776}
+  _barricadePrefab: {fileID: 4811758954082458278, guid: 0ab4a6cf3144c0a419ac0f1caf2fce42, type: 3}
   _enemyUnits:
   - {fileID: 1946337609}
   - {fileID: 815346058}

@@ -290,18 +290,47 @@ public abstract class BaseDuoAbility : BaseAllyAbility
             case ChangeActionTypes.Positive:
                 switch (source.AllyCharacter.CharacterClass)
                 {
-                    case EnumClasses.Berserker:
+                    case EnumClasses.Berserker: // hurts themself to heal other
+                        if (duo.Character.HealthPoints / duo.Character.MaxHealth > 0.75f ||
+                            (duo.GridPosition - source.GridPosition).magnitude > source.Character.RangeShot * 2 ||
+                            source.Character.HealthPoints < 11) 
+                        {
+                            changedAction = false;
+                            break;
+                        }
+
+                        float dmg = 10;
+                        source.TakeDamage(ref dmg);
+
+                        var heal = new AbilityStats(0, 0, 0, 0, 5, source);
+                        heal.UpdateWithEmotionModifiers(duo);
+                        Heal(source, duo, heal.GetHeal(), null);
                         break;
 
                     case EnumClasses.Engineer:
+                        Tile toCover = CombatGameManager.Instance.GridMap.GetRandomFreeNeighbor(duo.GridPosition);
+                        changedAction = toCover != null;
+
+                        if (changedAction)
+                        {
+                            CombatGameManager.Instance.ChangeTileCover(toCover, EnumCover.Full);
+                            CombatGameManager.Instance.AddBarricadeAt(toCover.Coords, duo.GridPosition.y != toCover.Coords.y);
+                        }
+
                         break;
 
-                    case EnumClasses.Sniper:
+                    case EnumClasses.Sniper: // buffs other
                         AddBuff(duo, new Buff("Assisted", 4, duo, 0.2f, 0.5f, 0.5f, 0, 0, 0));
                         break;
 
-                    case EnumClasses.Alchemist:
-                        var heal = new AbilityStats(0, 0, 0, 0, 5, source);
+                    case EnumClasses.Alchemist: // heals other
+                        if (duo.Character.HealthPoints / duo.Character.MaxHealth > 0.75f || (duo.GridPosition - source.GridPosition).magnitude > source.Character.RangeShot)
+                        {
+                            changedAction = false;
+                            break;
+                        }
+
+                        heal = new AbilityStats(0, 0, 0, 0, 5, source);
                         heal.UpdateWithEmotionModifiers(duo);
                         Heal(source, duo, heal.GetHeal(), null);
                         break;

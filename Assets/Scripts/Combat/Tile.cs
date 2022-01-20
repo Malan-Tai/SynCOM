@@ -6,7 +6,15 @@ using Priority_Queue;
 public class Tile : FastPriorityQueueNode
 {
     private EnumCover _cover;
-    public EnumCover Cover { get { return _cover; } }
+    public EnumCover Cover
+    {
+        get { return _cover; }
+        set
+        {
+            _cover = value;
+            _isWalkable = value != EnumCover.Full;
+        }
+    }
 
     private bool _isWalkable;
     public bool IsWalkable { get { return _isWalkable; } }

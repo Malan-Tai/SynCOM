@@ -108,7 +108,7 @@ public class BasicDuoShot : BaseDuoAbility
 
         ShootResult selfResults = SelfShoot(target, _selfShotStats);
         ShootResult allyResults = AllyShoot(target, _allyShotStats);
-        HistoryConsole.AddEntry(EntryBuilder.GetDuoDamageEntry(_effector, _chosenAlly, target, this, selfResults, allyResults));
+        //HistoryConsole.AddEntry(EntryBuilder.GetDuoDamageEntry(_effector, _chosenAlly, target, this, selfResults, allyResults));
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)
