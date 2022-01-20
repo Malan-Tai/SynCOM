@@ -57,7 +57,7 @@ public class BasicShot : BaseAllyAbility
 
         base.SetEffector(effector);
 
-        _selfShotStats = new AbilityStats(0, 0, 1f, 0, _effector);
+        _selfShotStats = new AbilityStats(0, 0, 1f, 0, 0, _effector);
     }
 
     public override bool CanExecute()
@@ -109,33 +109,31 @@ public class BasicShot : BaseAllyAbility
     public override void Execute()
     {
         GridBasedUnit target = _possibleTargets[_targetIndex];
-        //_selfShotStats = new AbilityStats(0, 0, 1f, 0, _effector);
 
         int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
         int randCrit = UnityEngine.Random.Range(0, 100);
 
         if (randShot < _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
         {
-            Debug.Log("i am shooting at " + _possibleTargets[_targetIndex].GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
             AttackHitOrMiss(_effector, target as EnemyUnit, true);
 
             if (randCrit < _selfShotStats.GetCritRate())
             {
-                AttackDamage(_effector, target as EnemyUnit, _selfShotStats.GetDamage() * 1.5f, true);
+                AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage * 1.5f, true);
+                HistoryConsole.AddEntry(EntryBuilder.GetDamageEntry(_effector, target, this, _effector.Character.Damage * 1.5f, true));
             }
             else
             {
-                AttackDamage(_effector, target as EnemyUnit, _selfShotStats.GetDamage(), false);
+                AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage, false);
+                HistoryConsole.AddEntry(EntryBuilder.GetDamageEntry(_effector, target, this, _effector.Character.Damage, false));
             }
+
         }
         else
         {
             AttackHitOrMiss(_effector, target as EnemyUnit, false);
-            Debug.Log(this._effector.AllyCharacter.Name + " (self) : missed");
+            HistoryConsole.AddEntry(EntryBuilder.GetMissedEntry(_effector, target, this));
         }
-
-        var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
-        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
     }
 
     protected override void EndAbility()

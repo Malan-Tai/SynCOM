@@ -23,6 +23,10 @@ public abstract class Interruption
                 interruption = new FocusTargetUntilEndOfMovementInterruption();
                 break;
 
+            case InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback:
+                interruption = new FocusTargetForGivenTimeAndFireTextFeedback();
+                break;
+
             default:
                 return null;
         }

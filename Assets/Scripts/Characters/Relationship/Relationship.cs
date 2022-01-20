@@ -57,6 +57,18 @@ public class Relationship
         return _gauges[sentiment].value;
     }
 
+    private int GetTotalGaugeValue(EnumSentiment sentiment)
+    {
+        int value = GetGaugeValue(sentiment);
+        int signedLevel = GetGaugeLevel(sentiment);
+        int sign = signedLevel >= 0 ? 1 : -1;
+        for (int lvl = Mathf.Abs(signedLevel) - 1; lvl >= 0; lvl--)
+        {
+            value += sign * GetGaugeLimit(lvl);
+        }
+        return value;
+    }
+
     /// <summary>
     /// Returns the current level of the gauge representing the <c>sentiment</c>.
     /// </summary>
@@ -260,5 +272,19 @@ public class Relationship
         if (_trustGauge.level == -1) _listEmotions.Add(EnumEmotions.Fear);
         if (_sympathyGauge.level == 1) _listEmotions.Add(EnumEmotions.Sympathy);
         if (_sympathyGauge.level == -1) _listEmotions.Add(EnumEmotions.Antipathy);
+    }
+
+    /// <summary>
+    /// Get the status of the relationship
+    /// </summary>
+    /// <returns>-1 if negative relationship, 0 if neutral, 1 if positive</returns>
+    public int Status()
+    {
+        int total = 0;
+        foreach (int i in Enum.GetValues(typeof(EnumSentiment)))
+        {
+            total += GetTotalGaugeValue((EnumSentiment)i);
+        }
+        return Mathf.Clamp(total, -1, 1);
     }
 }

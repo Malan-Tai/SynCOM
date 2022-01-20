@@ -38,6 +38,9 @@ public class RelationshipEventEditor : Editor
     // kill
     private SerializedProperty _killSteal;
 
+    // start action
+    private SerializedProperty _startedAction;
+
     /// effect
     private SerializedProperty _effectType;
     private SerializedProperty _interrupts;
@@ -69,6 +72,9 @@ public class RelationshipEventEditor : Editor
     private SerializedProperty _buffsOnSource;
     private SerializedProperty _buffsOnTarget;
 
+    // change action
+    private SerializedProperty _changeActionTo;
+
     #endregion
 
     // is called once when according object gains focus in the hierachy
@@ -96,6 +102,8 @@ public class RelationshipEventEditor : Editor
 
         _killSteal                      = serializedObject.FindProperty("killSteal");
 
+        _startedAction                  = serializedObject.FindProperty("startedAction");
+
 
         _effectType                     = serializedObject.FindProperty("effectType");
         _interrupts                     = serializedObject.FindProperty("interrupts");
@@ -120,6 +128,8 @@ public class RelationshipEventEditor : Editor
 
         _buffsOnSource                  = serializedObject.FindProperty("buffsOnSource");
         _buffsOnTarget                  = serializedObject.FindProperty("buffsOnTarget");
+
+        _changeActionTo                 = serializedObject.FindProperty("changeActionTo");
     }
 
     public override void OnInspectorGUI()
@@ -153,13 +163,19 @@ public class RelationshipEventEditor : Editor
             {
                 EditorGUILayout.PropertyField(_onFatal);
             }
+            else if (_triggerType.enumValueIndex == (int)RelationshipEventTriggerType.StartAction)
+            {
+                EditorGUILayout.PropertyField(_startedAction);
+            }
         }
         EditorGUILayout.EndFoldoutHeaderGroup();
         EditorGUILayout.Space();
 
         if (_foldInvolved = EditorGUILayout.Foldout(_foldInvolved, "Involved Units", true))
         {
-            if (_triggerType.enumValueIndex == (int)RelationshipEventTriggerType.BeginDuo || _triggerType.enumValueIndex == (int)RelationshipEventTriggerType.EndExecutedDuo)
+            if (_triggerType.enumValueIndex == (int)RelationshipEventTriggerType.BeginDuo ||
+                _triggerType.enumValueIndex == (int)RelationshipEventTriggerType.EndExecutedDuo ||
+                _triggerType.enumValueIndex == (int)RelationshipEventTriggerType.StartAction)
             {
                 _onlyCheckDuoAlly.boolValue = true;
                 EditorGUILayout.PropertyField(_onlyCheckDuoAlly);
@@ -240,6 +256,11 @@ public class RelationshipEventEditor : Editor
             {
                 EditorGUILayout.PropertyField(_buffsOnSource);
                 EditorGUILayout.PropertyField(_buffsOnTarget);
+            }
+            else if (_effectType.enumValueIndex == (int)RelationshipEventEffectType.ChangeAction)
+            {
+                EditorGUILayout.PropertyField(_changeActionTo);
+                EditorGUILayout.PropertyField(_chance);
             }
 
             if (_interrupts.boolValue)

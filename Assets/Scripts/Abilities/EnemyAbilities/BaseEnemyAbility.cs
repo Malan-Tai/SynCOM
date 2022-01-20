@@ -15,21 +15,41 @@ public abstract class BaseEnemyAbility : BaseAbility
     #region RelationshipEvents
     protected void AttackHitOrMiss(AllyUnit target, bool hit)
     {
-        HandleRelationshipEventResult(RelationshipEventsManager.Instance.EnemyOnAllyAttackHitOrMiss(target, hit));
+        RelationshipEventsResult result = RelationshipEventsManager.Instance.EnemyOnAllyAttackHitOrMiss(target, hit);
+        if (!hit)
+        {
+            AddInterruptionBeforeResult(ref result, new InterruptionParameters
+            {
+                interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback,
+                target = target,
+                time = Interruption.FOCUS_TARGET_TIME,
+                text = "Miss"
+            });
+            //target.Missed();
+        }
+
+        HandleRelationshipEventResult(result);
 
         // TODO : change target ?
-        if (!hit) target.Missed();
     }
 
     protected void AttackDamage(AllyUnit target, float damage, bool crit)
     {
         RelationshipEventsResult result = RelationshipEventsManager.Instance.EnemyOnAllyAttackDamage(target, damage, crit);
-        HandleRelationshipEventResult(result);
 
         AllyUnit sacrificed = result.sacrificedTarget as AllyUnit;
         target = sacrificed == null ? target : sacrificed;
 
-        bool killed = target.TakeDamage(damage);
+        bool killed = target.TakeDamage(ref damage, false);
+        AddInterruptionAfterResult(ref result, new InterruptionParameters
+        {
+            interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback,
+            target = target,
+            time = Interruption.FOCUS_TARGET_TIME,
+            text = "-" + damage
+        });
+
+        HandleRelationshipEventResult(result);
 
         // TODO : if killed ?
     }

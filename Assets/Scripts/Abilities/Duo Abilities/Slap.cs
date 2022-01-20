@@ -25,28 +25,7 @@ public class Slap : BaseDuoAbility
 
     public override void Execute()
     {
-        // Impact on the sentiments
-
-        // Self -> Ally relationship
-
-
-        // Ally -> Self relationship
-        //AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, -3);
-        //AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Sympathy, -3);
-        //AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, -3);
-
         FriendlyFireDamage(_effector, _chosenAlly, 1, _chosenAlly);
-
-        var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = _chosenAlly, time = Interruption.FOCUS_TARGET_TIME };
-        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
-
-        // Actual effect of the ability
-        Relationship relationshipAllyToSelf = _chosenAlly.AllyCharacter.Relationships[this._effector.AllyCharacter];
-        Debug.Log("take that you idiot" +
-            "\nally -> self : ADM" + relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Admiration) + " = " + relationshipAllyToSelf.GetGaugeValue(EnumSentiment.Admiration) +
-            " | ally -> self : TRU" + relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Trust) + " = " + relationshipAllyToSelf.GetGaugeValue(EnumSentiment.Trust) +
-            " | ally -> self : SYM" + relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Sympathy) + " = " + relationshipAllyToSelf.GetGaugeValue(EnumSentiment.Sympathy));
-
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)

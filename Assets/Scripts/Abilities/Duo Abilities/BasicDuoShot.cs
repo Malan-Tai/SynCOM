@@ -36,8 +36,8 @@ public class BasicDuoShot : BaseDuoAbility
         }
         else RequestTargetSymbolUpdate(null);
 
-        _selfShotStats = new AbilityStats(0, 0, 1.5f, 0, _effector);
-        _allyShotStats = new AbilityStats(0, 0, 1.5f, 0, _chosenAlly);
+        _selfShotStats = new AbilityStats(0, 0, 1.5f, 0, 0, _effector);
+        _allyShotStats = new AbilityStats(0, 0, 1.5f, 0, 0, _chosenAlly);
 
         _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
         _allyShotStats.UpdateWithEmotionModifiers(_effector);
@@ -105,12 +105,10 @@ public class BasicDuoShot : BaseDuoAbility
             Debug.Log("NON");
             //SoundManager.PlaySound(SoundManager.Sound.RetentlessNeutral);
         }
-        Debug.Log("we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
-        SelfShoot(target, _selfShotStats);
-        AllyShoot(target, _allyShotStats);
 
-        var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
-        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
+        ShootResult selfResults = SelfShoot(target, _selfShotStats);
+        ShootResult allyResults = AllyShoot(target, _allyShotStats);
+        HistoryConsole.AddEntry(EntryBuilder.GetDuoDamageEntry(_effector, _chosenAlly, target, this, selfResults, allyResults));
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)

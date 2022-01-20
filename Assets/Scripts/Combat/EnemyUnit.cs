@@ -32,19 +32,19 @@ public class EnemyUnit : GridBasedUnit
 
             if (_basicEnemyShot.CanExecute())
             {
-                var parameters = new InterruptionParameters
-                {
-                    interruptionType = InterruptionType.FocusTargetForGivenTime,
-                    target = _basicEnemyShot.BestTarget,
-                    time = Interruption.FOCUS_TARGET_TIME
-                };
-                InterruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
+                //var parameters = new InterruptionParameters
+                //{
+                //    interruptionType = InterruptionType.FocusTargetForGivenTime,
+                //    target = _basicEnemyShot.BestTarget,
+                //    time = Interruption.FOCUS_TARGET_TIME
+                //};
+                //InterruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
 
                 _basicEnemyShot.Execute();
             }
             else
             {
-                Debug.Log("No target available: enemy skipping turn.");
+                HistoryConsole.AddEntry(EntryBuilder.GetSkipTurnEntry(this));
             }
 
             IsMakingTurn = false;

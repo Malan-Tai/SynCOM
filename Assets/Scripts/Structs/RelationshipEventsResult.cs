@@ -14,4 +14,6 @@ public struct RelationshipEventsResult
 
     public List<InterruptionParameters>     interruptions;
     public List<Buff>                       buffs;
+
+    public ChangeActionTypes changedActionTo;
 }

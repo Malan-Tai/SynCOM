@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class PepTalk : BaseDuoAbility
 {
-    private List<GridBasedUnit> _possibleTargets;
-    private int _targetIndex = -1;
-
-    private AbilityStats _selfShotStats;
-
     public override string GetDescription()
     {
         return "Your words of encouragement strengthen you both, increasing damage, move and aim for the next 2 turn." +
@@ -38,7 +33,6 @@ public class PepTalk : BaseDuoAbility
 
     protected override void ChooseAlly()
     {
-       
     }
 
     protected override void EnemyTargetingInput()
@@ -48,11 +42,6 @@ public class PepTalk : BaseDuoAbility
 
     public override void Execute()
     {
-        // Impact on the sentiments
-        AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
-        SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Sympathy, 5);
-
-        // Ally -> Self relationship
         _effector.Character.CurrentBuffs.Add(new Buff(duration: 6, _effector, moveBuff: 3, damageBuff: 0.2f, accuracyBuff: 0.5f));
         _chosenAlly.Character.CurrentBuffs.Add(new Buff(duration: 6, _chosenAlly, moveBuff: 3, damageBuff: 0.2f, accuracyBuff: 0.5f));
     }
@@ -61,17 +50,4 @@ public class PepTalk : BaseDuoAbility
     {
         return (unit.GridPosition - this._effector.GridPosition).magnitude <= 5;
     }
-
-    public override void UISelectUnit(GridBasedUnit unit)
-    {
-        if (_chosenAlly != null)
-        {
-            _targetIndex = _possibleTargets.IndexOf(unit);
-            CombatGameManager.Instance.Camera.SwitchParenthood(unit);
-            RequestDescriptionUpdate();
-            RequestTargetSymbolUpdate(unit);
-        }
-        else base.UISelectUnit(unit);
-    }
-
 }

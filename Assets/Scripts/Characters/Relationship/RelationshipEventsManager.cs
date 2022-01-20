@@ -127,6 +127,14 @@ public class RelationshipEventsManager : MonoBehaviour
                 }
                 break;
 
+            case RelationshipEventEffectType.ChangeAction:
+                actuallyExecuted = Random.Range(0f, 1f) < relationshipEvent.chance;
+                if (actuallyExecuted)
+                    result.changedActionTo = relationshipEvent.changeActionTo;
+                else
+                    result.changedActionTo = ChangeActionTypes.DidntChange;
+                break;
+
             default:
                 break;
         }
@@ -217,6 +225,17 @@ public class RelationshipEventsManager : MonoBehaviour
         return CheckTriggersAndExecute(dummyTrigger, source, duoUnit: duo);
     }
 
+    public RelationshipEventsResult AllyOnAllyAttackHitOrMiss(AllyUnit source, AllyUnit target, bool hit, AllyUnit duo = null)
+    {
+        RelationshipEvent dummyTrigger = ScriptableObject.CreateInstance("RelationshipEvent") as RelationshipEvent;
+        dummyTrigger.triggerType = RelationshipEventTriggerType.Attack;
+        dummyTrigger.targetsAlly = true;
+        dummyTrigger.onHit = hit;
+        dummyTrigger.onMiss = !hit;
+
+        return CheckTriggersAndExecute(dummyTrigger, source, allyTargetUnit: target, duoUnit: duo);
+    }
+
     public RelationshipEventsResult EnemyOnAllyAttackHitOrMiss(AllyUnit target, bool hit)
     {
         RelationshipEvent dummyTrigger = ScriptableObject.CreateInstance("RelationshipEvent") as RelationshipEvent;
@@ -266,5 +285,14 @@ public class RelationshipEventsManager : MonoBehaviour
         dummyTrigger.triggerType = RelationshipEventTriggerType.ConfirmDuoExecution;
 
         return CheckTriggersAndExecute(dummyTrigger, source, allyTargetUnit: duo, duoUnit: duo);
+    }
+
+    public RelationshipEventsResult StartAction(ActionTypes action, AllyUnit source, AllyUnit duo)
+    {
+        RelationshipEvent dummyTrigger = ScriptableObject.CreateInstance("RelationshipEvent") as RelationshipEvent;
+        dummyTrigger.triggerType = RelationshipEventTriggerType.StartAction;
+        dummyTrigger.startedAction = action;
+
+        return CheckTriggersAndExecute(dummyTrigger, duo, duoUnit: source); // inverted because of reaction paradigm
     }
 }

@@ -1,3 +1,4 @@
+using EntryParts;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -38,13 +39,18 @@ public class HealingRain : BaseDuoAbility
 
         int explosionRadius = _explosionBaseRadius;
         int healingValue = _healingValue;
+        bool critical = false;
 
         if (UnityEngine.Random.Range(0, 100) < _allyShotStats.GetAccuracy())
         {
             explosionRadius = _explosionImprovedRadius;
             healingValue = _healingValueIncreased;
+            critical = true;
             Debug.Log("[Healing Rain] Bonus radius");
         }
+
+        var selfHealStats = new AbilityStats(0, 0, 0, 0, healingValue, _effector);
+        selfHealStats.UpdateWithEmotionModifiers(_chosenAlly);
 
         _allyTargets.Clear();
         foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
@@ -61,7 +67,44 @@ public class HealingRain : BaseDuoAbility
         {
             Heal(_effector, ally, healingValue, _chosenAlly);
         }
+
+        HistoryConsole.AddEntry(CreateHealingRainEntry(_chosenAlly, healingValue, critical));
         Debug.Log("[Healing Rain] Explosion");
+    }
+
+    public EntryPart[] CreateHealingRainEntry(AllyUnit duo, int healValue, bool critical)
+    {
+        string criticalText = critical ? " critical" : "";
+
+        List<EntryPart> entry = new List<EntryPart>
+        {
+            new LinkUnitEntryPart(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER),
+            new EntryPart("and"),
+            new LinkUnitEntryPart(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER),
+            new EntryPart("used"),
+            new ColorEntryPart(GetName(), EntryColors.TEXT_ABILITY),
+            new EntryPart(":"),
+            new ColorEntryPart("healed", EntryColors.TEXT_IMPORTANT),
+        };
+
+        for (int i = 0; i < _allyTargets.Count; i++)
+        {
+            if (i == _allyTargets.Count - 1)
+            {
+                entry.Add(new EntryPart("and"));
+            }
+            else
+            {
+                entry.Add(new EntryPart(","));
+            }
+
+            entry.Add(new LinkUnitEntryPart(_allyTargets[i].Character.Name, _allyTargets[i], EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER));
+        }
+
+        entry.Add(new EntryPart("for"));
+        entry.Add(new ColorEntryPart($"{healValue}{criticalText} damage", EntryColors.TEXT_IMPORTANT));
+
+        return entry.ToArray();
     }
 
     public override string GetAllyDescription()
@@ -86,7 +129,7 @@ public class HealingRain : BaseDuoAbility
 
     protected override void ChooseAlly()
     {
-        _allyShotStats = new AbilityStats(0, 0, 0, 0, _chosenAlly);
+        _allyShotStats = new AbilityStats(0, 0, 0, 0, 0, _chosenAlly);
         _allyShotStats.UpdateWithEmotionModifiers(_effector);
 
         _possibleTargetsTiles.Clear();

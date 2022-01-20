@@ -142,6 +142,7 @@ public class CombatGameManager : MonoBehaviour
             {
                 ally.SetCharacter(AllyCharacter.GetRandomAllyCharacter());
                 characters.Add(ally.AllyCharacter);
+                //ally.AllyCharacter.Name = $"Ally {i+1}";
                 i++;
             }
 
@@ -177,9 +178,11 @@ public class CombatGameManager : MonoBehaviour
             Destroy(unit.gameObject);
         }
 
+        int enemyIndex = 1;
         foreach (EnemyUnit enemy in _enemyUnits)
         {
             enemy.SetCharacter(new EnemyCharacter(6, 2, 65, 10, 15, 20, 4, 60));
+            enemy.Character.Name = $"Enemy {enemyIndex++}";
         }
 
         foreach (AllyUnit ally in _allAllyUnits)

@@ -50,7 +50,7 @@ public class Mortar : BaseDuoAbility
 
     protected override void ChooseAlly()
     {
-        _selfShotStats = new AbilityStats(0, 0, 1.5f, 0, _effector);
+        _selfShotStats = new AbilityStats(0, 0, 1.5f, 0, 0, _effector);
         _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
 
         _areaOfEffectTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(_chosenAlly.GridPosition, _radius);
@@ -95,14 +95,10 @@ public class Mortar : BaseDuoAbility
         foreach (EnemyUnit target in _targets)
         {
             SelfShoot(target, _selfShotStats, alwaysHit: true, canCrit: false);
-            var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
-            _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
         }
         foreach (AllyUnit ally in _allyTargets)
         {
             FriendlyFireDamage(_effector, ally, _selfShotStats.GetDamage(), ally);
-            var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = ally, time = Interruption.FOCUS_TARGET_TIME };
-            _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
         }
     }
 

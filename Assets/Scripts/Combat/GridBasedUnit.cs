@@ -54,6 +54,10 @@ public class GridBasedUnit : MonoBehaviour
 
     private FeedbackDisplay _feedback;
 
+    private SpriteRenderer _unitRenderer;
+    private int _highlightPropertyHash;
+    private int _highlightColorPropertyHash;
+
     protected void Start()
     {
         GridMap gridMap = CombatGameManager.Instance.GridMap;
@@ -67,6 +71,10 @@ public class GridBasedUnit : MonoBehaviour
         _linesOfSight = new Dictionary<GridBasedUnit, LineOfSight>();
 
         _feedback = GetComponent<FeedbackDisplay>();
+
+        _unitRenderer = GetComponentInChildren<SpriteRenderer>();
+        _highlightPropertyHash = Shader.PropertyToID("_Highlight");
+        _highlightColorPropertyHash = Shader.PropertyToID("_HighlightColor");
 
         InterruptionQueue = GetComponent<InterruptionQueue>();
     }
@@ -174,10 +182,10 @@ public class GridBasedUnit : MonoBehaviour
         _updatePathfinder = true;
     }
 
-    public void UpdateLineOfSights(bool targetEnemies = true)
+    public Dictionary<GridBasedUnit, LineOfSight> GetLineOfSights(bool targetEnemies)
     {
         GridMap map = CombatGameManager.Instance.GridMap;
-        _linesOfSight = new Dictionary<GridBasedUnit, LineOfSight>();
+        var result = new Dictionary<GridBasedUnit, LineOfSight>();
 
         List<GridBasedUnit> listToCycle = new List<GridBasedUnit>();
         if (targetEnemies)
@@ -223,9 +231,16 @@ public class GridBasedUnit : MonoBehaviour
 
             if (bestLine.seen)
             {
-                _linesOfSight.Add(unit, bestLine);
+                result.Add(unit, bestLine);
             }
         }
+
+        return result;
+    }
+
+    public void UpdateLineOfSights(bool targetEnemies = true)
+    {
+        _linesOfSight = GetLineOfSights(targetEnemies);
     }
 
     private LineOfSight ComputeLineOfSight(List<CoverPlane> targetCoverPlanes, Vector2Int shooterPosition, Vector2Int targetPosition, float targetY)
@@ -287,16 +302,23 @@ public class GridBasedUnit : MonoBehaviour
         _feedback.DisplayFeedback("Miss");
     }
 
-    public bool TakeDamage(float damage)
+    public bool TakeDamage(ref float damage, bool feedback = true)
     {
-        _feedback.DisplayFeedback("-" + damage.ToString());
-        return _character.TakeDamage(damage);
+        bool died = _character.TakeDamage(ref damage);
+        if (feedback) _feedback.DisplayFeedback("-" + damage.ToString());
+
+        return died;
     }
 
-    public void Heal(float healAmount)
+    public void Heal(ref float healAmount, bool feedback = true)
     {
-        _feedback.DisplayFeedback("+" + healAmount.ToString());
-        _character.Heal(healAmount);
+        _character.Heal(ref healAmount);
+        if (feedback) _feedback.DisplayFeedback("+" + healAmount.ToString());
+    }
+
+    public void DisplayFeedback(string text)
+    {
+        _feedback.DisplayFeedback(text);
     }
 
     private void Die()
@@ -312,5 +334,16 @@ public class GridBasedUnit : MonoBehaviour
     public virtual Sprite GetPortrait()
     {
         return _character.GetPortrait();
+    }
+
+    public void HighlightUnit(Color highlightColor)
+    {
+        _unitRenderer.material.SetInt(_highlightPropertyHash, 1);
+        _unitRenderer.material.SetColor(_highlightColorPropertyHash, highlightColor);
+    }
+
+    public void DontHighlightUnit()
+    {
+        _unitRenderer.material.SetInt(_highlightPropertyHash, 0);
     }
 }

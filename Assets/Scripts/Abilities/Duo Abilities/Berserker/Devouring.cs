@@ -48,7 +48,7 @@ public class Devouring : BaseDuoAbility
         }
         else RequestTargetSymbolUpdate(null);
 
-        _selfShotStats = new AbilityStats(999, 0, 1.5f, 0, _effector);
+        _selfShotStats = new AbilityStats(999, 0, 1.5f, 0, 6, _effector);
 
         _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
     }
@@ -104,16 +104,14 @@ public class Devouring : BaseDuoAbility
 
         Debug.Log("DEVOURING : we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
         SelfShoot(target, _selfShotStats, true);
-        _effector.Heal(6);
-        _effector.Character.CurrentBuffs.Add(new Buff(3, _effector, damageBuff: 2f, critBuff: 0.5f, mitigationBuff: -0.5f));
-
-        var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
-        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
+        float heal = _selfShotStats.GetHeal();
+        _effector.Heal(ref heal);
+        _effector.Character.CurrentBuffs.Add(new Buff(6, _effector, damageBuff: 2f, critBuff: 0.5f, mitigationBuff: 1.5f));
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)
     {
-        return (unit.GridPosition - this._effector.GridPosition).magnitude < 2;
+        return (unit.GridPosition - this._effector.GridPosition).magnitude <= 2;
     }
 
     public override string GetAllyDescription()
