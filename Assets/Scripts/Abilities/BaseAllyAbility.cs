@@ -216,6 +216,20 @@ public abstract class BaseAllyAbility : BaseAbility
     {
         _uiCancelled = true;
     }
+
+    protected void AddBuff(GridBasedUnit unit, Buff buff)
+    {
+        unit.Character.CurrentBuffs.Add(buff);
+
+        var parameters = new InterruptionParameters
+        {
+            interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback,
+            target = unit,
+            time = Interruption.FOCUS_TARGET_TIME,
+            text = buff.GetName()
+        };
+        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
+    }
 }
 
 public abstract class BaseDuoAbility : BaseAllyAbility

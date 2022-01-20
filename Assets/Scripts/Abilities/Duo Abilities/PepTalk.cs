@@ -43,8 +43,8 @@ public class PepTalk : BaseDuoAbility
 
     public override void Execute()
     {
-        _effector.Character.CurrentBuffs.Add(new Buff(duration: 6, _effector, moveBuff: 3, damageBuff: 0.2f, accuracyBuff: 0.5f));
-        _chosenAlly.Character.CurrentBuffs.Add(new Buff(duration: 6, _chosenAlly, moveBuff: 3, damageBuff: 0.2f, accuracyBuff: 0.5f));
+        AddBuff(_effector, new Buff("Pumped", duration: 6, _effector, moveBuff: 3, damageBuff: 0.2f, accuracyBuff: 0.5f));
+        AddBuff(_chosenAlly, new Buff("Pumped", duration: 6, _effector, moveBuff: 3, damageBuff: 0.2f, accuracyBuff: 0.5f));
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)
