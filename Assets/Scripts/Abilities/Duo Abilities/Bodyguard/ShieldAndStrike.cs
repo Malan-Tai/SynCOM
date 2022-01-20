@@ -102,7 +102,11 @@ public class ShieldAndStrike : BaseDuoAbility
         // Actual effect of the ability
         GridBasedUnit target = _possibleTargets[_targetIndex];
 
-        AllyShoot(target, _allyShotStats);
+        AbilityResult result = new AbilityResult();
+        ShootResult shootResult = AllyShoot(target, _allyShotStats);
+        result.AllyMiss = !shootResult.Landed;
+        result.AllyCritical = shootResult.Critical;
+        result.AllyDamage = shootResult.Damage;
 
         if (!StartAction(ActionTypes.Protect, _effector, _chosenAlly))
         {
@@ -113,7 +117,52 @@ public class ShieldAndStrike : BaseDuoAbility
             AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, 5);
         }
         else
+        {
+            result.Miss = true;
             Debug.Log("refused to protecc");
+        }
+
+        SendResultToHistoryConsole(result);
+    }
+
+    protected override void SendResultToHistoryConsole(AbilityResult result)
+    {
+        HistoryConsole.Instance
+            .BeginEntry()
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag();
+
+        if (result.Miss)
+        {
+            HistoryConsole.Instance.OpenColorTag(EntryColors.TEXT_ABILITY).AddText(" refused ").CloseTag();
+        }
+        else
+        {
+            HistoryConsole.Instance
+                .AddText(" used ")
+                .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag();
+        }
+
+        HistoryConsole.Instance
+            .AddText(" to protect ")
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag();
+
+        if (result.AllyMiss)
+        {
+            HistoryConsole.Instance
+                .AddText(" who just ")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("missed").CloseTag()
+                .AddText(" his shot");
+        }
+        else
+        {
+            string criticalText = result.AllyCritical ? " critical" : "";
+
+            HistoryConsole.Instance
+                .AddText(" who did ")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.AllyDamage}{criticalText} damage").CloseTag();
+        }
+
+        HistoryConsole.Instance.Submit();
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)

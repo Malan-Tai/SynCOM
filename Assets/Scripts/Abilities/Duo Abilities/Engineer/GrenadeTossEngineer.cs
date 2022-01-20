@@ -160,10 +160,19 @@ public class GrenadeTossEngineer : BaseDuoAbility
                 CombatGameManager.Instance.TileDisplay.DisplayTileZone("BonusDamageZone", _areaOfEffectBonusTiles, false);
                 CombatGameManager.Instance.TileDisplay.DisplayTileZone("DamageZone", _areaOfEffectTiles, false);
 
+                // Je cache le highlight des anciennes targets
+                foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
+                {
+                    enemy.DontHighlightUnit();
+                }
+                foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
+                {
+                    ally.DontHighlightUnit();
+                }
+
                 // Je parcours la liste des enemis pour récupérer les ennemis ciblés
                 // Facultatif ? devra être refait de toute façon - le radius réel est déterminé à  l'Execute()
                 // Pour mettre les cibles en surbrillance
-
                 _targets.Clear();
                 _allyTargets.Clear();
                 foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
@@ -172,6 +181,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
                     if (Mathf.Abs(enemy.GridPosition.x - _tileCoord.x) + Mathf.Abs(enemy.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
                     {
                         _targets.Add(enemy);
+                        enemy.HighlightUnit(Color.red);
                     }
                 }
                 foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
@@ -181,6 +191,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
                     if ( Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
                     {
                         _allyTargets.Add(ally);
+                        ally.HighlightUnit(Color.red);
                     }
                 }
 
@@ -230,6 +241,50 @@ public class GrenadeTossEngineer : BaseDuoAbility
             FriendlyFireDamage(_effector, ally, _selfShotStats.GetDamage(), ally);
         }
         Debug.Log("[Grenade Toss] Explosion");
+
+        AbilityResult result = new AbilityResult();
+        result.Damage = _selfShotStats.GetDamage();
+        SendResultToHistoryConsole(result);
+    }
+
+    protected override void SendResultToHistoryConsole(AbilityResult result)
+    {
+        HistoryConsole.Instance
+            .BeginEntry()
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+            .AddText(" and ")
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+            .AddText(" used ")
+            .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+            .AddText(":")
+            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($" did ").CloseTag()
+            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage} damage").CloseTag()
+            .AddText(" to ");
+
+        List<GridBasedUnit> everyTarget = new List<GridBasedUnit>();
+        everyTarget.AddRange(_targets);
+        everyTarget.AddRange(_allyTargets);
+
+        for (int i = 0; i < everyTarget.Count; i++)
+        {
+            if (i != 0)
+            {
+                if (i == everyTarget.Count - 1)
+                {
+                    HistoryConsole.Instance.AddText(" and ");
+                }
+                else
+                {
+                    HistoryConsole.Instance.AddText(", ");
+                }
+            }
+
+            HistoryConsole.Instance
+                .OpenLinkTag(everyTarget[i].Character.Name, everyTarget[i], EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(everyTarget[i].Character.Name).CloseTag();
+        }
+
+        HistoryConsole.Instance.Submit();
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)
@@ -244,8 +299,19 @@ public class GrenadeTossEngineer : BaseDuoAbility
     protected override void EndAbility()
     {
         base.EndAbility();
-        //CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
-        //CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
+
+        // Je cache le highlight des anciennes targets
+        foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
+        {
+            enemy.DontHighlightUnit();
+        }
+        foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
+        {
+            ally.DontHighlightUnit();
+        }
+
+        CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
+        CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
     }
 
     public override string GetShortDescription()

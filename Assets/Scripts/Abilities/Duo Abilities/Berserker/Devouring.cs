@@ -101,12 +101,46 @@ public class Devouring : BaseDuoAbility
 
         // Actual effect of the ability
         GridBasedUnit target = _possibleTargets[_targetIndex];
+        AbilityResult result = new AbilityResult();
 
         Debug.Log("DEVOURING : we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
-        SelfShoot(target, _selfShotStats, true);
+        ShootResult shooResult = SelfShoot(target, _selfShotStats, true);
         float heal = _selfShotStats.GetHeal();
         _effector.Heal(ref heal);
         _effector.Character.CurrentBuffs.Add(new Buff(6, _effector, damageBuff: 2f, critBuff: 0.5f, mitigationBuff: 1.5f));
+
+        result.Heal = heal;
+        result.Critical = shooResult.Critical;
+        result.Damage = shooResult.Damage;
+        SendResultToHistoryConsole(result);
+
+        var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
+        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
+    }
+
+    protected override void SendResultToHistoryConsole(AbilityResult result)
+    {
+        GridBasedUnit target = _possibleTargets[_targetIndex];
+        string healCriticalText = result.Critical ? " greatly" : "";
+        string damageCriticalText = result.Critical ? " critical" : "";
+
+        HistoryConsole.Instance
+            .BeginEntry()
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+            .AddText(" used ")
+            .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+            .AddText(" in front of ")
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+            .AddText(":")
+            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{healCriticalText} healed").CloseTag()
+            .AddText(" himself for ")
+            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Heal} health points").CloseTag()
+            .AddText(" and did ")
+            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage}{damageCriticalText} damage").CloseTag()
+            .AddText(" to ")
+            .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover", EntryColors.CoverColor(_effector.LinesOfSight[target].cover)).CloseTag()
+            .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag()
+            .Submit();
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)

@@ -6,8 +6,7 @@ using UnityEngine.EventSystems;
 
 public class HistoryLinkedLine : MonoBehaviour, IPointerClickHandler
 {
-    public Color BaseColor;
-    public Color HoverColor;
+    public Dictionary<string, HistoryConsole.LinkTagInfo> LinksInfo = new Dictionary<string, HistoryConsole.LinkTagInfo>();
 
     private TMP_Text _textObject;
     private int _hoveredLinkIndex = -1;
@@ -33,22 +32,23 @@ public class HistoryLinkedLine : MonoBehaviour, IPointerClickHandler
 
         if (_hoveredLinkIndex != -1 && _hoveredLinkIndex != linkIndex)
         {
-            Debug.Log(BaseColor);
-            SetLinkToColor(_hoveredLinkIndex, BaseColor);
+            TMP_LinkInfo linkInfo = _textObject.textInfo.linkInfo[_hoveredLinkIndex];
+            
+            SetLinkToColor(linkInfo, LinksInfo[linkInfo.GetLinkID()].BaseColor);
             _hoveredLinkIndex = -1;
         }
 
         if (linkIndex != -1 && _hoveredLinkIndex != linkIndex)
         {
-            SetLinkToColor(linkIndex, HoverColor);
+            TMP_LinkInfo linkInfo = _textObject.textInfo.linkInfo[linkIndex];
+
+            SetLinkToColor(linkInfo, LinksInfo[linkInfo.GetLinkID()].HoverColor);
             _hoveredLinkIndex = linkIndex;
         }
     }
 
-    private void SetLinkToColor(int linkIndex, Color color)
+    private void SetLinkToColor(TMP_LinkInfo linkInfo, Color color)
     {
-        TMP_LinkInfo linkInfo = _textObject.textInfo.linkInfo[linkIndex];
-
         for (int i = 0; i < linkInfo.linkTextLength; i++)
         {
             // character index into the entire text

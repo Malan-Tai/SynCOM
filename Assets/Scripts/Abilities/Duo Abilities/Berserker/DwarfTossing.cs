@@ -184,4 +184,9 @@ public class DwarfTossing : BaseDuoAbility
         CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
         CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
     }
+
+    protected override void SendResultToHistoryConsole(AbilityResult result)
+    {
+        
+    }
 }

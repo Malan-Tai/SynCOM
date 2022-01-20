@@ -110,9 +110,68 @@ public class SuppressiveFire : BaseDuoAbility
             //SoundManager.PlaySound(SoundManager.Sound.RetentlessNeutral);
         }
         Debug.Log("we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
-        SelfShoot(target, _selfShotStats);
-        AllyShoot(target, _allyShotStats);
+        AbilityResult result = new AbilityResult();
+        ShootResult selfResult = SelfShoot(target, _selfShotStats);
+        ShootResult allyResult = AllyShoot(target, _allyShotStats);
+
+        result.Miss = !selfResult.Landed;
+        result.Critical = selfResult.Critical;
+        result.Damage = selfResult.Damage;
+        result.AllyMiss = !allyResult.Landed;
+        result.AllyCritical = allyResult.Critical;
+        result.AllyDamage = allyResult.Damage;
+        SendResultToHistoryConsole(result);
     }
+
+    protected override void SendResultToHistoryConsole(AbilityResult result)
+    {
+        GridBasedUnit target = _possibleTargets[_targetIndex];
+
+        HistoryConsole.Instance
+            .BeginEntry()
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+            .AddText(" and ")
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+            .AddText(" used ")
+            .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
+            .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+            .AddText(" on ")
+            .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover", EntryColors.CoverColor(_effector.LinesOfSight[target].cover)).CloseTag()
+            .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag()
+            .AddText(": ")
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag();
+
+        if (result.Miss)
+        {
+            HistoryConsole.Instance.OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" missed ").CloseTag();
+        }
+        else
+        {
+            string selfCriticalText = result.Critical ? " critical" : "";
+            HistoryConsole.Instance
+                .AddText(" did ")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage}{selfCriticalText} damage").CloseTag();
+        }
+
+        HistoryConsole.Instance
+            .AddText(" did ")
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag();
+
+        if (result.AllyMiss)
+        {
+            HistoryConsole.Instance.OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" missed").CloseTag();
+        }
+        else
+        {
+            string allyCriticalText = result.AllyCritical ? " critical" : "";
+            HistoryConsole.Instance
+                .AddText(" did ")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.AllyDamage}{allyCriticalText} damage").CloseTag();
+        }
+
+        HistoryConsole.Instance.Submit();
+    }
+
     protected override void EnemyTargetingInput()
     {
         if (_possibleTargets.Count <= 0) return;

@@ -10,7 +10,7 @@ public class LongShot : BaseDuoAbility
     private int _selectionRange = 8;
     public override string GetName()
     {
-        return "Long Shor";
+        return "Long Shot";
     }
 
     public override string GetShortDescription()
@@ -48,7 +48,7 @@ public class LongShot : BaseDuoAbility
 
     protected override bool IsAllyCompatible(AllyUnit unit)
     {
-        return (_chosenAlly.GridPosition - _effector.GridPosition).magnitude <= _selectionRange;
+        return (unit.GridPosition - _effector.GridPosition).magnitude <= _selectionRange;
     }
 
     protected override void ChooseAlly()
@@ -179,5 +179,10 @@ public class LongShot : BaseDuoAbility
             AttackHitOrMiss(_effector, target as EnemyUnit, false, _chosenAlly);
             return new ShootResult(false, 0f, false);
         }
+    }
+
+    protected override void SendResultToHistoryConsole(AbilityResult result)
+    {
+        
     }
 }

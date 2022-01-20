@@ -108,7 +108,64 @@ public class BasicDuoShot : BaseDuoAbility
 
         ShootResult selfResults = SelfShoot(target, _selfShotStats);
         ShootResult allyResults = AllyShoot(target, _allyShotStats);
-        HistoryConsole.AddEntry(EntryBuilder.GetDuoDamageEntry(_effector, _chosenAlly, target, this, selfResults, allyResults));
+
+        AbilityResult result = new AbilityResult();
+        result.Miss = !selfResults.Landed;
+        result.AllyMiss = !allyResults.Landed;
+        result.Critical = selfResults.Critical;
+        result.AllyCritical = allyResults.Critical;
+        result.Damage = selfResults.Damage;
+        result.AllyDamage = allyResults.Damage;
+        SendResultToHistoryConsole(result);
+    }
+
+    protected override void SendResultToHistoryConsole(AbilityResult result)
+    {
+        GridBasedUnit target = _possibleTargets[_targetIndex];
+
+        HistoryConsole.Instance
+            .BeginEntry()
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+            .AddText(" and ")
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+            .AddText(" used ")
+            .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
+            .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+            .AddText(" on ")
+            .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover", EntryColors.CoverColor(_effector.LinesOfSight[target].cover)).CloseTag()
+            .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag()
+            .AddText(": ")
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag();
+
+        if (result.Miss)
+        {
+            HistoryConsole.Instance.OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" missed ").CloseTag();
+        }
+        else
+        {
+            string selfCriticalText = result.Critical ? " critical" : "";
+            HistoryConsole.Instance
+                .AddText(" did ")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage}{selfCriticalText} damage").CloseTag();
+        }
+
+        HistoryConsole.Instance
+            .AddText(" did ")
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag();
+
+        if (result.AllyMiss)
+        {
+            HistoryConsole.Instance.OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" missed").CloseTag();
+        }
+        else
+        {
+            string allyCriticalText = result.AllyCritical ? " critical" : "";
+            HistoryConsole.Instance
+                .AddText(" did ")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.AllyDamage}{allyCriticalText} damage").CloseTag();
+        }
+
+        HistoryConsole.Instance.Submit();
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)

@@ -46,6 +46,11 @@ public class PepTalk : BaseDuoAbility
         _chosenAlly.Character.CurrentBuffs.Add(new Buff(duration: 6, _chosenAlly, moveBuff: 3, damageBuff: 0.2f, accuracyBuff: 0.5f));
     }
 
+    protected override void SendResultToHistoryConsole(AbilityResult result)
+    {
+        /// TODO Fill
+    }
+
     protected override bool IsAllyCompatible(AllyUnit unit)
     {
         return (unit.GridPosition - this._effector.GridPosition).magnitude <= 5;

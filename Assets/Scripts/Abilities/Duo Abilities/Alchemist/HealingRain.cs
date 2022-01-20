@@ -1,4 +1,3 @@
-using EntryParts;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -39,13 +38,13 @@ public class HealingRain : BaseDuoAbility
 
         int explosionRadius = _explosionBaseRadius;
         int healingValue = _healingValue;
-        bool critical = false;
+        AbilityResult result = new AbilityResult();
 
         if (UnityEngine.Random.Range(0, 100) < _allyShotStats.GetAccuracy())
         {
             explosionRadius = _explosionImprovedRadius;
             healingValue = _healingValueIncreased;
-            critical = true;
+            result.Critical = true;
             Debug.Log("[Healing Rain] Bonus radius");
         }
 
@@ -65,46 +64,51 @@ public class HealingRain : BaseDuoAbility
         // Ne peux rater ni faire un coup critique
         foreach (AllyUnit ally in _allyTargets)
         {
-            Heal(_effector, ally, healingValue, _chosenAlly);
+            Heal(_effector, ally, selfHealStats.GetHeal(), _chosenAlly);
         }
 
-        HistoryConsole.AddEntry(CreateHealingRainEntry(_chosenAlly, healingValue, critical));
+        result.Heal = selfHealStats.GetHeal();
+        SendResultToHistoryConsole(result);
         Debug.Log("[Healing Rain] Explosion");
     }
 
-    public EntryPart[] CreateHealingRainEntry(AllyUnit duo, int healValue, bool critical)
+    protected override void SendResultToHistoryConsole(AbilityResult result)
     {
-        string criticalText = critical ? " critical" : "";
+        string criticalText = result.Critical ? " greatly" : "";
 
-        List<EntryPart> entry = new List<EntryPart>
-        {
-            new LinkUnitEntryPart(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER),
-            new EntryPart("and"),
-            new LinkUnitEntryPart(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER),
-            new EntryPart("used"),
-            new ColorEntryPart(GetName(), EntryColors.TEXT_ABILITY),
-            new EntryPart(":"),
-            new ColorEntryPart("healed", EntryColors.TEXT_IMPORTANT),
-        };
+        HistoryConsole.Instance
+            .BeginEntry()
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+            .AddText(" and ")
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+            .AddText(" used ")
+            .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+            .AddText(":")
+            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{criticalText} healed ").CloseTag();
 
         for (int i = 0; i < _allyTargets.Count; i++)
         {
-            if (i == _allyTargets.Count - 1)
+            if (i != 0)
             {
-                entry.Add(new EntryPart("and"));
-            }
-            else
-            {
-                entry.Add(new EntryPart(","));
+                if (i == _allyTargets.Count - 1)
+                {
+                    HistoryConsole.Instance.AddText(" and ");
+                }
+                else
+                {
+                    HistoryConsole.Instance.AddText(", ");
+                }
             }
 
-            entry.Add(new LinkUnitEntryPart(_allyTargets[i].Character.Name, _allyTargets[i], EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER));
+            HistoryConsole.Instance
+                .OpenLinkTag(_allyTargets[i].Character.Name, _allyTargets[i], EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_allyTargets[i].Character.Name).CloseTag();
         }
 
-        entry.Add(new EntryPart("for"));
-        entry.Add(new ColorEntryPart($"{healValue}{criticalText} damage", EntryColors.TEXT_IMPORTANT));
-
-        return entry.ToArray();
+        HistoryConsole.Instance
+            .AddText(" for ")
+            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Heal} health points").CloseTag()
+            .Submit();
     }
 
     public override string GetAllyDescription()
@@ -204,6 +208,12 @@ public class HealingRain : BaseDuoAbility
                 CombatGameManager.Instance.TileDisplay.DisplayTileZone("BonusHealZone", _areaOfEffectBonusTiles, false);
                 CombatGameManager.Instance.TileDisplay.DisplayTileZone("HealZone", _areaOfEffectTiles, false);
 
+                // Je cache le highlight des anciennes targets
+                foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
+                {
+                    ally.DontHighlightUnit();
+                }
+
                 // Je parcours la liste des alliés pour récupérer les alliés ciblés
                 // Devra être refait de toute façon - le radius réel est déterminé à  l'Execute()
                 // Pour mettre les cibles en surbrillance
@@ -215,6 +225,7 @@ public class HealingRain : BaseDuoAbility
                     if (Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
                     {
                         _allyTargets.Add(ally);
+                        ally.HighlightUnit(Color.green);
                     }
                 }
             }
@@ -229,7 +240,11 @@ public class HealingRain : BaseDuoAbility
     protected override void EndAbility()
     {
         base.EndAbility();
-        CombatGameManager.Instance.TileDisplay.HideTileZone("HealZone");
-        CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
+
+        // Je cache le highlight des anciennes targets
+        foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
+        {
+            ally.DontHighlightUnit();
+        }
     }
 }
