@@ -40,12 +40,17 @@ public class GrenadeTossEngineer : BaseDuoAbility
                     " | Crit: 0%" +
                     " | Dmg: " + _selfShotStats.GetDamage();
         }
-        //else
-        //{
-        //    res += "\nAcc: 100%" +
-        //            " | Crit: 0%" +
-        //            " | Dmg: " + _effector.AllyCharacter.Damage * 1.5;
-        //}
+        else if (_effector != null)
+        {
+            res += "\nAcc: 100%" +
+                    " | Crit: 0%" +
+                    " | Dmg: " + _effector.AllyCharacter.Damage * 1.5;
+        }
+        else
+        {
+            res += "\nAcc: 100%" +
+                    " | Crit: 0%";
+        }
         return res;
     }
 
@@ -73,10 +78,10 @@ public class GrenadeTossEngineer : BaseDuoAbility
 
     protected override void ChooseAlly()
     {
-        _allyShotStats = new AbilityStats(0, 0, 0, 0, _chosenAlly);
+        _allyShotStats = new AbilityStats(0, 0, 0, 0, 0, _chosenAlly);
         _allyShotStats.UpdateWithEmotionModifiers(_effector);
 
-        _selfShotStats = new AbilityStats(0, 0, 1.5f, 0, _effector);
+        _selfShotStats = new AbilityStats(0, 0, 1.5f, 0, 0, _effector);
         _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
 
         _possibleTargetsTiles.Clear();
@@ -104,6 +109,10 @@ public class GrenadeTossEngineer : BaseDuoAbility
         // 2- Quand je clique gauche, la caméra et la zone de visée se déplacent sur cette tile
         // 3- Quand je clique sur Confirm/appuie sur Entrer, la capacité s'exécute
 
+        // Nouveau :
+        // - l'AoE suit le souris
+        // - quand je clique, lance UIConfirm()
+
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitData;
 
@@ -122,9 +131,14 @@ public class GrenadeTossEngineer : BaseDuoAbility
                 // La caméra se déplace bien, mais du coup la tile visée se déplace aussi. Voir le TODO plus haut.
 
                 bool clicked = Input.GetMouseButtonUp(0);
+                if (clicked)
+                {
+                    UIConfirm();
+                }
+
                 CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(temporaryTileCoord);
                 
-                if ((!clicked) || temporaryTileCoord == _previousTileCoord)
+                if (temporaryTileCoord == _previousTileCoord)
                 {
                     return;
                 }
@@ -163,12 +177,14 @@ public class GrenadeTossEngineer : BaseDuoAbility
                 foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
                 {
                     //if ((ally.GridPosition - tileCoord).magnitude <= _radius) //That's a circle not a diamond...
-                    Debug.Log(Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y));
+                    //Debug.Log(Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y));
                     if ( Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
                     {
                         _allyTargets.Add(ally);
                     }
                 }
+
+                
             }
         }
     }

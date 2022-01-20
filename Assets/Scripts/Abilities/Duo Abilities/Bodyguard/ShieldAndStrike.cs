@@ -1,21 +1,23 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class Devouring : BaseDuoAbility
+
+public class ShieldAndStrike : BaseDuoAbility
 {
     private List<GridBasedUnit> _possibleTargets;
     private int _targetIndex = -1;
 
-    private AbilityStats _selfShotStats;
+    private AbilityStats _selfProtStats;
+    private AbilityStats _allyShotStats;
 
     public override string GetDescription()
     {
-        return "You ask an ally to hold an enemy while you feed on them, restoring your health and extending your Frenzy state.";
+        return "You cover your ally while they attack, reducing damage received for the following turn.";
     }
 
     public override string GetName()
     {
-        return "Devouring";
+        return "Shield & Strike";
     }
 
     public override bool CanExecute()
@@ -31,8 +33,8 @@ public class Devouring : BaseDuoAbility
 
         foreach (GridBasedUnit unit in tempTargets)
         {
-            if (    (_chosenAlly.LinesOfSight.ContainsKey(unit)) 
-                &&  ((unit.GridPosition - this._effector.GridPosition).magnitude < 2))
+            if ((_chosenAlly.LinesOfSight.ContainsKey(unit))
+                && ((unit.GridPosition - _chosenAlly.GridPosition).magnitude <= _chosenAlly.Character.RangeShot))
             {
                 _possibleTargets.Add(unit);
             }
@@ -48,9 +50,11 @@ public class Devouring : BaseDuoAbility
         }
         else RequestTargetSymbolUpdate(null);
 
-        _selfShotStats = new AbilityStats(999, 0, 1.5f, 0, 6, _effector);
+        _selfProtStats = new AbilityStats(0, 0, 0, 0.5f, 0, _effector);
+        _allyShotStats = new AbilityStats(0, 0, 1.5f, 0, 0, _chosenAlly);
 
-        _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
+        _selfProtStats.UpdateWithEmotionModifiers(_chosenAlly);
+        _allyShotStats.UpdateWithEmotionModifiers(_effector);
     }
 
     protected override void EnemyTargetingInput()
@@ -95,52 +99,70 @@ public class Devouring : BaseDuoAbility
 
     public override void Execute()
     {
-        // Impact on the sentiments
-        // Ally -> Self relationship
-        AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, -10);
-
         // Actual effect of the ability
         GridBasedUnit target = _possibleTargets[_targetIndex];
+
         AbilityResult result = new AbilityResult();
+        ShootResult shootResult = AllyShoot(target, _allyShotStats);
+        result.AllyMiss = !shootResult.Landed;
+        result.AllyCritical = shootResult.Critical;
+        result.AllyDamage = shootResult.Damage;
 
-        Debug.Log("DEVOURING : we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
-        ShootResult shooResult = SelfShoot(target, _selfShotStats, true);
-        float heal = _selfShotStats.GetHeal();
-        _effector.Heal(ref heal);
-        _effector.Character.CurrentBuffs.Add(new Buff(6, _effector, damageBuff: 2f, critBuff: 0.5f, mitigationBuff: 1.5f));
+        if (!StartAction(ActionTypes.Protect, _effector, _chosenAlly))
+        {
+            _chosenAlly.Character.CurrentBuffs.Add(new ProtectedByBuff(2, _chosenAlly, _effector, _selfProtStats.GetProtection()));
 
-        result.Heal = heal;
-        result.Critical = shooResult.Critical;
-        result.Damage = shooResult.Damage;
+            // Impact on the sentiments
+            // Ally -> Self relationship
+            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, 5);
+        }
+        else
+        {
+            result.Miss = true;
+            Debug.Log("refused to protecc");
+        }
+
         SendResultToHistoryConsole(result);
-
-        var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
-        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
     }
 
     protected override void SendResultToHistoryConsole(AbilityResult result)
     {
-        GridBasedUnit target = _possibleTargets[_targetIndex];
-        string healCriticalText = result.Critical ? " greatly" : "";
-        string damageCriticalText = result.Critical ? " critical" : "";
-
         HistoryConsole.Instance
             .BeginEntry()
-            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
-            .AddText(" used ")
-            .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
-            .AddText(" in front of ")
-            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
-            .AddText(":")
-            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{healCriticalText} healed").CloseTag()
-            .AddText(" himself for ")
-            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Heal} health points").CloseTag()
-            .AddText(" and did ")
-            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage}{damageCriticalText} damage").CloseTag()
-            .AddText(" to ")
-            .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover", EntryColors.CoverColor(_effector.LinesOfSight[target].cover)).CloseTag()
-            .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag()
-            .Submit();
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag();
+
+        if (result.Miss)
+        {
+            HistoryConsole.Instance
+                .AddText(" used ")
+                .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag();
+        }
+        else
+        {
+            HistoryConsole.Instance.OpenColorTag(EntryColors.TEXT_ABILITY).AddText(" refused ").CloseTag();
+        }
+
+        HistoryConsole.Instance
+            .AddText(" to protect ")
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag();
+
+        if (result.AllyMiss)
+        {
+            HistoryConsole.Instance
+                .AddText(" who just ")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("missed").CloseTag()
+                .AddText(" his shot");
+        }
+        else
+        {
+            string criticalText = result.AllyCritical ? " critical" : "";
+
+            HistoryConsole.Instance
+                .AddText(" who did ")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.AllyDamage}{criticalText} damage").CloseTag();
+        }
+
+        HistoryConsole.Instance.Submit();
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)
@@ -150,7 +172,7 @@ public class Devouring : BaseDuoAbility
 
     public override string GetAllyDescription()
     {
-        return "The feasting spectacle is terrifying.";
+        return "Thanks to your ally's protection, you can focus solely on your shot.";
     }
 
     public override void UISelectUnit(GridBasedUnit unit)
@@ -167,6 +189,6 @@ public class Devouring : BaseDuoAbility
 
     public override string GetShortDescription()
     {
-        return "A terrifying attack that heals and buffs.";
+        return "Protects an ally while they shoot a single target.";
     }
 }

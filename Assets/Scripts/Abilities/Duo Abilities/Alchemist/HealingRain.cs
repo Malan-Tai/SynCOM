@@ -48,6 +48,8 @@ public class HealingRain : BaseDuoAbility
             Debug.Log("[Healing Rain] Bonus radius");
         }
 
+        var selfHealStats = new AbilityStats(0, 0, 0, 0, healingValue, _effector);
+        selfHealStats.UpdateWithEmotionModifiers(_chosenAlly);
 
         _allyTargets.Clear();
         foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
@@ -62,10 +64,10 @@ public class HealingRain : BaseDuoAbility
         // Ne peux rater ni faire un coup critique
         foreach (AllyUnit ally in _allyTargets)
         {
-            Heal(_effector, ally, healingValue, _chosenAlly);
+            Heal(_effector, ally, selfHealStats.GetHeal(), _chosenAlly);
         }
 
-        result.Heal = healingValue;
+        result.Heal = selfHealStats.GetHeal();
         SendResultToHistoryConsole(result);
         Debug.Log("[Healing Rain] Explosion");
     }
@@ -131,7 +133,7 @@ public class HealingRain : BaseDuoAbility
 
     protected override void ChooseAlly()
     {
-        _allyShotStats = new AbilityStats(0, 0, 0, 0, _chosenAlly);
+        _allyShotStats = new AbilityStats(0, 0, 0, 0, 0, _chosenAlly);
         _allyShotStats.UpdateWithEmotionModifiers(_effector);
 
         _possibleTargetsTiles.Clear();
@@ -177,9 +179,14 @@ public class HealingRain : BaseDuoAbility
                 // La caméra se déplace bien, mais du coup la tile visée se déplace aussi. Voir le TODO plus haut.
 
                 bool clicked = Input.GetMouseButtonUp(0);
+                if (clicked)
+                {
+                    UIConfirm();
+                }
+
                 CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(temporaryTileCoord);
 
-                if ((!clicked) || temporaryTileCoord == _previousTileCoord)
+                if (temporaryTileCoord == _previousTileCoord)
                 {
                     return;
                 }

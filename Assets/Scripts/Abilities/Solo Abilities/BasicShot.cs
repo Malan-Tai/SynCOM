@@ -15,17 +15,18 @@ public class BasicShot : BaseAllyAbility
         string res = "Shoot at the target.";
         if (_hoveredUnit != null)
         {
-            res += "\nAcc:" + (_effector.Character.Accuracy - _hoveredUnit.Character.GetDodge(_effector.LinesOfSight[_hoveredUnit].cover)) +
-                    "% | Crit:" + _effector.Character.CritChances +
-                    "% | Dmg:" + _effector.Character.Damage;
+            res += "\nAcc:" + _selfShotStats.GetAccuracy(_hoveredUnit, _effector.LinesOfSight[_hoveredUnit].cover) + // (_effector.Character.Accuracy - _hoveredUnit.Character.GetDodge(_effector.LinesOfSight[_hoveredUnit].cover)) +
+                    "% | Crit:" + _selfShotStats.GetCritRate() + // + _effector.Character.CritChances +
+                    "% | Dmg:" + _selfShotStats.GetDamage();// _effector.Character.Damage;
         }
         else if (_targetIndex >= 0)
         {
             GridBasedUnit target = _possibleTargets[_targetIndex];
+            if (target == null) Debug.Log("BLIP BLOUP");
 
-            res += "\nAcc:" + (_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover)) +
-                    "% | Crit:" + _effector.Character.CritChances +
-                    "% | Dmg:" + _effector.Character.Damage;
+            res += "\nAcc:" + _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover) + //(_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover)) +
+                    "% | Crit:" + _selfShotStats.GetCritRate() + // + _effector.Character.CritChances +
+                    "% | Dmg:" + _selfShotStats.GetDamage();// _effector.Character.Damage;
         }
 
         return res;
@@ -34,7 +35,7 @@ public class BasicShot : BaseAllyAbility
     public override void SetEffector(GridBasedUnit effector)
     {
         _possibleTargets = new List<GridBasedUnit>();
-        
+
         foreach (GridBasedUnit unit in effector.LinesOfSight.Keys)
         {
             float distance = Vector2.Distance(unit.GridPosition, effector.GridPosition);
@@ -55,6 +56,8 @@ public class BasicShot : BaseAllyAbility
         else RequestTargetSymbolUpdate(null);
 
         base.SetEffector(effector);
+
+        _selfShotStats = new AbilityStats(0, 0, 1f, 0, 0, _effector);
     }
 
     public override bool CanExecute()
@@ -106,7 +109,6 @@ public class BasicShot : BaseAllyAbility
     public override void Execute()
     {
         GridBasedUnit target = _possibleTargets[_targetIndex];
-        _selfShotStats = new AbilityStats(0, 0, 1f, 0, _effector);
 
         int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
         int randCrit = UnityEngine.Random.Range(0, 100);
@@ -141,9 +143,6 @@ public class BasicShot : BaseAllyAbility
             result.Miss = true;
             SendResultToHistoryConsole(result);
         }
-
-        var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
-        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
     }
 
     protected override void SendResultToHistoryConsole(AbilityResult result)

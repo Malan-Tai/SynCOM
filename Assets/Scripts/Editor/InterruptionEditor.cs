@@ -10,7 +10,7 @@ public class InterruptionEditor : Editor
     private SerializedProperty _interruptionType;
 
     private SerializedProperty _time;
-
+    private SerializedProperty _text;
     #endregion
 
     // is called once when according object gains focus in the hierachy
@@ -19,6 +19,7 @@ public class InterruptionEditor : Editor
         _interruptionType = serializedObject.FindProperty("interruptionType");
 
         _time = serializedObject.FindProperty("time");
+        _time = serializedObject.FindProperty("text");
     }
 
     public override void OnInspectorGUI()
@@ -31,6 +32,11 @@ public class InterruptionEditor : Editor
         if (_interruptionType.enumValueIndex == (int)InterruptionType.FocusTargetForGivenTime)
         {
             EditorGUILayout.PropertyField(_time);
+        }
+        if (_interruptionType.enumValueIndex == (int)InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback)
+        {
+            EditorGUILayout.PropertyField(_time);
+            EditorGUILayout.PropertyField(_text);
         }
 
         // write back serialized values to the real instance

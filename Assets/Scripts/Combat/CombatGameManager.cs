@@ -146,7 +146,7 @@ public class CombatGameManager : MonoBehaviour
             {
                 ally.SetCharacter(AllyCharacter.GetRandomAllyCharacter());
                 characters.Add(ally.AllyCharacter);
-                ally.AllyCharacter.Name = $"Ally {i+1}";
+                //ally.AllyCharacter.Name = $"Ally {i+1}";
                 i++;
             }
 
