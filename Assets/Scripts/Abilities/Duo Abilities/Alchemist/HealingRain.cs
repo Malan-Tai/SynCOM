@@ -208,6 +208,12 @@ public class HealingRain : BaseDuoAbility
                 CombatGameManager.Instance.TileDisplay.DisplayTileZone("BonusHealZone", _areaOfEffectBonusTiles, false);
                 CombatGameManager.Instance.TileDisplay.DisplayTileZone("HealZone", _areaOfEffectTiles, false);
 
+                // Je cache le highlight des anciennes targets
+                foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
+                {
+                    ally.DontHighlightUnit();
+                }
+
                 // Je parcours la liste des alliés pour récupérer les alliés ciblés
                 // Devra être refait de toute façon - le radius réel est déterminé à  l'Execute()
                 // Pour mettre les cibles en surbrillance
@@ -219,6 +225,7 @@ public class HealingRain : BaseDuoAbility
                     if (Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
                     {
                         _allyTargets.Add(ally);
+                        ally.HighlightUnit(Color.green);
                     }
                 }
             }
@@ -228,5 +235,16 @@ public class HealingRain : BaseDuoAbility
     protected override bool IsAllyCompatible(AllyUnit unit)
     {
         return (unit.GridPosition - this._effector.GridPosition).magnitude <= _trowingRadius + unit.AllyCharacter.RangeShot;
+    }
+
+    protected override void EndAbility()
+    {
+        base.EndAbility();
+
+        // Je cache le highlight des anciennes targets
+        foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
+        {
+            ally.DontHighlightUnit();
+        }
     }
 }

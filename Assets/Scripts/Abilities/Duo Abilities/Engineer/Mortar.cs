@@ -56,20 +56,32 @@ public class Mortar : BaseDuoAbility
         _areaOfEffectTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(_chosenAlly.GridPosition, _radius);
         CombatGameManager.Instance.TileDisplay.DisplayTileZone("DamageZone", _areaOfEffectTiles, false);
 
+        // Je cache le highlight des anciennes targets
+        foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
+        {
+            enemy.DontHighlightUnit();
+        }
+        foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
+        {
+            ally.DontHighlightUnit();
+        }
+
         _targets.Clear();
         foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
         {
-            if ((enemy.GridPosition - _chosenAlly.GridPosition).magnitude <= _radius) //That's a circle not a diamond
+            if (Mathf.Abs(enemy.GridPosition.x - _chosenAlly.GridPosition.x) + Mathf.Abs(enemy.GridPosition.y - _chosenAlly.GridPosition.y) <= _radius)
             {
                 _targets.Add(enemy);
+                enemy.HighlightUnit(Color.red);
             }
         }
         _allyTargets.Clear();
         foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
         {
-            if ((ally.GridPosition - _chosenAlly.GridPosition).magnitude <= _radius) //That's a circle not a diamond
+            if (Mathf.Abs(ally.GridPosition.x - _chosenAlly.GridPosition.x) + Mathf.Abs(ally.GridPosition.y - _chosenAlly.GridPosition.y) <= _radius)
             {
                 _allyTargets.Add(ally);
+                ally.HighlightUnit(Color.red);
             }
         }
 
@@ -159,6 +171,17 @@ public class Mortar : BaseDuoAbility
     protected override void EndAbility()
     {
         base.EndAbility();
+
+        // Je cache le highlight des anciennes targets
+        foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
+        {
+            enemy.DontHighlightUnit();
+        }
+        foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
+        {
+            ally.DontHighlightUnit();
+        }
+
         CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
     }
 }

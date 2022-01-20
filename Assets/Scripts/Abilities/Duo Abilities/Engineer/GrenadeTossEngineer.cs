@@ -160,10 +160,19 @@ public class GrenadeTossEngineer : BaseDuoAbility
                 CombatGameManager.Instance.TileDisplay.DisplayTileZone("BonusDamageZone", _areaOfEffectBonusTiles, false);
                 CombatGameManager.Instance.TileDisplay.DisplayTileZone("DamageZone", _areaOfEffectTiles, false);
 
+                // Je cache le highlight des anciennes targets
+                foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
+                {
+                    enemy.DontHighlightUnit();
+                }
+                foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
+                {
+                    ally.DontHighlightUnit();
+                }
+
                 // Je parcours la liste des enemis pour récupérer les ennemis ciblés
                 // Facultatif ? devra être refait de toute façon - le radius réel est déterminé à  l'Execute()
                 // Pour mettre les cibles en surbrillance
-
                 _targets.Clear();
                 _allyTargets.Clear();
                 foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
@@ -172,6 +181,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
                     if (Mathf.Abs(enemy.GridPosition.x - _tileCoord.x) + Mathf.Abs(enemy.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
                     {
                         _targets.Add(enemy);
+                        enemy.HighlightUnit(Color.red);
                     }
                 }
                 foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
@@ -181,6 +191,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
                     if ( Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
                     {
                         _allyTargets.Add(ally);
+                        ally.HighlightUnit(Color.red);
                     }
                 }
 
@@ -288,6 +299,17 @@ public class GrenadeTossEngineer : BaseDuoAbility
     protected override void EndAbility()
     {
         base.EndAbility();
+
+        // Je cache le highlight des anciennes targets
+        foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
+        {
+            enemy.DontHighlightUnit();
+        }
+        foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
+        {
+            ally.DontHighlightUnit();
+        }
+
         CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
         CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
     }
