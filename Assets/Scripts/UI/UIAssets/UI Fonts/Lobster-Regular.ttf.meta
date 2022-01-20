@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 44351fcdbc4489d42acccad3d026bf25
+guid: c0d22425171f5dd42a56880431266e23
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,12 +9,8 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Times New Roman
-  fallbackFontReferences:
-  - {fileID: 12800000, guid: 8e43f58cc85a5594c8b986b958ba00c6, type: 3}
-  - {fileID: 12800000, guid: 11ed19dfd84cb92448f0868873346d2b, type: 3}
-  - {fileID: 12800000, guid: 8d8602d6f354bad47b1147a016780d9d, type: 3}
-  - {fileID: 12800000, guid: 9d66691f97b629d4e84ae64cf87c5d06, type: 3}
+  - Lobster
+  fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1
