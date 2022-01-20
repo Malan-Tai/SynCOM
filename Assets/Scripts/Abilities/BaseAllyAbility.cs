@@ -288,6 +288,34 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                 break;
 
             case ChangeActionTypes.Positive:
+                switch (source.AllyCharacter.CharacterClass)
+                {
+                    case EnumClasses.Berserker:
+                        break;
+
+                    case EnumClasses.Engineer:
+                        break;
+
+                    case EnumClasses.Sniper:
+                        AddBuff(duo, new Buff("Assisted", 4, duo, 0.2f, 0.5f, 0.5f, 0, 0, 0));
+                        break;
+
+                    case EnumClasses.Alchemist:
+                        var heal = new AbilityStats(0, 0, 0, 0, 5, source);
+                        heal.UpdateWithEmotionModifiers(duo);
+                        Heal(source, duo, heal.GetHeal(), null);
+                        break;
+
+                    case EnumClasses.Bodyguard:
+                        break;
+
+                    case EnumClasses.Smuggler:
+                        break;
+
+                    default:
+                        break;
+                }
+
                 break;
 
             default:
