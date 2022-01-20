@@ -144,6 +144,10 @@ public class RelationshipEventsManager : MonoBehaviour
             {
                 result.interruptions.Add(interruption.ToParameters(currentUnit, source));
             }
+            foreach (InterruptionScriptableObject interruption in relationshipEvent.interruptionsOnSource)
+            {
+                result.interruptions.Add(interruption.ToParameters(currentUnit, source, false));
+            }
         }
 
         print("executed " + relationshipEvent + " : " + actuallyExecuted);

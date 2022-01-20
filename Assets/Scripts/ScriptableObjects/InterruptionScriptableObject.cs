@@ -10,15 +10,15 @@ public class InterruptionScriptableObject : ScriptableObject
     public float time;
     public string text;
 
-    public InterruptionParameters ToParameters(GridBasedUnit currentUnit, GridBasedUnit sourceUnit)
+    public InterruptionParameters ToParameters(GridBasedUnit currentUnit, GridBasedUnit sourceUnit, bool onCurrent = true)
     {
         return new InterruptionParameters
         {
             interruptionType = interruptionType,
             time = time,
             text = text,
-            target = currentUnit,
-            position = sourceUnit.GridPosition
+            target = onCurrent ? currentUnit : sourceUnit,
+            position = onCurrent ? sourceUnit.GridPosition : currentUnit.GridPosition
         };
     }
 }
