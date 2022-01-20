@@ -139,6 +139,7 @@ public class ShieldAndStrike : BaseDuoAbility
         {
             HistoryConsole.Instance
                 .AddText(" used ")
+                .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
                 .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag();
         }
 
