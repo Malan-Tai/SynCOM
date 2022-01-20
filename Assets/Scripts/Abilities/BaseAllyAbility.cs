@@ -220,6 +220,8 @@ public abstract class BaseAllyAbility : BaseAbility
 
 public abstract class BaseDuoAbility : BaseAllyAbility
 {
+    protected bool _ignoreEnemyTargeting = false;
+
     protected AllyUnit _temporaryChosenAlly = null;
     protected AllyUnit _chosenAlly = null;
     private List<AllyUnit> _possibleAllies = new List<AllyUnit>();
@@ -350,16 +352,18 @@ public abstract class BaseDuoAbility : BaseAllyAbility
             return;
         }
 
+        bool forceConfirm = false;
         if (_chosenAlly == null)
         {
             AllyTargetingInput();
         }
-        else
+        else if (!_ignoreEnemyTargeting)
         {
             EnemyTargetingInput();
         }
+        else forceConfirm = true;
 
-        bool confirmed = _uiConfirmed || Input.GetKeyDown(KeyCode.Return);
+        bool confirmed = _uiConfirmed || Input.GetKeyDown(KeyCode.Return) || forceConfirm;
         bool cancelled = _uiCancelled || Input.GetKeyDown(KeyCode.Escape);
 
         if (confirmed && CanExecute())
@@ -412,7 +416,6 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                     RequestTargetSymbolUpdate(_temporaryChosenAlly);
                 }
             }
-            // TODO: check if Emotion gives a free action
         }
         else if (confirmed)
         {

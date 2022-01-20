@@ -33,6 +33,7 @@ public class PepTalk : BaseDuoAbility
 
     protected override void ChooseAlly()
     {
+        _ignoreEnemyTargeting = true;
     }
 
     protected override void EnemyTargetingInput()
