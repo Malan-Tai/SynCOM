@@ -19,7 +19,7 @@ public class InterruptionEditor : Editor
         _interruptionType = serializedObject.FindProperty("interruptionType");
 
         _time = serializedObject.FindProperty("time");
-        _time = serializedObject.FindProperty("text");
+        _text = serializedObject.FindProperty("text");
     }
 
     public override void OnInspectorGUI()

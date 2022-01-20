@@ -216,10 +216,26 @@ public abstract class BaseAllyAbility : BaseAbility
     {
         _uiCancelled = true;
     }
+
+    protected void AddBuff(GridBasedUnit unit, Buff buff)
+    {
+        unit.Character.CurrentBuffs.Add(buff);
+
+        var parameters = new InterruptionParameters
+        {
+            interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback,
+            target = unit,
+            time = Interruption.FOCUS_TARGET_TIME,
+            text = buff.GetName()
+        };
+        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
+    }
 }
 
 public abstract class BaseDuoAbility : BaseAllyAbility
 {
+    protected bool _ignoreEnemyTargeting = false;
+
     protected AllyUnit _temporaryChosenAlly = null;
     protected AllyUnit _chosenAlly = null;
     private List<AllyUnit> _possibleAllies = new List<AllyUnit>();
@@ -272,6 +288,63 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                 break;
 
             case ChangeActionTypes.Positive:
+                switch (source.AllyCharacter.CharacterClass)
+                {
+                    case EnumClasses.Berserker: // hurts themself to heal other
+                        if (duo.Character.HealthPoints / duo.Character.MaxHealth > 0.75f ||
+                            (duo.GridPosition - source.GridPosition).magnitude > source.Character.RangeShot * 2 ||
+                            source.Character.HealthPoints < 11) 
+                        {
+                            changedAction = false;
+                            break;
+                        }
+
+                        float dmg = 10;
+                        source.TakeDamage(ref dmg);
+
+                        var heal = new AbilityStats(0, 0, 0, 0, 5, source);
+                        heal.UpdateWithEmotionModifiers(duo);
+                        Heal(source, duo, heal.GetHeal(), null);
+                        break;
+
+                    case EnumClasses.Engineer:
+                        Tile toCover = CombatGameManager.Instance.GridMap.GetRandomFreeNeighbor(duo.GridPosition);
+                        changedAction = toCover != null;
+
+                        if (changedAction)
+                        {
+                            CombatGameManager.Instance.ChangeTileCover(toCover, EnumCover.Full);
+                            CombatGameManager.Instance.AddBarricadeAt(toCover.Coords, duo.GridPosition.y != toCover.Coords.y);
+                        }
+
+                        break;
+
+                    case EnumClasses.Sniper: // buffs other
+                        AddBuff(duo, new Buff("Assisted", 4, duo, 0.2f, 0.5f, 0.5f, 0, 0, 0));
+                        break;
+
+                    case EnumClasses.Alchemist: // heals other
+                        if (duo.Character.HealthPoints / duo.Character.MaxHealth > 0.75f || (duo.GridPosition - source.GridPosition).magnitude > source.Character.RangeShot)
+                        {
+                            changedAction = false;
+                            break;
+                        }
+
+                        heal = new AbilityStats(0, 0, 0, 0, 5, source);
+                        heal.UpdateWithEmotionModifiers(duo);
+                        Heal(source, duo, heal.GetHeal(), null);
+                        break;
+
+                    case EnumClasses.Bodyguard:
+                        break;
+
+                    case EnumClasses.Smuggler:
+                        break;
+
+                    default:
+                        break;
+                }
+
                 break;
 
             default:
@@ -350,16 +423,18 @@ public abstract class BaseDuoAbility : BaseAllyAbility
             return;
         }
 
+        bool forceConfirm = false;
         if (_chosenAlly == null)
         {
             AllyTargetingInput();
         }
-        else
+        else if (!_ignoreEnemyTargeting)
         {
             EnemyTargetingInput();
         }
+        else forceConfirm = true;
 
-        bool confirmed = _uiConfirmed || Input.GetKeyDown(KeyCode.Return);
+        bool confirmed = _uiConfirmed || Input.GetKeyDown(KeyCode.Return) || forceConfirm;
         bool cancelled = _uiCancelled || Input.GetKeyDown(KeyCode.Escape);
 
         if (confirmed && CanExecute())
@@ -412,7 +487,6 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                     RequestTargetSymbolUpdate(_temporaryChosenAlly);
                 }
             }
-            // TODO: check if Emotion gives a free action
         }
         else if (confirmed)
         {

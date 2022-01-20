@@ -9,14 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68924ad8267746740a64e4b315d998d7, type: 3}
-  m_Name: BasicBuff
+  m_Script: {fileID: 11500000, guid: 4871b93df096ec34086905898ddb71ff, type: 3}
+  m_Name: DisplayHappyFeedback
   m_EditorClassIdentifier: 
-  duration: 3
-  buffName: Boost
-  damageBuff: 2
-  critBuff: 15
-  accuracyBuff: 0
-  mitigationBuff: 0
-  moveBuff: 0
-  dodgeBuff: 0
+  interruptionType: 3
+  time: 1
+  text: :D

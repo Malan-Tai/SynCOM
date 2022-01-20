@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -7467,7 +7467,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32d4184a2f256664f9a40e0e796d8521, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cameraPointer: {fileID: 0}
   _gridMap: {fileID: 1726654979}
   _tileDisplay: {fileID: 840574980}
   _camera: {fileID: 71073694}
@@ -7475,6 +7474,7 @@ MonoBehaviour:
   - {fileID: 499266356}
   - {fileID: 379820155}
   - {fileID: 1788012776}
+  _barricadePrefab: {fileID: 4811758954082458278, guid: 0ab4a6cf3144c0a419ac0f1caf2fce42, type: 3}
   _enemyUnits:
   - {fileID: 1946337609}
   - {fileID: 815346058}
@@ -7536,6 +7536,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e1876ed9dd71d6e499b993e9c49a7889, type: 2}
   - {fileID: 11400000, guid: a8d7b94959610ee4185568bbce887576, type: 2}
   - {fileID: 11400000, guid: c33d9a45fadb4b74cbfa9e593fa424be, type: 2}
+  - {fileID: 11400000, guid: c319faa9d97e64f4ea22094e92b17e8c, type: 2}
 --- !u!1 &795293727
 GameObject:
   m_ObjectHideFlags: 0

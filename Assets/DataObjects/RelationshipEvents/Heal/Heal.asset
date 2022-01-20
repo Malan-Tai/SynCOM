@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Heal
   m_EditorClassIdentifier: 
   triggerType: 4
+  triggersOnlyOnce: 0
   onlyCheckDuoAlly: 0
   dontCheckDuoAlly: 0
   onlyCheckTarget: 1
@@ -28,13 +29,25 @@ MonoBehaviour:
   onFatal: 0
   minMaxHealthRatio: {x: 0, y: 1}
   killSteal: 0
+  startedAction: 0
   effectType: 1
-  interrupts: 0
+  interrupts: 1
   reciprocal: 0
   admirationChange: 0
   trustChange: 5
   sympathyChange: 0
-  sourceToTarget: 1
-  admirationChangeSTT: 0
-  trustChangeSTT: 0
-  sympathyChangeSTT: 5
+  sourceToCurrent: 1
+  admirationChangeSTC: 0
+  trustChangeSTC: 0
+  sympathyChangeSTC: 5
+  chance: 0
+  interruptionsOnCurrent:
+  - {fileID: 11400000, guid: c944d62289c7e0348b79f87c772950b8, type: 2}
+  interruptionsOnSource:
+  - {fileID: 11400000, guid: c944d62289c7e0348b79f87c772950b8, type: 2}
+  freeAction: 0
+  freeActionForDuo: 0
+  maxRange: 0
+  buffsOnSource: []
+  buffsOnTarget: []
+  changeActionTo: 0
