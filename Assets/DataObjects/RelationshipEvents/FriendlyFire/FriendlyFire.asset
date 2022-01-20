@@ -36,13 +36,14 @@ MonoBehaviour:
   admirationChange: 0
   trustChange: -10
   sympathyChange: -5
-  sourceToTarget: 0
-  admirationChangeSTT: 0
-  trustChangeSTT: 0
-  sympathyChangeSTT: 0
+  sourceToCurrent: 0
+  admirationChangeSTC: 0
+  trustChangeSTC: 0
+  sympathyChangeSTC: 0
   chance: 0
-  interruptions:
+  interruptionsOnCurrent:
   - {fileID: 11400000, guid: 2560f70c6450a04488fee0a36db09efc, type: 2}
+  interruptionsOnSource: []
   freeAction: 0
   freeActionForDuo: 0
   maxRange: 0
