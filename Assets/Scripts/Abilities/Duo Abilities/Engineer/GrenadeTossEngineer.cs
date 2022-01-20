@@ -248,8 +248,8 @@ public class GrenadeTossEngineer : BaseDuoAbility
     protected override void EndAbility()
     {
         base.EndAbility();
-        CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
-        CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
+        //CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
+        //CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
     }
 
     public override string GetShortDescription()

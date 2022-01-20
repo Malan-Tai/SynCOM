@@ -111,6 +111,11 @@ public abstract class BaseAllyAbility : BaseAbility
         _needsFinalization = false;
         if (OnAbilityEnded != null) OnAbilityEnded(_executed && !_free);
         _free = false;
+        CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
+        CombatGameManager.Instance.TileDisplay.HideTileZone("BonusDamageZone");
+        CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
+        CombatGameManager.Instance.TileDisplay.HideTileZone("HealZone");
+        CombatGameManager.Instance.TileDisplay.HideTileZone("BonusHealZone");
     }
 
     public virtual void InputControl()

@@ -5,7 +5,6 @@ using UnityEngine;
 public class DwarfTossing : BaseDuoAbility
 {
     private AbilityStats _selfShotStats;
-    private AbilityStats _allyShotStats;
 
     private LayerMask _groundLayerMask = LayerMask.GetMask("Ground");
 
@@ -25,37 +24,21 @@ public class DwarfTossing : BaseDuoAbility
         return _chosenAlly != null;
     }
 
-    public override void Execute()
-    {
-        int randLaunch = UnityEngine.Random.Range(0, 100);
-        if (randLaunch <= _launchingAccuracy)
-        {
-            // Launch successful
-            CombatGameManager.Instance.Camera.SwitchParenthood(_chosenAlly);
-            _chosenAlly.ChooseAstarPathTo(_tileCoord);
-
-
-            // Dégâts
-            foreach (EnemyUnit target in _targets)
-            {
-                SelfShoot(target, _selfShotStats, alwaysHit: true, canCrit: false);
-                var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
-                _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
-            }
-        }
-        else
-        {
-            // Launch failed
-            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, -10);
-            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
-        }
-
-        
-    }
+    
 
     public override string GetAllyDescription()
     {
-        return "Acc: " + (int)_launchingAccuracy;
+        string res = "You launch your ally in the air. If you fail your throw, they will take damage.";
+        if (_chosenAlly != null)
+        {
+            res += "\nAcc: " + (int)_launchingAccuracy + "%" +
+                   "\nDMG if fail: " + (int)_chosenAlly.AllyCharacter.Damage * 0.5;
+        }
+        else if (_effector != null && _temporaryChosenAlly != null)
+        {
+            res += "\nDMG if fail: " + (int)_temporaryChosenAlly.AllyCharacter.Damage * 0.5;
+        }
+        return res;
     }
 
     public override string GetDescription()
@@ -64,19 +47,14 @@ public class DwarfTossing : BaseDuoAbility
         if (_chosenAlly != null)
         {
             res += "\nAcc: ~" + (int)_selfShotStats.GetAccuracy() + "%" +
-                    " | Crit: " + (int)_selfShotStats.GetCritRate() + "%" +
+                    " | Crit: ~" + (int)_selfShotStats.GetCritRate() + "%" +
                     " | Dmg: " + (int)_selfShotStats.GetDamage();
         }
         else if (_effector != null)
         {
-            res += "\nAcc: 100%" + 
-                    " | Crit: 0%" +
+            res += "\nAcc: ~" +  (int)_effector.AllyCharacter.Accuracy + "%" +
+                    " | Crit: ~" + (int)_effector.AllyCharacter.CritChances + "%" +
                     " | Dmg: " + (int)_effector.AllyCharacter.Damage * 3;
-        }
-        else
-        {
-            res += "\nAcc: 100%" +
-                    " | Crit: 0%";
         }
         return res;
     }
@@ -93,10 +71,7 @@ public class DwarfTossing : BaseDuoAbility
 
     protected override void ChooseAlly()
     {
-        _allyShotStats = new AbilityStats(0, 0, 3f, 0, _chosenAlly);
-        _allyShotStats.UpdateWithEmotionModifiers(_effector);
-
-        _selfShotStats = new AbilityStats(0, 0, 0, 0, _effector);
+        _selfShotStats = new AbilityStats(0, 0, 3f, 0, _effector);
         _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
 
         _possibleTargetsTiles.Clear();
@@ -166,6 +141,34 @@ public class DwarfTossing : BaseDuoAbility
                     }
                 }
             }
+        }
+    }
+
+    public override void Execute()
+    {
+        int randLaunch = UnityEngine.Random.Range(0, 100);
+
+        var parametersLaunch = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetUntilEndOfMovement, target = _effector, position = _tileCoord };
+        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parametersLaunch));
+
+        if (randLaunch <= _launchingAccuracy)
+        {
+            // Launch successful : Damage enemies
+            foreach (EnemyUnit target in _targets)
+            {
+                SelfShoot(target, _selfShotStats, alwaysHit: true, canCrit: false);
+                var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
+                _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
+            }
+        }
+        else
+        {
+            // Launch failed : Damage dwarf
+            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Trust, -10);
+            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
+            FriendlyFireDamage(_chosenAlly, _effector, _chosenAlly.AllyCharacter.Damage * 0.5f, _effector);
+            var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = _effector, time = Interruption.FOCUS_TARGET_TIME };
+            _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
         }
     }
 
