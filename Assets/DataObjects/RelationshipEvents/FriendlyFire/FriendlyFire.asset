@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: FriendlyFire
   m_EditorClassIdentifier: 
   triggerType: 2
+  triggersOnlyOnce: 0
   onlyCheckDuoAlly: 0
   dontCheckDuoAlly: 0
   onlyCheckTarget: 1
@@ -28,8 +29,9 @@ MonoBehaviour:
   onFatal: 0
   minMaxHealthRatio: {x: 0, y: 1}
   killSteal: 0
+  startedAction: 0
   effectType: 1
-  interrupts: 0
+  interrupts: 1
   reciprocal: 0
   admirationChange: 0
   trustChange: -10
@@ -38,3 +40,12 @@ MonoBehaviour:
   admirationChangeSTT: 0
   trustChangeSTT: 0
   sympathyChangeSTT: 0
+  chance: 0
+  interruptions:
+  - {fileID: 11400000, guid: 2560f70c6450a04488fee0a36db09efc, type: 2}
+  freeAction: 0
+  freeActionForDuo: 0
+  maxRange: 0
+  buffsOnSource: []
+  buffsOnTarget: []
+  changeActionTo: 0
