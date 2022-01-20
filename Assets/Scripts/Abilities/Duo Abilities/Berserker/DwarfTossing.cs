@@ -71,7 +71,7 @@ public class DwarfTossing : BaseDuoAbility
 
     protected override void ChooseAlly()
     {
-        _selfShotStats = new AbilityStats(0, 0, 3f, 0, _effector);
+        _selfShotStats = new AbilityStats(0, 0, 3f, 0, 0, _effector);
         _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
 
         _possibleTargetsTiles.Clear();
