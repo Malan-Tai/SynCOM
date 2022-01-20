@@ -76,6 +76,16 @@ public class TileDisplay : MonoBehaviour
 
     #region Tile zone display
 
+    public Color GetTileZoneColor(string name)
+    {
+        if (_tileZonesRenderers.ContainsKey(name))
+        {
+            return _tileZonesRenderers[name].material.GetColor("_Color");
+        }
+
+        return new Color(0, 0, 0, 0);
+    }
+
     public bool CreateNewTileZone(TileZonePreset preset)
     {
         if (preset == null)
