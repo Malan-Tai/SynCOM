@@ -133,13 +133,13 @@ public class ShieldAndStrike : BaseDuoAbility
 
         if (result.Miss)
         {
-            HistoryConsole.Instance
-                .AddText(" used ")
-                .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag();
+            HistoryConsole.Instance.OpenColorTag(EntryColors.TEXT_ABILITY).AddText(" refused ").CloseTag();
         }
         else
         {
-            HistoryConsole.Instance.OpenColorTag(EntryColors.TEXT_ABILITY).AddText(" refused ").CloseTag();
+            HistoryConsole.Instance
+                .AddText(" used ")
+                .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag();
         }
 
         HistoryConsole.Instance
