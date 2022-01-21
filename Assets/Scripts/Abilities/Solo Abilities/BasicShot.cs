@@ -115,6 +115,8 @@ public class BasicShot : BaseAllyAbility
 
         AbilityResult result = new AbilityResult();
 
+        SoundManager.PlaySound(SoundManager.Sound.BasicShot);
+
         if (randShot < _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
         {
             AttackHitOrMiss(_effector, target as EnemyUnit, true);

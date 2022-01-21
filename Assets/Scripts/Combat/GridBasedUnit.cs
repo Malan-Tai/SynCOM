@@ -307,7 +307,11 @@ public class GridBasedUnit : MonoBehaviour
     public bool TakeDamage(ref float damage, bool feedback = true)
     {
         bool died = _character.TakeDamage(ref damage);
-        if (feedback) _feedback.DisplayFeedback("-" + damage.ToString());
+        if (feedback)
+        {
+            _feedback.DisplayFeedback("-" + damage.ToString());
+            _feedback.DisplayImageFeedback();
+        }
 
         return died;
     }
