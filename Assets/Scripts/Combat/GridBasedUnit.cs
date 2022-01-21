@@ -290,6 +290,7 @@ public class GridBasedUnit : MonoBehaviour
     public bool TakeDamage(float damage)
     {
         _feedback.DisplayFeedback("-" + damage.ToString());
+        _feedback.DisplayImageFeedback();
         return _character.TakeDamage(damage);
     }
 

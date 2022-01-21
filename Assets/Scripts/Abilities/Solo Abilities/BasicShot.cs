@@ -110,7 +110,7 @@ public class BasicShot : BaseAllyAbility
 
         int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
         int randCrit = UnityEngine.Random.Range(0, 100);
-
+        SoundManager.PlaySound(SoundManager.Sound.BasicShot);
         if (randShot < _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
         {
             Debug.Log("i am shooting at " + _possibleTargets[_targetIndex].GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
