@@ -141,12 +141,18 @@ public class DwarfTossing : BaseDuoAbility
 
                 CombatGameManager.Instance.TileDisplay.DisplayTileZone("DamageZone", _areaOfEffectTiles, false);
 
+                foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
+                {
+                    enemy.DontHighlightUnit();
+                }
+
                 _targets.Clear();
                 foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
                 {
                     if (Mathf.Abs(enemy.GridPosition.x - _tileCoord.x) + Mathf.Abs(enemy.GridPosition.y - _tileCoord.y) <= 1)
                     {
                         _targets.Add(enemy);
+                        enemy.HighlightUnit(Color.red);
                     }
                 }
             }
@@ -187,8 +193,13 @@ public class DwarfTossing : BaseDuoAbility
     protected override void EndAbility()
     {
         base.EndAbility();
-        CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
-        CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
+        //CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
+        //CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
+
+        foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
+        {
+            enemy.DontHighlightUnit();
+        }
     }
 
     protected override void SendResultToHistoryConsole(AbilityResult result)
