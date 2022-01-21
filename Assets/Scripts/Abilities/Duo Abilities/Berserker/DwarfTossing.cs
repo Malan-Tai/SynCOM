@@ -81,7 +81,8 @@ public class DwarfTossing : BaseDuoAbility
             for (int j = 0; j < map.GridTileHeight; j++)
             {
                 Vector2Int tile = new Vector2Int(i, j);
-                if ((tile - _effector.GridPosition).magnitude <= _throwingRadius &&
+                if (map[tile].IsWalkable &&
+                    (tile - _effector.GridPosition).magnitude <= _throwingRadius &&
                     (tile - _chosenAlly.GridPosition).magnitude <= _chosenAlly.AllyCharacter.RangeShot)
                 {
                     _possibleTargetsTiles.Add(map[i, j]);
@@ -148,8 +149,9 @@ public class DwarfTossing : BaseDuoAbility
     {
         int randLaunch = UnityEngine.Random.Range(0, 100);
 
-        var parametersLaunch = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetUntilEndOfMovement, target = _effector, position = _tileCoord };
+        var parametersLaunch = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetUntilEndOfMovement, target = _effector, position = _tileCoord, pathfinding = PathfindingMoveType.Linear };
         _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parametersLaunch));
+
 
         if (randLaunch <= _launchingAccuracy)
         {
@@ -157,8 +159,6 @@ public class DwarfTossing : BaseDuoAbility
             foreach (EnemyUnit target in _targets)
             {
                 SelfShoot(target, _selfShotStats, alwaysHit: true, canCrit: false);
-                var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
-                _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
             }
         }
         else
@@ -167,8 +167,6 @@ public class DwarfTossing : BaseDuoAbility
             SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Trust, -10);
             AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
             FriendlyFireDamage(_chosenAlly, _effector, _chosenAlly.AllyCharacter.Damage * 0.5f, _effector);
-            var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = _effector, time = Interruption.FOCUS_TARGET_TIME };
-            _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
         }
     }
 
