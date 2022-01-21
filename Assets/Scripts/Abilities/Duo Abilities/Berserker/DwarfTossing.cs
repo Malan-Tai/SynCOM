@@ -16,7 +16,7 @@ public class DwarfTossing : BaseDuoAbility
     private List<Tile> _areaOfEffectTiles = new List<Tile>();
     private List<Tile> _possibleTargetsTiles = new List<Tile>();
 
-    private int _throwingRadius = 10; // Depends on weight of launcher (and launchee ?)
+    private int _throwingRadius = 10; // Depends on weight of launcher (and dwarf ?)
     private float _launchingAccuracy;
 
     public override bool CanExecute()
@@ -74,6 +74,13 @@ public class DwarfTossing : BaseDuoAbility
         _selfShotStats = new AbilityStats(0, 0, 3f, 0, 0, _effector);
         _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
 
+        // Update _throwingRadius depending in weight of launcher and dwarf
+        // base radius = 8 at 100, 12 at 150, 4 at 50
+        // bonus depending on dwarf weight : +1 if <90, -1 of > 90
+        _throwingRadius = (int)(8 * _chosenAlly.AllyCharacter.Weigth / 100);
+        if (_effector.AllyCharacter.Weigth < 90) _throwingRadius += 1;
+        else if (_effector.AllyCharacter.Weigth > 90) _throwingRadius -= 1;
+
         _possibleTargetsTiles.Clear();
         GridMap map = CombatGameManager.Instance.GridMap;
         for (int i = 0; i < map.GridTileWidth; i++)
@@ -125,7 +132,8 @@ public class DwarfTossing : BaseDuoAbility
                 _previousTileCoord = temporaryTileCoord;
                 _tileCoord = temporaryTileCoord;
 
-                _launchingAccuracy = 100 * (1 - (_chosenAlly.GridPosition - _tileCoord).magnitude / 20);
+                // 50% at _throwingRadius 
+                _launchingAccuracy = Mathf.Clamp(100 * (1 - (_chosenAlly.GridPosition - _tileCoord).magnitude / (2 * _throwingRadius)), 0, 100);
                 RequestDescriptionUpdate();
 
                 _areaOfEffectTiles.Clear();
@@ -166,7 +174,7 @@ public class DwarfTossing : BaseDuoAbility
             // Launch failed : Damage dwarf
             SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Trust, -10);
             AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
-            FriendlyFireDamage(_chosenAlly, _effector, _chosenAlly.AllyCharacter.Damage * 0.5f, _effector);
+            FriendlyFireDamage(_chosenAlly, _effector, _chosenAlly.AllyCharacter.Damage * 1f, _effector);
         }
     }
 
