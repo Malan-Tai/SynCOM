@@ -53,6 +53,10 @@ public class EnemyUnit : GridBasedUnit
         if (!IsMakingTurn && InterruptionQueue.IsEmpty())
         {
             IsTurnDone = true;
+            foreach (GridBasedUnit unit in CombatGameManager.Instance.DeadUnits)
+            {
+                unit.MarkForDeath();
+            }
         }
     }
 

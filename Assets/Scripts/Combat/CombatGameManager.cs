@@ -42,6 +42,8 @@ public class CombatGameManager : MonoBehaviour
     private List<AllyUnit> _allAllyUnits;
     public List<AllyUnit> AllAllyUnits { get { return _allAllyUnits; } }
 
+    public List<GridBasedUnit> DeadUnits { get; private set; }
+
     [SerializeField]
     private GameObject _barricadePrefab;
 
@@ -104,7 +106,7 @@ public class CombatGameManager : MonoBehaviour
 
         _currentUnitIndex = 0;
 
-        
+        DeadUnits = new List<GridBasedUnit>();
 
         _allAllyUnits = new List<AllyUnit>();
         foreach (AllyUnit unit in _controllableUnits)
@@ -461,7 +463,8 @@ public class CombatGameManager : MonoBehaviour
 
         //deadUnit.gameObject.SetActive(false);
         _gridMap.FreeOccupiedTile(deadUnit.GridPosition);
-        deadUnit.MarkForDestruction();
+        //deadUnit.MarkForDeath();
+        DeadUnits.Add(deadUnit);
     }
 
     public void AbilityHoverTarget(GridBasedUnit unit)

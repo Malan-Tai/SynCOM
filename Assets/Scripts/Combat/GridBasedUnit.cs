@@ -109,21 +109,23 @@ public class GridBasedUnit : MonoBehaviour
             if (OnMoveFinish != null) OnMoveFinish(this);
         }
 
-        if (_markedForDeath && transform.Find("CameraTarget") == null)
+        if (_markedForDeath && InterruptionQueue.IsEmpty() && transform.Find("CameraTarget") == null)
         {
             _markedForDeath = false;
-            Destroy(this.gameObject);
+            GetComponentInChildren<Renderer>().enabled = false;
+            //Destroy(this.gameObject);
+            //transform.position += new Vector3(0, -5, 0);
         }
     }
 
     public void SetCharacter(Character character)
     {
-        _character = character;
+        Character = character;
         _movesLeft = character.MovementPoints;
         InitSprite();
     }
 
-    public void MarkForDestruction()
+    public void MarkForDeath()
     {
         _markedForDeath = true;
     }
