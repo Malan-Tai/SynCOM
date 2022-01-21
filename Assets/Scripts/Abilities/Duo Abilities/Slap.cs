@@ -10,7 +10,7 @@ public class Slap : BaseDuoAbility
 {
     protected override void ChooseAlly()
     {
-
+        _ignoreEnemyTargeting = true;
     }
 
     public override bool CanExecute()

@@ -4,6 +4,7 @@ public struct InterruptionParameters
 {
     // parameters available to the scriptable objects
     public InterruptionType interruptionType;
+
     public float time;
     public PathfindingMoveType pathfinding;
 

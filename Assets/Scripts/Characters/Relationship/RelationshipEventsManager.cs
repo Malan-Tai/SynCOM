@@ -67,7 +67,6 @@ public class RelationshipEventsManager : MonoBehaviour
 
     private bool Execute(RelationshipEvent relationshipEvent, AllyUnit source, AllyUnit currentUnit, ref RelationshipEventsResult result)
     {
-        print("executed " + relationshipEvent);
         bool actuallyExecuted = true;
 
         switch (relationshipEvent.effectType)
@@ -85,12 +84,12 @@ public class RelationshipEventsManager : MonoBehaviour
                     sourceToCurrent.IncreaseSentiment(EnumSentiment.Trust, relationshipEvent.trustChange);
                     sourceToCurrent.IncreaseSentiment(EnumSentiment.Sympathy, relationshipEvent.sympathyChange);
                 }
-                else if (relationshipEvent.sourceToTarget)
+                else if (relationshipEvent.sourceToCurrent)
                 {
                     Relationship sourceToCurrent = source.AllyCharacter.Relationships[currentUnit.AllyCharacter];
-                    sourceToCurrent.IncreaseSentiment(EnumSentiment.Admiration, relationshipEvent.admirationChangeSTT);
-                    sourceToCurrent.IncreaseSentiment(EnumSentiment.Trust, relationshipEvent.trustChangeSTT);
-                    sourceToCurrent.IncreaseSentiment(EnumSentiment.Sympathy, relationshipEvent.sympathyChangeSTT);
+                    sourceToCurrent.IncreaseSentiment(EnumSentiment.Admiration, relationshipEvent.admirationChangeSTC);
+                    sourceToCurrent.IncreaseSentiment(EnumSentiment.Trust, relationshipEvent.trustChangeSTC);
+                    sourceToCurrent.IncreaseSentiment(EnumSentiment.Sympathy, relationshipEvent.sympathyChangeSTC);
                 }
 
                 break;
@@ -141,12 +140,17 @@ public class RelationshipEventsManager : MonoBehaviour
 
         if (relationshipEvent.interrupts && actuallyExecuted)
         {
-            foreach (InterruptionScriptableObject interruption in relationshipEvent.interruptions)
+            foreach (InterruptionScriptableObject interruption in relationshipEvent.interruptionsOnCurrent)
             {
                 result.interruptions.Add(interruption.ToParameters(currentUnit, source));
             }
+            foreach (InterruptionScriptableObject interruption in relationshipEvent.interruptionsOnSource)
+            {
+                result.interruptions.Add(interruption.ToParameters(currentUnit, source, false));
+            }
         }
 
+        print("executed " + relationshipEvent + " : " + actuallyExecuted);
         return actuallyExecuted;
     }
 

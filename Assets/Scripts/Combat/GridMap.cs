@@ -274,6 +274,23 @@ public class GridMap : MonoBehaviour
         return positions;
     }
 
+    public Tile GetRandomFreeNeighbor(Vector2Int center)
+    {
+        Tile[] all = CoverNeighbors(center);
+        List<Tile> possibleTiles = new List<Tile>();
+
+        foreach (Tile tile in all)
+        {
+            if (!_occupiedTiles.Contains(tile.Coords) && tile.Cover == EnumCover.None)
+            {
+                possibleTiles.Add(tile);
+            }
+        }
+
+        if (possibleTiles.Count <= 0) return null;
+        return possibleTiles[UnityEngine.Random.Range(0, possibleTiles.Count)];
+    }
+
     public bool CanMoveFromCellToCell(Vector2Int cellA, Vector2Int cellB)
     {
         if (!CellIsValid(cellA) || !CellIsValid(cellB))

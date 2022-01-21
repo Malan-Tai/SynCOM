@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: BasicBuff
   m_EditorClassIdentifier: 
   duration: 3
+  buffName: Boost
   damageBuff: 2
   critBuff: 15
   accuracyBuff: 0

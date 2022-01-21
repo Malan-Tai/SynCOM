@@ -334,7 +334,7 @@ public struct AbilityStats
     }
 
     /// <summary>
-    /// Returns the heal, the value by which incoming damage will be multiplied
+    /// Returns the total heal
     /// </summary>
     public float GetHeal()
     {

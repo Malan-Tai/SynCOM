@@ -42,6 +42,9 @@ public class CombatGameManager : MonoBehaviour
     private List<AllyUnit> _allAllyUnits;
     public List<AllyUnit> AllAllyUnits { get { return _allAllyUnits; } }
 
+    [SerializeField]
+    private GameObject _barricadePrefab;
+
     public AllyUnit CurrentUnit
     {
         get
@@ -473,6 +476,19 @@ public class CombatGameManager : MonoBehaviour
         if (CurrentAbility == null) return;
 
         CurrentAbility.UISelectUnit(unit);
+    }
+
+    public void ChangeTileCover(Tile tile, EnumCover cover)
+    {
+        tile.Cover = cover;
+        UpdatePathfinders(null, tile.Coords);
+    }
+
+    public void AddBarricadeAt(Vector2Int pos, bool rotate)
+    {
+        var unit = Instantiate(_barricadePrefab).GetComponent<GridBasedUnit>();
+        unit.transform.position = _gridMap.GridToWorld(pos, 0f);
+        if (rotate) unit.transform.eulerAngles += new Vector3(0, 90, 0);
     }
 
 #if UNITY_EDITOR
