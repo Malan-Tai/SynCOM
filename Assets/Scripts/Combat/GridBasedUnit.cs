@@ -327,6 +327,11 @@ public class GridBasedUnit : MonoBehaviour
         _feedback.DisplayFeedback(text);
     }
 
+    public void DisplayRaisingImageFeedback(Sprite sprite)
+    {
+        _feedback.DisplayRaisingImageFeedback(sprite);
+    }
+
     private void Die()
     {
         if (OnDeath != null) OnDeath(this);

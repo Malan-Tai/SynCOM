@@ -75,6 +75,9 @@ public class CombatGameManager : MonoBehaviour
     public bool IsAllyTurn { get; private set; }
     public bool IsEnemyTurn { get; private set; }
 
+    [SerializeField] public Sprite happyEmoji;
+    [SerializeField] public Sprite unhappyEmoji;
+
 
     #region Events
 

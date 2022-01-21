@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4871b93df096ec34086905898ddb71ff, type: 3}
   m_Name: DisplayUnhappyFeedback
   m_EditorClassIdentifier: 
-  interruptionType: 3
+  interruptionType: 4
   time: 1
   text: 'D:'
+  sprite: {fileID: 21300000, guid: 78af4d69107a1cf48955299e75831ed2, type: 3}

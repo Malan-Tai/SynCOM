@@ -5696,6 +5696,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1943130555}
     m_Modifications:
+    - target: {fileID: 2687687993383166831, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 3004046929320778309, guid: bb3162191e29e8544b69f451f333c622, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -5743,6 +5747,18 @@ PrefabInstance:
     - target: {fileID: 3004046929320778314, guid: bb3162191e29e8544b69f451f333c622, type: 3}
       propertyPath: m_Name
       value: Ally 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3415048339595183663, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4133749248469180759, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8420081455766675112, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb3162191e29e8544b69f451f333c622, type: 3}
@@ -7504,6 +7520,8 @@ MonoBehaviour:
   - {fileID: 1946337609}
   - {fileID: 815346058}
   _characterSheet: {fileID: 51889597}
+  happyEmoji: {fileID: 21300000, guid: 3493eb6f2f57a5548b65767d0c3f4868, type: 3}
+  unhappyEmoji: {fileID: 21300000, guid: 78af4d69107a1cf48955299e75831ed2, type: 3}
 --- !u!114 &777815823
 MonoBehaviour:
   m_ObjectHideFlags: 0

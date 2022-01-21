@@ -12,4 +12,5 @@ public struct InterruptionParameters
     public Vector2Int position;
 
     public string text;
+    public Sprite sprite;
 }
