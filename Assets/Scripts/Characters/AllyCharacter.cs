@@ -136,6 +136,7 @@ public class AllyCharacter : Character
                 instance._weigth            = 150;
 
                 instance.Abilities.Add(new ShieldAndStrike());
+                instance.Abilities.Add(new WildCharge());
                 break;
             case EnumClasses.Smuggler:
                 instance._maxHealth         = 35;
