@@ -457,8 +457,16 @@ public class CombatGameManager : MonoBehaviour
         }
         else if (ally != null)
         {
+            GlobalGameManager.Instance.allCharacters.Remove(ally.AllyCharacter);
+
             _allAllyUnits.Remove(ally);
-            _controllableUnits.Remove(ally);
+
+            int i = _controllableUnits.IndexOf(ally);
+            if (i != -1)
+            {
+                if (i < _currentUnitIndex) _currentUnitIndex--;
+                _controllableUnits.Remove(ally);
+            }
         }
 
         //deadUnit.gameObject.SetActive(false);
