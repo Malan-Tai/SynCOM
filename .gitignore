@@ -61,3 +61,7 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# fonts
+/Assets/UIAssets/UI_Fonts/GideonRoman-Regular SDF.asset
+/Assets/UIAssets/UI_Fonts/Lobster-Regular SDF.asset
+/Assets/UIAssets/UI_Fonts/times SDF.asset
