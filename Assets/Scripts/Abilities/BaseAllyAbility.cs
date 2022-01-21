@@ -355,7 +355,8 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                         AddBuff(duo, new ProtectedByBuff(2, duo, source, protect.GetProtection()));
                         break;
 
-                    case EnumClasses.Smuggler:
+                    case EnumClasses.Smuggler: // buffs other
+                        AddBuff(duo, new Buff("Sprint", 4, duo, 0, 0, 0, 0, 2, 0.3f));
                         break;
 
                     default:
