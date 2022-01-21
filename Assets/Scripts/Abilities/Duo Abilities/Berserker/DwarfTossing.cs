@@ -16,7 +16,7 @@ public class DwarfTossing : BaseDuoAbility
     private List<Tile> _areaOfEffectTiles = new List<Tile>();
     private List<Tile> _possibleTargetsTiles = new List<Tile>();
 
-    private int _throwingRadius = 10;
+    private int _throwingRadius = 10; // Depends on weight of launcher (and launchee ?)
     private float _launchingAccuracy;
 
     public override bool CanExecute()
