@@ -104,13 +104,14 @@ public class CombatGameManager : MonoBehaviour
 
         _currentUnitIndex = 0;
 
-        
+
 
         _allAllyUnits = new List<AllyUnit>();
         foreach (AllyUnit unit in _controllableUnits)
         {
             _allAllyUnits.Add(unit);
         }
+        _controllableUnits[_currentUnitIndex].DisplayUnitSelectionTile(true);
 
         InitCharacters();
 
@@ -239,8 +240,12 @@ public class CombatGameManager : MonoBehaviour
 
     public void NextControllableUnit()
     {
+        _controllableUnits[_currentUnitIndex].DisplayUnitSelectionTile(false);
+
         _currentUnitIndex++;
         if (_currentUnitIndex >= _controllableUnits.Count) _currentUnitIndex = 0;
+
+        _controllableUnits[_currentUnitIndex].DisplayUnitSelectionTile(true);
         _camera.SwitchParenthood(CurrentUnit);
         UpdateReachableTiles();
         UpdateVisibilities();
@@ -253,6 +258,9 @@ public class CombatGameManager : MonoBehaviour
         int index = _controllableUnits.IndexOf(unit);
         if (index >= 0 && index < _controllableUnits.Count)
         {
+            unit.DisplayUnitSelectionTile(true);
+            _controllableUnits[_currentUnitIndex].DisplayUnitSelectionTile(false);
+
             _currentUnitIndex = index;
             _camera.SwitchParenthood(unit);
             UpdateReachableTiles();
@@ -266,6 +274,9 @@ public class CombatGameManager : MonoBehaviour
     {
         if (index >= 0 && index < _controllableUnits.Count)
         {
+            _controllableUnits[index].DisplayUnitSelectionTile(true);
+            _controllableUnits[_currentUnitIndex].DisplayUnitSelectionTile(false);
+
             _currentUnitIndex = index;
             _camera.SwitchParenthood(_controllableUnits[index]);
             UpdateReachableTiles();

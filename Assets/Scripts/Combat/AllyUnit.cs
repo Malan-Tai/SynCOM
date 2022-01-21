@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class AllyUnit : GridBasedUnit
 {
+    [SerializeField] private GameObject _selectUnitSpriteGO;
+
     private BaseAllyAbility _currentAbility = null;
     public BaseAllyAbility CurrentAbility { get { return _currentAbility; } }
 
@@ -91,5 +93,10 @@ public class AllyUnit : GridBasedUnit
     {
         SpriteRenderer renderer = GetComponentInChildren<SpriteRenderer>();
         renderer.sprite = AllyCharacter.GetSprite();
+    }
+
+    public void DisplayUnitSelectionTile(bool display)
+    {
+        _selectUnitSpriteGO.SetActive(display);
     }
 }
