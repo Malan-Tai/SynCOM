@@ -318,7 +318,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
                         if (changedAction)
                         {
-                            CombatGameManager.Instance.ChangeTileCover(toCover, EnumCover.Full);
+                            CombatGameManager.Instance.ChangeTileCover(toCover, EnumCover.Half);
                             CombatGameManager.Instance.AddBarricadeAt(toCover.Coords, duo.GridPosition.y != toCover.Coords.y);
                         }
 
@@ -340,7 +340,19 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                         Heal(source, duo, heal.GetHeal(), null);
                         break;
 
-                    case EnumClasses.Bodyguard:
+                    case EnumClasses.Bodyguard: // gets closer and protects
+                        if ((duo.GridPosition - source.GridPosition).magnitude > source.Character.MovementPoints)
+                        {
+                            changedAction = false;
+                            break;
+                        }
+
+                        var param = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetUntilEndOfMovement, target = source, position = duo.GridPosition };
+                        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(param));
+
+                        var protect = new AbilityStats(0, 0, 0, 0.5f, 0, source);
+                        protect.UpdateWithEmotionModifiers(duo);
+                        AddBuff(duo, new ProtectedByBuff(2, duo, source, protect.GetProtection()));
                         break;
 
                     case EnumClasses.Smuggler:
