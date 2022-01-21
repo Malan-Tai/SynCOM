@@ -139,7 +139,7 @@ public class Devouring : BaseDuoAbility
             .AddText(" and did ")
             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage}{damageCriticalText} damage").CloseTag()
             .AddText(" to ")
-            .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover", EntryColors.CoverColor(_effector.LinesOfSight[target].cover)).CloseTag()
+            .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover").CloseTag()
             .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag()
             .Submit();
     }

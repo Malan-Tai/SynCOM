@@ -127,7 +127,7 @@ MonoBehaviour:
       m_Y: 768
       m_Width: 256
       m_Height: 256
-    m_Scale: 1
+    m_Scale: 1.2
     m_AtlasIndex: 0
     sprite: {fileID: -5499046732027019123, guid: 40f9d19677a2c4f40b1888032e59ab6e, type: 3}
   - m_Index: 17
@@ -142,7 +142,7 @@ MonoBehaviour:
       m_Y: 768
       m_Width: 256
       m_Height: 256
-    m_Scale: 1
+    m_Scale: 1.2
     m_AtlasIndex: 0
     sprite: {fileID: 6088907618059116528, guid: 40f9d19677a2c4f40b1888032e59ab6e, type: 3}
   - m_Index: 18
@@ -157,7 +157,7 @@ MonoBehaviour:
       m_Y: 768
       m_Width: 256
       m_Height: 256
-    m_Scale: 1
+    m_Scale: 1.2
     m_AtlasIndex: 0
     sprite: {fileID: -3826307679702587978, guid: 40f9d19677a2c4f40b1888032e59ab6e, type: 3}
   spriteInfoList:

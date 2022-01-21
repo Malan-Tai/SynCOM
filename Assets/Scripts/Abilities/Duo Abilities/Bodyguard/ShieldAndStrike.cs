@@ -127,6 +127,8 @@ public class ShieldAndStrike : BaseDuoAbility
 
     protected override void SendResultToHistoryConsole(AbilityResult result)
     {
+        GridBasedUnit target = _possibleTargets[_targetIndex];
+
         HistoryConsole.Instance
             .BeginEntry()
             .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag();
@@ -152,7 +154,10 @@ public class ShieldAndStrike : BaseDuoAbility
             HistoryConsole.Instance
                 .AddText(" who just ")
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("missed").CloseTag()
-                .AddText(" his shot");
+                .AddText(" his shot")
+                .AddText(" on ")
+                .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover").CloseTag()
+                .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag();
         }
         else
         {
@@ -160,7 +165,10 @@ public class ShieldAndStrike : BaseDuoAbility
 
             HistoryConsole.Instance
                 .AddText(" who did ")
-                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.AllyDamage}{criticalText} damage").CloseTag();
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.AllyDamage}{criticalText} damage").CloseTag()
+                .AddText(" to ")
+                .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover").CloseTag()
+                .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag();
         }
 
         HistoryConsole.Instance.Submit();

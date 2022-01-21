@@ -187,6 +187,6 @@ public class DwarfTossing : BaseDuoAbility
 
     protected override void SendResultToHistoryConsole(AbilityResult result)
     {
-        
+        // TODO
     }
 }
