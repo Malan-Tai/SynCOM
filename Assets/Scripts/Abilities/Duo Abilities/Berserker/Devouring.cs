@@ -107,7 +107,7 @@ public class Devouring : BaseDuoAbility
         ShootResult shooResult = SelfShoot(target, _selfShotStats, true);
         float heal = _selfShotStats.GetHeal();
         _effector.Heal(ref heal);
-        _effector.Character.CurrentBuffs.Add(new Buff(6, _effector, damageBuff: 2f, critBuff: 0.5f, mitigationBuff: 1.5f));
+        AddBuff(_effector, new Buff("Bloodlust", 6, _effector, damageBuff: 2f, critBuff: 0.5f, mitigationBuff: 1.5f));
 
         result.Heal = heal;
         result.Critical = shooResult.Critical;

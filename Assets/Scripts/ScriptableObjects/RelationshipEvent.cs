@@ -51,18 +51,19 @@ public class RelationshipEvent : ScriptableObject
     public int admirationChange;
     public int trustChange;
     public int sympathyChange;
-    [Tooltip("Source to Target is true if the effect causes a different gauge change from source to target than from target to source")]
-    public bool sourceToTarget;
-    public int admirationChangeSTT;
-    public int trustChangeSTT;
-    public int sympathyChangeSTT;
+    [Tooltip("Source to Current is true if the effect causes a different gauge change from source to current than from current to source")]
+    public bool sourceToCurrent;
+    public int admirationChangeSTC;
+    public int trustChangeSTC;
+    public int sympathyChangeSTC;
 
     // generic chance field
     [Range(0, 1)]
     public float chance;
 
     // interruption
-    public InterruptionScriptableObject[] interruptions;
+    public InterruptionScriptableObject[] interruptionsOnCurrent;
+    public InterruptionScriptableObject[] interruptionsOnSource;
 
     // free action
     public bool freeAction;

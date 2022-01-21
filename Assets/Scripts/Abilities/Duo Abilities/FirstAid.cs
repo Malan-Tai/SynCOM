@@ -12,6 +12,7 @@ public class FirstAid : BaseDuoAbility
 
     protected override void ChooseAlly()
     {
+        _ignoreEnemyTargeting = true;
         _healStats = new AbilityStats(0, 0, 0, 0, 5, _effector);
         _healStats.UpdateWithEmotionModifiers(_chosenAlly);
     }

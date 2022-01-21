@@ -110,7 +110,7 @@ public class ShieldAndStrike : BaseDuoAbility
 
         if (!StartAction(ActionTypes.Protect, _effector, _chosenAlly))
         {
-            _chosenAlly.Character.CurrentBuffs.Add(new ProtectedByBuff(2, _chosenAlly, _effector, _selfProtStats.GetProtection()));
+            AddBuff(_chosenAlly, new ProtectedByBuff(2, _chosenAlly, _effector, _selfProtStats.GetProtection()));
 
             // Impact on the sentiments
             // Ally -> Self relationship
