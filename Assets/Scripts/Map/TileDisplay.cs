@@ -16,6 +16,7 @@ public class TileDisplay : MonoBehaviour
 
     private readonly Dictionary<string, MeshRenderer> _tileZonesRenderers = new Dictionary<string, MeshRenderer>();
     private ushort maxOrder = ushort.MinValue;
+    private Vector2Int _previousMouseCoord = Vector2Int.zero;
 
     private void Start()
     {
@@ -41,6 +42,11 @@ public class TileDisplay : MonoBehaviour
         _mouseHovertileSpriteRenderer = spriteRendererGO.AddComponent<SpriteRenderer>();
         _mouseHovertileSpriteRenderer.sprite = _mouseHoverTileSprite;
         _mouseHovertileSpriteRenderer.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+
+        Vector3 p = CombatGameManager.Instance.GridMap.GridWorldCenter;
+        _gridLinesRenderer.transform.position = new Vector3(p.x, _displayHeight, p.z);
+        _gridLinesRenderer.transform.localScale = new Vector3(CombatGameManager.Instance.GridMap.GridWorldWidth, CombatGameManager.Instance.GridMap.GridWorldHeight, 1f);
+        _gridLinesRenderer.sortingOrder = -1;
     }
 
     #region Mouse tile display
@@ -54,6 +60,8 @@ public class TileDisplay : MonoBehaviour
     {
         _mouseHovertileSpriteRenderer.transform.position = CombatGameManager.Instance.GridMap.GridToWorld(coord, _displayHeight + 0.01f);
         _mouseHovertileSpriteRenderer.enabled = true;
+
+        UpdateMouseCoordForGrid(coord);
     }
 
     #endregion
@@ -62,14 +70,17 @@ public class TileDisplay : MonoBehaviour
 
     public void DisplayGrid(bool display)
     {
-        if (display)
-        {
-            Vector3 p = CombatGameManager.Instance.GridMap.GridWorldCenter;
-            _gridLinesRenderer.transform.position = new Vector3(p.x, _displayHeight, p.z);
-            _gridLinesRenderer.transform.localScale = new Vector3(CombatGameManager.Instance.GridMap.GridWorldWidth, CombatGameManager.Instance.GridMap.GridWorldHeight, 1f);
-        }
+        _gridLinesRenderer.material.SetInt("_DisplayAllGrid", display ? 1 : 0);
+    }
 
-        _gridLinesRenderer.enabled = display;
+    private void UpdateMouseCoordForGrid(Vector2Int coord)
+    {
+        if (coord != _previousMouseCoord)
+        {
+            Vector3 worldPos = CombatGameManager.Instance.GridMap.GridToWorld(coord, 0f);
+            _gridLinesRenderer.material.SetVector("_MouseCoord", new Vector4(worldPos.x, worldPos.z));
+            _previousMouseCoord = coord;
+        }
     }
 
     #endregion
