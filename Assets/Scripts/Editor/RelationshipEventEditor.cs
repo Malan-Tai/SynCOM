@@ -159,7 +159,13 @@ public class RelationshipEventEditor : Editor
             }
             else if (_triggerType.enumValueIndex == (int)RelationshipEventTriggerType.Kill)
             {
-                EditorGUILayout.PropertyField(_killSteal);
+                if (_targetsAlly.boolValue) EditorGUILayout.PropertyField(_targetsAlly);
+                else if (_killSteal.boolValue) EditorGUILayout.PropertyField(_killSteal);
+                else
+                {
+                    EditorGUILayout.PropertyField(_targetsAlly);
+                    EditorGUILayout.PropertyField(_killSteal);
+                }
             }
             else if (_triggerType.enumValueIndex == (int)RelationshipEventTriggerType.FriendlyFire)
             {
@@ -239,7 +245,9 @@ public class RelationshipEventEditor : Editor
                     }
                 }
             }
-            else if (_effectType.enumValueIndex == (int)RelationshipEventEffectType.RefuseToDuo || _effectType.enumValueIndex == (int)RelationshipEventEffectType.StealDuo)
+            else if (_effectType.enumValueIndex == (int)RelationshipEventEffectType.RefuseToDuo ||
+                    _effectType.enumValueIndex == (int)RelationshipEventEffectType.StealDuo ||
+                    _effectType.enumValueIndex == (int)RelationshipEventEffectType.FreeAttack)
             {
                 EditorGUILayout.PropertyField(_chance);
             }

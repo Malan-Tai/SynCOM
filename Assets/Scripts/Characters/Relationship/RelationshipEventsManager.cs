@@ -134,6 +134,15 @@ public class RelationshipEventsManager : MonoBehaviour
                     result.changedActionTo = ChangeActionTypes.DidntChange;
                 break;
 
+            case RelationshipEventEffectType.FreeAttack:
+                actuallyExecuted = Random.Range(0f, 1f) < relationshipEvent.chance;
+                if (actuallyExecuted)
+                {
+                    result.freeAttack = true;
+                    result.freeAttacker = currentUnit;
+                }
+                break;
+
             default:
                 break;
         }
@@ -263,8 +272,18 @@ public class RelationshipEventsManager : MonoBehaviour
     {
         RelationshipEvent dummyTrigger = ScriptableObject.CreateInstance("RelationshipEvent") as RelationshipEvent;
         dummyTrigger.triggerType = RelationshipEventTriggerType.Kill;
+        dummyTrigger.targetsAlly = false;
 
         return CheckTriggersAndExecute(dummyTrigger, source, duoUnit: duo, enemyTargetUnit: target);
+    }
+
+    public RelationshipEventsResult EnemyKillAlly(AllyUnit target)
+    {
+        RelationshipEvent dummyTrigger = ScriptableObject.CreateInstance("RelationshipEvent") as RelationshipEvent;
+        dummyTrigger.triggerType = RelationshipEventTriggerType.Kill;
+        dummyTrigger.targetsAlly = true;
+
+        return CheckTriggersAndExecute(dummyTrigger, target);
     }
 
     public RelationshipEventsResult BeginDuo(AllyUnit source, AllyUnit duo)
