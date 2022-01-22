@@ -70,24 +70,12 @@ public class EnemyUnit : GridBasedUnit
         if (!seen)
         {
             _renderer.SetColor(Color.black);
+            _info.HideCover();
         }
         else
         {
-            switch (cover)
-            {
-                case EnumCover.None:
-                    _renderer.SetColor(Color.green);
-                    break;
-                case EnumCover.Half:
-                    _renderer.SetColor(Color.yellow);
-                    break;
-                case EnumCover.Full:
-                    _renderer.SetColor(Color.red);
-                    break;
-                default:
-                    _renderer.RevertToOriginalColor();
-                    break;
-            }
+            _renderer.RevertToOriginalColor();
+            _info.SetCover(cover);
         }
     }
 

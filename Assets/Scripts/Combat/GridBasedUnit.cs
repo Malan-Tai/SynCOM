@@ -58,6 +58,8 @@ public class GridBasedUnit : MonoBehaviour
     private int _highlightPropertyHash;
     private int _highlightColorPropertyHash;
 
+    protected InfoCanvas _info;
+
     protected void Start()
     {
         GridMap gridMap = CombatGameManager.Instance.GridMap;
@@ -77,6 +79,9 @@ public class GridBasedUnit : MonoBehaviour
         _highlightColorPropertyHash = Shader.PropertyToID("_HighlightColor");
 
         InterruptionQueue = GetComponent<InterruptionQueue>();
+
+        _info = transform.Find("Renderer").GetComponentInChildren<InfoCanvas>();
+        _info.SetRatioHP(1);
     }
 
     protected virtual void Update()
@@ -113,6 +118,7 @@ public class GridBasedUnit : MonoBehaviour
         {
             _markedForDeath = false;
             GetComponentInChildren<Renderer>().enabled = false;
+            _info.gameObject.SetActive(false);
             //Destroy(this.gameObject);
             //transform.position += new Vector3(0, -5, 0);
         }
@@ -141,7 +147,7 @@ public class GridBasedUnit : MonoBehaviour
         _targetWorldPosition = CombatGameManager.Instance.GridMap.GridToWorld(_gridPosition, this.transform.position.y);
     }
 
-    public void MoveToCell(Vector2Int cell)
+    public virtual void MoveToCell(Vector2Int cell)
     {
         _gridPosition = cell;
         _targetWorldPosition = CombatGameManager.Instance.GridMap.GridToWorld(_gridPosition, this.transform.position.y);
@@ -307,6 +313,7 @@ public class GridBasedUnit : MonoBehaviour
     public bool TakeDamage(ref float damage, bool feedback = true)
     {
         bool died = _character.TakeDamage(ref damage);
+        _info.SetRatioHP(Character.HealthPoints / Character.MaxHealth);
         if (feedback)
         {
             _feedback.DisplayFeedback("-" + damage.ToString());

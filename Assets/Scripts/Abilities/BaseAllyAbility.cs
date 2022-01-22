@@ -591,10 +591,10 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
         var parameters = new InterruptionParameters
         {
-            interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback,
+            interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireImageFeedback,
             target = ally,
             time = Interruption.FOCUS_TARGET_TIME,
-            text = gain >= 0 ? ":)" : ":("
+            sprite = gain >= 0 ? CombatGameManager.Instance.happyEmoji : CombatGameManager.Instance.unhappyEmoji
         };
         _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
     }
