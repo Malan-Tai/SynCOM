@@ -16,7 +16,7 @@ public class DwarfTossing : BaseDuoAbility
     private List<Tile> _areaOfEffectTiles = new List<Tile>();
     private List<Tile> _possibleTargetsTiles = new List<Tile>();
 
-    private int _throwingRadius = 10;
+    private int _throwingRadius = 10; // Depends on weight of launcher (and dwarf ?)
     private float _launchingAccuracy;
 
     public override bool CanExecute()
@@ -74,6 +74,13 @@ public class DwarfTossing : BaseDuoAbility
         _selfShotStats = new AbilityStats(0, 0, 3f, 0, 0, _effector);
         _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
 
+        // Update _throwingRadius depending in weight of launcher and dwarf
+        // base radius = 8 at 100, 12 at 150, 4 at 50
+        // bonus depending on dwarf weight : +1 if <90, -1 of > 90
+        _throwingRadius = (int)(8 * _chosenAlly.AllyCharacter.Weigth / 100);
+        if (_effector.AllyCharacter.Weigth < 90) _throwingRadius += 1;
+        else if (_effector.AllyCharacter.Weigth > 90) _throwingRadius -= 1;
+
         _possibleTargetsTiles.Clear();
         GridMap map = CombatGameManager.Instance.GridMap;
         for (int i = 0; i < map.GridTileWidth; i++)
@@ -81,7 +88,8 @@ public class DwarfTossing : BaseDuoAbility
             for (int j = 0; j < map.GridTileHeight; j++)
             {
                 Vector2Int tile = new Vector2Int(i, j);
-                if ((tile - _effector.GridPosition).magnitude <= _throwingRadius &&
+                if (map[tile].IsWalkable &&
+                    (tile - _effector.GridPosition).magnitude <= _throwingRadius &&
                     (tile - _chosenAlly.GridPosition).magnitude <= _chosenAlly.AllyCharacter.RangeShot)
                 {
                     _possibleTargetsTiles.Add(map[i, j]);
@@ -124,7 +132,8 @@ public class DwarfTossing : BaseDuoAbility
                 _previousTileCoord = temporaryTileCoord;
                 _tileCoord = temporaryTileCoord;
 
-                _launchingAccuracy = 100 * (1 - (_chosenAlly.GridPosition - _tileCoord).magnitude / 20);
+                // 50% at _throwingRadius 
+                _launchingAccuracy = Mathf.Clamp(100 * (1 - (_chosenAlly.GridPosition - _tileCoord).magnitude / (2 * _throwingRadius)), 0, 100);
                 RequestDescriptionUpdate();
 
                 _areaOfEffectTiles.Clear();
@@ -132,12 +141,18 @@ public class DwarfTossing : BaseDuoAbility
 
                 CombatGameManager.Instance.TileDisplay.DisplayTileZone("DamageZone", _areaOfEffectTiles, false);
 
+                foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
+                {
+                    enemy.DontHighlightUnit();
+                }
+
                 _targets.Clear();
                 foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
                 {
                     if (Mathf.Abs(enemy.GridPosition.x - _tileCoord.x) + Mathf.Abs(enemy.GridPosition.y - _tileCoord.y) <= 1)
                     {
                         _targets.Add(enemy);
+                        enemy.HighlightUnit(Color.red);
                     }
                 }
             }
@@ -148,8 +163,9 @@ public class DwarfTossing : BaseDuoAbility
     {
         int randLaunch = UnityEngine.Random.Range(0, 100);
 
-        var parametersLaunch = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetUntilEndOfMovement, target = _effector, position = _tileCoord };
+        var parametersLaunch = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetUntilEndOfMovement, target = _effector, position = _tileCoord, pathfinding = PathfindingMoveType.Linear };
         _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parametersLaunch));
+
 
         if (randLaunch <= _launchingAccuracy)
         {
@@ -157,8 +173,6 @@ public class DwarfTossing : BaseDuoAbility
             foreach (EnemyUnit target in _targets)
             {
                 SelfShoot(target, _selfShotStats, alwaysHit: true, canCrit: false);
-                var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
-                _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
             }
         }
         else
@@ -166,23 +180,26 @@ public class DwarfTossing : BaseDuoAbility
             // Launch failed : Damage dwarf
             SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Trust, -10);
             AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
-            FriendlyFireDamage(_chosenAlly, _effector, _chosenAlly.AllyCharacter.Damage * 0.5f, _effector);
-            var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = _effector, time = Interruption.FOCUS_TARGET_TIME };
-            _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
+            FriendlyFireDamage(_chosenAlly, _effector, _chosenAlly.AllyCharacter.Damage * 1f, _effector);
         }
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)
     {
         return //unit.AllyCharacter.Weigth >= 80 &&
-               (unit.GridPosition - _effector.GridPosition).magnitude <= 1;
+               (unit.GridPosition - _effector.GridPosition).magnitude < 2;
     }
 
     protected override void EndAbility()
     {
         base.EndAbility();
-        CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
-        CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
+        //CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
+        //CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
+
+        foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
+        {
+            enemy.DontHighlightUnit();
+        }
     }
 
     protected override void SendResultToHistoryConsole(AbilityResult result)

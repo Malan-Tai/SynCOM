@@ -12,7 +12,16 @@ public class ShieldAndStrike : BaseDuoAbility
 
     public override string GetDescription()
     {
-        return "You cover your ally while they attack, reducing damage received for the following turn.";
+        string res = "You cover your ally while they attack, reducing damage received for the following turn.";
+        if (_chosenAlly != null)
+        {
+            res += "\nPROT: " + (1 - _selfProtStats.GetProtection()) * 100 + "%";
+        }
+        else
+        {
+            res += "\nPROT: ~50%";
+        }
+        return res;
     }
 
     public override string GetName()
@@ -167,12 +176,28 @@ public class ShieldAndStrike : BaseDuoAbility
 
     protected override bool IsAllyCompatible(AllyUnit unit)
     {
-        return (unit.GridPosition - this._effector.GridPosition).magnitude <= 2;
+        return (unit.GridPosition - this._effector.GridPosition).magnitude < 2;
     }
 
     public override string GetAllyDescription()
     {
-        return "Thanks to your ally's protection, you can focus solely on your shot.";
+        string res = "Thanks to your ally's protection, you can focus solely on your shot.";
+
+        if (_chosenAlly != null && _hoveredUnit != null)
+        {
+            res += "\nAcc:" + _allyShotStats.GetAccuracy(_hoveredUnit, _chosenAlly.LinesOfSight[_hoveredUnit].cover) +
+                    "% | Crit:" + _allyShotStats.GetCritRate() +
+                    "% | Dmg:" + _allyShotStats.GetDamage();
+        }
+        else if (_targetIndex >= 0 && _chosenAlly != null)
+        {
+            GridBasedUnit target = _possibleTargets[_targetIndex];
+
+            res += "\nAcc:" + _allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover) +
+                    "% | Crit:" + _allyShotStats.GetCritRate() +
+                    "% | Dmg:" + _allyShotStats.GetDamage();
+        }
+        return res;
     }
 
     public override void UISelectUnit(GridBasedUnit unit)

@@ -61,13 +61,13 @@ public class Smuggle : BaseDuoAbility
         int y = _effector.GridPosition.y;
 
         Tile tileUp = map[x, y - 1];
-        if (tileUp != null) _possibleTargetsTiles.Add(tileUp);
+        if (tileUp != null && tileUp.IsWalkable) _possibleTargetsTiles.Add(tileUp);
         Tile tileDown = map[x, y + 1];
-        if (tileUp != null) _possibleTargetsTiles.Add(tileDown);
+        if (tileDown != null && tileDown.IsWalkable) _possibleTargetsTiles.Add(tileDown);
         Tile tileRight = map[x + 1, y];
-        if (tileUp != null) _possibleTargetsTiles.Add(tileRight);
+        if (tileRight != null && tileRight.IsWalkable) _possibleTargetsTiles.Add(tileRight);
         Tile tileLeft = map[x - 1, y];
-        if (tileUp != null) _possibleTargetsTiles.Add(tileLeft);
+        if (tileLeft != null && tileLeft.IsWalkable) _possibleTargetsTiles.Add(tileLeft);
 
         CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", _possibleTargetsTiles, false);
     }

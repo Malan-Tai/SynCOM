@@ -85,6 +85,7 @@ public class AllyCharacter : Character
                 instance._weigth            = 90;
 
                 instance.Abilities.Add(new Devouring());
+                instance.Abilities.Add(new DwarfTossing());
                 break;
             case EnumClasses.Engineer:
                 instance._maxHealth         = 25;
@@ -110,6 +111,7 @@ public class AllyCharacter : Character
                 instance._weigth            = 65;
 
                 instance.Abilities.Add(new SuppressiveFire());
+                instance.Abilities.Add(new LongShot());
                 break;
             case EnumClasses.Alchemist:
                 instance._maxHealth         = 15;
@@ -134,6 +136,7 @@ public class AllyCharacter : Character
                 instance._weigth            = 150;
 
                 instance.Abilities.Add(new ShieldAndStrike());
+                instance.Abilities.Add(new WildCharge());
                 break;
             case EnumClasses.Smuggler:
                 instance._maxHealth         = 35;

@@ -99,7 +99,7 @@ public class AllyUnit : GridBasedUnit
         renderer.sprite = AllyCharacter.GetSprite();
     }
 
-    public override void MoveToCell(Vector2Int cell)
+    public override void MoveToCell(Vector2Int cell, bool eventOnEnd = false)
     {
         base.MoveToCell(cell);
         _info.SetCover(CombatGameManager.Instance.GridMap.GetBestCoverAt(cell));

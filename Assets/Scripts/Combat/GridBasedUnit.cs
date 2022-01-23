@@ -147,10 +147,11 @@ public class GridBasedUnit : MonoBehaviour
         _targetWorldPosition = CombatGameManager.Instance.GridMap.GridToWorld(_gridPosition, this.transform.position.y);
     }
 
-    public virtual void MoveToCell(Vector2Int cell)
+    public virtual void MoveToCell(Vector2Int cell, bool eventOnEnd = false)
     {
         _gridPosition = cell;
         _targetWorldPosition = CombatGameManager.Instance.GridMap.GridToWorld(_gridPosition, this.transform.position.y);
+        _followingPath = _followingPath || eventOnEnd;
     }
 
     public void ChoosePathTo(Vector2Int cell)
