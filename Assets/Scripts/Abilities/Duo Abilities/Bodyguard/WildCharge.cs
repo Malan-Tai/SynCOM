@@ -212,7 +212,7 @@ public class WildCharge : BaseDuoAbility
 
     protected override void SendResultToHistoryConsole(AbilityResult result)
     {
-        
+        // TODO
     }
 
     protected override void EndAbility()

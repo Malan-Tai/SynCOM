@@ -133,7 +133,7 @@ public class Devouring : BaseDuoAbility
             .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
             .AddText(":")
             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{healCriticalText} healed").CloseTag()
-            .AddText(" himself for ")
+            .AddText(" themselves for ")
             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Heal} health points").CloseTag()
             .AddText(" and did ")
             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage}{damageCriticalText} damage").CloseTag()

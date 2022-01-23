@@ -311,15 +311,12 @@ public class GridBasedUnit : MonoBehaviour
         _feedback.DisplayFeedback("Miss");
     }
 
-    public bool TakeDamage(ref float damage, bool feedback = true)
+    public bool TakeDamage(ref float damage, bool textFeedback = true, bool imgFeedback = true)
     {
         bool died = _character.TakeDamage(ref damage);
         _info.SetRatioHP(Character.HealthPoints / Character.MaxHealth);
-        if (feedback)
-        {
-            _feedback.DisplayFeedback("-" + damage.ToString());
-            _feedback.DisplayImageFeedback();
-        }
+        if (textFeedback) _feedback.DisplayFeedback("-" + damage.ToString());
+        if (imgFeedback) _feedback.DisplayImageFeedback();
 
         return died;
     }
@@ -327,6 +324,7 @@ public class GridBasedUnit : MonoBehaviour
     public void Heal(ref float healAmount, bool feedback = true)
     {
         _character.Heal(ref healAmount);
+        _info.SetRatioHP(Character.HealthPoints / Character.MaxHealth);
         if (feedback) _feedback.DisplayFeedback("+" + healAmount.ToString());
     }
 

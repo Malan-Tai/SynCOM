@@ -160,7 +160,7 @@ public class ShieldAndStrike : BaseDuoAbility
             HistoryConsole.Instance
                 .AddText(" who just ")
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("missed").CloseTag()
-                .AddText(" his shot");
+                .AddText(" their shot");
         }
         else
         {

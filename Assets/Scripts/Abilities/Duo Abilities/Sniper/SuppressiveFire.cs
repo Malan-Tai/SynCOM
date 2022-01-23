@@ -154,7 +154,7 @@ public class SuppressiveFire : BaseDuoAbility
         }
 
         HistoryConsole.Instance
-            .AddText(" did ")
+            .AddText(" and ")
             .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag();
 
         if (result.AllyMiss)

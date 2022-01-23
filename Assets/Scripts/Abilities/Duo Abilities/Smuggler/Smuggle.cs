@@ -49,7 +49,7 @@ public class Smuggle : BaseDuoAbility
             .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
             .AddText(" to transport ")
             .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
-            .AddText(" next to him")
+            .AddText(" next to them")
             .Submit();
     }
 

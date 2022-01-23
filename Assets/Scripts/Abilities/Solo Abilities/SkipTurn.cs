@@ -42,7 +42,7 @@ class SkipTurn : BaseAllyAbility
             .BeginEntry()
             .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" skipped ").CloseTag()
-            .AddText("his turn")
+            .AddText("their turn")
             .Submit();
     }
 }

@@ -7,9 +7,7 @@ public class PepTalk : BaseDuoAbility
     public override string GetDescription()
     {
         return "Your words of encouragement strengthen you both, increasing damage, move and aim for the next 2 turn." +
-               "\nDMG +20%" +
-               "\nACC +50%" +
-               "\nMOVE +3";
+               "\nDMG +20% | ACC +50% | MOVE +3";
     }
 
     public override string GetShortDescription()

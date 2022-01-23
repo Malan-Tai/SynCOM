@@ -40,8 +40,8 @@ public class BasicEnemyShot : BaseEnemyAbility
             {
                 AttackDamage(BestTarget as AllyUnit, _effector.Character.Damage, true);
 
-                result.Damage = _effector.Character.Damage * 1.5f;
-                result.Critical = true;
+                result.Damage = _effector.Character.Damage;
+                result.Critical = false;
                 SendResultToHistoryConsole(result);
             }
         }

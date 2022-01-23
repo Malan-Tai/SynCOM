@@ -133,8 +133,8 @@ public class BasicShot : BaseAllyAbility
             {
                 AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage, false);
 
-                result.Damage = _effector.Character.Damage * 1.5f;
-                result.Critical = true;
+                result.Damage = _effector.Character.Damage;
+                result.Critical = false;
                 SendResultToHistoryConsole(result);
             }
         }
