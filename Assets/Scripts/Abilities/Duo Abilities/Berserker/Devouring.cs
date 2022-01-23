@@ -127,7 +127,8 @@ public class Devouring : BaseDuoAbility
         HistoryConsole.Instance
             .BeginEntry()
             .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
-            .AddText(" used ")
+            .AddText(" performed ")
+            .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
             .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
             .AddText(" in front of ")
             .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
@@ -138,7 +139,7 @@ public class Devouring : BaseDuoAbility
             .AddText(" and did ")
             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage}{damageCriticalText} damage").CloseTag()
             .AddText(" to ")
-            .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover", EntryColors.CoverColor(_effector.LinesOfSight[target].cover)).CloseTag()
+            .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover").CloseTag()
             .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag()
             .Submit();
     }

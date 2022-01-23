@@ -143,15 +143,16 @@ public class HistoryConsole : MonoBehaviour
     }
 
     /// <summary>
-    /// Opens an icon tag, which will display an inline icon in the console with the same color as the text
+    /// Opens an icon tag, which will display an inline icon in the console and choose if it is displayed with the same color as the text
     /// </summary>
     /// <param name="iconName">the icon name as specified in the icon atlas defined in your textmeshpro asset</param>
-    public HistoryConsole OpenIconTag(string iconName)
+    public HistoryConsole OpenIconTag(string iconName, bool sameColorAsText = false)
     {
         if (_editingEntry)
         {
+            string tint = sameColorAsText ? " tint=1" : "";
             _tagStack.Push(ConsoleTag.Icon);
-            _entryBuilder.Append($"<sprite name=\"{iconName}\" tint=1>");
+            _entryBuilder.Append($"<sprite name=\"{iconName}\"{tint}>");
         }
 
         return this;
@@ -174,15 +175,16 @@ public class HistoryConsole : MonoBehaviour
     }
 
     /// <summary>
-    /// Opens an icon tag, which will display an inline icon in the console with the same color as the text
+    /// Opens an icon tag, which will display an inline icon in the console and choose if it is displayed with the same color as the text
     /// </summary>
     /// <param name="iconIndex">the icon index as specified in the icon atlas defined in your textmeshpro asset</param>
-    public HistoryConsole OpenIconTag(int iconIndex)
+    public HistoryConsole OpenIconTag(int iconIndex, bool sameColorAsText = false)
     {
         if (_editingEntry)
         {
+            string tint = sameColorAsText ? " tint=1" : "";
             _tagStack.Push(ConsoleTag.Icon);
-            _entryBuilder.Append($"<sprite index={iconIndex} tint=1>");
+            _entryBuilder.Append($"<sprite index={iconIndex}{tint}>");
         }
 
         return this;

@@ -46,6 +46,7 @@ public class Smuggle : BaseDuoAbility
             .BeginEntry()
             .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
             .AddText(" used ")
+            .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
             .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
             .AddText(" to transport ")
             .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()

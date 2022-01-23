@@ -23,6 +23,7 @@ public class TileDisplay : MonoBehaviour
 
     private readonly Dictionary<string, MeshRenderer> _tileZonesRenderers = new Dictionary<string, MeshRenderer>();
     private ushort maxOrder = ushort.MinValue;
+    private Vector2Int _previousMouseCoord = Vector2Int.zero;
 
     private void Start()
     {
@@ -82,6 +83,12 @@ public class TileDisplay : MonoBehaviour
         coverGO.transform.localPosition = new Vector3(CombatGameManager.Instance.GridMap.CellSize / 2f - _displayHeight, 0, -0.5f);
         coverGO.transform.localScale = 0.7f * Vector3.one;
         coverGO.transform.rotation = Quaternion.Euler(0, 90, 0);
+
+
+        Vector3 p = CombatGameManager.Instance.GridMap.GridWorldCenter;
+        _gridLinesRenderer.transform.position = new Vector3(p.x, _displayHeight, p.z);
+        _gridLinesRenderer.transform.localScale = new Vector3(CombatGameManager.Instance.GridMap.GridWorldWidth, CombatGameManager.Instance.GridMap.GridWorldHeight, 1f);
+        _gridLinesRenderer.sortingOrder = -1;
     }
 
     #region Mouse tile display
@@ -102,6 +109,8 @@ public class TileDisplay : MonoBehaviour
 
         GridMap map = CombatGameManager.Instance.GridMap;
         Tile tile = map[coord];
+
+        UpdateMouseCoordForGrid(coord);
 
         if (tile == null || tile.Cover != EnumCover.None)
         {
@@ -151,19 +160,32 @@ public class TileDisplay : MonoBehaviour
 
     public void DisplayGrid(bool display)
     {
-        if (display)
-        {
-            Vector3 p = CombatGameManager.Instance.GridMap.GridWorldCenter;
-            _gridLinesRenderer.transform.position = new Vector3(p.x, _displayHeight, p.z);
-            _gridLinesRenderer.transform.localScale = new Vector3(CombatGameManager.Instance.GridMap.GridWorldWidth, CombatGameManager.Instance.GridMap.GridWorldHeight, 1f);
-        }
+        _gridLinesRenderer.material.SetInt("_DisplayAllGrid", display ? 1 : 0);
+    }
 
-        _gridLinesRenderer.enabled = display;
+    private void UpdateMouseCoordForGrid(Vector2Int coord)
+    {
+        if (coord != _previousMouseCoord)
+        {
+            Vector3 worldPos = CombatGameManager.Instance.GridMap.GridToWorld(coord, 0f);
+            _gridLinesRenderer.material.SetVector("_MouseCoord", new Vector4(worldPos.x, worldPos.z));
+            _previousMouseCoord = coord;
+        }
     }
 
     #endregion
 
     #region Tile zone display
+
+    public Color GetTileZoneColor(string name)
+    {
+        if (_tileZonesRenderers.ContainsKey(name))
+        {
+            return _tileZonesRenderers[name].material.GetColor("_Color");
+        }
+
+        return new Color(0, 0, 0, 0);
+    }
 
     public bool CreateNewTileZone(TileZonePreset preset)
     {

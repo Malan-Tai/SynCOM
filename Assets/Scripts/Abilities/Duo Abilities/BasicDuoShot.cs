@@ -129,7 +129,7 @@ public class BasicDuoShot : BaseDuoAbility
             .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
             .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
             .AddText(" on ")
-            .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover", EntryColors.CoverColor(_effector.LinesOfSight[target].cover)).CloseTag()
+            .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover").CloseTag()
             .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag()
             .AddText(": ")
             .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag();

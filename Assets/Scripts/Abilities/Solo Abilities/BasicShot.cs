@@ -159,7 +159,7 @@ public class BasicShot : BaseAllyAbility
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" missed ").CloseTag()
                 .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
                 .AddText(" on ")
-                .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover", EntryColors.CoverColor(_effector.LinesOfSight[target].cover)).CloseTag()
+                .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover").CloseTag()
                 .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag()
                 .CloseAllOpenedTags().Submit();
         }
@@ -173,7 +173,7 @@ public class BasicShot : BaseAllyAbility
                 .AddText(" used ")
                 .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
                 .AddText(" on ")
-                .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover", EntryColors.CoverColor(_effector.LinesOfSight[target].cover)).CloseTag()
+                .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover").CloseTag()
                 .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag()
                 .AddText(": did ")
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage}{criticalText} damage").CloseTag()
