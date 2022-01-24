@@ -4034,6 +4034,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 10
+  _selectUnitSpriteGO: {fileID: 379820156}
+--- !u!1 &379820156 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9038231810817841799, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+  m_PrefabInstance: {fileID: 379820152}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &384950372
 GameObject:
   m_ObjectHideFlags: 0
@@ -5801,6 +5807,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 10
+  _selectUnitSpriteGO: {fileID: 499266357}
+--- !u!1 &499266357 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9038231810817841799, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+  m_PrefabInstance: {fileID: 499266353}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &500867485
 GameObject:
   m_ObjectHideFlags: 0
@@ -8686,6 +8698,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _displayHeight: 0.015
+  _zonesChunkSizeInTiles: 30
   _mouseHoverTileSprite: {fileID: 21300000, guid: 76bf20e64a169aa4c8a14c4730632f0b, type: 3}
   _presets:
   - {fileID: 11400000, guid: 9a3f2be7300b5da4aa44ed567f4cb654, type: 2}
@@ -8786,6 +8799,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 10
+  _selectUnitSpriteGO: {fileID: 844946671}
+--- !u!1 &844946671 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9038231810817841799, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+  m_PrefabInstance: {fileID: 844946667}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &846976604
 GameObject:
   m_ObjectHideFlags: 0
@@ -17794,6 +17813,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 10
+  _selectUnitSpriteGO: {fileID: 1788012777}
+--- !u!1 &1788012777 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9038231810817841799, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+  m_PrefabInstance: {fileID: 1788012773}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1790174490
 GameObject:
   m_ObjectHideFlags: 0

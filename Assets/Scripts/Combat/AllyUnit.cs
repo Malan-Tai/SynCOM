@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class AllyUnit : GridBasedUnit
 {
-    [SerializeField] private GameObject _selectUnitSpriteGO;
+    //[SerializeField]
+    private GameObject _selectUnitSpriteGO;
 
     private BaseAllyAbility _currentAbility = null;
     public BaseAllyAbility CurrentAbility { get { return _currentAbility; } }
@@ -16,6 +17,11 @@ public class AllyUnit : GridBasedUnit
 
     public delegate void EventStopUsingAbility();
     public static event EventStopUsingAbility OnStoppedUsingAbility;
+
+    private void Awake()
+    {
+        _selectUnitSpriteGO = transform.Find("SelectionSprite").gameObject;
+    }
 
     private new void Start()
     {
