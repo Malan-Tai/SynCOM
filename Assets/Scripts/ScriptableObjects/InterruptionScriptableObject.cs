@@ -9,6 +9,7 @@ public class InterruptionScriptableObject : ScriptableObject
 
     public float time;
     public string text;
+    public Sprite sprite;
 
     public InterruptionParameters ToParameters(GridBasedUnit currentUnit, GridBasedUnit sourceUnit, bool onCurrent = true)
     {
@@ -17,6 +18,7 @@ public class InterruptionScriptableObject : ScriptableObject
             interruptionType = interruptionType,
             time = time,
             text = text,
+            sprite = sprite,
             target = onCurrent ? currentUnit : sourceUnit,
             position = onCurrent ? sourceUnit.GridPosition : currentUnit.GridPosition
         };

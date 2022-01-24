@@ -17,6 +17,12 @@ public class AllyUnit : GridBasedUnit
     public delegate void EventStopUsingAbility();
     public static event EventStopUsingAbility OnStoppedUsingAbility;
 
+    private new void Start()
+    {
+        base.Start();
+        _info.SetCover(CombatGameManager.Instance.GridMap.GetBestCoverAt(GridPosition));
+    }
+
     protected override bool IsEnemy()
     {
         return false;
@@ -126,5 +132,11 @@ public class AllyUnit : GridBasedUnit
         {
             DisplayUnitSelectionTile(true);
         }
+    }
+
+    public override void MoveToCell(Vector2Int cell, bool eventOnEnd = false)
+    {
+        base.MoveToCell(cell);
+        _info.SetCover(CombatGameManager.Instance.GridMap.GetBestCoverAt(cell));
     }
 }

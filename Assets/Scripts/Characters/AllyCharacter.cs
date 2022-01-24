@@ -57,7 +57,7 @@ public class AllyCharacter : Character
 
    public static AllyCharacter GetRandomAllyCharacter()
    {
-        EnumClasses characterClass = (EnumClasses)Random.Range(0, 6);
+        EnumClasses characterClass = (EnumClasses)RandomEngine.Instance.Range(0, 6);
         AllyCharacter instance = new AllyCharacter(characterClass, 0, 0, 0, 0, 0, 0, 0, 0, false);
 
         instance.Abilities = new List<BaseAllyAbility>
@@ -85,6 +85,7 @@ public class AllyCharacter : Character
                 instance._weigth            = 90;
 
                 instance.Abilities.Add(new Devouring());
+                instance.Abilities.Add(new DwarfTossing());
                 break;
             case EnumClasses.Engineer:
                 instance._maxHealth         = 25;
@@ -110,6 +111,7 @@ public class AllyCharacter : Character
                 instance._weigth            = 65;
 
                 instance.Abilities.Add(new SuppressiveFire());
+                instance.Abilities.Add(new LongShot());
                 break;
             case EnumClasses.Alchemist:
                 instance._maxHealth         = 15;
@@ -134,6 +136,7 @@ public class AllyCharacter : Character
                 instance._weigth            = 150;
 
                 instance.Abilities.Add(new ShieldAndStrike());
+                instance.Abilities.Add(new WildCharge());
                 break;
             case EnumClasses.Smuggler:
                 instance._maxHealth         = 35;
@@ -193,7 +196,7 @@ public class AllyCharacter : Character
 
     private void AddRandomTrait(EnumClasses characterClass)
     {
-        int indice = Random.Range(0, s_commonPossibleTraits[characterClass].Count);
+        int indice = RandomEngine.Instance.Range(0, s_commonPossibleTraits[characterClass].Count);
         _traits.Add(s_commonPossibleTraits[characterClass][indice].GetClone(this));
     }
 

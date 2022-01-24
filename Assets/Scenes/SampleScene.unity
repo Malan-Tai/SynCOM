@@ -512,6 +512,22 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4249419490519674050, guid: 81c9f29c0734a5746922148b7c43c135, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4249419490519674050, guid: 81c9f29c0734a5746922148b7c43c135, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4249419490519674050, guid: 81c9f29c0734a5746922148b7c43c135, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4249419490519674050, guid: 81c9f29c0734a5746922148b7c43c135, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4249419491225415953, guid: 81c9f29c0734a5746922148b7c43c135, type: 3}
       propertyPath: m_Color.a
       value: 0.74509805
@@ -672,6 +688,14 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6093972645497050237, guid: 81c9f29c0734a5746922148b7c43c135, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6093972645497050237, guid: 81c9f29c0734a5746922148b7c43c135, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6216653901561001961, guid: 81c9f29c0734a5746922148b7c43c135, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -828,7 +852,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isWalkable: 0
-  _coverValue: 0
+  _coverValue: 1
 --- !u!65 &89670139
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1668,7 +1692,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 758c0d0ab5a8b0d41bce13e8ce760c7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _startHidden: 1
+  _startHidden: 0
   _iconImage: {fileID: 899730127}
   _shownIconSprite: {fileID: 21300000, guid: 6eb4af5c147843546ae8b279e6b4a27b, type: 3}
   _hiddenIconSprite: {fileID: 21300000, guid: 68f4344105126ff4cbac40ac5478bfbb, type: 3}
@@ -3929,6 +3953,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1943130555}
     m_Modifications:
+    - target: {fileID: 1142863470432663811, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1142863470432663811, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3004046929320778309, guid: bb3162191e29e8544b69f451f333c622, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -5252,7 +5284,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isWalkable: 0
-  _coverValue: 0
+  _coverValue: 1
 --- !u!65 &484443087
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5626,7 +5658,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &486491602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5672,6 +5704,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1943130555}
     m_Modifications:
+    - target: {fileID: 1142863470432663811, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1142863470432663811, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2687687993383166831, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 3004046929320778309, guid: bb3162191e29e8544b69f451f333c622, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -5719,6 +5763,18 @@ PrefabInstance:
     - target: {fileID: 3004046929320778314, guid: bb3162191e29e8544b69f451f333c622, type: 3}
       propertyPath: m_Name
       value: Ally 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3415048339595183663, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4133749248469180759, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8420081455766675112, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb3162191e29e8544b69f451f333c622, type: 3}
@@ -6459,7 +6515,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85d7a1cd52c9a7843a6c1d4d6b2d9b37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isWalkable: 0
+  _isWalkable: 1
   _coverValue: 1
 --- !u!65 &604139281
 BoxCollider:
@@ -6613,7 +6669,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85d7a1cd52c9a7843a6c1d4d6b2d9b37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isWalkable: 0
+  _isWalkable: 1
   _coverValue: 1
 --- !u!65 &640563562
 BoxCollider:
@@ -7042,6 +7098,7 @@ GameObject:
   m_Component:
   - component: {fileID: 669862628}
   - component: {fileID: 669862627}
+  - component: {fileID: 669862629}
   m_Layer: 0
   m_Name: GlobalGameManager
   m_TagString: Untagged
@@ -7091,6 +7148,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &669862629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 669862626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76065f619ad423644a5221ebd2c3ee8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &674690315
 GameObject:
   m_ObjectHideFlags: 0
@@ -7448,6 +7517,7 @@ GameObject:
   - component: {fileID: 777815823}
   - component: {fileID: 777815822}
   - component: {fileID: 777815825}
+  - component: {fileID: 777815826}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -7479,6 +7549,8 @@ MonoBehaviour:
   - {fileID: 1946337609}
   - {fileID: 815346058}
   _characterSheet: {fileID: 51889597}
+  happyEmoji: {fileID: 21300000, guid: 3493eb6f2f57a5548b65767d0c3f4868, type: 3}
+  unhappyEmoji: {fileID: 21300000, guid: 78af4d69107a1cf48955299e75831ed2, type: 3}
 --- !u!114 &777815823
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7537,6 +7609,27 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a8d7b94959610ee4185568bbce887576, type: 2}
   - {fileID: 11400000, guid: c33d9a45fadb4b74cbfa9e593fa424be, type: 2}
   - {fileID: 11400000, guid: c319faa9d97e64f4ea22094e92b17e8c, type: 2}
+--- !u!114 &777815826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 777815821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91851217e0b197a4a8924be0219a0647, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundAudioClipsArray:
+  - sound: 0
+    audioClip: {fileID: 8300000, guid: 8947156f76bc9db4fa485faeb7d7566d, type: 3}
+  - sound: 1
+    audioClip: {fileID: 8300000, guid: 540a2849230862041a5067f7e4f6c8c9, type: 3}
+  - sound: 2
+    audioClip: {fileID: 8300000, guid: a22b45cb255a0844588cd9a853f70cc0, type: 3}
+  - sound: 3
+    audioClip: {fileID: 8300000, guid: c04a7d6981ea37545b2043751409df32, type: 3}
 --- !u!1 &795293727
 GameObject:
   m_ObjectHideFlags: 0
@@ -7851,7 +7944,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85d7a1cd52c9a7843a6c1d4d6b2d9b37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isWalkable: 0
+  _isWalkable: 1
   _coverValue: 1
 --- !u!65 &812082242
 BoxCollider:
@@ -8032,6 +8125,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 674690316}
     m_Modifications:
+    - target: {fileID: 1142863470432663811, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1142863470432663811, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3004046928809710689, guid: bb3162191e29e8544b69f451f333c622, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -8594,6 +8695,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 39d57cff9e2cce642b3a6ec403349a35, type: 2}
   _tileZoneRendererPrefab: {fileID: 5751786864067872331, guid: 971dee6c24a576b4b987bd432e7f2a21, type: 3}
   _gridLinesRenderer: {fileID: 1433990336}
+  _fullCoverSprite: {fileID: 21300000, guid: abe3e68381cb0ca4f8af2a4c6e3dce19, type: 3}
+  _halfCoverSprite: {fileID: 21300000, guid: d656ba2575bc53849b51c28c8f094d14, type: 3}
 --- !u!1 &846976604
 GameObject:
   m_ObjectHideFlags: 0
@@ -8754,7 +8857,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isWalkable: 0
-  _coverValue: 0
+  _coverValue: 1
 --- !u!65 &870391561
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9473,7 +9576,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85d7a1cd52c9a7843a6c1d4d6b2d9b37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isWalkable: 0
+  _isWalkable: 1
   _coverValue: 1
 --- !u!65 &1017439987
 BoxCollider:
@@ -10989,7 +11092,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isWalkable: 0
-  _coverValue: 1
+  _coverValue: 2
 --- !u!65 &1145294591
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11098,7 +11201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85d7a1cd52c9a7843a6c1d4d6b2d9b37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isWalkable: 0
+  _isWalkable: 1
   _coverValue: 1
 --- !u!65 &1152535834
 BoxCollider:
@@ -11323,7 +11426,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isWalkable: 0
-  _coverValue: 0
+  _coverValue: 1
 --- !u!65 &1169414181
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11654,7 +11757,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85d7a1cd52c9a7843a6c1d4d6b2d9b37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isWalkable: 0
+  _isWalkable: 1
   _coverValue: 1
 --- !u!65 &1222625792
 BoxCollider:
@@ -12185,7 +12288,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85d7a1cd52c9a7843a6c1d4d6b2d9b37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isWalkable: 0
+  _isWalkable: 1
   _coverValue: 1
 --- !u!65 &1277029271
 BoxCollider:
@@ -12299,7 +12402,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isWalkable: 0
-  _coverValue: 0
+  _coverValue: 1
 --- !u!65 &1278032209
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12861,7 +12964,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1319472775}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -9.5, y: 0.5, z: -12}
+  m_LocalPosition: {x: -9.5, y: 0.242, z: -12}
   m_LocalScale: {x: 1, y: 1.5, z: 2}
   m_Children: []
   m_Father: {fileID: 1087081749}
@@ -12879,7 +12982,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85d7a1cd52c9a7843a6c1d4d6b2d9b37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isWalkable: 0
+  _isWalkable: 1
   _coverValue: 1
 --- !u!65 &1319472778
 BoxCollider:
@@ -13441,7 +13544,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
+  m_Color: {r: 0.20558916, g: 0.22747776, b: 0.41509432, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -13857,7 +13960,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1433990334}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -14303,7 +14406,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isWalkable: 0
-  _coverValue: 0
+  _coverValue: 1
 --- !u!65 &1474719824
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -17159,8 +17262,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85d7a1cd52c9a7843a6c1d4d6b2d9b37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isWalkable: 0
-  _coverValue: 0
+  _isWalkable: 1
+  _coverValue: 1
 --- !u!65 &1733367670
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -17521,6 +17624,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1943130555}
     m_Modifications:
+    - target: {fileID: 1142863470432663811, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1142863470432663811, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3004046929320778309, guid: bb3162191e29e8544b69f451f333c622, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -19298,7 +19409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85d7a1cd52c9a7843a6c1d4d6b2d9b37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isWalkable: 0
+  _isWalkable: 1
   _coverValue: 1
 --- !u!65 &1931802467
 BoxCollider:
@@ -19402,6 +19513,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 674690316}
     m_Modifications:
+    - target: {fileID: 1142863470432663811, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1142863470432663811, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3004046928809710689, guid: bb3162191e29e8544b69f451f333c622, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -20193,7 +20312,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85d7a1cd52c9a7843a6c1d4d6b2d9b37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isWalkable: 0
+  _isWalkable: 1
   _coverValue: 1
 --- !u!65 &2009544790
 BoxCollider:
@@ -20473,7 +20592,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 761936826}
   m_HandleRect: {fileID: 761936825}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -20656,7 +20775,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2046515468}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -15.5, y: 0.5, z: -7}
+  m_LocalPosition: {x: -15.5, y: 0.06, z: -7}
   m_LocalScale: {x: 1, y: 1.5, z: 2}
   m_Children: []
   m_Father: {fileID: 1087081749}
@@ -20674,7 +20793,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85d7a1cd52c9a7843a6c1d4d6b2d9b37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isWalkable: 0
+  _isWalkable: 1
   _coverValue: 1
 --- !u!65 &2046515471
 BoxCollider:

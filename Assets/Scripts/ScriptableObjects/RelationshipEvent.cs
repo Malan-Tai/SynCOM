@@ -103,7 +103,7 @@ public class RelationshipEvent : ScriptableObject
                 return inRange;
 
             case RelationshipEventTriggerType.Kill:
-                return !killSteal || isBestDamager;
+                return (!killSteal || isBestDamager) && trigger.targetsAlly == targetsAlly;
 
             case RelationshipEventTriggerType.FriendlyFire:
                 return onFatal == trigger.onFatal;

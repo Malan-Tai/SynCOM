@@ -21,7 +21,7 @@ public class HunkerDown : BaseAllyAbility
 
     public override void Execute()
     {
-        Debug.Log("i hunker down");
+        AddBuff(_effector, new Buff("Hunkered Down", 2, _effector, 0, 0, 0, 0, 0, 2f));
         SendResultToHistoryConsole(null);
     }
 

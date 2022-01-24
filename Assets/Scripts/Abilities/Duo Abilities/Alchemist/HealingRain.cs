@@ -9,6 +9,7 @@ public class HealingRain : BaseDuoAbility
     private Vector2Int _previousTileCoord;
     private Vector2Int _tileCoord;
 
+    private List<EnemyUnit> _enemyTargets = new List<EnemyUnit>();
     private List<AllyUnit> _allyTargets = new List<AllyUnit>();
 
     private List<Tile> _areaOfEffectTiles = new List<Tile>();
@@ -40,7 +41,7 @@ public class HealingRain : BaseDuoAbility
         int healingValue = _healingValue;
         AbilityResult result = new AbilityResult();
 
-        if (UnityEngine.Random.Range(0, 100) < _allyShotStats.GetAccuracy())
+        if (RandomEngine.Instance.Range(0, 100) < _allyShotStats.GetAccuracy())
         {
             explosionRadius = _explosionImprovedRadius;
             healingValue = _healingValueIncreased;
@@ -51,6 +52,15 @@ public class HealingRain : BaseDuoAbility
         var selfHealStats = new AbilityStats(0, 0, 0, 0, healingValue, _effector);
         selfHealStats.UpdateWithEmotionModifiers(_chosenAlly);
 
+        _enemyTargets.Clear();
+        foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
+        {
+            //if ((enemy.GridPosition - tileCoord).magnitude <= explosionRadius) //That's a circle not a diamond...
+            if (Mathf.Abs(enemy.GridPosition.x - _tileCoord.x) + Mathf.Abs(enemy.GridPosition.y - _tileCoord.y) <= explosionRadius)
+            {
+                _enemyTargets.Add(enemy);
+            }
+        }
         _allyTargets.Clear();
         foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
         {
@@ -65,6 +75,11 @@ public class HealingRain : BaseDuoAbility
         foreach (AllyUnit ally in _allyTargets)
         {
             Heal(_effector, ally, selfHealStats.GetHeal(), _chosenAlly);
+        }
+        foreach (EnemyUnit enemy in _enemyTargets)
+        {
+            float heal = selfHealStats.GetHeal();
+            enemy.Heal(ref heal);
         }
 
         result.Heal = selfHealStats.GetHeal();
@@ -210,6 +225,10 @@ public class HealingRain : BaseDuoAbility
                 CombatGameManager.Instance.TileDisplay.DisplayTileZone("HealZone", _areaOfEffectTiles, false);
 
                 // Je cache le highlight des anciennes targets
+                foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
+                {
+                    enemy.DontHighlightUnit();
+                }
                 foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
                 {
                     ally.DontHighlightUnit();
@@ -218,11 +237,19 @@ public class HealingRain : BaseDuoAbility
                 // Je parcours la liste des alliés pour récupérer les alliés ciblés
                 // Devra être refait de toute façon - le radius réel est déterminé à  l'Execute()
                 // Pour mettre les cibles en surbrillance
-
+                foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
+                {
+                    //if ((enemy.GridPosition - tileCoord).magnitude <= _radius) //That's a circle not a diamond...
+                    if (Mathf.Abs(enemy.GridPosition.x - _tileCoord.x) + Mathf.Abs(enemy.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
+                    {
+                        _enemyTargets.Add(enemy);
+                        enemy.HighlightUnit(Color.green);
+                    }
+                }
                 foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
                 {
                     //if ((ally.GridPosition - tileCoord).magnitude <= _radius) //That's a circle not a diamond...
-                    Debug.Log(Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y));
+                    //Debug.Log(Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y));
                     if (Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
                     {
                         _allyTargets.Add(ally);
@@ -246,6 +273,10 @@ public class HealingRain : BaseDuoAbility
         foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
         {
             ally.DontHighlightUnit();
+        }
+        foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
+        {
+            enemy.DontHighlightUnit();
         }
     }
 }

@@ -58,6 +58,8 @@ public class GridBasedUnit : MonoBehaviour
     private int _highlightPropertyHash;
     private int _highlightColorPropertyHash;
 
+    protected InfoCanvas _info;
+
     protected void Start()
     {
         GridMap gridMap = CombatGameManager.Instance.GridMap;
@@ -77,6 +79,9 @@ public class GridBasedUnit : MonoBehaviour
         _highlightColorPropertyHash = Shader.PropertyToID("_HighlightColor");
 
         InterruptionQueue = GetComponent<InterruptionQueue>();
+
+        _info = transform.Find("Renderer").GetComponentInChildren<InfoCanvas>();
+        _info.SetRatioHP(1);
     }
 
     protected virtual void Update()
@@ -109,21 +114,24 @@ public class GridBasedUnit : MonoBehaviour
             if (OnMoveFinish != null) OnMoveFinish(this);
         }
 
-        if (_markedForDeath && transform.Find("CameraTarget") == null)
+        if (_markedForDeath && InterruptionQueue.IsEmpty() && transform.Find("CameraTarget") == null)
         {
             _markedForDeath = false;
-            Destroy(this.gameObject);
+            GetComponentInChildren<Renderer>().enabled = false;
+            _info.gameObject.SetActive(false);
+            //Destroy(this.gameObject);
+            //transform.position += new Vector3(0, -5, 0);
         }
     }
 
     public void SetCharacter(Character character)
     {
-        _character = character;
+        Character = character;
         _movesLeft = character.MovementPoints;
         InitSprite();
     }
 
-    public void MarkForDestruction()
+    public void MarkForDeath()
     {
         _markedForDeath = true;
     }
@@ -139,10 +147,11 @@ public class GridBasedUnit : MonoBehaviour
         _targetWorldPosition = CombatGameManager.Instance.GridMap.GridToWorld(_gridPosition, this.transform.position.y);
     }
 
-    public void MoveToCell(Vector2Int cell)
+    public virtual void MoveToCell(Vector2Int cell, bool eventOnEnd = false)
     {
         _gridPosition = cell;
         _targetWorldPosition = CombatGameManager.Instance.GridMap.GridToWorld(_gridPosition, this.transform.position.y);
+        _followingPath = _followingPath || eventOnEnd;
     }
 
     public void ChoosePathTo(Vector2Int cell)
@@ -302,10 +311,12 @@ public class GridBasedUnit : MonoBehaviour
         _feedback.DisplayFeedback("Miss");
     }
 
-    public bool TakeDamage(ref float damage, bool feedback = true)
+    public bool TakeDamage(ref float damage, bool textFeedback = true, bool imgFeedback = true)
     {
         bool died = _character.TakeDamage(ref damage);
-        if (feedback) _feedback.DisplayFeedback("-" + damage.ToString());
+        _info.SetRatioHP(Character.HealthPoints / Character.MaxHealth);
+        if (textFeedback) _feedback.DisplayFeedback("-" + damage.ToString());
+        if (imgFeedback) _feedback.DisplayImageFeedback();
 
         return died;
     }
@@ -313,12 +324,18 @@ public class GridBasedUnit : MonoBehaviour
     public void Heal(ref float healAmount, bool feedback = true)
     {
         _character.Heal(ref healAmount);
+        _info.SetRatioHP(Character.HealthPoints / Character.MaxHealth);
         if (feedback) _feedback.DisplayFeedback("+" + healAmount.ToString());
     }
 
     public void DisplayFeedback(string text)
     {
         _feedback.DisplayFeedback(text);
+    }
+
+    public void DisplayRaisingImageFeedback(Sprite sprite)
+    {
+        _feedback.DisplayRaisingImageFeedback(sprite);
     }
 
     private void Die()

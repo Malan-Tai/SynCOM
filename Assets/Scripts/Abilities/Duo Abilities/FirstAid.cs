@@ -53,7 +53,7 @@ public class FirstAid : BaseDuoAbility
 
     protected override bool IsAllyCompatible(AllyUnit unit)
     {
-        return (unit.GridPosition - this._effector.GridPosition).magnitude <= 2;
+        return (unit.GridPosition - this._effector.GridPosition).magnitude < 2;
     }
 
     public override string GetName()

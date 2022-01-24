@@ -6,7 +6,7 @@ public static class SoundManager
 {
     public enum Sound
     {
-        RetentlessFriends, RetentlessFoe, RetentlessNeutral
+        RetentlessFriends, RetentlessFoe, RetentlessNeutral, BasicShot
     }
 
     //private static GameObject oneShotGameObject;

@@ -42,6 +42,8 @@ public class CombatGameManager : MonoBehaviour
     private List<AllyUnit> _allAllyUnits;
     public List<AllyUnit> AllAllyUnits { get { return _allAllyUnits; } }
 
+    public List<GridBasedUnit> DeadUnits { get; private set; }
+
     [SerializeField]
     private GameObject _barricadePrefab;
 
@@ -72,6 +74,9 @@ public class CombatGameManager : MonoBehaviour
 
     public bool IsAllyTurn { get; private set; }
     public bool IsEnemyTurn { get; private set; }
+
+    [SerializeField] public Sprite happyEmoji;
+    [SerializeField] public Sprite unhappyEmoji;
 
 
     #region Events
@@ -104,7 +109,7 @@ public class CombatGameManager : MonoBehaviour
 
         _currentUnitIndex = 0;
 
-
+        DeadUnits = new List<GridBasedUnit>();
 
         _allAllyUnits = new List<AllyUnit>();
         foreach (AllyUnit unit in _controllableUnits)
@@ -469,13 +474,22 @@ public class CombatGameManager : MonoBehaviour
         }
         else if (ally != null)
         {
+            GlobalGameManager.Instance.allCharacters.Remove(ally.AllyCharacter);
+
             _allAllyUnits.Remove(ally);
-            _controllableUnits.Remove(ally);
+
+            int i = _controllableUnits.IndexOf(ally);
+            if (i != -1)
+            {
+                if (i < _currentUnitIndex) _currentUnitIndex--;
+                _controllableUnits.Remove(ally);
+            }
         }
 
         //deadUnit.gameObject.SetActive(false);
         _gridMap.FreeOccupiedTile(deadUnit.GridPosition);
-        deadUnit.MarkForDestruction();
+        //deadUnit.MarkForDeath();
+        DeadUnits.Add(deadUnit);
     }
 
     public void AbilityHoverTarget(GridBasedUnit unit)

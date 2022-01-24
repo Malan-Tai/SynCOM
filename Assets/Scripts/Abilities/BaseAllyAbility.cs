@@ -170,11 +170,17 @@ public abstract class BaseAllyAbility : BaseAbility
         _needsFinalization = false;
         if (OnAbilityEnded != null) OnAbilityEnded(_executed && !_free);
         _free = false;
+
         CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
         CombatGameManager.Instance.TileDisplay.HideTileZone("BonusDamageZone");
         CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
         CombatGameManager.Instance.TileDisplay.HideTileZone("HealZone");
         CombatGameManager.Instance.TileDisplay.HideTileZone("BonusHealZone");
+
+        foreach (GridBasedUnit unit in CombatGameManager.Instance.DeadUnits)
+        {
+            unit.MarkForDeath();
+        }
     }
 
     public virtual void InputControl()
@@ -318,7 +324,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
                         if (changedAction)
                         {
-                            CombatGameManager.Instance.ChangeTileCover(toCover, EnumCover.Full);
+                            CombatGameManager.Instance.ChangeTileCover(toCover, EnumCover.Half);
                             CombatGameManager.Instance.AddBarricadeAt(toCover.Coords, duo.GridPosition.y != toCover.Coords.y);
                         }
 
@@ -340,10 +346,23 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                         Heal(source, duo, heal.GetHeal(), null);
                         break;
 
-                    case EnumClasses.Bodyguard:
+                    case EnumClasses.Bodyguard: // gets closer and protects
+                        if ((duo.GridPosition - source.GridPosition).magnitude > source.Character.MovementPoints)
+                        {
+                            changedAction = false;
+                            break;
+                        }
+
+                        var param = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetUntilEndOfMovement, target = source, position = duo.GridPosition };
+                        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(param));
+
+                        var protect = new AbilityStats(0, 0, 0, 0.5f, 0, source);
+                        protect.UpdateWithEmotionModifiers(duo);
+                        AddBuff(duo, new ProtectedByBuff(2, duo, source, protect.GetProtection()));
                         break;
 
-                    case EnumClasses.Smuggler:
+                    case EnumClasses.Smuggler: // buffs other
+                        AddBuff(duo, new Buff("Sprint", 4, duo, 0, 0, 0, 0, 2, 0.3f));
                         break;
 
                     default:
@@ -570,10 +589,10 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
         var parameters = new InterruptionParameters
         {
-            interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback,
+            interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireImageFeedback,
             target = _effector,
             time = Interruption.FOCUS_TARGET_TIME,
-            text = gain >= 0 ? ":)" : ":("
+            sprite = gain >= 0 ? CombatGameManager.Instance.happyEmoji : CombatGameManager.Instance.unhappyEmoji
         };
         _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
     }
@@ -585,10 +604,10 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
         var parameters = new InterruptionParameters
         {
-            interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback,
+            interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireImageFeedback,
             target = ally,
             time = Interruption.FOCUS_TARGET_TIME,
-            text = gain >= 0 ? ":)" : ":("
+            sprite = gain >= 0 ? CombatGameManager.Instance.happyEmoji : CombatGameManager.Instance.unhappyEmoji
         };
         _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
     }
@@ -597,8 +616,8 @@ public abstract class BaseDuoAbility : BaseAllyAbility
     {
         if (StartAction(ActionTypes.Attack, _effector, _chosenAlly)) return new ShootResult(false, 0f, false); // TODO : fix this return
 
-        int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
-        int randCrit = UnityEngine.Random.Range(0, 100);
+        int randShot = RandomEngine.Instance.Range(0, 100); // between 0 and 99
+        int randCrit = RandomEngine.Instance.Range(0, 100);
 
         if (alwaysHit || randShot < selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
         {
@@ -626,8 +645,8 @@ public abstract class BaseDuoAbility : BaseAllyAbility
     {
         if (StartAction(ActionTypes.Attack, _chosenAlly, _effector)) return new ShootResult(false, 0f, false); // TODO : fix this return
 
-        int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
-        int randCrit = UnityEngine.Random.Range(0, 100);
+        int randShot = RandomEngine.Instance.Range(0, 100); // between 0 and 99
+        int randCrit = RandomEngine.Instance.Range(0, 100);
 
         if (alwaysHit || randShot < allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover))
         {
@@ -656,8 +675,8 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         Dictionary<GridBasedUnit, LineOfSight> los = shooterUnit.GetLineOfSights(false);
         if (!los.ContainsKey(shotUnit) || (shooterUnit.GridPosition - shotUnit.GridPosition).magnitude > shooterUnit.Character.RangeShot) return false;
 
-        int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
-        int randCrit = UnityEngine.Random.Range(0, 100);
+        int randShot = RandomEngine.Instance.Range(0, 100); // between 0 and 99
+        int randCrit = RandomEngine.Instance.Range(0, 100);
 
         var shotStats = new AbilityStats(0, 0, 1f, 0, 0, shooterUnit);
 

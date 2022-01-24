@@ -96,14 +96,11 @@ public class BasicDuoShot : BaseDuoAbility
         
         if (relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Sympathy) < 0 || relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Admiration) < 0 || relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Trust) < 0)
         {
-            Debug.Log("OUI BINJOUR");
-            //SoundManager.PlaySound(SoundManager.Sound.RetentlessFoe);
+            SoundManager.PlaySound(SoundManager.Sound.RetentlessFoe);
         }
-        
         else
         {
-            Debug.Log("NON");
-            //SoundManager.PlaySound(SoundManager.Sound.RetentlessNeutral);
+            SoundManager.PlaySound(SoundManager.Sound.RetentlessNeutral);
         }
 
         ShootResult selfResults = SelfShoot(target, _selfShotStats);
@@ -150,7 +147,7 @@ public class BasicDuoShot : BaseDuoAbility
         }
 
         HistoryConsole.Instance
-            .AddText(" did ")
+            .AddText(" and ")
             .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag();
 
         if (result.AllyMiss)

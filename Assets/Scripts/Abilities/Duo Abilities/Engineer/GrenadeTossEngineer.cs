@@ -206,7 +206,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
 
         int explosionRadius = _explosionBaseRadius;
 
-        if (UnityEngine.Random.Range(0, 100) < _allyShotStats.GetAccuracy())
+        if (RandomEngine.Instance.Range(0, 100) < _allyShotStats.GetAccuracy())
         {
             explosionRadius = _explosionImprovedRadius;
             Debug.Log("[Grenade Toss] Bonus radius");

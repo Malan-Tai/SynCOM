@@ -99,7 +99,7 @@ public class Mortar : BaseDuoAbility
         AbilityResult result = new AbilityResult();
 
         // Only the _chosenAlly knows the attack is incomming and (almost) always take cover
-        if (UnityEngine.Random.Range(0, 100) > 90)
+        if (RandomEngine.Instance.Range(0, 100) > 90)
         {
             Debug.Log("[Mortar] Ally didn't take cover in time");
             _allyTargets.Add(_chosenAlly);
