@@ -146,6 +146,8 @@ public abstract class BaseAllyAbility : BaseAbility
     {
         base.SetEffector(effector);
         _effector = effector as AllyUnit;
+
+        CombatGameManager.Instance.TileDisplay.HideAllTileZones();
     }
 
     public virtual void UISelectUnit(GridBasedUnit unit)

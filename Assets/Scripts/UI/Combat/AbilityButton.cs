@@ -13,7 +13,7 @@ public class AbilityButton : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     public delegate void MouseEnter(BaseAllyAbility ability);
     public static event MouseEnter OnMouseEnter;
 
-    public delegate void MouseExit();
+    public delegate void MouseExit(BaseAllyAbility ability);
     public static event MouseExit OnMouseExit;
 
     public void SetAbility(BaseAllyAbility ability)
@@ -40,6 +40,6 @@ public class AbilityButton : MonoBehaviour, IPointerClickHandler, IPointerEnterH
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (OnMouseExit != null && CombatGameManager.Instance.CurrentAbility == null) OnMouseExit();
+        if (OnMouseExit != null && CombatGameManager.Instance.CurrentAbility == null) OnMouseExit(_ability);
     }
 }

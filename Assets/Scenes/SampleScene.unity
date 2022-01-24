@@ -4034,12 +4034,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 10
-  _selectUnitSpriteGO: {fileID: 379820156}
---- !u!1 &379820156 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9038231810817841799, guid: bb3162191e29e8544b69f451f333c622, type: 3}
-  m_PrefabInstance: {fileID: 379820152}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &384950372
 GameObject:
   m_ObjectHideFlags: 0
@@ -5710,6 +5704,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1943130555}
     m_Modifications:
+    - target: {fileID: 737200239612301548, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 1142863470432663811, guid: bb3162191e29e8544b69f451f333c622, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -5807,12 +5805,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 10
-  _selectUnitSpriteGO: {fileID: 499266357}
---- !u!1 &499266357 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9038231810817841799, guid: bb3162191e29e8544b69f451f333c622, type: 3}
-  m_PrefabInstance: {fileID: 499266353}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &500867485
 GameObject:
   m_ObjectHideFlags: 0
@@ -7169,7 +7161,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 669862626}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5090991735a260c4c98058e12e1049b9, type: 3}
+  m_Script: {fileID: 11500000, guid: 76065f619ad423644a5221ebd2c3ee8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &674690315
@@ -8799,12 +8791,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 10
-  _selectUnitSpriteGO: {fileID: 844946671}
---- !u!1 &844946671 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9038231810817841799, guid: bb3162191e29e8544b69f451f333c622, type: 3}
-  m_PrefabInstance: {fileID: 844946667}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &846976604
 GameObject:
   m_ObjectHideFlags: 0
@@ -17813,12 +17799,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 10
-  _selectUnitSpriteGO: {fileID: 1788012777}
---- !u!1 &1788012777 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9038231810817841799, guid: bb3162191e29e8544b69f451f333c622, type: 3}
-  m_PrefabInstance: {fileID: 1788012773}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1790174490
 GameObject:
   m_ObjectHideFlags: 0

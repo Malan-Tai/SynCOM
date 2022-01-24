@@ -25,8 +25,6 @@ public class AbilityDescription : MonoBehaviour
 
     private Vector3 _basePosition;
 
-    private BaseAllyAbility _ability = null;
-
     private void Awake()
     {
         switch (_descriptionType)
@@ -59,7 +57,9 @@ public class AbilityDescription : MonoBehaviour
         AllyUnit.OnStoppedUsingAbility += StopUsing;
 
         AbilityButton.OnMouseEnter += StartUsing;
+        AbilityButton.OnMouseEnter += ShowRange;
         AbilityButton.OnMouseExit += StopUsing;
+        AbilityButton.OnMouseExit += HideRange;
 
         BaseAllyAbility.OnDescriptionUpdateRequest += UpdateDescription;
     }
@@ -70,16 +70,25 @@ public class AbilityDescription : MonoBehaviour
         AllyUnit.OnStoppedUsingAbility -= StopUsing;
 
         AbilityButton.OnMouseEnter -= StartUsing;
+        AbilityButton.OnMouseEnter -= ShowRange;
         AbilityButton.OnMouseExit -= StopUsing;
+        AbilityButton.OnMouseExit -= HideRange;
 
         BaseAllyAbility.OnDescriptionUpdateRequest -= UpdateDescription;
     }
 
+    private void ShowRange(BaseAllyAbility ability)
+    {
+        ability.ShowRanges(CombatGameManager.Instance.CurrentUnit);
+    }
+
+    private void HideRange(BaseAllyAbility ability)
+    {
+        ability.HideRanges();
+    }
+
     private void StartUsing(BaseAllyAbility ability)
     {
-        _ability = ability;
-        ability.ShowRanges(CombatGameManager.Instance.CurrentUnit);
-
         BaseDuoAbility duo = ability as BaseDuoAbility;
         if ((_descriptionType == EnumAbilityDescription.Solo && duo != null)
             || (_descriptionType != EnumAbilityDescription.Solo && duo == null))
@@ -163,15 +172,13 @@ public class AbilityDescription : MonoBehaviour
                 break;
         }
     }
-
     private void StopUsing()
     {
-        if (_ability != null)
-        {
-            _ability.HideRanges();
-            _ability = null;
-        }
+        StopUsing(null);
+    }
 
+    private void StopUsing(BaseAllyAbility ability)
+    {
         if (_hidden) return;
 
         this.transform.position += new Vector3(0, OFFSET_Y, 0);
