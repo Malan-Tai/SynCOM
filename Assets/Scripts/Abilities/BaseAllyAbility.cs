@@ -369,7 +369,11 @@ public abstract class BaseDuoAbility : BaseAllyAbility
     {
         if (unit is AllyUnit && _chosenAlly == null)
         {
+            // Hide previous preselected ally
+            _temporaryChosenAlly?.DisplayUnitSelectionTile(false);
+
             _temporaryChosenAlly = unit as AllyUnit;
+            _temporaryChosenAlly.DisplayUnitSelectionTile(true);
             CombatGameManager.Instance.Camera.SwitchParenthood(_temporaryChosenAlly);
             RequestDescriptionUpdate();
             RequestTargetSymbolUpdate(_temporaryChosenAlly);
@@ -395,6 +399,8 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         if (_possibleAllies.Count > 0)
         {
             _temporaryChosenAlly = _possibleAllies[0];
+            _temporaryChosenAlly.DisplayUnitSelectionTile(true);
+
             CombatGameManager.Instance.Camera.SwitchParenthood(_temporaryChosenAlly);
 
             RequestTargetsUpdate(_possibleAllies);
@@ -411,6 +417,9 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         if (_executed) EndExecutedDuo(_effector, _chosenAlly);
 
         if (_chosenAlly != null) _chosenAlly.StopUsingAbilityAsAlly(_executed && !_freeForDuo);
+
+        _temporaryChosenAlly?.DisplayUnitSelectionTile(false);
+        _chosenAlly?.DisplayUnitSelectionTile(false);
 
         _temporaryChosenAlly = null;
         _chosenAlly = null;
@@ -512,6 +521,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
     {
         if (_possibleAllies.Count < 1) return;
 
+        AllyUnit previousAllyUnit = _temporaryChosenAlly;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitData;
 
@@ -541,6 +551,9 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
         if (changedUnitThisFrame)
         {
+            previousAllyUnit?.DisplayUnitSelectionTile(false);
+            _temporaryChosenAlly.DisplayUnitSelectionTile(true);
+
             CombatGameManager.Instance.Camera.SwitchParenthood(_temporaryChosenAlly);
             RequestDescriptionUpdate();
             RequestTargetSymbolUpdate(_temporaryChosenAlly);
