@@ -22,6 +22,9 @@ public class CheatEngine : RandomEngine
             GlobalGameManager.Instance.SetSquadUnit(i, cheatSquad[i]);
             GlobalGameManager.Instance.AddCharacter(cheatSquad[i]);
         }
+
+        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Admiration, 10);
+        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Admiration, 20);
     }
 
     public override int Range(int minInclusive, int maxExclusive)
