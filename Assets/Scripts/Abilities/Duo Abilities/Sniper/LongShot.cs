@@ -145,8 +145,12 @@ public class LongShot : BaseDuoAbility
             //SoundManager.PlaySound(SoundManager.Sound.RetentlessNeutral);
         }
 
+        AbilityResult result = new AbilityResult();
         ShootResult selfResults = SelfShoot(target, _selfShotStats);
-        //HistoryConsole.AddEntry(EntryBuilder.GetDamageEntry(_effector, target, this, selfResults));
+        result.Miss = !selfResults.Landed;
+        result.Critical = selfResults.Critical;
+        result.Damage = selfResults.Damage;
+        SendResultToHistoryConsole(result);
     }
 
     /// <summary>
@@ -183,6 +187,35 @@ public class LongShot : BaseDuoAbility
 
     protected override void SendResultToHistoryConsole(AbilityResult result)
     {
-        // TODO
+        GridBasedUnit target = _possibleTargets[_targetIndex];
+
+        HistoryConsole.Instance
+            .BeginEntry()
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+            .AddText(" indicated the position of ")
+            .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover").CloseTag()
+            .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag()
+            .AddText(" so that ")
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+            .AddText(" can use ")
+            .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
+            .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag();
+
+        if (result.Miss)
+        {
+            HistoryConsole.Instance
+                .AddText(": he ")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("missed").CloseTag();
+        }
+        else
+        {
+            string criticalText = result.Critical ? " critical" : "";
+
+            HistoryConsole.Instance
+                .AddText(": he did ")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage}{criticalText} damage").CloseTag();
+        }
+
+        HistoryConsole.Instance.Submit();
     }
 }
