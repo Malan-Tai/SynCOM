@@ -4,23 +4,52 @@ using UnityEngine;
 
 public class CheatEngine : RandomEngine
 {
+    private enum NextResult { Random, Min, Max };
+    private NextResult _next;
+
     public override int Range(int minInclusive, int maxExclusive)
     {
-        if (minInclusive == 0 && maxExclusive == 100)
+        int res;
+        switch (_next)
         {
-            return 0;
+            case NextResult.Min:
+                res = minInclusive;
+                break;
+
+            case NextResult.Max:
+                res = maxExclusive;
+                break;
+
+            default:
+                res = UnityEngine.Random.Range(minInclusive, maxExclusive);
+                break;
         }
 
-        return UnityEngine.Random.Range(minInclusive, maxExclusive);
+        return res;
     }
 
     public override float Range(float minInclusive, float maxInclusive)
     {
-        if (minInclusive == 0f && maxInclusive == 1f)
+        switch (_next)
         {
-            return 0f;
-        }
+            case NextResult.Min:
+                return minInclusive;
 
-        return UnityEngine.Random.Range(minInclusive, maxInclusive);
+            case NextResult.Max:
+                return maxInclusive;
+
+            default:
+                return UnityEngine.Random.Range(minInclusive, maxInclusive);
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.F1)) // F1 is min, F2 is max
+            _next = NextResult.Min;
+        else if (Input.GetKey(KeyCode.F2))
+            _next = NextResult.Max;
+        else
+            _next = NextResult.Random;
     }
 }
