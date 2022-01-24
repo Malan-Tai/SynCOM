@@ -23,12 +23,12 @@ public class CheatEngine : RandomEngine
             GlobalGameManager.Instance.AddCharacter(cheatSquad[i]);
         }
 
-        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Admiration, 10);
-        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Admiration, 20);
-        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Trust, 10);
-        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Trust, 20);
-        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Sympathy, 10);
-        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Sympathy, 20);
+        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Admiration,  50);
+        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Admiration,  50);
+        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Trust,       50);
+        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Trust,       50);
+        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Sympathy,    50);
+        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Sympathy,    50);
     }
 
     public override int Range(int minInclusive, int maxExclusive)
