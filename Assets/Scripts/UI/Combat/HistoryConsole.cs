@@ -251,7 +251,7 @@ public class HistoryConsole : MonoBehaviour
     }
 
     /// <summary>
-    /// Send the started entry to the console, be sure to close all opened tags before submitting an entry or it won't submit
+    /// Send the started entry to the console
     /// </summary>
     public void Submit()
     {
