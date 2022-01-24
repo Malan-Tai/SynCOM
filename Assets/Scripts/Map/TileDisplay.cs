@@ -312,7 +312,6 @@ public class TileDisplay : MonoBehaviour
         for (int i = 0; i < tiles.Count; i++)
         {
             int chunkIndex = tiles[i].Coords.x / _zonesChunkSizeInTiles + widthChunkNumber * (tiles[i].Coords.y / _zonesChunkSizeInTiles);
-            Debug.Log($"{tiles[i].Coords} : {chunkIndex}");
 
             if (coordsVec4[chunkIndex] == null)
             {
