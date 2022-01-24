@@ -171,11 +171,7 @@ public abstract class BaseAllyAbility : BaseAbility
         if (OnAbilityEnded != null) OnAbilityEnded(_executed && !_free);
         _free = false;
 
-        CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
-        CombatGameManager.Instance.TileDisplay.HideTileZone("BonusDamageZone");
-        CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
-        CombatGameManager.Instance.TileDisplay.HideTileZone("HealZone");
-        CombatGameManager.Instance.TileDisplay.HideTileZone("BonusHealZone");
+        HideRanges();
 
         foreach (GridBasedUnit unit in CombatGameManager.Instance.DeadUnits)
         {
@@ -240,6 +236,20 @@ public abstract class BaseAllyAbility : BaseAbility
             text = buff.GetName()
         };
         _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
+    }
+
+    public abstract void ShowRanges(AllyUnit user);
+    //public virtual void ShowRanges(AllyUnit user) { }
+
+    public void HideRanges()
+    {
+        //CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
+        //CombatGameManager.Instance.TileDisplay.HideTileZone("BonusDamageZone");
+        //CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
+        //CombatGameManager.Instance.TileDisplay.HideTileZone("HealZone");
+        //CombatGameManager.Instance.TileDisplay.HideTileZone("BonusHealZone");
+
+        CombatGameManager.Instance.UpdateReachableTiles();
     }
 }
 

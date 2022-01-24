@@ -25,6 +25,8 @@ public class AbilityDescription : MonoBehaviour
 
     private Vector3 _basePosition;
 
+    private BaseAllyAbility _ability = null;
+
     private void Awake()
     {
         switch (_descriptionType)
@@ -75,6 +77,9 @@ public class AbilityDescription : MonoBehaviour
 
     private void StartUsing(BaseAllyAbility ability)
     {
+        _ability = ability;
+        ability.ShowRanges(CombatGameManager.Instance.CurrentUnit);
+
         BaseDuoAbility duo = ability as BaseDuoAbility;
         if ((_descriptionType == EnumAbilityDescription.Solo && duo != null)
             || (_descriptionType != EnumAbilityDescription.Solo && duo == null))
@@ -161,6 +166,12 @@ public class AbilityDescription : MonoBehaviour
 
     private void StopUsing()
     {
+        if (_ability != null)
+        {
+            _ability.HideRanges();
+            _ability = null;
+        }
+
         if (_hidden) return;
 
         this.transform.position += new Vector3(0, OFFSET_Y, 0);

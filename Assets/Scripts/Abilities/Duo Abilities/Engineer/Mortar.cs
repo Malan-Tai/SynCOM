@@ -185,4 +185,8 @@ public class Mortar : BaseDuoAbility
 
         CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
     }
+
+    public override void ShowRanges(AllyUnit user)
+    {
+    }
 }
