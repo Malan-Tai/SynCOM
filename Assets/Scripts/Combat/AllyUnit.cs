@@ -22,6 +22,18 @@ public class AllyUnit : GridBasedUnit
         return false;
     }
 
+    private void OnEnable()
+    {
+        OnMoveStart += OnMoveStartFunc;
+        OnMoveFinish += OnMoveFinishFunc;
+    }
+
+    private void OnDisable()
+    {
+        OnMoveStart -= OnMoveStartFunc;
+        OnMoveFinish -= OnMoveFinishFunc;
+    }
+
     public void UpdateEnemyVisibilities()
     {
         foreach (var pair in _linesOfSight)
@@ -98,5 +110,21 @@ public class AllyUnit : GridBasedUnit
     public void DisplayUnitSelectionTile(bool display)
     {
         _selectUnitSpriteGO.SetActive(display);
+    }
+
+    protected void OnMoveStartFunc(GridBasedUnit unit, Vector2Int finalPos)
+    {
+        if (unit == this && CombatGameManager.Instance.CurrentUnit == this)
+        {
+            DisplayUnitSelectionTile(false);
+        }
+    }
+
+    protected void OnMoveFinishFunc(GridBasedUnit unit)
+    {
+        if (unit == this && CombatGameManager.Instance.CurrentUnit == this)
+        {
+            DisplayUnitSelectionTile(true);
+        }
     }
 }
