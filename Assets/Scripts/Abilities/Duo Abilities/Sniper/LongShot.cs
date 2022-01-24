@@ -156,8 +156,8 @@ public class LongShot : BaseDuoAbility
     {
         if (StartAction(ActionTypes.Attack, _effector, _chosenAlly)) return new ShootResult(false, 0f, false); // TODO : fix this return
 
-        int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
-        int randCrit = UnityEngine.Random.Range(0, 100);
+        int randShot = RandomEngine.Instance.Range(0, 100); // between 0 and 99
+        int randCrit = RandomEngine.Instance.Range(0, 100);
 
         if (alwaysHit || randShot < selfShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover))
         {

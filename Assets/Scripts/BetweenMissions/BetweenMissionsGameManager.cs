@@ -133,7 +133,7 @@ public class BetweenMissionsGameManager : MonoBehaviour
         while (addedRegions.Count < missionNumber)
         {
             RegionName region;
-            while (addedRegions.Contains(region = (RegionName)UnityEngine.Random.Range(0, N)))
+            while (addedRegions.Contains(region = (RegionName)RandomEngine.Instance.Range(0, N)))
             { }
 
             _availableMissions[region] = Mission.GenerateMission(progress - 2, progress + 3);

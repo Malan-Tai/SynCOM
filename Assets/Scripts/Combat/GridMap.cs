@@ -288,7 +288,7 @@ public class GridMap : MonoBehaviour
         }
 
         if (possibleTiles.Count <= 0) return null;
-        return possibleTiles[UnityEngine.Random.Range(0, possibleTiles.Count)];
+        return possibleTiles[RandomEngine.Instance.Range(0, possibleTiles.Count)];
     }
 
     public bool CanMoveFromCellToCell(Vector2Int cellA, Vector2Int cellB)

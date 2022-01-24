@@ -18,8 +18,8 @@ public class BasicEnemyShot : BaseEnemyAbility
             throw new UnityException("Can't execute enemy ability if it has no target, please check if ability can be executed before calling this method.");
         }
 
-        int randShot = Random.Range(0, 100);
-        int randCrit = Random.Range(0, 100);
+        int randShot = RandomEngine.Instance.Range(0, 100);
+        int randCrit = RandomEngine.Instance.Range(0, 100);
 
         AbilityResult result = new AbilityResult();
 

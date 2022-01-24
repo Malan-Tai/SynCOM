@@ -161,7 +161,7 @@ public class DwarfTossing : BaseDuoAbility
 
     public override void Execute()
     {
-        int randLaunch = UnityEngine.Random.Range(0, 100);
+        int randLaunch = RandomEngine.Instance.Range(0, 100);
 
         var parametersLaunch = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetUntilEndOfMovement, target = _effector, position = _tileCoord, pathfinding = PathfindingMoveType.Linear };
         _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parametersLaunch));

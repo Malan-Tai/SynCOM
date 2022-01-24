@@ -603,8 +603,8 @@ public abstract class BaseDuoAbility : BaseAllyAbility
     {
         if (StartAction(ActionTypes.Attack, _effector, _chosenAlly)) return new ShootResult(false, 0f, false); // TODO : fix this return
 
-        int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
-        int randCrit = UnityEngine.Random.Range(0, 100);
+        int randShot = RandomEngine.Instance.Range(0, 100); // between 0 and 99
+        int randCrit = RandomEngine.Instance.Range(0, 100);
 
         if (alwaysHit || randShot < selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
         {
@@ -632,8 +632,8 @@ public abstract class BaseDuoAbility : BaseAllyAbility
     {
         if (StartAction(ActionTypes.Attack, _chosenAlly, _effector)) return new ShootResult(false, 0f, false); // TODO : fix this return
 
-        int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
-        int randCrit = UnityEngine.Random.Range(0, 100);
+        int randShot = RandomEngine.Instance.Range(0, 100); // between 0 and 99
+        int randCrit = RandomEngine.Instance.Range(0, 100);
 
         if (alwaysHit || randShot < allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover))
         {
@@ -662,8 +662,8 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         Dictionary<GridBasedUnit, LineOfSight> los = shooterUnit.GetLineOfSights(false);
         if (!los.ContainsKey(shotUnit) || (shooterUnit.GridPosition - shotUnit.GridPosition).magnitude > shooterUnit.Character.RangeShot) return false;
 
-        int randShot = UnityEngine.Random.Range(0, 100); // between 0 and 99
-        int randCrit = UnityEngine.Random.Range(0, 100);
+        int randShot = RandomEngine.Instance.Range(0, 100); // between 0 and 99
+        int randCrit = RandomEngine.Instance.Range(0, 100);
 
         var shotStats = new AbilityStats(0, 0, 1f, 0, 0, shooterUnit);
 
