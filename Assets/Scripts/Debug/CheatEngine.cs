@@ -7,6 +7,23 @@ public class CheatEngine : RandomEngine
     private enum NextResult { Random, Min, Max };
     private NextResult _next;
 
+    private void Start()
+    {
+        AllyCharacter[] cheatSquad = new AllyCharacter[]
+        {
+            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Engineer),
+            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Engineer),
+            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Engineer),
+            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Engineer)
+        };
+
+        for (int i = 0; i < 4; i++)
+        {
+            GlobalGameManager.Instance.SetSquadUnit(i, cheatSquad[i]);
+            GlobalGameManager.Instance.AddCharacter(cheatSquad[i]);
+        }
+    }
+
     public override int Range(int minInclusive, int maxExclusive)
     {
         int res;
