@@ -6,6 +6,7 @@ using UnityEngine;
 public class TileDisplay : MonoBehaviour
 {
     [SerializeField] private float _displayHeight = 0.01f;
+    [SerializeField, Range(1, 31)] private int _zonesChunkSizeInTiles = 30;
     [SerializeField] private Sprite _mouseHoverTileSprite;
     [SerializeField] private TileZonePreset[] _presets;
     [SerializeField] private MeshRenderer _tileZoneRendererPrefab;
@@ -21,7 +22,7 @@ public class TileDisplay : MonoBehaviour
     private SpriteRenderer _leftCoverRenderer;
     private SpriteRenderer _rightCoverRenderer;
 
-    private readonly Dictionary<string, MeshRenderer> _tileZonesRenderers = new Dictionary<string, MeshRenderer>();
+    private readonly Dictionary<string, MeshRenderer[]> _tileZonesRenderers = new Dictionary<string, MeshRenderer[]>();
     private ushort maxOrder = ushort.MinValue;
     private Vector2Int _previousMouseCoord = Vector2Int.zero;
 
@@ -181,7 +182,7 @@ public class TileDisplay : MonoBehaviour
     {
         if (_tileZonesRenderers.ContainsKey(name))
         {
-            return _tileZonesRenderers[name].material.GetColor("_Color");
+            return _tileZonesRenderers[name][0].material.GetColor("_Color");
         }
 
         return new Color(0, 0, 0, 0);
@@ -209,39 +210,71 @@ public class TileDisplay : MonoBehaviour
             return false;
         }
 
-        MeshRenderer zoneRenderer = Instantiate(_tileZoneRendererPrefab, transform);
+        Vector3 gridOrigin = CombatGameManager.Instance.GridMap.GridOrigin;
+        float cellSize = CombatGameManager.Instance.GridMap.CellSize;
+        int widthChunkNumber = Mathf.CeilToInt((float)CombatGameManager.Instance.GridMap.GridTileWidth / _zonesChunkSizeInTiles);
+        int heightChunkNumber = Mathf.CeilToInt((float)CombatGameManager.Instance.GridMap.GridTileHeight / _zonesChunkSizeInTiles);
+
+        MeshRenderer[] zoneChunkRenderers = new MeshRenderer[widthChunkNumber * heightChunkNumber];
         Material zoneMaterial = new Material(_tileZoneRendererPrefab.sharedMaterial);
-        zoneMaterial.SetVectorArray("_Coords", new Vector4[1023]);
-        zoneMaterial.SetFloatArray("_BlobIndices", new float[1023]);
+        zoneMaterial.SetVectorArray("_Coords", new Vector4[_zonesChunkSizeInTiles * _zonesChunkSizeInTiles]);
+        zoneMaterial.SetFloatArray("_BlobIndices", new float[_zonesChunkSizeInTiles * _zonesChunkSizeInTiles]);
         zoneMaterial.SetTexture("_Tileset", tileset);
         zoneMaterial.SetColor("_Color", color);
-        zoneRenderer.material = zoneMaterial;
+        zoneMaterial.SetVector("_GridOrigin", gridOrigin);
+        zoneMaterial.SetFloat("_CellSize", cellSize);
 
+        // Compute the new orders for other tile zones
         if (order > maxOrder)
         {
-            foreach (KeyValuePair<string, MeshRenderer> zoneKVP in _tileZonesRenderers)
+            foreach (KeyValuePair<string, MeshRenderer[]> zoneKVP in _tileZonesRenderers)
             {
-                _tileZonesRenderers[zoneKVP.Key].sortingOrder -= order - maxOrder;
+                foreach (MeshRenderer chunkRenderer in zoneKVP.Value)
+                {
+                    chunkRenderer.sortingOrder -= order - maxOrder;
+                }
             }
 
             maxOrder = order;
-            zoneRenderer.sortingOrder = -1;
-        }
-        else
-        {
-            zoneRenderer.sortingOrder = order - maxOrder - 1;
         }
 
-        _tileZonesRenderers.Add(name, zoneRenderer);
+        for (int h = 0; h < heightChunkNumber; h++)
+        {
+            for (int w = 0; w < widthChunkNumber; w++)
+            {
+                int i = h * widthChunkNumber + w;
+                zoneChunkRenderers[i] = Instantiate(_tileZoneRendererPrefab, transform);
+                zoneChunkRenderers[i].material = zoneMaterial;
+                zoneChunkRenderers[i].sortingOrder = order - maxOrder - 1;
+
+                zoneChunkRenderers[i].transform.position = new Vector3
+                (
+                    gridOrigin.x + cellSize * (w * _zonesChunkSizeInTiles + _zonesChunkSizeInTiles / 2f),
+                    _displayHeight,
+                    gridOrigin.z + cellSize * (h * _zonesChunkSizeInTiles + _zonesChunkSizeInTiles / 2f)
+                );
+                zoneChunkRenderers[i].transform.localScale = new Vector3
+                (
+                    _zonesChunkSizeInTiles * CombatGameManager.Instance.GridMap.CellSize,
+                    _zonesChunkSizeInTiles * CombatGameManager.Instance.GridMap.CellSize,
+                    1f
+                );
+            }
+        }
+
+        _tileZonesRenderers.Add(name, zoneChunkRenderers);
 
         return true;
     }
 
     public void HideAllTileZones()
     {
-        foreach (KeyValuePair<string, MeshRenderer> zoneKVP in _tileZonesRenderers)
+        foreach (KeyValuePair<string, MeshRenderer[]> zoneKVP in _tileZonesRenderers)
         {
-            _tileZonesRenderers[zoneKVP.Key].enabled = false;
+            foreach (MeshRenderer chunkRenderer in zoneKVP.Value)
+            {
+                chunkRenderer.enabled = false;
+            }
         }
     }
 
@@ -252,7 +285,11 @@ public class TileDisplay : MonoBehaviour
             return false;
         }
 
-        _tileZonesRenderers[name].enabled = false;
+        foreach (MeshRenderer chunkRenderer in _tileZonesRenderers[name])
+        {
+            chunkRenderer.enabled = false;
+        }
+
         return true;
     }
 
@@ -269,14 +306,22 @@ public class TileDisplay : MonoBehaviour
             return false;
         }
 
-        Vector4[] coordsVec4 = new Vector4[tiles.Count];
-        float[] blobIndices = new float[tiles.Count];
+        int widthChunkNumber = Mathf.CeilToInt((float)CombatGameManager.Instance.GridMap.GridTileWidth / _zonesChunkSizeInTiles);
+        List<Vector4>[] coordsVec4 = new List<Vector4>[_tileZonesRenderers[name].Length];
+        List<float>[] blobIndices = new List<float>[_tileZonesRenderers[name].Length];
         for (int i = 0; i < tiles.Count; i++)
         {
-            coordsVec4[i] = new Vector4(tiles[i].Coords.x, tiles[i].Coords.y);
+            int chunkIndex = tiles[i].Coords.x / _zonesChunkSizeInTiles + widthChunkNumber * (tiles[i].Coords.y / _zonesChunkSizeInTiles);
+            Debug.Log($"{tiles[i].Coords} : {chunkIndex}");
+
+            if (coordsVec4[chunkIndex] == null)
+            {
+                coordsVec4[chunkIndex] = new List<Vector4>();
+                blobIndices[chunkIndex] = new List<float>();
+            }
+            coordsVec4[chunkIndex].Add(new Vector4(tiles[i].Coords.x, tiles[i].Coords.y));
 
             Tile[] neighbourTiles = CombatGameManager.Instance.GridMap.TileNeighbors(tiles[i].Coords);
-
             bool[] coordPresent = { false, false, false, false, false, false, false, false };
             for (int j = 0; j < neighbourTiles.Length; j++)
             {
@@ -286,18 +331,23 @@ public class TileDisplay : MonoBehaviour
                 }
             }
 
-            blobIndices[i] = FindBlobIndexFromNeighbours(coordPresent);
+            blobIndices[chunkIndex].Add(FindBlobIndexFromNeighbours(coordPresent));
         }
 
-        Vector3 p = CombatGameManager.Instance.GridMap.GridWorldCenter;
-        _tileZonesRenderers[name].transform.position = new Vector3(p.x, _displayHeight, p.z);
-        _tileZonesRenderers[name].transform.localScale = new Vector3(CombatGameManager.Instance.GridMap.GridWorldWidth, CombatGameManager.Instance.GridMap.GridWorldHeight, 1f);
-        _tileZonesRenderers[name].material.SetInt("_GridWidthInTiles", CombatGameManager.Instance.GridMap.GridTileWidth);
-        _tileZonesRenderers[name].material.SetInt("_GridHeightInTiles", CombatGameManager.Instance.GridMap.GridTileHeight);
-        _tileZonesRenderers[name].material.SetInt("_CoordsCount", tiles.Count);
-        _tileZonesRenderers[name].material.SetVectorArray("_Coords", coordsVec4);
-        _tileZonesRenderers[name].material.SetFloatArray("_BlobIndices", blobIndices);
-        _tileZonesRenderers[name].enabled = true;
+        for (int i = 0; i < _tileZonesRenderers[name].Length; i++)
+        {
+            if (coordsVec4[i] == null || coordsVec4[i].Count == 0)
+            {
+                _tileZonesRenderers[name][i].enabled = false;
+            }
+            else
+            {
+                _tileZonesRenderers[name][i].material.SetInt("_CoordsCount", coordsVec4[i].Count);
+                _tileZonesRenderers[name][i].material.SetVectorArray("_Coords", coordsVec4[i].ToArray());
+                _tileZonesRenderers[name][i].material.SetFloatArray("_BlobIndices", blobIndices[i].ToArray());
+                _tileZonesRenderers[name][i].enabled = true;
+            }
+        }
 
         return true;
     }

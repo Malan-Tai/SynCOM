@@ -24,8 +24,8 @@ Shader "Custom/TileZone"
 			#include "UnityCG.cginc"
 
 			// Grid info
-			int _GridWidthInTiles;
-			int _GridHeightInTiles;
+			float3 _GridOrigin;
+			float _CellSize;
 
 			// Zone info
 			sampler2D _Tileset;
@@ -51,7 +51,8 @@ Shader "Custom/TileZone"
 			{
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v.vertex);
-				o.uv = v.uv;
+				o.uv = mul(unity_ObjectToWorld, v.vertex).xz;
+				//o.uv = v.uv;
 
 				return o;
 			}
@@ -114,7 +115,8 @@ Shader "Custom/TileZone"
 
 			fixed4 frag(v2f i) : SV_Target
 			{
-				int2 uvGridCoord = int2(floor(i.uv.x * _GridWidthInTiles), floor(i.uv.y * _GridHeightInTiles));
+				float2 worldUv = (i.uv - _GridOrigin.xz) / _CellSize;
+				int2 uvGridCoord = (int2)floor(worldUv);
 
 				int2 blobCoord = int2(-1, -1);
 				for (int j = 0; j < _CoordsCount; j++)
@@ -131,7 +133,6 @@ Shader "Custom/TileZone"
 					discard;
 				}
 
-				float2 worldUv = float2(i.uv.x * _GridWidthInTiles, i.uv.y * _GridHeightInTiles);
 				float2 outUv = (blobCoord + frac(worldUv)) / float2(8.0, 6.0);
 
 				fixed4 col = tex2D(_Tileset, outUv);
