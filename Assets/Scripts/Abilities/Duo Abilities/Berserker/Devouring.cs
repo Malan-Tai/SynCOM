@@ -137,18 +137,37 @@ public class Devouring : BaseDuoAbility
         AbilityResult result = new AbilityResult();
 
         Debug.Log("DEVOURING : we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
-        ShootResult shooResult = SelfShoot(target, _selfShotStats, true);
-        float heal = _selfShotStats.GetHeal();
-        _effector.Heal(ref heal);
-        AddBuff(_effector, new Buff("Bloodlust", 6, _effector, damageBuff: 0.5f, critBuff: 0.5f, mitigationBuff: 1.5f));
+        if (!StartAction(ActionTypes.Attack, _effector, _chosenAlly))
+        {
+            ShootResult shooResult = SelfShoot(target, _selfShotStats);
+            float heal = _selfShotStats.GetHeal();
+            _effector.Heal(ref heal);
+            AddBuff(_effector, new Buff("Bloodlust", 6, _effector, damageBuff: 0.5f, critBuff: 0.5f, mitigationBuff: 1.5f));
 
-        result.Heal = heal;
-        result.Critical = shooResult.Critical;
-        result.Damage = shooResult.Damage;
-        SendResultToHistoryConsole(result);
+            result.Heal = heal;
+            result.Critical = shooResult.Critical;
+            result.Damage = shooResult.Damage;
+            SendResultToHistoryConsole(result);
+        }
+    }
 
-        var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
-        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
+    // always hits and doesn't procc StartAction, because it was already tested above
+    private ShootResult SelfShoot(GridBasedUnit target, AbilityStats selfShotStats)
+    {
+        int randCrit = RandomEngine.Instance.Range(0, 100);
+
+        AttackHitOrMiss(_effector, target as EnemyUnit, true, _chosenAlly);
+
+        if (randCrit < selfShotStats.GetCritRate())
+        {
+            AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage() * 1.5f, true, _chosenAlly);
+            return new ShootResult(true, selfShotStats.GetDamage() * 1.5f, true);
+        }
+        else
+        {
+            AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage(), false, _chosenAlly);
+            return new ShootResult(true, selfShotStats.GetDamage(), false);
+        }
     }
 
     protected override void SendResultToHistoryConsole(AbilityResult result)
