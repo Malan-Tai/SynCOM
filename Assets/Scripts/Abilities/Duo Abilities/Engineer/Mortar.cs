@@ -107,7 +107,7 @@ public class Mortar : BaseDuoAbility
 
         foreach (EnemyUnit target in _targets)
         {
-            result.DamageList.Add(SelfShoot(target, _selfShotStats, alwaysHit: true, canCrit: false).Damage);
+            result.DamageList.Add(AttackDamage(_effector, target, _selfShotStats.GetDamage(), false));
         }
         foreach (AllyUnit ally in _allyTargets)
         {
