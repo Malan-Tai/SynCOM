@@ -10,6 +10,7 @@ public class RegionButton : MonoBehaviour
     private RegionScriptableObject _regionData;
     [SerializeField]
     private Color _hoverColor;
+    private Color _nonHoverColor;
 
     private Image _sprite;
 
@@ -24,7 +25,10 @@ public class RegionButton : MonoBehaviour
 
     private void Start()
     {
+        _nonHoverColor = new Color(_hoverColor.r, _hoverColor.g, _hoverColor.b, 0.5f);
+
         _sprite = GetComponent<Image>();
+        _sprite.color = _nonHoverColor;
     }
 
     private void OnMouseEnter()
@@ -35,7 +39,7 @@ public class RegionButton : MonoBehaviour
 
     private void OnMouseExit()
     {
-        _sprite.color = Color.white;
+        _sprite.color = _nonHoverColor;
         if (OnMouseExitEvent != null) OnMouseExitEvent();
     }
 
