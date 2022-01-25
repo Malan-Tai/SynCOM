@@ -134,8 +134,22 @@ public class BasicDuoShot : BaseDuoAbility
                 .AddText(" but changed their mind and cancelled their action... ")
                 .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
                 .AddText(_chosenAlly.Character.Name.Split(' ')[0]).CloseTag()
-                .AddText(" still shot the enemy, dealing ")
-                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage}{selfCriticalText} damage").CloseTag();
+                .AddText(" still shot ")
+                .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover").CloseTag()
+                .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag();
+
+            if (result.Miss)
+            {
+                HistoryConsole.Instance
+                    .AddText(" but")
+                    .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" missed ").CloseTag();
+            }
+            else
+            {
+                HistoryConsole.Instance
+                    .AddText(", dealing ")
+                    .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage}{selfCriticalText} damage").CloseTag();
+            }
         }
         else if (result.AllyCancelled)
         {
@@ -149,10 +163,23 @@ public class BasicDuoShot : BaseDuoAbility
                 .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
                 .AddText(", ")
                 .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
-                .AddText(_effector.Character.Name.Split(' ')[0]).CloseTag()
-                .AddText(" effectively did ")
-                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage}{selfCriticalText} damage").CloseTag()
-                .AddText(" to ")
+                .AddText(_effector.Character.Name.Split(' ')[0]).CloseTag();
+
+            if (result.Miss)
+            {
+                HistoryConsole.Instance
+                    .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" missed ").CloseTag()
+                    .AddText(" his shot on ");
+            }
+            else
+            {
+                HistoryConsole.Instance
+                    .AddText(" effectively did ")
+                    .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage}{selfCriticalText} damage").CloseTag()
+                    .AddText(" to ");
+            }
+
+            HistoryConsole.Instance
                 .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover").CloseTag()
                 .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag()
                 .AddText(" but ")
