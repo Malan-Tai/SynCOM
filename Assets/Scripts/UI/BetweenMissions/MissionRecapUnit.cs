@@ -63,7 +63,7 @@ public class MissionRecapUnit : MonoBehaviour
         _background.SetActive(false);
         _quitButton.SetActive(true);
 
-        // TODO : portrait & name
+        _unitName.text = character.Name.Split(' ')[0];
         _unitClass.text = character.CharacterClass.ToString();
         _unitImage.sprite = character.GetSprite();
     }

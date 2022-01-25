@@ -57,7 +57,9 @@ public class AbilityDescription : MonoBehaviour
         AllyUnit.OnStoppedUsingAbility += StopUsing;
 
         AbilityButton.OnMouseEnter += StartUsing;
+        AbilityButton.OnMouseEnter += ShowRange;
         AbilityButton.OnMouseExit += StopUsing;
+        AbilityButton.OnMouseExit += HideRange;
 
         BaseAllyAbility.OnDescriptionUpdateRequest += UpdateDescription;
     }
@@ -68,9 +70,21 @@ public class AbilityDescription : MonoBehaviour
         AllyUnit.OnStoppedUsingAbility -= StopUsing;
 
         AbilityButton.OnMouseEnter -= StartUsing;
+        AbilityButton.OnMouseEnter -= ShowRange;
         AbilityButton.OnMouseExit -= StopUsing;
+        AbilityButton.OnMouseExit -= HideRange;
 
         BaseAllyAbility.OnDescriptionUpdateRequest -= UpdateDescription;
+    }
+
+    private void ShowRange(BaseAllyAbility ability)
+    {
+        ability.ShowRanges(CombatGameManager.Instance.CurrentUnit);
+    }
+
+    private void HideRange(BaseAllyAbility ability)
+    {
+        ability.HideRanges();
     }
 
     private void StartUsing(BaseAllyAbility ability)
@@ -158,8 +172,12 @@ public class AbilityDescription : MonoBehaviour
                 break;
         }
     }
-
     private void StopUsing()
+    {
+        StopUsing(null);
+    }
+
+    private void StopUsing(BaseAllyAbility ability)
     {
         if (_hidden) return;
 

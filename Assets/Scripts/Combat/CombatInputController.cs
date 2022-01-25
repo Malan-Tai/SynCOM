@@ -43,6 +43,27 @@ public class CombatInputController : MonoBehaviour
         {
             CombatGameManager.Instance.Camera.ZoomCamera(- scrollY);
         }
+
+        float x = 0f;
+        float y = 0f;
+
+        if (Input.mousePosition.x <= 0 || Input.GetKey(KeyCode.Q))
+        {
+            x = -1f;
+        }
+        else if (Input.mousePosition.x >= Screen.width - 1 || Input.GetKey(KeyCode.D))
+        {
+            x = 1f;
+        }
+        if (Input.mousePosition.y <= 0 || Input.GetKey(KeyCode.S))
+        {
+            y = -1f;
+        }
+        else if (Input.mousePosition.y >= Screen.height - 1 || Input.GetKey(KeyCode.Z))
+        {
+            y = 1f;
+        }
+        CombatGameManager.Instance.Camera.EdgeMove(x, y);
     }
 
     private void BaseInputControl()

@@ -4,23 +4,76 @@ using UnityEngine;
 
 public class CheatEngine : RandomEngine
 {
-    public override int Range(int minInclusive, int maxExclusive)
+    private enum NextResult { Random, Min, Max };
+    private NextResult _next;
+
+    private void Start()
     {
-        if (minInclusive == 0 && maxExclusive == 100)
+        AllyCharacter[] cheatSquad = new AllyCharacter[]
         {
-            return 0;
+            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Engineer),
+            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Engineer),
+            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Engineer),
+            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Engineer)
+        };
+
+        for (int i = 0; i < 4; i++)
+        {
+            GlobalGameManager.Instance.SetSquadUnit(i, cheatSquad[i]);
+            GlobalGameManager.Instance.AddCharacter(cheatSquad[i]);
         }
 
-        return UnityEngine.Random.Range(minInclusive, maxExclusive);
+        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Admiration,  50);
+        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Admiration,  50);
+        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Trust,       50);
+        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Trust,       50);
+        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Sympathy,    50);
+        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Sympathy,    50);
+    }
+
+    public override int Range(int minInclusive, int maxExclusive)
+    {
+        int res;
+        switch (_next)
+        {
+            case NextResult.Min:
+                res = minInclusive;
+                break;
+
+            case NextResult.Max:
+                res = maxExclusive;
+                break;
+
+            default:
+                res = UnityEngine.Random.Range(minInclusive, maxExclusive);
+                break;
+        }
+
+        return res;
     }
 
     public override float Range(float minInclusive, float maxInclusive)
     {
-        if (minInclusive == 0f && maxInclusive == 1f)
+        switch (_next)
         {
-            return 0f;
-        }
+            case NextResult.Min:
+                return minInclusive;
 
-        return UnityEngine.Random.Range(minInclusive, maxInclusive);
+            case NextResult.Max:
+                return maxInclusive;
+
+            default:
+                return UnityEngine.Random.Range(minInclusive, maxInclusive);
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.F1)) // F1 is min, F2 is max
+            _next = NextResult.Min;
+        else if (Input.GetKey(KeyCode.F2))
+            _next = NextResult.Max;
+        else
+            _next = NextResult.Random;
     }
 }

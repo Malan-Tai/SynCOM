@@ -116,6 +116,7 @@ public class CombatGameManager : MonoBehaviour
         {
             _allAllyUnits.Add(unit);
         }
+        _controllableUnits[_currentUnitIndex].DisplayUnitSelectionTile(true);
 
         InitCharacters();
 
@@ -244,8 +245,12 @@ public class CombatGameManager : MonoBehaviour
 
     public void NextControllableUnit()
     {
+        _controllableUnits[_currentUnitIndex].DisplayUnitSelectionTile(false);
+
         _currentUnitIndex++;
         if (_currentUnitIndex >= _controllableUnits.Count) _currentUnitIndex = 0;
+
+        _controllableUnits[_currentUnitIndex].DisplayUnitSelectionTile(true);
         _camera.SwitchParenthood(CurrentUnit);
         UpdateReachableTiles();
         UpdateVisibilities();
@@ -258,6 +263,9 @@ public class CombatGameManager : MonoBehaviour
         int index = _controllableUnits.IndexOf(unit);
         if (index >= 0 && index < _controllableUnits.Count)
         {
+            _controllableUnits[_currentUnitIndex].DisplayUnitSelectionTile(false);
+            unit.DisplayUnitSelectionTile(true);
+
             _currentUnitIndex = index;
             _camera.SwitchParenthood(unit);
             UpdateReachableTiles();
@@ -271,6 +279,9 @@ public class CombatGameManager : MonoBehaviour
     {
         if (index >= 0 && index < _controllableUnits.Count)
         {
+            _controllableUnits[_currentUnitIndex].DisplayUnitSelectionTile(false);
+            _controllableUnits[index].DisplayUnitSelectionTile(true);
+
             _currentUnitIndex = index;
             _camera.SwitchParenthood(_controllableUnits[index]);
             UpdateReachableTiles();
@@ -328,6 +339,9 @@ public class CombatGameManager : MonoBehaviour
 
     public void FinishAllyUnitTurn(AllyUnit unit, bool wasAllyForDuo = false)
     {
+        Debug.Log("end ally turn so don't display selection tile");
+        unit.DisplayUnitSelectionTile(false);
+
         // Check mission end
         if (CheckMissionEnd())
         {

@@ -146,6 +146,8 @@ public abstract class BaseAllyAbility : BaseAbility
     {
         base.SetEffector(effector);
         _effector = effector as AllyUnit;
+
+        CombatGameManager.Instance.TileDisplay.HideAllTileZones();
     }
 
     public virtual void UISelectUnit(GridBasedUnit unit)
@@ -171,11 +173,7 @@ public abstract class BaseAllyAbility : BaseAbility
         if (OnAbilityEnded != null) OnAbilityEnded(_executed && !_free);
         _free = false;
 
-        CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
-        CombatGameManager.Instance.TileDisplay.HideTileZone("BonusDamageZone");
-        CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
-        CombatGameManager.Instance.TileDisplay.HideTileZone("HealZone");
-        CombatGameManager.Instance.TileDisplay.HideTileZone("BonusHealZone");
+        HideRanges();
 
         foreach (GridBasedUnit unit in CombatGameManager.Instance.DeadUnits)
         {
@@ -240,6 +238,20 @@ public abstract class BaseAllyAbility : BaseAbility
             text = buff.GetName()
         };
         _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
+    }
+
+    public abstract void ShowRanges(AllyUnit user);
+    //public virtual void ShowRanges(AllyUnit user) { }
+
+    public void HideRanges()
+    {
+        //CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
+        //CombatGameManager.Instance.TileDisplay.HideTileZone("BonusDamageZone");
+        //CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
+        //CombatGameManager.Instance.TileDisplay.HideTileZone("HealZone");
+        //CombatGameManager.Instance.TileDisplay.HideTileZone("BonusHealZone");
+
+        CombatGameManager.Instance.UpdateReachableTiles();
     }
 }
 
@@ -388,7 +400,11 @@ public abstract class BaseDuoAbility : BaseAllyAbility
     {
         if (unit is AllyUnit && _chosenAlly == null)
         {
+            // Hide previous preselected ally
+            _temporaryChosenAlly?.DisplayUnitSelectionTile(false);
+
             _temporaryChosenAlly = unit as AllyUnit;
+            _temporaryChosenAlly.DisplayUnitSelectionTile(true);
             CombatGameManager.Instance.Camera.SwitchParenthood(_temporaryChosenAlly);
             RequestDescriptionUpdate();
             RequestTargetSymbolUpdate(_temporaryChosenAlly);
@@ -414,6 +430,8 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         if (_possibleAllies.Count > 0)
         {
             _temporaryChosenAlly = _possibleAllies[0];
+            _temporaryChosenAlly.DisplayUnitSelectionTile(true);
+
             CombatGameManager.Instance.Camera.SwitchParenthood(_temporaryChosenAlly);
 
             RequestTargetsUpdate(_possibleAllies);
@@ -430,6 +448,9 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         if (_executed) EndExecutedDuo(_effector, _chosenAlly);
 
         if (_chosenAlly != null) _chosenAlly.StopUsingAbilityAsAlly(_executed && !_freeForDuo);
+
+        _temporaryChosenAlly?.DisplayUnitSelectionTile(false);
+        _chosenAlly?.DisplayUnitSelectionTile(false);
 
         _temporaryChosenAlly = null;
         _chosenAlly = null;
@@ -531,6 +552,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
     {
         if (_possibleAllies.Count < 1) return;
 
+        AllyUnit previousAllyUnit = _temporaryChosenAlly;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitData;
 
@@ -560,6 +582,9 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
         if (changedUnitThisFrame)
         {
+            previousAllyUnit?.DisplayUnitSelectionTile(false);
+            _temporaryChosenAlly.DisplayUnitSelectionTile(true);
+
             CombatGameManager.Instance.Camera.SwitchParenthood(_temporaryChosenAlly);
             RequestDescriptionUpdate();
             RequestTargetSymbolUpdate(_temporaryChosenAlly);

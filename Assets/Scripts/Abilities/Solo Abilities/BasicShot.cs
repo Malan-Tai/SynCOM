@@ -70,21 +70,9 @@ public class BasicShot : BaseAllyAbility
 
         _selfShotStats = new AbilityStats(0, 0, 1f, 0, 0, _effector);
 
-        // Display Range
-        _possibleTargetsTiles.Clear();
-        GridMap map = CombatGameManager.Instance.GridMap;
-        for (int i = 0; i < map.GridTileWidth; i++)
-        {
-            for (int j = 0; j < map.GridTileHeight; j++)
-            {
-                Vector2Int tile = new Vector2Int(i, j);
-                if ((tile - _effector.GridPosition).magnitude <= _effector.AllyCharacter.RangeShot)
-                {
-                    _possibleTargetsTiles.Add(map[i, j]);
-                }
-            }
-        }
-        CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", _possibleTargetsTiles, false);
+    public override bool CanExecute()
+    {
+        return _targetIndex >= 0;
     }
 
     protected override void EnemyTargetingInput()
@@ -224,4 +212,23 @@ public class BasicShot : BaseAllyAbility
         RequestTargetSymbolUpdate(unit);
     }
 
+
+    public override void ShowRanges(AllyUnit user)
+    {
+        GridMap map = CombatGameManager.Instance.GridMap;
+        List<Tile> range = new List<Tile>();
+
+        for (int i = 0; i < map.GridTileWidth; i++)
+        {
+            for (int j = 0; j < map.GridTileHeight; j++)
+            {
+                Vector2Int tile = new Vector2Int(i, j);
+                if ((tile - user.GridPosition).magnitude <= user.Character.RangeShot)
+                {
+                    range.Add(map[i, j]);
+                }
+            }
+        }
+        CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", range, true);
+    }
 }

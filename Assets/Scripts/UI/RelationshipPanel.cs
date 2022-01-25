@@ -25,8 +25,9 @@ public class RelationshipPanel : MonoBehaviour
 
     public void SetPanel(AllyCharacter left, AllyCharacter right)
     {
-        // TODO : names
+        _leftName.text = left.Name.Split(' ')[0];
         _leftPortrait.sprite = left.GetPortrait();
+        _rightName.text = right.Name.Split(' ')[0];
         _rightPortrait.sprite = right.GetPortrait();
 
         List<EnumEmotions> leftRightEmotions = left.Relationships[right].ListEmotions;
@@ -36,9 +37,9 @@ public class RelationshipPanel : MonoBehaviour
             string leftRightText = "";
             foreach (EnumEmotions emotion in leftRightEmotions)
             {
-                leftRightText += emotion.ToString();
+                leftRightText += emotion.ToString() + ", ";
             }
-            _leftRightEmotion.text = leftRightText;
+            _leftRightEmotion.text = leftRightText.TrimEnd(' ', ',');
         }
         else _leftRightEmotion.text = "Neutral";
 
@@ -50,9 +51,9 @@ public class RelationshipPanel : MonoBehaviour
             string rightLeftText = "";
             foreach (EnumEmotions emotion in rightLeftEmotions)
             {
-                rightLeftText += emotion.ToString();
+                rightLeftText += emotion.ToString() + ", ";
             }
-            _rightLeftEmotion.text = rightLeftText;
+            _rightLeftEmotion.text = rightLeftText.TrimEnd(' ', ',');
         }
         else _rightLeftEmotion.text = "Neutral";
     }

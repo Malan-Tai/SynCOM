@@ -45,5 +45,9 @@ class SkipTurn : BaseAllyAbility
             .AddText("their turn")
             .Submit();
     }
+
+    public override void ShowRanges(AllyUnit user)
+    {
+    }
 }
 

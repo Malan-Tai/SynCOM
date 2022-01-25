@@ -24,8 +24,6 @@ public class DwarfTossing : BaseDuoAbility
         return _chosenAlly != null;
     }
 
-    
-
     public override string GetAllyDescription()
     {
         string res = "You launch your ally in the air. If you fail your throw, they will take damage.";
@@ -214,5 +212,24 @@ public class DwarfTossing : BaseDuoAbility
     protected override void SendResultToHistoryConsole(AbilityResult result)
     {
         // TODO
+    }
+
+    public override void ShowRanges(AllyUnit user)
+    {
+        GridMap map = CombatGameManager.Instance.GridMap;
+        List<Tile> range = new List<Tile>();
+
+        for (int i = 0; i < map.GridTileWidth; i++)
+        {
+            for (int j = 0; j < map.GridTileHeight; j++)
+            {
+                Vector2Int tile = new Vector2Int(i, j);
+                if ((tile - user.GridPosition).magnitude < 2)
+                {
+                    range.Add(map[i, j]);
+                }
+            }
+        }
+        CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", range, true);
     }
 }

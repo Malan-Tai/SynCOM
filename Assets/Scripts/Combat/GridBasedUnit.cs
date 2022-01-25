@@ -112,6 +112,9 @@ public class GridBasedUnit : MonoBehaviour
             _updatePathfinder = true;
             UpdateLineOfSights(!IsEnemy());
             if (OnMoveFinish != null) OnMoveFinish(this);
+
+            // Properly center the unit on the tile
+            transform.position = CombatGameManager.Instance.GridMap.GridToWorld(GridPosition, transform.position.y);
         }
 
         if (_markedForDeath && InterruptionQueue.IsEmpty() && transform.Find("CameraTarget") == null)
