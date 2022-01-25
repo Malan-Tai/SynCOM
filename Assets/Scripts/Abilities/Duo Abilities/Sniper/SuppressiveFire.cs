@@ -15,17 +15,26 @@ public class SuppressiveFire : BaseDuoAbility
         string res = "Launch a sneak attack on the distracted enemy, dealing critical damage.";
         if (_chosenAlly != null && _hoveredUnit != null)
         {
-            res += "\nAcc:" + (int)_allyShotStats.GetAccuracy(_hoveredUnit, _chosenAlly.LinesOfSight[_hoveredUnit].cover) + "%" + 
-                    " | Crit: 100%" +
-                    " | Dmg:" + _allyShotStats.GetDamage();
+            res += "\nACC:" + (int)_allyShotStats.GetAccuracy(_hoveredUnit, _chosenAlly.LinesOfSight[_hoveredUnit].cover) + "%" + 
+                    " | CRIT: 100%" +
+                    " | DMG:" + (int)_allyShotStats.GetDamage();
         }
         else if (_targetIndex >= 0 && _chosenAlly != null)
         {
             GridBasedUnit target = _possibleTargets[_targetIndex];
 
-            res += "\nAcc:" + _allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover) + "%" +
-                    " | Crit: 100%" +
-                    " | Dmg:" + _allyShotStats.GetDamage();
+            res += "\nACC:" + (int)_allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover) + "%" +
+                    " | CRIT: 100%" +
+                    " | DMG:" + (int)_allyShotStats.GetDamage();
+        }
+        else if (_temporaryChosenAlly != null)
+        {
+            var temporaryAllyShotStat = new AbilityStats(0, 9999, 2f, 0, 0, _temporaryChosenAlly);
+            temporaryAllyShotStat.UpdateWithEmotionModifiers(_effector);
+
+            res += "\nACC:" + (int)temporaryAllyShotStat.GetAccuracy() + "%" +
+                    " | CRIT: 100%" +
+                    " | DMG:" + (int)temporaryAllyShotStat.GetDamage();
         }
 
         return res;
@@ -36,17 +45,25 @@ public class SuppressiveFire : BaseDuoAbility
         string res = "Shoot at a distant enemy to distract them.";
         if (_chosenAlly != null && _hoveredUnit != null)
         {
-            res += "\nAcc:" + SniperAccuracy(_hoveredUnit) + "%" +
-                    " | Crit:" + _selfShotStats.GetCritRate() + "%" +
-                    " | Dmg:" + _selfShotStats.GetDamage();
+            res += "\nACC:" + SniperAccuracy(_hoveredUnit) + "%" +
+                    " | CRIT:" + _selfShotStats.GetCritRate() + "%" +
+                    " | DMG:" + _selfShotStats.GetDamage();
         }
         else if (_targetIndex >= 0 && _chosenAlly != null)
         {
             GridBasedUnit target = _possibleTargets[_targetIndex];
 
-            res += "\nAcc:" + SniperAccuracy(target) + "%" +
-                    " | Crit:" + _selfShotStats.GetCritRate() + "%" +
-                    " | Dmg:" + _selfShotStats.GetDamage();
+            res += "\nACC:" + SniperAccuracy(target) + "%" +
+                    " | CRIT:" + _selfShotStats.GetCritRate() + "%" +
+                    " | DMG:" + _selfShotStats.GetDamage();
+        }
+        else if (_temporaryChosenAlly != null)
+        {
+            var temporarySelfShotStat = new AbilityStats(0, 0, 1f, 0, 0, _effector);
+            temporarySelfShotStat.UpdateWithEmotionModifiers(_temporaryChosenAlly);
+
+            res += "\nCRIT:" + temporarySelfShotStat.GetCritRate() + "%" +
+                   " | DMG:" + temporarySelfShotStat.GetDamage();
         }
 
         return res;
@@ -282,7 +299,7 @@ public class SuppressiveFire : BaseDuoAbility
             for (int j = 0; j < map.GridTileHeight; j++)
             {
                 Vector2Int tile = new Vector2Int(i, j);
-                if ((tile - user.GridPosition).magnitude > user.Character.RangeShot)
+                if ((tile - user.GridPosition).magnitude > user.Character.RangeShot/2)
                 {
                     range.Add(map[i, j]);
                 }

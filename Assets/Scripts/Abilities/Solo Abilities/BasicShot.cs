@@ -69,6 +69,7 @@ public class BasicShot : BaseAllyAbility
         base.SetEffector(effector);
 
         _selfShotStats = new AbilityStats(0, 0, 1f, 0, 0, _effector);
+    }
 
     public override bool CanExecute()
     {
@@ -114,11 +115,6 @@ public class BasicShot : BaseAllyAbility
             RequestDescriptionUpdate();
             RequestTargetSymbolUpdate(_possibleTargets[_targetIndex]);
         }
-    }
-
-    public override bool CanExecute()
-    {
-        return _targetIndex >= 0;
     }
 
     public override void Execute()

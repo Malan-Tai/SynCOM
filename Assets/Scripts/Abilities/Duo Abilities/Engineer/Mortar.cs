@@ -14,27 +14,32 @@ public class Mortar : BaseDuoAbility
 
     public override string GetAllyDescription()
     {
-        return "Send a beacon in the air to indicate your position. You take cover but have a small chance to get hit.";
+        return "Send a beacon in the air to indicate your position. You take cover but have a small chance to get hit." +
+               "\nCHANCE:10%";
     }
+
     public override string GetDescription()
     {
         string res = "Fire a splinter-filled grenade on you ally's position, hoping they’ll take cover in time.";
         if (_chosenAlly != null)
         {
-            res += "\nAcc: 100%" +
-                    " | Crit: 0%" +
-                    " | Dmg: " + _selfShotStats.GetDamage();
+            res += "\nACC:100%" +
+                    " | CRIT:0%" +
+                    " | DMG:" + (int)_selfShotStats.GetDamage();
         }
-        else if (_effector != null)
+        else if (_effector != null & _temporaryChosenAlly != null)
         {
-            res += "\nAcc: 100%" +
-                    " | Crit: 0%" +
-                    " | Dmg: " + _effector.AllyCharacter.Damage * 1.5;
+            var temporarySelfShotStat = new AbilityStats(0, 0, 1.5f, 0, 0, _effector);
+            temporarySelfShotStat.UpdateWithEmotionModifiers(_temporaryChosenAlly);
+
+            res += "\nACC:100%" +
+                    " | CRIT:0%" +
+                    " | DMG:" + (int)temporarySelfShotStat.GetDamage();
         }
         else
         {
-            res += "\nAcc: 100%" +
-                    " | Crit: 0%";
+            res += "\nACC:100%" +
+                    " | CRIT:0%";
         }
         return res;
     }

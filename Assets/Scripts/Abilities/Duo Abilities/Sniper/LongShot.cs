@@ -25,17 +25,26 @@ public class LongShot : BaseDuoAbility
         // The enemy cover used is the one of the _chosenAlly (don't worry there's a scientific explanation)
         if (_chosenAlly != null && _hoveredUnit != null)
         {
-            res += "\nAcc:" + _selfShotStats.GetAccuracy(_hoveredUnit, _chosenAlly.LinesOfSight[_hoveredUnit].cover) +
-                    "% | Crit:" + _selfShotStats.GetCritRate() +
-                    "% | Dmg:" + _selfShotStats.GetDamage();
+            res += "\nACC:" + (int)_selfShotStats.GetAccuracy(_hoveredUnit, _chosenAlly.LinesOfSight[_hoveredUnit].cover) +
+                    "% | CRIT:" + (int)_selfShotStats.GetCritRate() +
+                    "% | DMG:" + (int)_selfShotStats.GetDamage();
         }
         else if (_targetIndex >= 0 && _chosenAlly != null)
         {
             GridBasedUnit target = _possibleTargets[_targetIndex];
 
-            res += "\nAcc:" + _selfShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover) +
-                    "% | Crit:" + _selfShotStats.GetCritRate() +
-                    "% | Dmg:" + _selfShotStats.GetDamage();
+            res += "\nACC:" + (int)_selfShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover) +
+                    "% | CRIT:" + (int)_selfShotStats.GetCritRate() +
+                    "% | DMG:" + (int)_selfShotStats.GetDamage();
+        }
+        else if (_temporaryChosenAlly != null)
+        {
+            var temporarySelfShotStat = new AbilityStats(0, 0, 2f, 0, 0, _effector);
+            temporarySelfShotStat.UpdateWithEmotionModifiers(_temporaryChosenAlly);
+
+            res += "\nACC:" + (int)temporarySelfShotStat.GetAccuracy() +
+                    "% | CRIT:" + (int)temporarySelfShotStat.GetCritRate() +
+                    "% | DMG:" + (int)temporarySelfShotStat.GetDamage();
         }
 
         return res;
@@ -43,7 +52,7 @@ public class LongShot : BaseDuoAbility
 
     public override string GetAllyDescription()
     {
-        return "Indicate the position of an enemy to the Sniper, allowing them to shoot it even if they're out of range.";
+        return "Indicate the position of an enemy to the Sniper, allowing them to shoot the enemy as if from your point of view.";
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)
