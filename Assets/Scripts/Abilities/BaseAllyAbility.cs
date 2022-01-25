@@ -323,7 +323,8 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                     .AddText(" their action with ")
                     .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
                     .AddText(" to shoot them instead, dealing ")
-                    .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{shootResult.Damage}{criticalText} damage").CloseTag();
+                    .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{shootResult.Damage}{criticalText} damage").CloseTag()
+                    .Submit();
                 break;
 
             case ChangeActionTypes.Positive:
@@ -343,7 +344,20 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
                         var heal = new AbilityStats(0, 0, 0, 0, 5, source);
                         heal.UpdateWithEmotionModifiers(duo);
-                        Heal(source, duo, heal.GetHeal(), null);
+                        float berserkerHeal = Heal(source, duo, heal.GetHeal(), null);
+
+                        HistoryConsole.Instance
+                            .BeginEntry()
+                            .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.Name).CloseTag()
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" cancelled ").CloseTag()
+                            .AddText(" their action with ")
+                            .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
+                            .AddText(" to heal them instead for ")
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{berserkerHeal} health").CloseTag()
+                            .AddText(" by hurting themself for ")
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{dmg} damage").CloseTag()
+                            .Submit();
+
                         break;
 
                     case EnumClasses.Engineer:
@@ -354,12 +368,38 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                         {
                             CombatGameManager.Instance.ChangeTileCover(toCover, EnumCover.Half);
                             CombatGameManager.Instance.AddBarricadeAt(toCover.Coords, duo.GridPosition.y != toCover.Coords.y);
+
+                            HistoryConsole.Instance
+                                .BeginEntry()
+                                .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.Name).CloseTag()
+                                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" cancelled ").CloseTag()
+                                .AddText(" their action with ")
+                                .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
+                                .AddText(" to protect them with a barricade")
+                                .Submit();
                         }
 
                         break;
 
                     case EnumClasses.Sniper: // buffs other
                         AddBuff(duo, new Buff("Assisted", 4, duo, 0.2f, 0.5f, 0.5f, 0, 0, 0));
+
+                        HistoryConsole.Instance
+                            .BeginEntry()
+                            .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.Name).CloseTag()
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" cancelled ").CloseTag()
+                            .AddText(" their action with ")
+                            .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
+                            .AddText(" to assist them, giving a buff for ")
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("2").CloseTag()
+                            .AddText(" turns: ")
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("DMG +20%").CloseTag()
+                            .AddText(" | ")
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("CRIT +50%").CloseTag()
+                            .AddText(" | ")
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("ACC +50%").CloseTag()
+                            .Submit();
+
                         break;
 
                     case EnumClasses.Alchemist: // heals other
@@ -371,7 +411,18 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
                         heal = new AbilityStats(0, 0, 0, 0, 5, source);
                         heal.UpdateWithEmotionModifiers(duo);
-                        Heal(source, duo, heal.GetHeal(), null);
+                        float alchemistHeal = Heal(source, duo, heal.GetHeal(), null);
+
+                        HistoryConsole.Instance
+                            .BeginEntry()
+                            .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.Name).CloseTag()
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" cancelled ").CloseTag()
+                            .AddText(" their action with ")
+                            .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
+                            .AddText(" to heal them instead for ")
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{alchemistHeal} health").CloseTag()
+                            .Submit();
+
                         break;
 
                     case EnumClasses.Bodyguard: // gets closer and protects
@@ -387,10 +438,34 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                         var protect = new AbilityStats(0, 0, 0, 0.5f, 0, source);
                         protect.UpdateWithEmotionModifiers(duo);
                         AddBuff(duo, new ProtectedByBuff(2, duo, source, protect.GetProtection()));
+
+                        HistoryConsole.Instance
+                            .BeginEntry()
+                            .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.Name).CloseTag()
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" cancelled ").CloseTag()
+                            .AddText(" their action with ")
+                            .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
+                            .AddText(" to protect them instead: ")
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"+{(int)((1 - protect.GetProtection()) * 100)}%").CloseTag()
+                            .Submit();
+
                         break;
 
                     case EnumClasses.Smuggler: // buffs other
                         AddBuff(duo, new Buff("Sprint", 4, duo, 0, 0, 0, 0, 2, 0.3f));
+
+                        HistoryConsole.Instance
+                            .BeginEntry()
+                            .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.Name).CloseTag()
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" cancelled ").CloseTag()
+                            .AddText(" their action with ")
+                            .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
+                            .AddText(" to improve their speed instead: ")
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("MOV +2").CloseTag()
+                            .AddText(" | ")
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("DODG +30%").CloseTag()
+                            .Submit();
+
                         break;
 
                     default:
