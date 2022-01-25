@@ -120,9 +120,15 @@ public class HealingRain : BaseDuoAbility
                 }
             }
 
+            string name = everyTarget[i].Character.Name;
+            if (everyTarget[i].Character.Name == _effector.Character.Name || everyTarget[i].Character.Name == _chosenAlly.Character.Name)
+            {
+                name = name.Split(' ')[0];
+            }
+
             HistoryConsole.Instance
                 .OpenLinkTag(everyTarget[i].Character.Name, everyTarget[i], EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
-                .AddText(everyTarget[i].Character.Name).CloseTag()
+                .AddText(name).CloseTag()
                 .AddText(" for ")
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(result.HealList[i].ToString()).CloseTag();
         }

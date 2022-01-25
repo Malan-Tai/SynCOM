@@ -128,7 +128,7 @@ public class BasicDuoShot : BaseDuoAbility
             .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover").CloseTag()
             .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag()
             .AddText(": ")
-            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag();
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name.Split(' ')[0]).CloseTag();
 
         if (result.Miss)
         {
@@ -144,7 +144,7 @@ public class BasicDuoShot : BaseDuoAbility
 
         HistoryConsole.Instance
             .AddText(" and ")
-            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag();
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name.Split(' ')[0]).CloseTag();
 
         if (result.AllyMiss)
         {
