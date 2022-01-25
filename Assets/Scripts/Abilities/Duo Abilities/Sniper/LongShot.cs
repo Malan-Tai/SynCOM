@@ -7,7 +7,7 @@ public class LongShot : BaseDuoAbility
     private AbilityStats _selfShotStats;
     private List<GridBasedUnit> _possibleTargets;
     private int _targetIndex = -1;
-    private int _selectionRange = 8;
+    private int _selectionRange = 20;
     public override string GetName()
     {
         return "Long Shot";
@@ -61,7 +61,8 @@ public class LongShot : BaseDuoAbility
         {
             float distanceToSelf = Vector2.Distance(unit.GridPosition, _effector.GridPosition);
             float distanceToAlly = Vector2.Distance(unit.GridPosition, _chosenAlly.GridPosition);
-            if (distanceToSelf <= _effector.Character.RangeShot && distanceToAlly <= _effector.Character.RangeShot && _chosenAlly.LinesOfSight.ContainsKey(unit))
+            if (distanceToAlly <= _chosenAlly.Character.RangeShot && 
+                _chosenAlly.LinesOfSight.ContainsKey(unit))
             {
                 _possibleTargets.Add(unit);
             }

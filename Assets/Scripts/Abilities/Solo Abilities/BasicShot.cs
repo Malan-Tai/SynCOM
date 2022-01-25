@@ -10,6 +10,17 @@ public class BasicShot : BaseAllyAbility
 
     private AbilityStats _selfShotStats;
 
+    private List<Tile> _possibleTargetsTiles = new List<Tile>();
+
+    public override string GetName()
+    {
+        return "Basic Attack";
+    }
+    public override string GetShortDescription()
+    {
+        return "A basic attack";
+    }
+
     public override string GetDescription()
     {
         string res = "Shoot at the target.";
@@ -58,7 +69,6 @@ public class BasicShot : BaseAllyAbility
         base.SetEffector(effector);
 
         _selfShotStats = new AbilityStats(0, 0, 1f, 0, 0, _effector);
-    }
 
     public override bool CanExecute()
     {
@@ -104,6 +114,11 @@ public class BasicShot : BaseAllyAbility
             RequestDescriptionUpdate();
             RequestTargetSymbolUpdate(_possibleTargets[_targetIndex]);
         }
+    }
+
+    public override bool CanExecute()
+    {
+        return _targetIndex >= 0;
     }
 
     public override void Execute()
@@ -188,10 +203,6 @@ public class BasicShot : BaseAllyAbility
         base.EndAbility();
     }
 
-    public override string GetName()
-    {
-        return "Basic Attack";
-    }
 
     public override void UISelectUnit(GridBasedUnit unit)
     {
@@ -201,10 +212,6 @@ public class BasicShot : BaseAllyAbility
         RequestTargetSymbolUpdate(unit);
     }
 
-    public override string GetShortDescription()
-    {
-        return "A basic attack";
-    }
 
     public override void ShowRanges(AllyUnit user)
     {

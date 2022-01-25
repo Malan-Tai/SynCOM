@@ -142,7 +142,7 @@ public class AllyUnit : GridBasedUnit
 
     public override void MoveToCell(Vector2Int cell, bool eventOnEnd = false)
     {
-        base.MoveToCell(cell);
+        base.MoveToCell(cell, eventOnEnd);
         _info.SetCover(CombatGameManager.Instance.GridMap.GetBestCoverAt(cell));
     }
 }

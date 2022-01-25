@@ -44,15 +44,24 @@ public class DwarfTossing : BaseDuoAbility
         string res = "Your ally launches you in the air to land a devastating blow in the ennemy.";
         if (_chosenAlly != null)
         {
-            res += "\nAcc: ~" + (int)_selfShotStats.GetAccuracy() + "%" +
-                    " | Crit: ~" + (int)_selfShotStats.GetCritRate() + "%" +
-                    " | Dmg: " + (int)_selfShotStats.GetDamage();
+            res += "\nACC: ~" + (int)_selfShotStats.GetAccuracy() + "%" +
+                    " | CRIT: ~" + (int)_selfShotStats.GetCritRate() + "%" +
+                    " | DMG: " + (int)_selfShotStats.GetDamage();
+        }
+        else if (_temporaryChosenAlly != null)
+        {
+            var temporarySelfShotStat = new AbilityStats(0, 0, 3f, 0, 0, _effector);
+            temporarySelfShotStat.UpdateWithEmotionModifiers(_temporaryChosenAlly);
+
+            res += "\nACC: ~" + (int)temporarySelfShotStat.GetAccuracy() + "%" +
+                    " | CRIT: ~" + (int)temporarySelfShotStat.GetCritRate() + "%" +
+                    " | DMG: " + (int)temporarySelfShotStat.GetDamage();
         }
         else if (_effector != null)
         {
-            res += "\nAcc: ~" +  (int)_effector.AllyCharacter.Accuracy + "%" +
-                    " | Crit: ~" + (int)_effector.AllyCharacter.CritChances + "%" +
-                    " | Dmg: " + (int)_effector.AllyCharacter.Damage * 3;
+            res += "\nACC: ~" +  (int)_effector.AllyCharacter.Accuracy + "%" +
+                    " | CRIT: ~" + (int)_effector.AllyCharacter.CritChances + "%" +
+                    " | DMG: " + (int)_effector.AllyCharacter.Damage * 3;
         }
         return res;
     }

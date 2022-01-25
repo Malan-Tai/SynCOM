@@ -10,7 +10,40 @@ public class Devouring : BaseDuoAbility
 
     public override string GetDescription()
     {
-        return "You ask an ally to hold an enemy while you feed on them, restoring your health and extending your Frenzy state.";
+        string res = "You feed on an enemy, restoring your health triggering yout Bloodlust.";
+        if (_chosenAlly != null && _hoveredUnit != null)
+        {
+            res += "\nACC:" + (int)_selfShotStats.GetAccuracy(_hoveredUnit, _effector.LinesOfSight[_hoveredUnit].cover) +
+                    "% | CRIT:" + (int)_selfShotStats.GetCritRate() +
+                    "% | DMG:" + (int)_selfShotStats.GetDamage() +
+                    " | HEAL:" + (int)_selfShotStats.GetHeal() +
+                    "\nBloodlust: CRIT+50%, ATK+50%," +
+                    "\nDMG TKN+50%, 3TRN";
+        }
+        else if (_targetIndex >= 0 && _chosenAlly != null)
+        {
+            GridBasedUnit target = _possibleTargets[_targetIndex];
+
+            res += "\nACC:" + (int)_selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover) +
+                    "% | CRIT:" + (int)_selfShotStats.GetCritRate() +
+                    "% | DMG:" + (int)_selfShotStats.GetDamage() +
+                    " | HEAL:" + (int)_selfShotStats.GetHeal() +
+                    "\nBloodlust: CRIT+50%, ATK+50%," +
+                    "\nDMG TKN+50%, 3TRN";
+        }
+        else if (_effector != null & _temporaryChosenAlly != null)
+        {
+            var temporarySelfShotStat = new AbilityStats(999, 0, 1.5f, 0, 6, _effector);
+            temporarySelfShotStat.UpdateWithEmotionModifiers(_effector);
+
+            res += "\nACC:" + (int)temporarySelfShotStat.GetAccuracy() + "%" +
+                    " | CRIT:" + (int)temporarySelfShotStat.GetCritRate() + "%" +
+                    " | DMG:" + (int)temporarySelfShotStat.GetDamage() +
+                    " | HEAL:" + (int)temporarySelfShotStat.GetHeal() +
+                    "\nBloodlust: CRIT+50%, ATK+50%," +
+                    "\nDMG TKN+50%, 3TRN";
+        }
+        return res;
     }
 
     public override string GetName()
@@ -107,7 +140,7 @@ public class Devouring : BaseDuoAbility
         ShootResult shooResult = SelfShoot(target, _selfShotStats, true);
         float heal = _selfShotStats.GetHeal();
         _effector.Heal(ref heal);
-        AddBuff(_effector, new Buff("Bloodlust", 6, _effector, damageBuff: 2f, critBuff: 0.5f, mitigationBuff: 1.5f));
+        AddBuff(_effector, new Buff("Bloodlust", 6, _effector, damageBuff: 0.5f, critBuff: 0.5f, mitigationBuff: 1.5f));
 
         result.Heal = heal;
         result.Critical = shooResult.Critical;
@@ -151,7 +184,7 @@ public class Devouring : BaseDuoAbility
 
     public override string GetAllyDescription()
     {
-        return "The feasting spectacle is terrifying.";
+        return "You hold the enemy while your ally devoures them, leaving you terrified.";
     }
 
     public override void UISelectUnit(GridBasedUnit unit)
