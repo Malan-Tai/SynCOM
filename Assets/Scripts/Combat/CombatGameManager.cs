@@ -293,9 +293,9 @@ public class CombatGameManager : MonoBehaviour
 
     public void UpdateReachableTiles()
     {
-        if (CurrentUnit != null)
+        if (CurrentUnit == null)
         {
-            _tileDisplay.HideTileZone("MoveZone");
+            _tileDisplay.HideAllTileZones();
             return;
         }
 
