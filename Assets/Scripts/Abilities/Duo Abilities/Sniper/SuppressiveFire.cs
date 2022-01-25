@@ -15,7 +15,7 @@ public class SuppressiveFire : BaseDuoAbility
         string res = "Launch a sneak attack on the distracted enemy, dealing critical damage.";
         if (_chosenAlly != null && _hoveredUnit != null)
         {
-            res += "\nAcc:" + _allyShotStats.GetAccuracy(_hoveredUnit, _chosenAlly.LinesOfSight[_hoveredUnit].cover) + "%" + 
+            res += "\nAcc:" + (int)_allyShotStats.GetAccuracy(_hoveredUnit, _chosenAlly.LinesOfSight[_hoveredUnit].cover) + "%" + 
                     " | Crit: 100%" +
                     " | Dmg:" + _allyShotStats.GetDamage();
         }
@@ -30,6 +30,7 @@ public class SuppressiveFire : BaseDuoAbility
 
         return res;
     }
+
     public override string GetDescription()
     {
         string res = "Shoot at a distant enemy to distract them.";
@@ -66,7 +67,7 @@ public class SuppressiveFire : BaseDuoAbility
             float distanceToSelf = Vector2.Distance(unit.GridPosition, _effector.GridPosition);
             float distanceToAlly = Vector2.Distance(unit.GridPosition, _chosenAlly.GridPosition);
             // TODO:    Check if the unit can be targetted : must NOT be too close
-            if (distanceToSelf > _effector.Character.RangeShot && distanceToAlly <= _chosenAlly.Character.RangeShot && _chosenAlly.LinesOfSight.ContainsKey(unit))
+            if (distanceToSelf > _effector.Character.RangeShot/2 && distanceToAlly <= _chosenAlly.Character.RangeShot && _chosenAlly.LinesOfSight.ContainsKey(unit))
             {
                 _possibleTargets.Add(unit);
             }
@@ -88,6 +89,7 @@ public class SuppressiveFire : BaseDuoAbility
         _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
         _allyShotStats.UpdateWithEmotionModifiers(_effector);
     }
+
     public override bool CanExecute()
     {
         return _chosenAlly != null && _targetIndex >= 0;
@@ -232,10 +234,41 @@ public class SuppressiveFire : BaseDuoAbility
 
         float dist = (target.GridPosition - _effector.GridPosition).magnitude - _effector.AllyCharacter.RangeShot;
 
-        float distPenalty = Mathf.Clamp01(dist / 10);
+        //float distPenalty = Mathf.Clamp01(dist / 10);
 
-        acc = acc * (1 - distPenalty);
+        //acc = acc * (1 - distPenalty);
+
+        if (dist > 0) acc -= dist * 10;
 
         return acc;
+    }
+
+    protected override ShootResult SelfShoot(GridBasedUnit target, AbilityStats selfShotStats, bool alwaysHit = false, bool canCrit = true)
+    {
+        if (StartAction(ActionTypes.Attack, _effector, _chosenAlly)) return new ShootResult(false, 0f, false); // TODO : fix this return
+
+        int randShot = RandomEngine.Instance.Range(0, 100); // between 0 and 99
+        int randCrit = RandomEngine.Instance.Range(0, 100);
+
+        if (alwaysHit || randShot < SniperAccuracy(target))
+        {
+            AttackHitOrMiss(_effector, target as EnemyUnit, true, _chosenAlly);
+
+            if (canCrit && randCrit < selfShotStats.GetCritRate())
+            {
+                AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage() * 1.5f, true, _chosenAlly);
+                return new ShootResult(true, selfShotStats.GetDamage() * 1.5f, true);
+            }
+            else
+            {
+                AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage(), false, _chosenAlly);
+                return new ShootResult(true, selfShotStats.GetDamage(), false);
+            }
+        }
+        else
+        {
+            AttackHitOrMiss(_effector, target as EnemyUnit, false, _chosenAlly);
+            return new ShootResult(false, 0f, false);
+        }
     }
 }

@@ -10,6 +10,17 @@ public class BasicShot : BaseAllyAbility
 
     private AbilityStats _selfShotStats;
 
+    private List<Tile> _possibleTargetsTiles = new List<Tile>();
+
+    public override string GetName()
+    {
+        return "Basic Attack";
+    }
+    public override string GetShortDescription()
+    {
+        return "A basic attack";
+    }
+
     public override string GetDescription()
     {
         string res = "Shoot at the target.";
@@ -58,11 +69,22 @@ public class BasicShot : BaseAllyAbility
         base.SetEffector(effector);
 
         _selfShotStats = new AbilityStats(0, 0, 1f, 0, 0, _effector);
-    }
 
-    public override bool CanExecute()
-    {
-        return _targetIndex >= 0;
+        // Display Range
+        _possibleTargetsTiles.Clear();
+        GridMap map = CombatGameManager.Instance.GridMap;
+        for (int i = 0; i < map.GridTileWidth; i++)
+        {
+            for (int j = 0; j < map.GridTileHeight; j++)
+            {
+                Vector2Int tile = new Vector2Int(i, j);
+                if ((tile - _effector.GridPosition).magnitude <= _effector.AllyCharacter.RangeShot)
+                {
+                    _possibleTargetsTiles.Add(map[i, j]);
+                }
+            }
+        }
+        CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", _possibleTargetsTiles, false);
     }
 
     protected override void EnemyTargetingInput()
@@ -104,6 +126,11 @@ public class BasicShot : BaseAllyAbility
             RequestDescriptionUpdate();
             RequestTargetSymbolUpdate(_possibleTargets[_targetIndex]);
         }
+    }
+
+    public override bool CanExecute()
+    {
+        return _targetIndex >= 0;
     }
 
     public override void Execute()
@@ -188,10 +215,6 @@ public class BasicShot : BaseAllyAbility
         base.EndAbility();
     }
 
-    public override string GetName()
-    {
-        return "Basic Attack";
-    }
 
     public override void UISelectUnit(GridBasedUnit unit)
     {
@@ -201,8 +224,4 @@ public class BasicShot : BaseAllyAbility
         RequestTargetSymbolUpdate(unit);
     }
 
-    public override string GetShortDescription()
-    {
-        return "A basic attack";
-    }
 }
