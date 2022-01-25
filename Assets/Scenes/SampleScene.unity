@@ -5658,7 +5658,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &486491602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7161,9 +7161,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 669862626}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76065f619ad423644a5221ebd2c3ee8e, type: 3}
+  m_Script: {fileID: 11500000, guid: 5090991735a260c4c98058e12e1049b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _classes: 04000000040000000400000004000000
+  _relationships:
+  - selfIndex: 0
+    allyIndex: 1
+    admirationLvl: 2
+    admirationFill: 0
+    trustLvl: 2
+    trustFill: 0
+    sympathyLvl: 2
+    sympathyFill: 0
 --- !u!1 &674690315
 GameObject:
   m_ObjectHideFlags: 0
