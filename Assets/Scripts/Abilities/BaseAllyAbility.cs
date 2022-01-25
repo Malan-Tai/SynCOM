@@ -89,7 +89,7 @@ public abstract class BaseAllyAbility : BaseAbility
         HandleRelationshipEventResult(result);
     }
 
-    protected void AttackDamage(AllyUnit source, EnemyUnit target, float damage, bool crit, AllyUnit duo = null)
+    protected float AttackDamage(AllyUnit source, EnemyUnit target, float damage, bool crit, AllyUnit duo = null)
     {
         bool killed = target.TakeDamage(ref damage, false);
 
@@ -105,9 +105,11 @@ public abstract class BaseAllyAbility : BaseAbility
         HandleRelationshipEventResult(result);
 
         if (killed) HandleRelationshipEventResult(RelationshipEventsManager.Instance.KillEnemy(source, target, duo));
+
+        return damage;
     }
 
-    protected void FriendlyFireDamage(AllyUnit source, AllyUnit target, float damage, AllyUnit duo = null)
+    protected float FriendlyFireDamage(AllyUnit source, AllyUnit target, float damage, AllyUnit duo = null)
     {
         bool killed = target.TakeDamage(ref damage, false);
 
@@ -123,9 +125,10 @@ public abstract class BaseAllyAbility : BaseAbility
         HandleRelationshipEventResult(result);
 
         // TODO : kill ally ?
+        return damage;
     }
 
-    protected void Heal(AllyUnit source, AllyUnit target, float healAmount, AllyUnit duo = null)
+    protected float Heal(AllyUnit source, AllyUnit target, float healAmount, AllyUnit duo = null)
     {
         target.Heal(ref healAmount, false);
 
@@ -139,6 +142,8 @@ public abstract class BaseAllyAbility : BaseAbility
         });
 
         HandleRelationshipEventResult(result);
+
+        return healAmount;
     }
     #endregion
 
@@ -623,15 +628,16 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         {
             AttackHitOrMiss(_effector, target as EnemyUnit, true, _chosenAlly);
 
+            float effectiveDamage;
             if (canCrit && randCrit < selfShotStats.GetCritRate())
             {
-                AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage() * 1.5f, true, _chosenAlly);
-                return new ShootResult(true, selfShotStats.GetDamage() * 1.5f, true);
+                effectiveDamage = AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage() * 1.5f, true, _chosenAlly);
+                return new ShootResult(true, effectiveDamage, true);
             }
             else
             {
-                AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage(), false, _chosenAlly);
-                return new ShootResult(true, selfShotStats.GetDamage(), false);
+                effectiveDamage = AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage(), false, _chosenAlly);
+                return new ShootResult(true, effectiveDamage, false);
             }
         }
         else
@@ -652,15 +658,16 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         {
             AttackHitOrMiss(_chosenAlly, target as EnemyUnit, true, _effector);
 
+            float effectiveDamage;
             if (canCrit && randCrit < allyShotStats.GetCritRate())
             {
-                AttackDamage(_chosenAlly, target as EnemyUnit, allyShotStats.GetDamage() * 1.5f, true, _effector);
-                return new ShootResult(true, allyShotStats.GetDamage() * 1.5f, true);
+                effectiveDamage = AttackDamage(_chosenAlly, target as EnemyUnit, allyShotStats.GetDamage() * 1.5f, true, _effector);
+                return new ShootResult(true, effectiveDamage, true);
             }
             else
             {
-                AttackDamage(_chosenAlly, target as EnemyUnit, allyShotStats.GetDamage(), false, _effector);
-                return new ShootResult(true, allyShotStats.GetDamage(), false);
+                effectiveDamage = AttackDamage(_chosenAlly, target as EnemyUnit, allyShotStats.GetDamage(), false, _effector);
+                return new ShootResult(true, effectiveDamage, false);
             }
         }
         else

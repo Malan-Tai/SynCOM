@@ -147,9 +147,7 @@ public class LongShot : BaseDuoAbility
 
         AbilityResult result = new AbilityResult();
         ShootResult selfResults = SelfShoot(target, _selfShotStats);
-        result.Miss = !selfResults.Landed;
-        result.Critical = selfResults.Critical;
-        result.Damage = selfResults.Damage;
+        result.CopyShootResult(selfResults);
         SendResultToHistoryConsole(result);
     }
 

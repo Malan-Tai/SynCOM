@@ -123,17 +123,13 @@ public class BasicShot : BaseAllyAbility
 
             if (randCrit < _selfShotStats.GetCritRate())
             {
-                AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage * 1.5f, true);
-
-                result.Damage = _effector.Character.Damage * 1.5f;
+                result.Damage = AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage * 1.5f, true);
                 result.Critical = true;
                 SendResultToHistoryConsole(result);
             }
             else
             {
-                AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage, false);
-
-                result.Damage = _effector.Character.Damage;
+                result.Damage = AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage, false);
                 result.Critical = false;
                 SendResultToHistoryConsole(result);
             }

@@ -107,12 +107,8 @@ public class BasicDuoShot : BaseDuoAbility
         ShootResult allyResults = AllyShoot(target, _allyShotStats);
 
         AbilityResult result = new AbilityResult();
-        result.Miss = !selfResults.Landed;
-        result.AllyMiss = !allyResults.Landed;
-        result.Critical = selfResults.Critical;
-        result.AllyCritical = allyResults.Critical;
-        result.Damage = selfResults.Damage;
-        result.AllyDamage = allyResults.Damage;
+        result.CopyShootResult(selfResults);
+        result.CopyAllyShootResult(allyResults);
         SendResultToHistoryConsole(result);
     }
 

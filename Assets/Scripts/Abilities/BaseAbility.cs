@@ -60,14 +60,31 @@ public abstract class BaseAbility
     protected class AbilityResult
     {
         public bool Miss = false;
-        public float Damage = 0;
-        public float Heal = 0;
+        public float Damage = 0f;
+        public float Heal = 0f;
         public bool Critical = false;
 
         public bool AllyMiss = false;
-        public float AllyDamage = 0;
-        public float AllyHeal = 0;
+        public float AllyDamage = 0f;
+        public float AllyHeal = 0f;
         public bool AllyCritical = false;
+
+        public List<float> DamageList = new List<float>();
+        public List<float> HealList = new List<float>();
+
+        public void CopyShootResult(in ShootResult shootResult)
+        {
+            Miss = !shootResult.Landed;
+            Critical = shootResult.Critical;
+            Damage = shootResult.Damage;
+        }
+
+        public void CopyAllyShootResult(in ShootResult shootResult)
+        {
+            AllyMiss = !shootResult.Landed;
+            AllyCritical = shootResult.Critical;
+            AllyDamage = shootResult.Damage;
+        }
     }
 
     /// <summary>

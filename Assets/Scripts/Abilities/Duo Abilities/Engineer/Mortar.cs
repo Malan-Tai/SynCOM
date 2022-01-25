@@ -107,14 +107,13 @@ public class Mortar : BaseDuoAbility
 
         foreach (EnemyUnit target in _targets)
         {
-            SelfShoot(target, _selfShotStats, alwaysHit: true, canCrit: false);
+            result.DamageList.Add(SelfShoot(target, _selfShotStats, alwaysHit: true, canCrit: false).Damage);
         }
         foreach (AllyUnit ally in _allyTargets)
         {
-            FriendlyFireDamage(_effector, ally, _selfShotStats.GetDamage(), ally);
+            result.DamageList.Add(FriendlyFireDamage(_effector, ally, _selfShotStats.GetDamage(), ally));
         }
 
-        result.Damage = _selfShotStats.GetDamage();
         SendResultToHistoryConsole(result);
     }
 
@@ -128,10 +127,7 @@ public class Mortar : BaseDuoAbility
             .AddText(" used ")
             .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
             .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
-            .AddText(":")
-            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($" did ").CloseTag()
-            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage} damage").CloseTag()
-            .AddText(" to ");
+            .AddText(": did ");
 
         List<GridBasedUnit> everyTarget = new List<GridBasedUnit>();
         everyTarget.AddRange(_targets);
@@ -152,6 +148,8 @@ public class Mortar : BaseDuoAbility
             }
 
             HistoryConsole.Instance
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(result.DamageList[i].ToString()).CloseTag()
+                .AddText(" to ")
                 .OpenLinkTag(everyTarget[i].Character.Name, everyTarget[i], EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
                 .AddText(everyTarget[i].Character.Name).CloseTag();
         }

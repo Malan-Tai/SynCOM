@@ -114,12 +114,8 @@ public class SuppressiveFire : BaseDuoAbility
         ShootResult selfResult = SelfShoot(target, _selfShotStats);
         ShootResult allyResult = AllyShoot(target, _allyShotStats);
 
-        result.Miss = !selfResult.Landed;
-        result.Critical = selfResult.Critical;
-        result.Damage = selfResult.Damage;
-        result.AllyMiss = !allyResult.Landed;
-        result.AllyCritical = allyResult.Critical;
-        result.AllyDamage = allyResult.Damage;
+        result.CopyShootResult(selfResult);
+        result.CopyAllyShootResult(allyResult);
         SendResultToHistoryConsole(result);
     }
 

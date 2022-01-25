@@ -101,7 +101,6 @@ public class Devouring : BaseDuoAbility
 
         // Actual effect of the ability
         GridBasedUnit target = _possibleTargets[_targetIndex];
-        AbilityResult result = new AbilityResult();
 
         Debug.Log("DEVOURING : we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
         ShootResult shooResult = SelfShoot(target, _selfShotStats, true);
@@ -109,9 +108,9 @@ public class Devouring : BaseDuoAbility
         _effector.Heal(ref heal);
         AddBuff(_effector, new Buff("Bloodlust", 6, _effector, damageBuff: 2f, critBuff: 0.5f, mitigationBuff: 1.5f));
 
+        AbilityResult result = new AbilityResult();
+        result.CopyShootResult(shooResult);
         result.Heal = heal;
-        result.Critical = shooResult.Critical;
-        result.Damage = shooResult.Damage;
         SendResultToHistoryConsole(result);
 
         var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
