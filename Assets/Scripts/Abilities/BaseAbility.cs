@@ -59,11 +59,13 @@ public abstract class BaseAbility
 
     protected class AbilityResult
     {
+        public bool Cancelled = false;
         public bool Miss = false;
         public float Damage = 0f;
         public float Heal = 0f;
         public bool Critical = false;
 
+        public bool AllyCancelled = false;
         public bool AllyMiss = false;
         public float AllyDamage = 0f;
         public float AllyHeal = 0f;
@@ -77,6 +79,7 @@ public abstract class BaseAbility
             Miss = !shootResult.Landed;
             Critical = shootResult.Critical;
             Damage = shootResult.Damage;
+            Cancelled = shootResult.Cancelled;
         }
 
         public void CopyAllyShootResult(in ShootResult shootResult)
@@ -84,6 +87,7 @@ public abstract class BaseAbility
             AllyMiss = !shootResult.Landed;
             AllyCritical = shootResult.Critical;
             AllyDamage = shootResult.Damage;
+            AllyCancelled = shootResult.Cancelled;
         }
     }
 
