@@ -293,6 +293,12 @@ public class CombatGameManager : MonoBehaviour
 
     public void UpdateReachableTiles()
     {
+        if (CurrentUnit != null)
+        {
+            _tileDisplay.HideTileZone("MoveZone");
+            return;
+        }
+
         List<Tile> newReachable = CurrentUnit.GetReachableTiles();
         if (newReachable.Count == 1)
         {
