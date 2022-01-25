@@ -164,13 +164,13 @@ public class Devouring : BaseDuoAbility
 
         if (randCrit < selfShotStats.GetCritRate())
         {
-            AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage() * 1.5f, true, _chosenAlly);
-            return new ShootResult(false, true, selfShotStats.GetDamage() * 1.5f, true);
+            float effectiveDamage = AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage() * 1.5f, true, _chosenAlly);
+            return new ShootResult(false, true, effectiveDamage, true);
         }
         else
         {
-            AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage(), false, _chosenAlly);
-            return new ShootResult(false, true, selfShotStats.GetDamage(), false);
+            float effectiveDamage = AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage(), false, _chosenAlly);
+            return new ShootResult(false, true, effectiveDamage, false);
         }
     }
 
