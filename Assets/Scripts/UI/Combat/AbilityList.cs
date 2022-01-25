@@ -30,6 +30,8 @@ public class AbilityList : MonoBehaviour
             new Slap(),
             new Devouring()
         });
+
+        Hide(null);
     }
 
     private void OnEnable()
@@ -37,6 +39,7 @@ public class AbilityList : MonoBehaviour
         AllyUnit.OnStartedUsingAbility += Hide;
         AllyUnit.OnStoppedUsingAbility += Show;
         CombatGameManager.OnUnitSelected += PopulateFromUnit;
+        Objective.OnScalingDone += Show;
     }
 
     private void OnDisable()
@@ -44,6 +47,7 @@ public class AbilityList : MonoBehaviour
         AllyUnit.OnStartedUsingAbility -= Hide;
         AllyUnit.OnStoppedUsingAbility -= Show;
         CombatGameManager.OnUnitSelected -= PopulateFromUnit;
+        Objective.OnScalingDone -= Show;
     }
 
     public void Populate(List<BaseAllyAbility> abilities)

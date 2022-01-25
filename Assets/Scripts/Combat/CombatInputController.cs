@@ -7,10 +7,23 @@ public class CombatInputController : MonoBehaviour
     [SerializeField] private LayerMask _groundLayerMask;
 
     private GridBasedUnit _prevHovered = null;
+    private bool _canInput;
+
+    private void Awake()
+    {
+        _canInput = false;
+        Objective.OnScalingDone += CanMove;
+    }
+
+    private void CanMove()
+    {
+        _canInput = true;
+        Objective.OnScalingDone -= CanMove;
+    }
 
     void Update()
     {
-        if (CombatGameManager.Instance.ControllableUnits.Count <= 0) return;
+        if (!_canInput || CombatGameManager.Instance.ControllableUnits.Count <= 0) return;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitData;
