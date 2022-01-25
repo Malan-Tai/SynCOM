@@ -13,12 +13,13 @@ MonoBehaviour:
   m_Name: FreeActionForLiked
   m_EditorClassIdentifier: 
   triggerType: 6
+  triggersOnlyOnce: 0
   onlyCheckDuoAlly: 1
   dontCheckDuoAlly: 0
   onlyCheckTarget: 0
   dontCheckTarget: 0
   requiresEmotions: 1
-  requiredEmotionsTowardsSource: 11000000100000000e000000
+  requiredEmotionsTowardsSource: 090000000b00000011000000
   requiredEmotionsTowardsTarget: 
   targetsAlly: 0
   onMiss: 0
@@ -42,3 +43,6 @@ MonoBehaviour:
   interruptions: []
   freeAction: 1
   freeActionForDuo: 0
+  maxRange: 0
+  buffsOnSource: []
+  buffsOnTarget: []

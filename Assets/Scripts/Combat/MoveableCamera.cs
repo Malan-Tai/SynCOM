@@ -5,6 +5,7 @@ using UnityEngine;
 public class MoveableCamera : MonoBehaviour
 {
     private Vector3 _startingOffset;
+    private Vector3 _startingCameraOffset;
     private Camera _camera;
     private float _startingCamSize;
 
@@ -33,30 +34,66 @@ public class MoveableCamera : MonoBehaviour
     {
         _startingOffset = this.transform.localPosition;
         _camera = GetComponentInChildren<Camera>();
+        _startingCameraOffset = _camera.transform.localPosition;
         _startingCamSize = _camera.orthographicSize;
         _targetRotationY = this.transform.localEulerAngles.y;
+
+        _currentlyViewedUnit = GetComponentInParent<GridBasedUnit>();
+        _parentViewedUnit = _currentlyViewedUnit;
     }
 
     private void Update()
     {
+        float currentRotationY = this.transform.localEulerAngles.y;
+
+        float x = Input.mousePosition.x;
+        float y = Input.mousePosition.y;
+        Vector3 mouseDelta = Vector3.zero;
+
+        if (x <= 0)
+        {
+            mouseDelta.x += -1f * Mathf.Cos(currentRotationY * Mathf.Deg2Rad);
+            mouseDelta.y += 1f * Mathf.Sin(currentRotationY * Mathf.Deg2Rad);
+        }
+        else if (x >= Screen.width - 1)
+        {
+            mouseDelta.x += 1f * Mathf.Cos(currentRotationY * Mathf.Deg2Rad);
+            mouseDelta.y += -1f * Mathf.Sin(currentRotationY * Mathf.Deg2Rad);
+        }
+        if (y <= 0)
+        {
+            mouseDelta.x += -1f * Mathf.Sin(currentRotationY * Mathf.Deg2Rad);
+            mouseDelta.y += -1f * Mathf.Cos(currentRotationY * Mathf.Deg2Rad);
+        }
+        else if (y >= Screen.height - 1)
+        {
+            mouseDelta.x += 1f * Mathf.Sin(currentRotationY * Mathf.Deg2Rad);
+            mouseDelta.y += 1f * Mathf.Cos(currentRotationY * Mathf.Deg2Rad);
+        }
+
+        if (mouseDelta != Vector3.zero)
+        {
+            _followTarget = false;
+            transform.position += new Vector3(mouseDelta.x, 0, mouseDelta.y).normalized * (_camera.orthographicSize / _minCameraSize) * _moveSpeed / 300;
+        }
+
         if (_followRotation)
         {
-            float currentY = this.transform.localEulerAngles.y;
-            float sign = Mathf.Sign(_targetRotationY - currentY) * _rotationSign;
+            float sign = Mathf.Sign(_targetRotationY - currentRotationY) * _rotationSign;
 
-            if (_targetRotationY - currentY != 0f)
+            if (_targetRotationY - currentRotationY != 0f)
             {
-                currentY += _rotationSign * _rotationSpeed * Time.deltaTime;
+                currentRotationY += _rotationSign * _rotationSpeed * Time.deltaTime;
             }
 
-            if (_targetRotationY - currentY == 0f || Mathf.Sign(_targetRotationY - currentY) * _rotationSign != sign)
+            if (_targetRotationY - currentRotationY == 0f || Mathf.Sign(_targetRotationY - currentRotationY) * _rotationSign != sign)
             {
-                currentY = _targetRotationY;
+                currentRotationY = _targetRotationY;
                 _followRotation = false;
             }
 
             Vector3 oldEuler = this.transform.localEulerAngles;
-            Vector3 euler = new Vector3(oldEuler.x, currentY, oldEuler.z);
+            Vector3 euler = new Vector3(oldEuler.x, currentRotationY, oldEuler.z);
             this.transform.localRotation = Quaternion.Euler(euler);
         }
 
@@ -92,7 +129,7 @@ public class MoveableCamera : MonoBehaviour
         }
         else
         {
-            Vector3 delta = newUnit.transform.position - this.transform.position;
+            Vector3 delta = newUnit.transform.position - _currentlyViewedUnit.transform.position;
             this.transform.localPosition -= delta;
 
             this.transform.SetParent(newUnit.transform, false);
@@ -108,7 +145,7 @@ public class MoveableCamera : MonoBehaviour
     {
         if (unit == _parentViewedUnit) return;
 
-        _targetPosition = unit.transform.position + _startingOffset - transform.position;
+        _targetPosition = unit.transform.position + _startingOffset - _currentlyViewedUnit.transform.position;
         _followTarget = true;
 
         _currentlyViewedUnit = unit;

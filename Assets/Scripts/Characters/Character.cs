@@ -79,29 +79,29 @@ public class Character
         if (preinstanciated == null) preinstanciated = new Character(6, 2, 65, 10, 15, 20, 0, 60);
 
         // keep range shot and movement points as is
-        preinstanciated._maxHealth      += Random.Range(-10, 11);
-        preinstanciated._damage         += Random.Range(-2, 3);
-        preinstanciated._accuracy       += Random.Range(-10, 11);
-        preinstanciated._dodge          += Random.Range(-5, 6);
-        preinstanciated._critChances    += Random.Range(-5, 6);
-        preinstanciated._weigth         += Random.Range(-25, 26);
-        preinstanciated._gender         = (EnumGender) Random.Range(0, 3);
+        preinstanciated._maxHealth      += RandomEngine.Instance.Range(-10, 11);
+        preinstanciated._damage         += RandomEngine.Instance.Range(-2, 3);
+        preinstanciated._accuracy       += RandomEngine.Instance.Range(-10, 11);
+        preinstanciated._dodge          += RandomEngine.Instance.Range(-5, 6);
+        preinstanciated._critChances    += RandomEngine.Instance.Range(-5, 6);
+        preinstanciated._weigth         += RandomEngine.Instance.Range(-25, 26);
+        preinstanciated._gender         = (EnumGender) RandomEngine.Instance.Range(0, 3);
         preinstanciated._healthPoints = preinstanciated._maxHealth;
         switch (preinstanciated._gender)
         {
 
             case EnumGender.Female:
-                preinstanciated._name = _femaleNames[Random.Range(0, _femaleNames.Length)];
+                preinstanciated._name = _femaleNames[RandomEngine.Instance.Range(0, _femaleNames.Length)];
                 break;
             case EnumGender.Male:
-                preinstanciated._name = _maleNames[Random.Range(0, _maleNames.Length)];
+                preinstanciated._name = _maleNames[RandomEngine.Instance.Range(0, _maleNames.Length)];
                 break;
             default:
-                int coin = Random.Range(0, 2);
+                int coin = RandomEngine.Instance.Range(0, 2);
                 if (coin == 0)
-                    preinstanciated._name = _femaleNames[Random.Range(0, _femaleNames.Length)];
+                    preinstanciated._name = _femaleNames[RandomEngine.Instance.Range(0, _femaleNames.Length)];
                 else
-                    preinstanciated._name = _maleNames[Random.Range(0, _maleNames.Length)];
+                    preinstanciated._name = _maleNames[RandomEngine.Instance.Range(0, _maleNames.Length)];
                 break;
         }
 
@@ -162,6 +162,15 @@ public class Character
     public virtual float GetDodge(EnumCover cover)
     {
         float dodge = _dodge;
+
+        float dodgeBuff = 0f;
+        foreach (Buff buff in _currentBuffs)
+        {
+            dodgeBuff += buff.GetDodgeModifier();
+        }
+        dodgeBuff = Mathf.Clamp(dodgeBuff, -1, 2);
+        dodge *= (1 + dodgeBuff);
+
         switch (cover)
         {
             case EnumCover.Full:
@@ -185,7 +194,16 @@ public class Character
 
     public float MovementPoints
     {
-        get { return this._movementPoints; }
+        get
+        {
+            float mvt = _movementPoints;
+            foreach (Buff buff in _currentBuffs)
+            {
+                mvt += buff.GetMoveModifier();
+            }
+
+            return this._movementPoints;
+        }
         set { this._movementPoints = value; }
     }
 
@@ -207,8 +225,14 @@ public class Character
         set { this._name = value; }
     }
 
-    public bool TakeDamage(float damage)
+    public bool TakeDamage(ref float damage)
     {
+        foreach (Buff buff in _currentBuffs)
+        {
+            damage *= buff.GetMitigationModifier();
+        }
+
+        damage = Mathf.Round(damage);
         Debug.Log("oof, took " + damage + " dmg");
         _healthPoints -= damage;
         if (_healthPoints <= 0)
@@ -225,8 +249,9 @@ public class Character
         Die();
     }
 
-    public void Heal(float heal)
+    public void Heal(ref float heal)
     {
+        heal = Mathf.Round(heal);
         Debug.Log("mmh, recovered " + heal + " HP");
         _healthPoints = Mathf.Min(_maxHealth, _healthPoints + heal);
         if (_healthPoints == _maxHealth)

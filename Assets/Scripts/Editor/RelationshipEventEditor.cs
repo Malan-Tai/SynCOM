@@ -38,6 +38,9 @@ public class RelationshipEventEditor : Editor
     // kill
     private SerializedProperty _killSteal;
 
+    // start action
+    private SerializedProperty _startedAction;
+
     /// effect
     private SerializedProperty _effectType;
     private SerializedProperty _interrupts;
@@ -57,6 +60,7 @@ public class RelationshipEventEditor : Editor
 
     // interruptions
     private SerializedProperty _interruptions;
+    private SerializedProperty _interruptionsOnSource;
 
     // free action
     private SerializedProperty _freeAction;
@@ -68,6 +72,9 @@ public class RelationshipEventEditor : Editor
     // buff
     private SerializedProperty _buffsOnSource;
     private SerializedProperty _buffsOnTarget;
+
+    // change action
+    private SerializedProperty _changeActionTo;
 
     #endregion
 
@@ -96,6 +103,8 @@ public class RelationshipEventEditor : Editor
 
         _killSteal                      = serializedObject.FindProperty("killSteal");
 
+        _startedAction                  = serializedObject.FindProperty("startedAction");
+
 
         _effectType                     = serializedObject.FindProperty("effectType");
         _interrupts                     = serializedObject.FindProperty("interrupts");
@@ -104,14 +113,15 @@ public class RelationshipEventEditor : Editor
         _admChange                      = serializedObject.FindProperty("admirationChange");
         _truChange                      = serializedObject.FindProperty("trustChange");
         _symChange                      = serializedObject.FindProperty("sympathyChange");
-        _sourceToTarget                 = serializedObject.FindProperty("sourceToTarget");
-        _admirationChangeSTT            = serializedObject.FindProperty("admirationChangeSTT");
-        _trustChangeSTT                 = serializedObject.FindProperty("trustChangeSTT");
-        _sympathyChangeSTT              = serializedObject.FindProperty("sympathyChangeSTT");
+        _sourceToTarget                 = serializedObject.FindProperty("sourceToCurrent");
+        _admirationChangeSTT            = serializedObject.FindProperty("admirationChangeSTC");
+        _trustChangeSTT                 = serializedObject.FindProperty("trustChangeSTC");
+        _sympathyChangeSTT              = serializedObject.FindProperty("sympathyChangeSTC");
 
         _chance                         = serializedObject.FindProperty("chance");
 
-        _interruptions                  = serializedObject.FindProperty("interruptions");
+        _interruptions                  = serializedObject.FindProperty("interruptionsOnCurrent");
+        _interruptionsOnSource          = serializedObject.FindProperty("interruptionsOnSource");
 
         _freeAction                     = serializedObject.FindProperty("freeAction");
         _freeActionForDuo               = serializedObject.FindProperty("freeActionForDuo");
@@ -120,6 +130,8 @@ public class RelationshipEventEditor : Editor
 
         _buffsOnSource                  = serializedObject.FindProperty("buffsOnSource");
         _buffsOnTarget                  = serializedObject.FindProperty("buffsOnTarget");
+
+        _changeActionTo                 = serializedObject.FindProperty("changeActionTo");
     }
 
     public override void OnInspectorGUI()
@@ -147,11 +159,21 @@ public class RelationshipEventEditor : Editor
             }
             else if (_triggerType.enumValueIndex == (int)RelationshipEventTriggerType.Kill)
             {
-                EditorGUILayout.PropertyField(_killSteal);
+                if (_targetsAlly.boolValue) EditorGUILayout.PropertyField(_targetsAlly);
+                else if (_killSteal.boolValue) EditorGUILayout.PropertyField(_killSteal);
+                else
+                {
+                    EditorGUILayout.PropertyField(_targetsAlly);
+                    EditorGUILayout.PropertyField(_killSteal);
+                }
             }
             else if (_triggerType.enumValueIndex == (int)RelationshipEventTriggerType.FriendlyFire)
             {
                 EditorGUILayout.PropertyField(_onFatal);
+            }
+            else if (_triggerType.enumValueIndex == (int)RelationshipEventTriggerType.StartAction)
+            {
+                EditorGUILayout.PropertyField(_startedAction);
             }
         }
         EditorGUILayout.EndFoldoutHeaderGroup();
@@ -159,7 +181,9 @@ public class RelationshipEventEditor : Editor
 
         if (_foldInvolved = EditorGUILayout.Foldout(_foldInvolved, "Involved Units", true))
         {
-            if (_triggerType.enumValueIndex == (int)RelationshipEventTriggerType.BeginDuo || _triggerType.enumValueIndex == (int)RelationshipEventTriggerType.EndExecutedDuo)
+            if (_triggerType.enumValueIndex == (int)RelationshipEventTriggerType.BeginDuo ||
+                _triggerType.enumValueIndex == (int)RelationshipEventTriggerType.EndExecutedDuo ||
+                _triggerType.enumValueIndex == (int)RelationshipEventTriggerType.StartAction)
             {
                 _onlyCheckDuoAlly.boolValue = true;
                 EditorGUILayout.PropertyField(_onlyCheckDuoAlly);
@@ -221,7 +245,9 @@ public class RelationshipEventEditor : Editor
                     }
                 }
             }
-            else if (_effectType.enumValueIndex == (int)RelationshipEventEffectType.RefuseToDuo)
+            else if (_effectType.enumValueIndex == (int)RelationshipEventEffectType.RefuseToDuo ||
+                    _effectType.enumValueIndex == (int)RelationshipEventEffectType.StealDuo ||
+                    _effectType.enumValueIndex == (int)RelationshipEventEffectType.FreeAttack)
             {
                 EditorGUILayout.PropertyField(_chance);
             }
@@ -241,10 +267,16 @@ public class RelationshipEventEditor : Editor
                 EditorGUILayout.PropertyField(_buffsOnSource);
                 EditorGUILayout.PropertyField(_buffsOnTarget);
             }
+            else if (_effectType.enumValueIndex == (int)RelationshipEventEffectType.ChangeAction)
+            {
+                EditorGUILayout.PropertyField(_changeActionTo);
+                EditorGUILayout.PropertyField(_chance);
+            }
 
             if (_interrupts.boolValue)
             {
                 EditorGUILayout.PropertyField(_interruptions);
+                EditorGUILayout.PropertyField(_interruptionsOnSource);
             }
         }
 

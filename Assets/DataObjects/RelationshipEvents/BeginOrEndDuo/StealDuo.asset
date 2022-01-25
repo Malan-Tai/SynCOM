@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f6c0a609471fce429c6b769d34b1e7d, type: 3}
+  m_Name: StealDuo
+  m_EditorClassIdentifier: 
+  triggerType: 6
+  triggersOnlyOnce: 1
+  onlyCheckDuoAlly: 0
+  dontCheckDuoAlly: 1
+  onlyCheckTarget: 0
+  dontCheckTarget: 0
+  requiresEmotions: 1
+  requiredEmotionsTowardsSource: 0d00000003000000090000000b00000011000000
+  requiredEmotionsTowardsTarget: 0c00000000000000040000000600000010000000
+  targetsAlly: 0
+  onMiss: 0
+  onHit: 0
+  onCrit: 0
+  onDamage: 0
+  onFatal: 0
+  minMaxHealthRatio: {x: 0, y: 1}
+  killSteal: 0
+  startedAction: 0
+  effectType: 5
+  interrupts: 1
+  reciprocal: 0
+  admirationChange: 0
+  trustChange: 0
+  sympathyChange: 0
+  sourceToCurrent: 0
+  admirationChangeSTC: 0
+  trustChangeSTC: 0
+  sympathyChangeSTC: 0
+  chance: 0.25
+  interruptionsOnCurrent:
+  - {fileID: 11400000, guid: 4766f0301e0289f4f903d7335ea3c389, type: 2}
+  interruptionsOnSource: []
+  freeAction: 0
+  freeActionForDuo: 0
+  maxRange: 0
+  buffsOnSource: []
+  buffsOnTarget: []
+  changeActionTo: 0

@@ -20,7 +20,7 @@ public class BasicDuoShot : BaseDuoAbility
         {
             float distanceToSelf = Vector2.Distance(unit.GridPosition, _effector.GridPosition);
             float distanceToAlly = Vector2.Distance(unit.GridPosition, _chosenAlly.GridPosition);
-            if (distanceToSelf <= _effector.Character.RangeShot && distanceToAlly <= _effector.Character.RangeShot && _chosenAlly.LinesOfSight.ContainsKey(unit))
+            if (distanceToSelf <= _effector.Character.RangeShot && distanceToAlly <= _chosenAlly.Character.RangeShot && _chosenAlly.LinesOfSight.ContainsKey(unit))
             {
                 _possibleTargets.Add(unit);
             }
@@ -36,8 +36,8 @@ public class BasicDuoShot : BaseDuoAbility
         }
         else RequestTargetSymbolUpdate(null);
 
-        _selfShotStats = new AbilityStats(0, 0, 1.5f, 0, _effector);
-        _allyShotStats = new AbilityStats(0, 0, 1.5f, 0, _chosenAlly);
+        _selfShotStats = new AbilityStats(0, 0, 1.5f, 0, 0, _effector);
+        _allyShotStats = new AbilityStats(0, 0, 1.5f, 0, 0, _chosenAlly);
 
         _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
         _allyShotStats.UpdateWithEmotionModifiers(_effector);
@@ -98,18 +98,71 @@ public class BasicDuoShot : BaseDuoAbility
         {
             SoundManager.PlaySound(SoundManager.Sound.RetentlessFoe);
         }
-        
         else
         {
             SoundManager.PlaySound(SoundManager.Sound.RetentlessNeutral);
         }
-        Debug.Log("we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
-        
-        SelfShoot(target, _selfShotStats);
-        AllyShoot(target, _allyShotStats);
 
-        var parameters = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTime, target = target, time = Interruption.FOCUS_TARGET_TIME };
-        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
+        ShootResult selfResults = SelfShoot(target, _selfShotStats);
+        ShootResult allyResults = AllyShoot(target, _allyShotStats);
+
+        AbilityResult result = new AbilityResult();
+        result.Miss = !selfResults.Landed;
+        result.AllyMiss = !allyResults.Landed;
+        result.Critical = selfResults.Critical;
+        result.AllyCritical = allyResults.Critical;
+        result.Damage = selfResults.Damage;
+        result.AllyDamage = allyResults.Damage;
+        SendResultToHistoryConsole(result);
+    }
+
+    protected override void SendResultToHistoryConsole(AbilityResult result)
+    {
+        GridBasedUnit target = _possibleTargets[_targetIndex];
+
+        HistoryConsole.Instance
+            .BeginEntry()
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+            .AddText(" and ")
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+            .AddText(" used ")
+            .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
+            .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+            .AddText(" on ")
+            .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover").CloseTag()
+            .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag()
+            .AddText(": ")
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag();
+
+        if (result.Miss)
+        {
+            HistoryConsole.Instance.OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" missed ").CloseTag();
+        }
+        else
+        {
+            string selfCriticalText = result.Critical ? " critical" : "";
+            HistoryConsole.Instance
+                .AddText(" did ")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage}{selfCriticalText} damage").CloseTag();
+        }
+
+        HistoryConsole.Instance
+            .AddText(" and ")
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag();
+
+        if (result.AllyMiss)
+        {
+            HistoryConsole.Instance.OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" missed").CloseTag();
+        }
+        else
+        {
+            string allyCriticalText = result.AllyCritical ? " critical" : "";
+            HistoryConsole.Instance
+                .AddText(" did ")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.AllyDamage}{allyCriticalText} damage").CloseTag();
+        }
+
+        HistoryConsole.Instance.Submit();
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)
@@ -128,16 +181,16 @@ public class BasicDuoShot : BaseDuoAbility
         if (_chosenAlly != null && _hoveredUnit != null)
         {
             res += "\nAcc:" + _selfShotStats.GetAccuracy(_hoveredUnit, _effector.LinesOfSight[_hoveredUnit].cover) +
-                    " | Crit:" + _selfShotStats.GetCritRate() +
-                    " | Dmg:" + _selfShotStats.GetDamage();
+                    "% | Crit:" + _selfShotStats.GetCritRate() +
+                    "% | Dmg:" + _selfShotStats.GetDamage();
         }
         else if (_targetIndex >= 0 && _chosenAlly != null)
         {
             GridBasedUnit target = _possibleTargets[_targetIndex];
 
             res += "\nAcc:" + _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover) +
-                    " | Crit:" + _selfShotStats.GetCritRate() +
-                    " | Dmg:" + _selfShotStats.GetDamage();
+                    "% | Crit:" + _selfShotStats.GetCritRate() +
+                    "% | Dmg:" + _selfShotStats.GetDamage();
         }
 
         return res;
@@ -149,16 +202,16 @@ public class BasicDuoShot : BaseDuoAbility
         if (_chosenAlly != null && _hoveredUnit != null)
         {
             res += "\nAcc:" + _allyShotStats.GetAccuracy(_hoveredUnit, _chosenAlly.LinesOfSight[_hoveredUnit].cover) +
-                    " | Crit:" + _allyShotStats.GetCritRate() +
-                    " | Dmg:" + _allyShotStats.GetDamage();
+                    "% | Crit:" + _allyShotStats.GetCritRate() +
+                    "% | Dmg:" + _allyShotStats.GetDamage();
         }
         else if (_targetIndex >= 0 && _chosenAlly != null)
         {
             GridBasedUnit target = _possibleTargets[_targetIndex];
 
             res += "\nAcc:" + _allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover) +
-                    " | Crit:" + _allyShotStats.GetCritRate() +
-                    " | Dmg:" + _allyShotStats.GetDamage();
+                    "% | Crit:" + _allyShotStats.GetCritRate() +
+                    "% | Dmg:" + _allyShotStats.GetDamage();
         }
 
         return res;
@@ -174,5 +227,10 @@ public class BasicDuoShot : BaseDuoAbility
             RequestTargetSymbolUpdate(unit);
         }
         else base.UISelectUnit(unit);
+    }
+
+    public override string GetShortDescription()
+    {
+        return "A basic duo attack";
     }
 }

@@ -51,24 +51,11 @@ public class GlobalGameManager : MonoBehaviour
     {
         allCharacters = new List<AllyCharacter>
         {
-            new AllyCharacter(EnumClasses.Berserker, 20, 2, 65, 10, 15, 20, 10, 60),
-            new AllyCharacter(EnumClasses.Engineer, 20, 2, 65, 10, 15, 20, 10, 60),
-            new AllyCharacter(EnumClasses.Sniper, 20, 2, 65, 10, 15, 20, 10, 60),
-            new AllyCharacter(EnumClasses.Alchemist, 20, 2, 65, 10, 15, 20, 10, 60),
-            new AllyCharacter(EnumClasses.Smuggler, 20, 2, 65, 10, 15, 20, 10, 60),
-            new AllyCharacter(EnumClasses.Bodyguard, 20, 2, 65, 10, 15, 20, 10, 60),
-            new AllyCharacter(EnumClasses.Berserker, 20, 2, 65, 10, 15, 20, 10, 60),
-            new AllyCharacter(EnumClasses.Engineer, 20, 2, 65, 10, 15, 20, 10, 60),
-            new AllyCharacter(EnumClasses.Sniper, 20, 2, 65, 10, 15, 20, 10, 60),
-            new AllyCharacter(EnumClasses.Alchemist, 20, 2, 65, 10, 15, 20, 10, 60),
-            new AllyCharacter(EnumClasses.Smuggler, 20, 2, 65, 10, 15, 20, 10, 60),
-            new AllyCharacter(EnumClasses.Bodyguard, 20, 2, 65, 10, 15, 20, 10, 60),
-            new AllyCharacter(EnumClasses.Berserker, 20, 2, 65, 10, 15, 20, 10, 60),
-            new AllyCharacter(EnumClasses.Engineer, 20, 2, 65, 10, 15, 20, 10, 60),
-            new AllyCharacter(EnumClasses.Sniper, 20, 2, 65, 10, 15, 20, 10, 60),
-            new AllyCharacter(EnumClasses.Alchemist, 20, 2, 65, 10, 15, 20, 10, 60),
-            new AllyCharacter(EnumClasses.Smuggler, 20, 2, 65, 10, 15, 20, 10, 60),
-            new AllyCharacter(EnumClasses.Bodyguard, 20, 2, 65, 10, 15, 20, 10, 60),
+            AllyCharacter.GetRandomAllyCharacter(),
+            AllyCharacter.GetRandomAllyCharacter(),
+            AllyCharacter.GetRandomAllyCharacter(),
+            AllyCharacter.GetRandomAllyCharacter(),
+            AllyCharacter.GetRandomAllyCharacter(),
         };
 
         foreach (AllyCharacter character in allCharacters)

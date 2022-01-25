@@ -5,6 +5,8 @@ using UnityEngine;
 [System.Serializable]
 public class AllyCharacter : Character
 {
+    private static int _commonAbilitiesCount = 5;
+
     private static Dictionary<EnumClasses, List<Trait>> s_mandatoryTraits = new Dictionary<EnumClasses, List<Trait>>(){
         {EnumClasses.Berserker, new List<Trait> {new Brave()}},
         {EnumClasses.Engineer, new List<Trait> {new Brave()}},
@@ -28,16 +30,19 @@ public class AllyCharacter : Character
     public EnumClasses CharacterClass { get => _class; }
 
     public List<BaseAllyAbility> Abilities { get; protected set; }
+    public List<BaseAllyAbility> SpecialAbilities
+    {
+        get
+        {
+            return Abilities.GetRange(_commonAbilitiesCount, Abilities.Count - _commonAbilitiesCount);
+        }
+    }
 
     private List<Trait> _traits = new List<Trait>();
-    public List<Trait> Traits
-    {
-        get { return _traits; }
-    }
+    public List<Trait> Traits { get { return _traits; } }
    
     private Dictionary<AllyCharacter, Relationship> _relationships;
     public Dictionary<AllyCharacter, Relationship> Relationships { get { return _relationships; } }
-
 
     public AllyCharacter(EnumClasses characterClass, float maxHealth, float damage, float accuracy, float dodge, float critChances, float rangeShot, float movementPoints, float weight, bool addTraits = true) :
         base(maxHealth, damage, accuracy, dodge, critChances, rangeShot, movementPoints, weight)
@@ -48,12 +53,11 @@ public class AllyCharacter : Character
             AddMandatoryTraits(_class);
             AddRandomTrait(_class);
         }
-
     }
 
    public static AllyCharacter GetRandomAllyCharacter()
    {
-        EnumClasses characterClass = (EnumClasses)Random.Range(0, 6);
+        EnumClasses characterClass = (EnumClasses)RandomEngine.Instance.Range(0, 6);
         AllyCharacter instance = new AllyCharacter(characterClass, 0, 0, 0, 0, 0, 0, 0, 0, false);
 
         instance.Abilities = new List<BaseAllyAbility>
@@ -63,8 +67,10 @@ public class AllyCharacter : Character
             new HunkerDown(),
             new BasicDuoShot(),
             new FirstAid(),
-            //new PepTalk()
+            new PepTalk()
         };
+
+        _commonAbilitiesCount = instance.Abilities.Count;
 
         switch (characterClass)
         {
@@ -79,6 +85,7 @@ public class AllyCharacter : Character
                 instance._weigth            = 90;
 
                 instance.Abilities.Add(new Devouring());
+                instance.Abilities.Add(new DwarfTossing());
                 break;
             case EnumClasses.Engineer:
                 instance._maxHealth         = 25;
@@ -102,6 +109,9 @@ public class AllyCharacter : Character
                 instance._rangeShot         = 30;
                 instance._movementPoints    = 7;
                 instance._weigth            = 65;
+
+                instance.Abilities.Add(new SuppressiveFire());
+                instance.Abilities.Add(new LongShot());
                 break;
             case EnumClasses.Alchemist:
                 instance._maxHealth         = 15;
@@ -112,6 +122,8 @@ public class AllyCharacter : Character
                 instance._rangeShot         = 20;
                 instance._movementPoints    = 13;
                 instance._weigth            = 65;
+
+                instance.Abilities.Add(new HealingRain());
                 break;
             case EnumClasses.Bodyguard:
                 instance._maxHealth         = 40;
@@ -122,6 +134,9 @@ public class AllyCharacter : Character
                 instance._rangeShot         = 15;
                 instance._movementPoints    = 11;
                 instance._weigth            = 150;
+
+                instance.Abilities.Add(new ShieldAndStrike());
+                instance.Abilities.Add(new WildCharge());
                 break;
             case EnumClasses.Smuggler:
                 instance._maxHealth         = 35;
@@ -132,6 +147,8 @@ public class AllyCharacter : Character
                 instance._rangeShot         = 20;
                 instance._movementPoints    = 12;
                 instance._weigth            = 150;
+
+                instance.Abilities.Add(new Smuggle());
                 break;
         }
 
@@ -140,12 +157,12 @@ public class AllyCharacter : Character
         instance.AddMandatoryTraits(characterClass);
         instance.AddRandomTrait(characterClass);
 
-        Debug.Log(instance._traits.Count);
+        //Debug.Log(instance._traits.Count);
 
-        for (int i = 0; i < instance._traits.Count; i++)
-        {
-            Debug.Log(instance._traits[i].GetName());
-        }
+        //for (int i = 0; i < instance._traits.Count; i++)
+        //{
+        //    Debug.Log(instance._traits[i].GetName());
+        //}
 
         return instance;
    }
@@ -179,7 +196,7 @@ public class AllyCharacter : Character
 
     private void AddRandomTrait(EnumClasses characterClass)
     {
-        int indice = Random.Range(0, s_commonPossibleTraits[characterClass].Count);
+        int indice = RandomEngine.Instance.Range(0, s_commonPossibleTraits[characterClass].Count);
         _traits.Add(s_commonPossibleTraits[characterClass][indice].GetClone(this));
     }
 

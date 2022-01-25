@@ -9,6 +9,7 @@ public struct AbilityStats
     private float _innateCrit;
     private float _innateDamage;
     private float _innateProtection;
+    private float _innateHeal;
     private AllyUnit _unit;
 
     private float _selfSuccessModifier;
@@ -18,12 +19,13 @@ public struct AbilityStats
     private float _selfDamageModifier;
     private float _selfProtectionModifier;
 
-    public AbilityStats(float innateAccuracy, float innateCrit, float innateDamage, float innateProtection, AllyUnit unit)
+    public AbilityStats(float innateAccuracy, float innateCrit, float innateDamage, float innateProtection, float innateHeal, AllyUnit unit)
     {
         this._innateAccuracy = innateAccuracy;
         this._innateCrit = innateCrit;
         this._innateDamage = innateDamage;
         this._innateProtection = innateProtection;
+        this._innateHeal = innateHeal;
         this._unit = unit;
 
         _selfSuccessModifier = 1;
@@ -119,22 +121,42 @@ public struct AbilityStats
                 case (EnumEmotions.Empathy):
                     // chance of free action, not calculated here
                     break;
+
+                // Level 1 Emotions
+                case (EnumEmotions.Disdain):
+                    Up(ref protLevelNeg, 1);
+                    break;
+                case (EnumEmotions.Admiration):
+                    Up(ref protLevelPos, 1);
+                    break;
+                case (EnumEmotions.Fear):
+                    Up(ref accLevelNeg, 1);
+                    break;
+                case (EnumEmotions.Trust):
+                    Up(ref accLevelPos, 1);
+                    break;
+                case (EnumEmotions.Antipathy):
+                    Up(ref damageLevelNeg, 1);
+                    break;
+                case (EnumEmotions.Sympathy):
+                    // small chance of free action
+                    break;
                 default:
                     break;
             }
-
-            _selfProtectionModifier = 1 + 0.2f * (protLevelPos - protLevelNeg);
-
-            _selfDamageModifier = 1 + 0.25f * (damageLevelPos - damageLevelNeg);
-
-            int accLevel = accLevelPos - accLevelNeg;
-            if (accLevel < 0) _selfSuccessModifier = 1f + 0.25f * accLevel;
-            else if (accLevel > 0) _selfMissModifier = 1f - 0.25f * accLevel;
-
-            int critLevel = accLevelPos - accLevelNeg;
-            if (critLevel < 0) _selfCritSuccessModifier = 1f + 0.25f * critLevel;
-            else if (critLevel > 0) _selfCritMissModifier = 1f - 0.25f * critLevel;
         }
+
+        _selfProtectionModifier = 1 - 0.2f * (protLevelPos - protLevelNeg);
+
+        _selfDamageModifier = 1 + 0.25f * (damageLevelPos - damageLevelNeg);
+
+        int accLevel = accLevelPos - accLevelNeg;
+        if (accLevel < 0) _selfSuccessModifier = 1f + 0.25f * accLevel;
+        else if (accLevel > 0) _selfMissModifier = 1f - 0.25f * accLevel;
+
+        int critLevel = accLevelPos - accLevelNeg;
+        if (critLevel < 0) _selfCritSuccessModifier = 1f + 0.25f * critLevel;
+        else if (critLevel > 0) _selfCritMissModifier = 1f - 0.25f * critLevel;
     }
 
     /// <summary>
@@ -308,6 +330,15 @@ public struct AbilityStats
     public float GetProtection()
     {
         float finalProtection = _innateProtection * _selfProtectionModifier;
+        return finalProtection;
+    }
+
+    /// <summary>
+    /// Returns the total heal
+    /// </summary>
+    public float GetHeal()
+    {
+        float finalProtection = _innateHeal / _selfProtectionModifier;
         return finalProtection;
     }
 

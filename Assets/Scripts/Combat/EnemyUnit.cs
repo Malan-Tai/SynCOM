@@ -32,19 +32,19 @@ public class EnemyUnit : GridBasedUnit
 
             if (_basicEnemyShot.CanExecute())
             {
-                var parameters = new InterruptionParameters
-                {
-                    interruptionType = InterruptionType.FocusTargetForGivenTime,
-                    target = _basicEnemyShot.BestTarget,
-                    time = Interruption.FOCUS_TARGET_TIME
-                };
-                InterruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
+                //var parameters = new InterruptionParameters
+                //{
+                //    interruptionType = InterruptionType.FocusTargetForGivenTime,
+                //    target = _basicEnemyShot.BestTarget,
+                //    time = Interruption.FOCUS_TARGET_TIME
+                //};
+                //InterruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
 
                 _basicEnemyShot.Execute();
             }
             else
             {
-                Debug.Log("No target available: enemy skipping turn.");
+                //HistoryConsole.AddEntry(EntryBuilder.GetSkipTurnEntry(this));
             }
 
             IsMakingTurn = false;
@@ -53,6 +53,10 @@ public class EnemyUnit : GridBasedUnit
         if (!IsMakingTurn && InterruptionQueue.IsEmpty())
         {
             IsTurnDone = true;
+            foreach (GridBasedUnit unit in CombatGameManager.Instance.DeadUnits)
+            {
+                unit.MarkForDeath();
+            }
         }
     }
 
@@ -66,24 +70,12 @@ public class EnemyUnit : GridBasedUnit
         if (!seen)
         {
             _renderer.SetColor(Color.black);
+            _info.HideCover();
         }
         else
         {
-            switch (cover)
-            {
-                case EnumCover.None:
-                    _renderer.SetColor(Color.green);
-                    break;
-                case EnumCover.Half:
-                    _renderer.SetColor(Color.yellow);
-                    break;
-                case EnumCover.Full:
-                    _renderer.SetColor(Color.red);
-                    break;
-                default:
-                    _renderer.RevertToOriginalColor();
-                    break;
-            }
+            _renderer.RevertToOriginalColor();
+            _info.SetCover(cover);
         }
     }
 

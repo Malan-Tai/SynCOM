@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 /// </summary>
 public class Buff : Trait
 {
+    private string _name;
+
     private int _turnCount;
     private GridBasedUnit _ownerUnit;
 
@@ -21,6 +23,7 @@ public class Buff : Trait
     private float _dodgeBuff;
 
     public Buff(
+        string name,
         int duration,
         GridBasedUnit unit,
         float damageBuff = 0,
@@ -31,6 +34,8 @@ public class Buff : Trait
         float dodgeBuff = 0
         )
     {
+        _name = name;
+
         _turnCount = duration;
         _ownerUnit = unit;
 
@@ -46,7 +51,7 @@ public class Buff : Trait
 
     public override string GetName()
     {
-        return "";
+        return _name;
     }
 
     private void HandleNewTurn()

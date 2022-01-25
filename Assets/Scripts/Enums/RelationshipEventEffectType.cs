@@ -5,5 +5,16 @@ public enum RelationshipEventEffectType
     Sacrifice,
     FreeAction,
     RefuseToDuo,
-    Buff
+    StealDuo,
+    Buff,
+    ChangeAction,
+    FreeAttack
+}
+
+public enum ChangeActionTypes
+{
+    DidntChange,
+    DoNothing,
+    AttackAlly,
+    Positive
 }

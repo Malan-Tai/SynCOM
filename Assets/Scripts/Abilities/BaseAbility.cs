@@ -26,6 +26,16 @@ public abstract class BaseAbility
         }
     }
 
+    protected void AddInterruptionBeforeResult(ref RelationshipEventsResult result, InterruptionParameters parameters)
+    {
+        result.interruptions.Insert(0, parameters);
+    }
+
+    protected void AddInterruptionAfterResult(ref RelationshipEventsResult result, InterruptionParameters parameters)
+    {
+        result.interruptions.Add(parameters);
+    }
+
     public abstract bool CanExecute();
     public abstract void Execute();
 
@@ -40,4 +50,28 @@ public abstract class BaseAbility
     /// The description of the ability is not an attribute : it's determined by the return value of this function.
     /// </summary>
     public abstract string GetDescription();
+
+    /// <summary>
+    /// The description for UI list
+    /// </summary>
+    public abstract string GetShortDescription();
+
+
+    protected class AbilityResult
+    {
+        public bool Miss = false;
+        public float Damage = 0;
+        public float Heal = 0;
+        public bool Critical = false;
+
+        public bool AllyMiss = false;
+        public float AllyDamage = 0;
+        public float AllyHeal = 0;
+        public bool AllyCritical = false;
+    }
+
+    /// <summary>
+    /// Logs the ability result in the history console when the ability is successful
+    /// </summary>
+    protected abstract void SendResultToHistoryConsole(AbilityResult result);
 }

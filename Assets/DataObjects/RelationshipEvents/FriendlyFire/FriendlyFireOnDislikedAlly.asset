@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: FriendlyFireOnDislikedAlly
   m_EditorClassIdentifier: 
   triggerType: 2
+  triggersOnlyOnce: 0
   onlyCheckDuoAlly: 0
   dontCheckDuoAlly: 0
   onlyCheckTarget: 0
   dontCheckTarget: 1
   requiresEmotions: 1
   requiredEmotionsTowardsSource: 
-  requiredEmotionsTowardsTarget: 000000000200000004000000080000000a0000000c000000
+  requiredEmotionsTowardsTarget: 0000000004000000060000000c0000000e00000010000000
   targetsAlly: 0
   onMiss: 0
   onHit: 0
@@ -28,13 +29,24 @@ MonoBehaviour:
   onFatal: 0
   minMaxHealthRatio: {x: 0, y: 1}
   killSteal: 0
+  startedAction: 0
   effectType: 1
-  interrupts: 0
+  interrupts: 1
   reciprocal: 0
   admirationChange: 0
   trustChange: 0
   sympathyChange: 5
-  sourceToTarget: 0
-  admirationChangeSTT: 0
-  trustChangeSTT: 0
-  sympathyChangeSTT: 0
+  sourceToCurrent: 0
+  admirationChangeSTC: 0
+  trustChangeSTC: 0
+  sympathyChangeSTC: 0
+  chance: 0
+  interruptionsOnCurrent:
+  - {fileID: 11400000, guid: c944d62289c7e0348b79f87c772950b8, type: 2}
+  interruptionsOnSource: []
+  freeAction: 0
+  freeActionForDuo: 0
+  maxRange: 0
+  buffsOnSource: []
+  buffsOnTarget: []
+  changeActionTo: 0

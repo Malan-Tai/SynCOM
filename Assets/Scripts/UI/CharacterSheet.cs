@@ -23,6 +23,8 @@ public class CharacterSheet : MonoBehaviour
 
     [SerializeField]
     private TraitScrollList _traitList;
+    [SerializeField]
+    private AbilityScrollList _abilityList;
 
     private Vector3 _basePos;
 
@@ -33,7 +35,7 @@ public class CharacterSheet : MonoBehaviour
         _basePos = transform.localPosition;
 
         _image = transform.Find("Image").GetComponent<Image>();
-        _name = transform.Find("Name").GetComponent<TMP_Text>();
+        _name = transform.Find("Name_background").Find("Name").GetComponent<TMP_Text>();
         _class = transform.Find("Class").GetComponent<TMP_Text>();
 
         Transform stats = transform.Find("Stats");
@@ -100,6 +102,7 @@ public class CharacterSheet : MonoBehaviour
         _relationships.HoverCharacter(character, false);
 
         _traitList.Populate(character.Traits);
+        _abilityList.Populate(character.SpecialAbilities);
     }
 
     public void SetInvisible()

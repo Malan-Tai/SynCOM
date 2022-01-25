@@ -16,9 +16,9 @@ public struct Mission
     {
         /// TODO : change formulas for actually balanced formulas
         Mission mission;
-        mission.difficulty = UnityEngine.Random.Range(minDiff, maxDiff + 1);
-        mission.moneyReward = UnityEngine.Random.Range(mission.difficulty * 10, mission.difficulty * 15);
-        if (mission.difficulty >= 4 && UnityEngine.Random.Range(0, 10) < mission.difficulty)
+        mission.difficulty = RandomEngine.Instance.Range(minDiff, maxDiff + 1);
+        mission.moneyReward = RandomEngine.Instance.Range(mission.difficulty * 10, mission.difficulty * 15);
+        if (mission.difficulty >= 4 && RandomEngine.Instance.Range(0, 10) < mission.difficulty)
         {
             /// TODO : random character with some levels
             mission.recruitReward = new AllyCharacter(EnumClasses.Sniper, 20, 2, 65, 10, 15, 20, 4, 60);
@@ -27,7 +27,7 @@ public struct Mission
         {
             mission.recruitReward = null;
         }
-        WinCondition winCondition = (WinCondition)UnityEngine.Random.Range(0, Enum.GetNames(typeof(WinCondition)).Length);
+        WinCondition winCondition = (WinCondition)RandomEngine.Instance.Range(0, Enum.GetNames(typeof(WinCondition)).Length);
         mission.missionTypeData = BetweenMissionsGameManager.Instance.GetMissionType(winCondition);
 
         return mission;

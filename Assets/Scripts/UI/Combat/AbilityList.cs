@@ -8,6 +8,8 @@ public class AbilityList : MonoBehaviour
 
     [SerializeField]
     private RectTransform _abilityBtnPrefab;
+    [SerializeField]
+    private float _height = 100;
 
     private RectTransform _rectTransform;
 
@@ -50,7 +52,7 @@ public class AbilityList : MonoBehaviour
         int i = 0;
         AbilityButton[] _buttons = GetComponentsInChildren<AbilityButton>();
 
-        _rectTransform.sizeDelta = new Vector2(10, 100);
+        _rectTransform.sizeDelta = new Vector2(10, _height);
         
         foreach (BaseAllyAbility ability in abilities)
         {
@@ -63,7 +65,7 @@ public class AbilityList : MonoBehaviour
             else
             {
                 btn = Instantiate(_abilityBtnPrefab, transform).GetComponent<AbilityButton>();
-                btn.transform.localPosition += new Vector3(x, 0, 0);
+                btn.transform.localPosition += new Vector3(x, -10, 0);
             }
 
             float width = btn.GetComponent<RectTransform>().rect.width + 10;

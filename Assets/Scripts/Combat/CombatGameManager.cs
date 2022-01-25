@@ -42,6 +42,11 @@ public class CombatGameManager : MonoBehaviour
     private List<AllyUnit> _allAllyUnits;
     public List<AllyUnit> AllAllyUnits { get { return _allAllyUnits; } }
 
+    public List<GridBasedUnit> DeadUnits { get; private set; }
+
+    [SerializeField]
+    private GameObject _barricadePrefab;
+
     public AllyUnit CurrentUnit
     {
         get
@@ -69,6 +74,9 @@ public class CombatGameManager : MonoBehaviour
 
     public bool IsAllyTurn { get; private set; }
     public bool IsEnemyTurn { get; private set; }
+
+    [SerializeField] public Sprite happyEmoji;
+    [SerializeField] public Sprite unhappyEmoji;
 
 
     #region Events
@@ -101,7 +109,7 @@ public class CombatGameManager : MonoBehaviour
 
         _currentUnitIndex = 0;
 
-        
+        DeadUnits = new List<GridBasedUnit>();
 
         _allAllyUnits = new List<AllyUnit>();
         foreach (AllyUnit unit in _controllableUnits)
@@ -142,6 +150,7 @@ public class CombatGameManager : MonoBehaviour
             {
                 ally.SetCharacter(AllyCharacter.GetRandomAllyCharacter());
                 characters.Add(ally.AllyCharacter);
+                //ally.AllyCharacter.Name = $"Ally {i+1}";
                 i++;
             }
 
@@ -177,9 +186,11 @@ public class CombatGameManager : MonoBehaviour
             Destroy(unit.gameObject);
         }
 
+        int enemyIndex = 1;
         foreach (EnemyUnit enemy in _enemyUnits)
         {
             enemy.SetCharacter(new EnemyCharacter(6, 2, 65, 10, 15, 20, 4, 60));
+            enemy.Character.Name = $"Enemy {enemyIndex++}";
         }
 
         foreach (AllyUnit ally in _allAllyUnits)
@@ -449,13 +460,22 @@ public class CombatGameManager : MonoBehaviour
         }
         else if (ally != null)
         {
+            GlobalGameManager.Instance.allCharacters.Remove(ally.AllyCharacter);
+
             _allAllyUnits.Remove(ally);
-            _controllableUnits.Remove(ally);
+
+            int i = _controllableUnits.IndexOf(ally);
+            if (i != -1)
+            {
+                if (i < _currentUnitIndex) _currentUnitIndex--;
+                _controllableUnits.Remove(ally);
+            }
         }
 
         //deadUnit.gameObject.SetActive(false);
         _gridMap.FreeOccupiedTile(deadUnit.GridPosition);
-        deadUnit.MarkForDestruction();
+        //deadUnit.MarkForDeath();
+        DeadUnits.Add(deadUnit);
     }
 
     public void AbilityHoverTarget(GridBasedUnit unit)
@@ -470,6 +490,19 @@ public class CombatGameManager : MonoBehaviour
         if (CurrentAbility == null) return;
 
         CurrentAbility.UISelectUnit(unit);
+    }
+
+    public void ChangeTileCover(Tile tile, EnumCover cover)
+    {
+        tile.Cover = cover;
+        UpdatePathfinders(null, tile.Coords);
+    }
+
+    public void AddBarricadeAt(Vector2Int pos, bool rotate)
+    {
+        var unit = Instantiate(_barricadePrefab).GetComponent<GridBasedUnit>();
+        unit.transform.position = _gridMap.GridToWorld(pos, 0f);
+        if (rotate) unit.transform.eulerAngles += new Vector3(0, 90, 0);
     }
 
 #if UNITY_EDITOR

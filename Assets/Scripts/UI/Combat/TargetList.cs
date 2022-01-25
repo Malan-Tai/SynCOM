@@ -8,6 +8,8 @@ public class TargetList : MonoBehaviour
 
     [SerializeField]
     private RectTransform _targetBtnPrefab;
+    [SerializeField]
+    private float _height = 100;
 
     private RectTransform _rectTransform;
 
@@ -40,7 +42,7 @@ public class TargetList : MonoBehaviour
         int i = 0;
         TargetButton[] _buttons = GetComponentsInChildren<TargetButton>();
 
-        _rectTransform.sizeDelta = new Vector2(10, 100);
+        _rectTransform.sizeDelta = new Vector2(10, _height);
 
         foreach (GridBasedUnit unit in units)
         {
@@ -53,7 +55,7 @@ public class TargetList : MonoBehaviour
             else
             {
                 btn = Instantiate(_targetBtnPrefab, transform).GetComponent<TargetButton>();
-                btn.transform.localPosition += new Vector3(x, 0, 0);
+                btn.transform.localPosition += new Vector3(x, -10, 0);
             }
 
             float width = btn.GetComponent<RectTransform>().rect.width + 10;
