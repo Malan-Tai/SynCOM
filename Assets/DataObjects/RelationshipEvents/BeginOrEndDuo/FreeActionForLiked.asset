@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f6c0a609471fce429c6b769d34b1e7d, type: 3}
   m_Name: FreeActionForLiked
   m_EditorClassIdentifier: 
-  triggerType: 6
+  triggerType: 7
   triggersOnlyOnce: 0
   onlyCheckDuoAlly: 1
   dontCheckDuoAlly: 0
@@ -29,20 +29,23 @@ MonoBehaviour:
   onFatal: 0
   minMaxHealthRatio: {x: 0, y: 1}
   killSteal: 0
+  startedAction: 0
   effectType: 3
   interrupts: 0
   reciprocal: 0
   admirationChange: 0
   trustChange: 0
   sympathyChange: 0
-  sourceToTarget: 0
-  admirationChangeSTT: 0
-  trustChangeSTT: 0
-  sympathyChangeSTT: 0
+  sourceToCurrent: 0
+  admirationChangeSTC: 0
+  trustChangeSTC: 0
+  sympathyChangeSTC: 0
   chance: 0.3
-  interruptions: []
+  interruptionsOnCurrent: []
+  interruptionsOnSource: []
   freeAction: 1
   freeActionForDuo: 0
   maxRange: 0
   buffsOnSource: []
   buffsOnTarget: []
+  changeActionTo: 0

@@ -42,7 +42,7 @@ public class HealingRain : BaseDuoAbility
         int healingValue = _healingValue;
         AbilityResult result = new AbilityResult();
 
-        if (RandomEngine.Instance.Range(0, 100) < _allyShotStats.GetAccuracy())
+        if (!StartAction(ActionTypes.Attack, _chosenAlly, _effector) && RandomEngine.Instance.Range(0, 100) < _allyShotStats.GetAccuracy())
         {
             explosionRadius = _explosionImprovedRadius;
             healingValue = _healingValueIncreased;
