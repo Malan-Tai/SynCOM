@@ -179,7 +179,7 @@ public class DwarfTossing : BaseDuoAbility
             // Launch successful : Damage enemies
             foreach (EnemyUnit target in _targets)
             {
-                SelfShoot(target, _selfShotStats, alwaysHit: true, canCrit: false);
+                AttackDamage(_effector, target, _selfShotStats.GetDamage(), false);
             }
         }
         else

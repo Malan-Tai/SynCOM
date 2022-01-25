@@ -143,12 +143,16 @@ public class Devouring : BaseDuoAbility
             float heal = _selfShotStats.GetHeal();
             _effector.Heal(ref heal);
             AddBuff(_effector, new Buff("Bloodlust", 6, _effector, damageBuff: 0.5f, critBuff: 0.5f, mitigationBuff: 1.5f));
-
+            
+            result.CopyShootResult(shooResult);
             result.Heal = heal;
-            result.Critical = shooResult.Critical;
-            result.Damage = shooResult.Damage;
-            SendResultToHistoryConsole(result);
         }
+        else
+        {
+            result.Cancelled = true;
+        }
+
+        SendResultToHistoryConsole(result);
     }
 
     // always hits and doesn't procc StartAction, because it was already tested above
@@ -160,13 +164,13 @@ public class Devouring : BaseDuoAbility
 
         if (randCrit < selfShotStats.GetCritRate())
         {
-            AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage() * 1.5f, true, _chosenAlly);
-            return new ShootResult(true, selfShotStats.GetDamage() * 1.5f, true);
+            float effectiveDamage = AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage() * 1.5f, true, _chosenAlly);
+            return new ShootResult(false, true, effectiveDamage, true);
         }
         else
         {
-            AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage(), false, _chosenAlly);
-            return new ShootResult(true, selfShotStats.GetDamage(), false);
+            float effectiveDamage = AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage(), false, _chosenAlly);
+            return new ShootResult(false, true, effectiveDamage, false);
         }
     }
 

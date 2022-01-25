@@ -205,7 +205,7 @@ public class WildCharge : BaseDuoAbility
         // Damage enemies
         foreach (EnemyUnit target in _targets)
         {
-            SelfShoot(target, _allyShotStats, alwaysHit: true, canCrit: false);
+            AttackDamage(_effector, target, _allyShotStats.GetDamage(), false);
         }
     }
 

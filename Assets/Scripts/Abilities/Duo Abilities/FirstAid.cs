@@ -29,10 +29,9 @@ public class FirstAid : BaseDuoAbility
 
     public override void Execute()
     {
-        Heal(_effector, _chosenAlly, _healStats.GetHeal(), _chosenAlly);
-
         AbilityResult result = new AbilityResult();
-        result.Heal = _healStats.GetHeal();
+        result.Heal = Heal(_effector, _chosenAlly, _healStats.GetHeal(), _chosenAlly);
+
         SendResultToHistoryConsole(result);
     }
 

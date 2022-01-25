@@ -120,9 +120,7 @@ public class ShieldAndStrike : BaseDuoAbility
 
         AbilityResult result = new AbilityResult();
         ShootResult shootResult = AllyShoot(target, _allyShotStats);
-        result.AllyMiss = !shootResult.Landed;
-        result.AllyCritical = shootResult.Critical;
-        result.AllyDamage = shootResult.Damage;
+        result.CopyAllyShootResult(shootResult);
 
         if (!StartAction(ActionTypes.Protect, _effector, _chosenAlly))
         {
