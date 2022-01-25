@@ -308,7 +308,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                     .BeginEntry()
                     .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.Name).CloseTag()
                     .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" angrily cancelled ").CloseTag()
-                    .AddText(" their attack with ")
+                    .AddText(" their action with ")
                     .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
                     .AddText(" to shoot them instead, dealing ")
                     .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{shootResult.Damage}{criticalText} damage").CloseTag();
