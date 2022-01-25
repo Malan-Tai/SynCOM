@@ -33,14 +33,18 @@ public class WildCharge : BaseDuoAbility
         string res = "You both charge in a direction : you hold a shield, defending both of you for the following turn.";
         if (_chosenAlly != null)
         {
-            res += "\nPROT: " + (1 - _selfProtStats.GetProtection()) * 100 + "%";
+            res += "\nPROT: " + (int)((1 - _selfProtStats.GetProtection()) * 100) + "%";
         }
         else if (_temporaryChosenAlly != null)
         {
             var temporarySelfProtStat = new AbilityStats(0, 0, 0, 0.3f, 0, _effector);
             temporarySelfProtStat.UpdateWithEmotionModifiers(_temporaryChosenAlly);
 
-            res += "\nPROT: " + (1 - temporarySelfProtStat.GetProtection()) * 100 + "%";
+            res += "\nPROT: " + (int)((1 - temporarySelfProtStat.GetProtection()) * 100) + "%";
+        }
+        else
+        {
+            res += "\nPROT:30%";
         }
         return res;
     }
@@ -51,18 +55,18 @@ public class WildCharge : BaseDuoAbility
 
         if (_chosenAlly != null)
         {
-            res += "\nAcc:~" + _allyShotStats.GetAccuracy() +
-                    "% | Crit:" + _allyShotStats.GetCritRate() +
-                    "% | Dmg:" + _allyShotStats.GetDamage();
+            res += "\nACC:" + (int)_allyShotStats.GetAccuracy() +
+                    "% | CRIT:" + (int)_allyShotStats.GetCritRate() +
+                    "% | DMG:" + (int)_allyShotStats.GetDamage();
         }
         else if (_temporaryChosenAlly != null)
         {
-            var temporaryAllyShotStat = new AbilityStats(0, 0, 1, 0, 0, _temporaryChosenAlly);
+            var temporaryAllyShotStat = new AbilityStats(0, 0, 1.5f, 0, 0, _temporaryChosenAlly);
             temporaryAllyShotStat.UpdateWithEmotionModifiers(_effector);
 
-            res += "\nAcc:~" + temporaryAllyShotStat.GetAccuracy() +
-                    "% | Crit:" + temporaryAllyShotStat.GetCritRate() +
-                    "% | Dmg:" + temporaryAllyShotStat.GetDamage();
+            res += "\nACC:" + (int)temporaryAllyShotStat.GetAccuracy() +
+                    "% | CRIT:" + (int)temporaryAllyShotStat.GetCritRate() +
+                    "% | DMG:" + (int)temporaryAllyShotStat.GetDamage();
         }
 
         return res;
@@ -75,7 +79,7 @@ public class WildCharge : BaseDuoAbility
 
     protected override void ChooseAlly()
     {
-        _selfProtStats = new AbilityStats(0, 0, 0, 0.3f, 0, _effector);
+        _selfProtStats = new AbilityStats(0, 0, 0, 0.7f, 0, _effector);
         _selfProtStats.UpdateWithEmotionModifiers(_chosenAlly);
 
         _allyShotStats = new AbilityStats(0, 0, 1.5f, 0, 0, _chosenAlly);

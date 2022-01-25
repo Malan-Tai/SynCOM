@@ -17,7 +17,8 @@ public class PepTalk : BaseDuoAbility
 
     public override string GetAllyDescription()
     {
-        return "You ally's words of encouragement strengthen you, increasing damage, move and aim for the next 2 turn.";
+        return "You ally's words of encouragement strengthen you, increasing damage, move and aim for the next 2 turn." +
+               "\nDMG +20% | ACC +50% | MOVE +3";
     }
     public override string GetName()
     {
