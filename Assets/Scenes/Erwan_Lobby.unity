@@ -4397,6 +4397,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5090991735a260c4c98058e12e1049b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _classes: 0100000003000000040000000500000002000000
+  _relationships:
+  - selfIndex: 0
+    allyIndex: 1
+    admirationLvl: 1
+    admirationFill: 50
+    trustLvl: 1
+    trustFill: 0
+    sympathyLvl: 2
+    sympathyFill: 0
 --- !u!224 &1208928494 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1975161109962763294, guid: 3eb722397ae20ff4cb62356c2f6859ae, type: 3}
