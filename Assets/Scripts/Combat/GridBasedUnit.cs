@@ -132,6 +132,7 @@ public class GridBasedUnit : MonoBehaviour
         _movesLeft = character.MovementPoints;
         InitSprite();
         _info.SetHP(Character.HealthPoints, Character.MaxHealth);
+        _info.SetSmall(true);
     }
 
     public void MarkForDeath()
