@@ -70,4 +70,8 @@ public class Slap : BaseDuoAbility
     {
         return "A small friendly fire";
     }
+
+    public override void ShowRanges(AllyUnit user)
+    {
+    }
 }

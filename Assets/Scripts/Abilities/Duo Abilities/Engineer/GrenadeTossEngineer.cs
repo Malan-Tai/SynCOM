@@ -27,8 +27,21 @@ public class GrenadeTossEngineer : BaseDuoAbility
 
     public override string GetAllyDescription()
     {
-        return "You shoot the grenade midair with you expert precision. If you succeed, " +
-                "the grenade benefits from an increased explosion radius.";
+        string res =  "You shoot the grenade midair with you expert precision. If you succeed, " +
+                      "the grenade benefits from an increased explosion radius and damage.";
+        if (_chosenAlly != null)
+        {
+            res += "ACC:" + (int)_allyShotStats.GetAccuracy() + "%";
+        }
+        else if (_temporaryChosenAlly != null)
+        {
+            var temporaryAllyShotStat = new AbilityStats(0, 0, 0, 0, 0, _temporaryChosenAlly);
+            temporaryAllyShotStat.UpdateWithEmotionModifiers(_effector);
+
+            res += "ACC:" + (int)temporaryAllyShotStat.GetAccuracy() + "%";
+        }
+        res += "\nBONUS DMG: +33%";
+        return res;
     }
 
     public override string GetDescription()
@@ -36,20 +49,23 @@ public class GrenadeTossEngineer : BaseDuoAbility
         string res = "You throw a grenade in the air for the Sniper to shoot at.";
         if (_chosenAlly != null)
         {
-            res += "\nAcc: 100%" +
-                    " | Crit: 0%" +
-                    " | Dmg: " + _selfShotStats.GetDamage();
+            res += "\nACC: 100%" +
+                    " | CRIT: 0%" +
+                    " | DMG: " + (int)_selfShotStats.GetDamage();
         }
-        else if (_effector != null)
+        else if (_effector != null & _temporaryChosenAlly != null)
         {
-            res += "\nAcc: 100%" +
-                    " | Crit: 0%" +
-                    " | Dmg: " + _effector.AllyCharacter.Damage * 1.5;
+            var temporarySelfShotStat = new AbilityStats(0, 0, 1.5f, 0, 0, _effector);
+            temporarySelfShotStat.UpdateWithEmotionModifiers(_temporaryChosenAlly);
+
+            res += "\nACC: 100%" +
+                    " | CRIT: 0%" +
+                    " | DMG: " + (int)temporarySelfShotStat.GetDamage();
         }
         else
         {
-            res += "\nAcc: 100%" +
-                    " | Crit: 0%";
+            res += "\nACC: 100%" +
+                    " | CRIT: 0%";
         }
         return res;
     }
@@ -206,10 +222,12 @@ public class GrenadeTossEngineer : BaseDuoAbility
 
         int explosionRadius = _explosionBaseRadius;
 
-        if (RandomEngine.Instance.Range(0, 100) < _allyShotStats.GetAccuracy())
+        if (!StartAction(ActionTypes.Attack, _chosenAlly, _effector) && RandomEngine.Instance.Range(0, 100) < _allyShotStats.GetAccuracy())
         {
             explosionRadius = _explosionImprovedRadius;
             Debug.Log("[Grenade Toss] Bonus radius");
+            _selfShotStats = new AbilityStats(0, 0, 2f, 0, 0, _effector);
+            _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
         }
 
         _targets.Clear();
@@ -323,5 +341,24 @@ public class GrenadeTossEngineer : BaseDuoAbility
     public override string GetShortDescription()
     {
         return "Throws a grenade and lets an ally shoot at it for increased efficiency.";
+    }
+
+    public override void ShowRanges(AllyUnit user)
+    {
+        GridMap map = CombatGameManager.Instance.GridMap;
+        List<Tile> range = new List<Tile>();
+
+        for (int i = 0; i < map.GridTileWidth; i++)
+        {
+            for (int j = 0; j < map.GridTileHeight; j++)
+            {
+                Vector2Int tile = new Vector2Int(i, j);
+                if ((tile - user.GridPosition).magnitude <= _throwingRadius)
+                {
+                    range.Add(map[i, j]);
+                }
+            }
+        }
+        CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", range, true);
     }
 }

@@ -174,9 +174,9 @@ public class GridBasedUnit : MonoBehaviour
         }
     }
 
-    public void ChooseAstarPathTo(Vector2Int cell)
+    public bool ChooseAstarPathTo(Vector2Int cell)
     {
-        if (_followingPath) return;
+        if (_followingPath) return false;
 
         _pathToFollow = new List<Vector2Int>(_pathfinder.AstarPath(_gridPosition, cell));
 
@@ -186,7 +186,10 @@ public class GridBasedUnit : MonoBehaviour
             CombatGameManager.Instance.GridMap.UpdateOccupiedTiles(_gridPosition, cell);
 
             if (OnMoveStart != null) OnMoveStart(this, cell);
+
+            return true;
         }
+        return false;
     }
 
     public void NeedsPathfinderUpdate()

@@ -17,7 +17,8 @@ public class PepTalk : BaseDuoAbility
 
     public override string GetAllyDescription()
     {
-        return "You ally's words of encouragement strengthen you, increasing damage, move and aim for the next 2 turn.";
+        return "You ally's words of encouragement strengthen you, increasing damage, move and aim for the next 2 turn." +
+               "\nDMG +20% | ACC +50% | MOVE +3";
     }
     public override string GetName()
     {
@@ -71,5 +72,24 @@ public class PepTalk : BaseDuoAbility
     protected override bool IsAllyCompatible(AllyUnit unit)
     {
         return (unit.GridPosition - this._effector.GridPosition).magnitude <= 5;
+    }
+
+    public override void ShowRanges(AllyUnit user)
+    {
+        GridMap map = CombatGameManager.Instance.GridMap;
+        List<Tile> range = new List<Tile>();
+
+        for (int i = 0; i < map.GridTileWidth; i++)
+        {
+            for (int j = 0; j < map.GridTileHeight; j++)
+            {
+                Vector2Int tile = new Vector2Int(i, j);
+                if ((tile - user.GridPosition).magnitude <= 5)
+                {
+                    range.Add(map[i, j]);
+                }
+            }
+        }
+        CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", range, true);
     }
 }

@@ -18,6 +18,7 @@ public class HealingRain : BaseDuoAbility
 
     // Utilisé pour déterminer l'accuracy de l'allié
     private AbilityStats _allyShotStats;
+    private AbilityStats _selfHealStats;
 
     private int _healingValue = 8;
     private int _healingValueIncreased = 12;
@@ -41,7 +42,7 @@ public class HealingRain : BaseDuoAbility
         int healingValue = _healingValue;
         AbilityResult result = new AbilityResult();
 
-        if (RandomEngine.Instance.Range(0, 100) < _allyShotStats.GetAccuracy())
+        if (!StartAction(ActionTypes.Attack, _chosenAlly, _effector) && RandomEngine.Instance.Range(0, 100) < _allyShotStats.GetAccuracy())
         {
             explosionRadius = _explosionImprovedRadius;
             healingValue = _healingValueIncreased;
@@ -49,8 +50,8 @@ public class HealingRain : BaseDuoAbility
             Debug.Log("[Healing Rain] Bonus radius");
         }
 
-        var selfHealStats = new AbilityStats(0, 0, 0, 0, healingValue, _effector);
-        selfHealStats.UpdateWithEmotionModifiers(_chosenAlly);
+        _selfHealStats = new AbilityStats(0, 0, 0, 0, healingValue, _effector);
+        _selfHealStats.UpdateWithEmotionModifiers(_chosenAlly);
 
         _enemyTargets.Clear();
         foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
@@ -74,11 +75,11 @@ public class HealingRain : BaseDuoAbility
         // Ne peux rater ni faire un coup critique
         foreach (AllyUnit ally in _allyTargets)
         {
-            result.HealList.Add(Heal(_effector, ally, selfHealStats.GetHeal(), _chosenAlly));
+            result.HealList.Add(Heal(_effector, ally, _selfHealStats.GetHeal(), _chosenAlly));
         }
         foreach (EnemyUnit enemy in _enemyTargets)
         {
-            float heal = selfHealStats.GetHeal();
+            float heal = _selfHealStats.GetHeal();
             enemy.Heal(ref heal);
             result.HealList.Add(heal);
         }
@@ -138,13 +139,41 @@ public class HealingRain : BaseDuoAbility
 
     public override string GetAllyDescription()
     {
-        return "You shoot the grenade midair with you expert precision. If you succeed, " +
-                "the grenade benefits from an increased explosion radius and efficiency.";
+        string res = "You shoot the vial midair with you expert precision. If you succeed, " +
+                     "the grenade benefits from an increased explosion radius and efficiency.";
+        if (_chosenAlly != null)
+        {
+            res += "\nACC: " + (int)_allyShotStats.GetAccuracy() + "%";
+        }
+        else if (_temporaryChosenAlly != null)
+        {
+            var temporaryAllyShotStat = new AbilityStats(0, 0, 0, 0, 0, _temporaryChosenAlly);
+            temporaryAllyShotStat.UpdateWithEmotionModifiers(_effector);
+
+            res += "\nACC: " + (int)temporaryAllyShotStat.GetAccuracy() + "%";
+        }
+        return res;
     }
+
     public override string GetDescription()
     {
-        return "You throw a vial filled with a healing concoction in the air for your ally to shoot at." +
-               "\nHeal: " + _healingValue;
+        string res = "You throw a vial filled with a healing concoction in the air for your ally to shoot at.";
+        if (_chosenAlly != null)
+        {
+            res += "\nHEAL: " + (int)_selfHealStats.GetHeal();
+        }
+        else if (_temporaryChosenAlly != null)
+        {
+            var temporarySelfHeal = new AbilityStats(0, 0, 0, 0, _healingValue, _effector);
+            temporarySelfHeal.UpdateWithEmotionModifiers(_temporaryChosenAlly);
+
+            res += "\nHEAL: " + (int)temporarySelfHeal.GetHeal();
+        }
+        else
+        {
+            res += "\nHEAL: " + _healingValue;
+        }
+        return res;
     }
     public override string GetName()
     {
@@ -160,6 +189,10 @@ public class HealingRain : BaseDuoAbility
     {
         _allyShotStats = new AbilityStats(0, 0, 0, 0, 0, _chosenAlly);
         _allyShotStats.UpdateWithEmotionModifiers(_effector);
+        _selfHealStats = new AbilityStats(0, 0, 0, 0, _healingValue, _effector);
+        _selfHealStats.UpdateWithEmotionModifiers(_chosenAlly);
+
+        RequestDescriptionUpdate();
 
         _possibleTargetsTiles.Clear();
         GridMap map = CombatGameManager.Instance.GridMap;
@@ -287,5 +320,24 @@ public class HealingRain : BaseDuoAbility
         {
             enemy.DontHighlightUnit();
         }
+    }
+
+    public override void ShowRanges(AllyUnit user)
+    {
+        GridMap map = CombatGameManager.Instance.GridMap;
+        List<Tile> range = new List<Tile>();
+
+        for (int i = 0; i < map.GridTileWidth; i++)
+        {
+            for (int j = 0; j < map.GridTileHeight; j++)
+            {
+                Vector2Int tile = new Vector2Int(i, j);
+                if ((tile - user.GridPosition).magnitude <= _trowingRadius)
+                {
+                    range.Add(map[i, j]);
+                }
+            }
+        }
+        CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", range, true);
     }
 }

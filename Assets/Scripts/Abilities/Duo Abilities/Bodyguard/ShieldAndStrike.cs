@@ -15,11 +15,18 @@ public class ShieldAndStrike : BaseDuoAbility
         string res = "You cover your ally while they attack, reducing damage received for the following turn.";
         if (_chosenAlly != null)
         {
-            res += "\nPROT: " + (1 - _selfProtStats.GetProtection()) * 100 + "%";
+            res += "\nPROT:" + (int)((1 - _selfProtStats.GetProtection()) * 100) + "%";
+        }
+        else if (_temporaryChosenAlly != null)
+        {
+            var temporarySelfProtStat = new AbilityStats(0, 0, 0, 0.5f, 0, _effector);
+            temporarySelfProtStat.UpdateWithEmotionModifiers(_temporaryChosenAlly);
+
+            res += "\nPROT:" + (int)((1 - temporarySelfProtStat.GetProtection()) * 100) + "%";
         }
         else
         {
-            res += "\nPROT: ~50%";
+            res += "\nPROT:50%";
         }
         return res;
     }
@@ -192,17 +199,26 @@ public class ShieldAndStrike : BaseDuoAbility
 
         if (_chosenAlly != null && _hoveredUnit != null)
         {
-            res += "\nAcc:" + _allyShotStats.GetAccuracy(_hoveredUnit, _chosenAlly.LinesOfSight[_hoveredUnit].cover) +
-                    "% | Crit:" + _allyShotStats.GetCritRate() +
-                    "% | Dmg:" + _allyShotStats.GetDamage();
+            res += "\nACC:" + (int)_allyShotStats.GetAccuracy(_hoveredUnit, _chosenAlly.LinesOfSight[_hoveredUnit].cover) +
+                    "% | CRIT:" + (int)_allyShotStats.GetCritRate() +
+                    "% | DMG:" + (int)_allyShotStats.GetDamage();
         }
         else if (_targetIndex >= 0 && _chosenAlly != null)
         {
             GridBasedUnit target = _possibleTargets[_targetIndex];
 
-            res += "\nAcc:" + _allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover) +
-                    "% | Crit:" + _allyShotStats.GetCritRate() +
-                    "% | Dmg:" + _allyShotStats.GetDamage();
+            res += "\nACC:" + (int)_allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover) +
+                    "% | CRIT:" + (int)_allyShotStats.GetCritRate() +
+                    "% | DMG:" + (int)_allyShotStats.GetDamage();
+        }
+        else if (_temporaryChosenAlly != null)
+        {
+            var temporaryAllyShotStat = new AbilityStats(0, 0, 1.5f, 0, 0, _temporaryChosenAlly);
+            temporaryAllyShotStat.UpdateWithEmotionModifiers(_effector);
+
+            res += "\nACC:" + (int)temporaryAllyShotStat.GetAccuracy() +
+                    "% | CRIT:" + (int)temporaryAllyShotStat.GetCritRate() +
+                    "% | DMG:" + (int)temporaryAllyShotStat.GetDamage();
         }
         return res;
     }
@@ -222,5 +238,24 @@ public class ShieldAndStrike : BaseDuoAbility
     public override string GetShortDescription()
     {
         return "Protects an ally while they shoot a single target.";
+    }
+
+    public override void ShowRanges(AllyUnit user)
+    {
+        GridMap map = CombatGameManager.Instance.GridMap;
+        List<Tile> range = new List<Tile>();
+
+        for (int i = 0; i < map.GridTileWidth; i++)
+        {
+            for (int j = 0; j < map.GridTileHeight; j++)
+            {
+                Vector2Int tile = new Vector2Int(i, j);
+                if ((tile - user.GridPosition).magnitude < 2)
+                {
+                    range.Add(map[i, j]);
+                }
+            }
+        }
+        CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", range, true);
     }
 }

@@ -10,6 +10,17 @@ public class BasicShot : BaseAllyAbility
 
     private AbilityStats _selfShotStats;
 
+    private List<Tile> _possibleTargetsTiles = new List<Tile>();
+
+    public override string GetName()
+    {
+        return "Basic Attack";
+    }
+    public override string GetShortDescription()
+    {
+        return "A basic attack";
+    }
+
     public override string GetDescription()
     {
         string res = "Shoot at the target.";
@@ -184,10 +195,6 @@ public class BasicShot : BaseAllyAbility
         base.EndAbility();
     }
 
-    public override string GetName()
-    {
-        return "Basic Attack";
-    }
 
     public override void UISelectUnit(GridBasedUnit unit)
     {
@@ -197,8 +204,23 @@ public class BasicShot : BaseAllyAbility
         RequestTargetSymbolUpdate(unit);
     }
 
-    public override string GetShortDescription()
+
+    public override void ShowRanges(AllyUnit user)
     {
-        return "A basic attack";
+        GridMap map = CombatGameManager.Instance.GridMap;
+        List<Tile> range = new List<Tile>();
+
+        for (int i = 0; i < map.GridTileWidth; i++)
+        {
+            for (int j = 0; j < map.GridTileHeight; j++)
+            {
+                Vector2Int tile = new Vector2Int(i, j);
+                if ((tile - user.GridPosition).magnitude <= user.Character.RangeShot)
+                {
+                    range.Add(map[i, j]);
+                }
+            }
+        }
+        CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", range, true);
     }
 }

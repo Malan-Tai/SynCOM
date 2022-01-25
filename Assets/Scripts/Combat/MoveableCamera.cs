@@ -42,30 +42,27 @@ public class MoveableCamera : MonoBehaviour
         _parentViewedUnit = _currentlyViewedUnit;
     }
 
-    private void Update()
+    public void EdgeMove(float x, float y)
     {
         float currentRotationY = this.transform.localEulerAngles.y;
-
-        float x = Input.mousePosition.x;
-        float y = Input.mousePosition.y;
         Vector3 mouseDelta = Vector3.zero;
 
-        if (x <= 0)
+        if (x < 0)
         {
             mouseDelta.x += -1f * Mathf.Cos(currentRotationY * Mathf.Deg2Rad);
             mouseDelta.y += 1f * Mathf.Sin(currentRotationY * Mathf.Deg2Rad);
         }
-        else if (x >= Screen.width - 1)
+        else if (x > 0)
         {
             mouseDelta.x += 1f * Mathf.Cos(currentRotationY * Mathf.Deg2Rad);
             mouseDelta.y += -1f * Mathf.Sin(currentRotationY * Mathf.Deg2Rad);
         }
-        if (y <= 0)
+        if (y < 0)
         {
             mouseDelta.x += -1f * Mathf.Sin(currentRotationY * Mathf.Deg2Rad);
             mouseDelta.y += -1f * Mathf.Cos(currentRotationY * Mathf.Deg2Rad);
         }
-        else if (y >= Screen.height - 1)
+        else if (y > 0)
         {
             mouseDelta.x += 1f * Mathf.Sin(currentRotationY * Mathf.Deg2Rad);
             mouseDelta.y += 1f * Mathf.Cos(currentRotationY * Mathf.Deg2Rad);
@@ -76,6 +73,11 @@ public class MoveableCamera : MonoBehaviour
             _followTarget = false;
             transform.position += new Vector3(mouseDelta.x, 0, mouseDelta.y).normalized * (_camera.orthographicSize / _minCameraSize) * _moveSpeed / 300;
         }
+    }
+
+    private void Update()
+    {
+        float currentRotationY = this.transform.localEulerAngles.y;
 
         if (_followRotation)
         {

@@ -7,7 +7,7 @@ public class LongShot : BaseDuoAbility
     private AbilityStats _selfShotStats;
     private List<GridBasedUnit> _possibleTargets;
     private int _targetIndex = -1;
-    private int _selectionRange = 8;
+    private int _selectionRange = 20;
     public override string GetName()
     {
         return "Long Shot";
@@ -25,17 +25,26 @@ public class LongShot : BaseDuoAbility
         // The enemy cover used is the one of the _chosenAlly (don't worry there's a scientific explanation)
         if (_chosenAlly != null && _hoveredUnit != null)
         {
-            res += "\nAcc:" + _selfShotStats.GetAccuracy(_hoveredUnit, _chosenAlly.LinesOfSight[_hoveredUnit].cover) +
-                    "% | Crit:" + _selfShotStats.GetCritRate() +
-                    "% | Dmg:" + _selfShotStats.GetDamage();
+            res += "\nACC:" + (int)_selfShotStats.GetAccuracy(_hoveredUnit, _chosenAlly.LinesOfSight[_hoveredUnit].cover) +
+                    "% | CRIT:" + (int)_selfShotStats.GetCritRate() +
+                    "% | DMG:" + (int)_selfShotStats.GetDamage();
         }
         else if (_targetIndex >= 0 && _chosenAlly != null)
         {
             GridBasedUnit target = _possibleTargets[_targetIndex];
 
-            res += "\nAcc:" + _selfShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover) +
-                    "% | Crit:" + _selfShotStats.GetCritRate() +
-                    "% | Dmg:" + _selfShotStats.GetDamage();
+            res += "\nACC:" + (int)_selfShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover) +
+                    "% | CRIT:" + (int)_selfShotStats.GetCritRate() +
+                    "% | DMG:" + (int)_selfShotStats.GetDamage();
+        }
+        else if (_temporaryChosenAlly != null)
+        {
+            var temporarySelfShotStat = new AbilityStats(0, 0, 2f, 0, 0, _effector);
+            temporarySelfShotStat.UpdateWithEmotionModifiers(_temporaryChosenAlly);
+
+            res += "\nACC:" + (int)temporarySelfShotStat.GetAccuracy() +
+                    "% | CRIT:" + (int)temporarySelfShotStat.GetCritRate() +
+                    "% | DMG:" + (int)temporarySelfShotStat.GetDamage();
         }
 
         return res;
@@ -43,7 +52,7 @@ public class LongShot : BaseDuoAbility
 
     public override string GetAllyDescription()
     {
-        return "Indicate the position of an enemy to the Sniper, allowing them to shoot it even if they're out of range.";
+        return "Indicate the position of an enemy to the Sniper, allowing them to shoot the enemy as if from your point of view.";
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)
@@ -61,7 +70,8 @@ public class LongShot : BaseDuoAbility
         {
             float distanceToSelf = Vector2.Distance(unit.GridPosition, _effector.GridPosition);
             float distanceToAlly = Vector2.Distance(unit.GridPosition, _chosenAlly.GridPosition);
-            if (distanceToSelf <= _effector.Character.RangeShot && distanceToAlly <= _effector.Character.RangeShot && _chosenAlly.LinesOfSight.ContainsKey(unit))
+            if (distanceToAlly <= _chosenAlly.Character.RangeShot && 
+                _chosenAlly.LinesOfSight.ContainsKey(unit))
             {
                 _possibleTargets.Add(unit);
             }
@@ -234,5 +244,30 @@ public class LongShot : BaseDuoAbility
         }
 
         HistoryConsole.Instance.Submit();
+    }
+
+    public override void ShowRanges(AllyUnit user)
+    {
+        GridMap map = CombatGameManager.Instance.GridMap;
+        List<Tile> range = new List<Tile>();
+        List<Tile> allyRange = new List<Tile>();
+
+        for (int i = 0; i < map.GridTileWidth; i++)
+        {
+            for (int j = 0; j < map.GridTileHeight; j++)
+            {
+                Vector2Int tile = new Vector2Int(i, j);
+                if ((tile - user.GridPosition).magnitude <= user.Character.RangeShot)
+                {
+                    range.Add(map[i, j]);
+                }
+                if ((tile - user.GridPosition).magnitude <= _selectionRange)
+                {
+                    allyRange.Add(map[i, j]);
+                }
+            }
+        }
+        CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", range, true);
+        CombatGameManager.Instance.TileDisplay.DisplayTileZone("BonusHealZone", allyRange, false);
     }
 }

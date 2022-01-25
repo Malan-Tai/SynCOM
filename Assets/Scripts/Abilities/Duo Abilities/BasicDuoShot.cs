@@ -249,17 +249,26 @@ public class BasicDuoShot : BaseDuoAbility
         string res = "Take a shot at the target with augmented damage.";
         if (_chosenAlly != null && _hoveredUnit != null)
         {
-            res += "\nAcc:" + _selfShotStats.GetAccuracy(_hoveredUnit, _effector.LinesOfSight[_hoveredUnit].cover) +
-                    "% | Crit:" + _selfShotStats.GetCritRate() +
-                    "% | Dmg:" + _selfShotStats.GetDamage();
+            res += "\nACC:" + (int)_selfShotStats.GetAccuracy(_hoveredUnit, _effector.LinesOfSight[_hoveredUnit].cover) +
+                    "% | CRIT:" + (int)_selfShotStats.GetCritRate() +
+                    "% | DMG:" + (int)_selfShotStats.GetDamage();
         }
         else if (_targetIndex >= 0 && _chosenAlly != null)
         {
             GridBasedUnit target = _possibleTargets[_targetIndex];
 
-            res += "\nAcc:" + _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover) +
-                    "% | Crit:" + _selfShotStats.GetCritRate() +
-                    "% | Dmg:" + _selfShotStats.GetDamage();
+            res += "\nACC:" + (int)_selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover) +
+                    "% | CRIT:" + (int)_selfShotStats.GetCritRate() +
+                    "% | DMG:" + (int)_selfShotStats.GetDamage();
+        }
+        else if (_effector != null & _temporaryChosenAlly != null)
+        {
+            var temporarySelfShotStat = new AbilityStats(0, 0, 1.5f, 0, 0, _effector);
+            temporarySelfShotStat.UpdateWithEmotionModifiers(_temporaryChosenAlly);
+
+            res += "\nACC:" + (int)temporarySelfShotStat.GetAccuracy() + "%" +
+                    " | CRIT:" + (int)temporarySelfShotStat.GetCritRate() + "%" +
+                    " | DMG:" + (int)temporarySelfShotStat.GetDamage();
         }
 
         return res;
@@ -270,17 +279,26 @@ public class BasicDuoShot : BaseDuoAbility
         string res = "Take a shot at the target with augmented damage.";
         if (_chosenAlly != null && _hoveredUnit != null)
         {
-            res += "\nAcc:" + _allyShotStats.GetAccuracy(_hoveredUnit, _chosenAlly.LinesOfSight[_hoveredUnit].cover) +
-                    "% | Crit:" + _allyShotStats.GetCritRate() +
-                    "% | Dmg:" + _allyShotStats.GetDamage();
+            res += "\nACC:" + (int)_allyShotStats.GetAccuracy(_hoveredUnit, _chosenAlly.LinesOfSight[_hoveredUnit].cover) +
+                    "% | CRIT:" + (int)_allyShotStats.GetCritRate() +
+                    "% | DMG:" + (int)_allyShotStats.GetDamage();
         }
         else if (_targetIndex >= 0 && _chosenAlly != null)
         {
             GridBasedUnit target = _possibleTargets[_targetIndex];
 
-            res += "\nAcc:" + _allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover) +
-                    "% | Crit:" + _allyShotStats.GetCritRate() +
-                    "% | Dmg:" + _allyShotStats.GetDamage();
+            res += "\nACC:" + (int)_allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover) +
+                    "% | CRIT:" + (int)_allyShotStats.GetCritRate() +
+                    "% | DMG:" + (int)_allyShotStats.GetDamage();
+        }
+        else if (_effector != null & _temporaryChosenAlly != null)
+        {
+            var temporaryAllyShotStat = new AbilityStats(0, 0, 1.5f, 0, 0, _temporaryChosenAlly);
+            temporaryAllyShotStat.UpdateWithEmotionModifiers(_effector);
+
+            res += "\nACC:" + (int)temporaryAllyShotStat.GetAccuracy() + "%" +
+                    " | CRIT:" + (int)temporaryAllyShotStat.GetCritRate() + "%" +
+                    " | DMG:" + (int)temporaryAllyShotStat.GetDamage();
         }
 
         return res;
@@ -301,5 +319,24 @@ public class BasicDuoShot : BaseDuoAbility
     public override string GetShortDescription()
     {
         return "A basic duo attack";
+    }
+
+    public override void ShowRanges(AllyUnit user)
+    {
+        GridMap map = CombatGameManager.Instance.GridMap;
+        List<Tile> range = new List<Tile>();
+
+        for (int i = 0; i < map.GridTileWidth; i++)
+        {
+            for (int j = 0; j < map.GridTileHeight; j++)
+            {
+                Vector2Int tile = new Vector2Int(i, j);
+                if ((tile - user.GridPosition).magnitude <= user.Character.RangeShot)
+                {
+                    range.Add(map[i, j]);
+                }
+            }
+        }
+        CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", range, true);
     }
 }

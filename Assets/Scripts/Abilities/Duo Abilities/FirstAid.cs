@@ -62,16 +62,52 @@ public class FirstAid : BaseDuoAbility
 
     public override string GetAllyDescription()
     {
-        return "Get healed.";
+        return "Your wounds are healed.";
     }
 
     public override string GetDescription()
     {
-        return "You heal an injured ally and take them out of critical state.";
+        string res = "You heal an injured ally.";
+
+        if (_chosenAlly != null)
+        {
+            res += "\nHEAL:" + (int)_healStats.GetHeal();
+        }
+        else if (_temporaryChosenAlly != null)
+        {
+            var temporaryHealStat = new AbilityStats(0, 0, 0, 0, 5, _effector);
+            temporaryHealStat.UpdateWithEmotionModifiers(_temporaryChosenAlly);
+
+            res += "\nHEAL:" + (int)temporaryHealStat.GetHeal();
+        }
+        else
+        {
+            res += "\nHEAL:5";
+        }
+        return res;
     }
 
     public override string GetShortDescription()
     {
         return "A small heal";
+    }
+
+    public override void ShowRanges(AllyUnit user)
+    {
+        GridMap map = CombatGameManager.Instance.GridMap;
+        List<Tile> range = new List<Tile>();
+
+        for (int i = 0; i < map.GridTileWidth; i++)
+        {
+            for (int j = 0; j < map.GridTileHeight; j++)
+            {
+                Vector2Int tile = new Vector2Int(i, j);
+                if ((tile - user.GridPosition).magnitude < 2)
+                {
+                    range.Add(map[i, j]);
+                }
+            }
+        }
+        CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", range, true);
     }
 }
