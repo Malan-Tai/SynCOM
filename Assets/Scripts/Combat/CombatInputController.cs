@@ -6,6 +6,8 @@ public class CombatInputController : MonoBehaviour
 {
     [SerializeField] private LayerMask _groundLayerMask;
 
+    private GridBasedUnit _prevHovered = null;
+
     void Update()
     {
         if (CombatGameManager.Instance.ControllableUnits.Count <= 0) return;
@@ -18,6 +20,15 @@ public class CombatInputController : MonoBehaviour
             Vector2Int tileCoord = CombatGameManager.Instance.GridMap.WorldToGrid(hitData.point);
             CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(tileCoord);
         }
+
+        GridBasedUnit hitUnit = null;
+        if (_prevHovered != null) _prevHovered.InfoSetSmall(false);
+        if (Physics.Raycast(ray, out hitData, 1000))
+        {
+            hitUnit = hitData.transform.GetComponent<GridBasedUnit>();
+            if (hitUnit != null) hitUnit.InfoSetBig(false);
+        }
+        _prevHovered = hitUnit;
 
         if (CombatGameManager.Instance.CurrentAbility != null)
         {

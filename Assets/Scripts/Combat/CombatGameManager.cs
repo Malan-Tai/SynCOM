@@ -120,6 +120,8 @@ public class CombatGameManager : MonoBehaviour
 
         InitCharacters();
 
+        CurrentUnit.InfoSetBig(true);
+
         if (OnUnitSelected != null) OnUnitSelected(_currentUnitIndex);
 
         _characterSheet.InitEventsFromCombat();
