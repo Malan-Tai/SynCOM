@@ -8078,14 +8078,6 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 2429047017060973346, guid: bb3162191e29e8544b69f451f333c622, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 3.3346128
-      objectReference: {fileID: 0}
-    - target: {fileID: 2429047017060973346, guid: bb3162191e29e8544b69f451f333c622, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 5.1575756
-      objectReference: {fileID: 0}
     - target: {fileID: 2687687993383166831, guid: bb3162191e29e8544b69f451f333c622, type: 3}
       propertyPath: m_RootOrder
       value: 6

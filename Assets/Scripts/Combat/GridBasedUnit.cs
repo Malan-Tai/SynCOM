@@ -149,8 +149,8 @@ public class GridBasedUnit : MonoBehaviour
         _outlineRenderer.material.mainTexture = outlineTexture;
         _outlineRenderer.transform.localScale = new Vector3
         (
-            outlineTexture.width / _unitRenderer.sprite.pixelsPerUnit,
-            outlineTexture.height / _unitRenderer.sprite.pixelsPerUnit,
+            _unitRenderer.sprite.texture.width / _unitRenderer.sprite.pixelsPerUnit,
+            _unitRenderer.sprite.texture.height / _unitRenderer.sprite.pixelsPerUnit,
             1f
         );
         _outlineRenderer.enabled = false;
