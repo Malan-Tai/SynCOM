@@ -42,12 +42,19 @@ public class HealingRain : BaseDuoAbility
         int healingValue = _healingValue;
         AbilityResult result = new AbilityResult();
 
-        if (!StartAction(ActionTypes.Attack, _chosenAlly, _effector) && RandomEngine.Instance.Range(0, 100) < _allyShotStats.GetAccuracy())
+        if (!StartAction(ActionTypes.Attack, _chosenAlly, _effector))
         {
-            explosionRadius = _explosionImprovedRadius;
-            healingValue = _healingValueIncreased;
-            result.Critical = true;
-            Debug.Log("[Healing Rain] Bonus radius");
+            if (RandomEngine.Instance.Range(0, 100) < _allyShotStats.GetAccuracy())
+            {
+                explosionRadius = _explosionImprovedRadius;
+                healingValue = _healingValueIncreased;
+                result.Critical = true;
+                Debug.Log("[Healing Rain] Bonus radius");
+            }
+        }
+        else
+        {
+            result.AllyCancelled = true;
         }
 
         _selfHealStats = new AbilityStats(0, 0, 0, 0, healingValue, _effector);
@@ -93,16 +100,35 @@ public class HealingRain : BaseDuoAbility
     {
         string criticalText = result.Critical ? " greatly" : "";
 
-        HistoryConsole.Instance
-            .BeginEntry()
-            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
-            .AddText(" and ")
-            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
-            .AddText(" used ")
-            .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
-            .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
-            .AddText(":")
-            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{criticalText} healed ").CloseTag();
+        if (result.AllyCancelled)
+        {
+            HistoryConsole.Instance
+                .BeginEntry()
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+                .AddText(" tried to use ")
+                .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
+                .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+                .AddText(" with ")
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+                .AddText(" who ")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("cancelled").CloseTag()
+                .AddText(" his action to do something else... ")
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name.Split(' ')[0]).CloseTag()
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($" still{criticalText} healed ").CloseTag();
+        }
+        else
+        {
+            HistoryConsole.Instance
+                .BeginEntry()
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+                .AddText(" and ")
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+                .AddText(" used ")
+                .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
+                .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+                .AddText(":")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{criticalText} healed ").CloseTag();
+        }
 
         List<GridBasedUnit> everyTarget = new List<GridBasedUnit>();
         everyTarget.AddRange(_allyTargets);
