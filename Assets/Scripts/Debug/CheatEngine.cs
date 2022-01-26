@@ -11,10 +11,10 @@ public class CheatEngine : RandomEngine
     {
         AllyCharacter[] cheatSquad = new AllyCharacter[]
         {
-            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Engineer),
-            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Engineer),
-            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Engineer),
-            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Engineer)
+            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Sniper),
+            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Sniper),
+            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Sniper),
+            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Sniper)
         };
 
         for (int i = 0; i < 4; i++)

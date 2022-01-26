@@ -15,7 +15,7 @@ public class Smuggle : BaseDuoAbility
 
     public override string GetAllyDescription()
     {
-        return "Get smuggled";
+        return "Get smuggled.";
     }
     public override string GetDescription()
     {

@@ -63,15 +63,13 @@ public class LongShot : BaseDuoAbility
     protected override void ChooseAlly()
     {
         _possibleTargets = new List<GridBasedUnit>();
-        var tempTargets = new GridBasedUnit[_effector.LinesOfSight.Count];
-        _effector.LinesOfSight.Keys.CopyTo(tempTargets, 0);
+        var tempTargets = new GridBasedUnit[_chosenAlly.LinesOfSight.Count];
+        _chosenAlly.LinesOfSight.Keys.CopyTo(tempTargets, 0);
 
         foreach (GridBasedUnit unit in tempTargets)
         {
-            float distanceToSelf = Vector2.Distance(unit.GridPosition, _effector.GridPosition);
             float distanceToAlly = Vector2.Distance(unit.GridPosition, _chosenAlly.GridPosition);
-            if (distanceToAlly <= _chosenAlly.Character.RangeShot && 
-                _chosenAlly.LinesOfSight.ContainsKey(unit))
+            if (distanceToAlly <= _chosenAlly.Character.RangeShot)
             {
                 _possibleTargets.Add(unit);
             }
@@ -233,24 +231,18 @@ public class LongShot : BaseDuoAbility
     {
         GridMap map = CombatGameManager.Instance.GridMap;
         List<Tile> range = new List<Tile>();
-        List<Tile> allyRange = new List<Tile>();
 
         for (int i = 0; i < map.GridTileWidth; i++)
         {
             for (int j = 0; j < map.GridTileHeight; j++)
             {
                 Vector2Int tile = new Vector2Int(i, j);
-                if ((tile - user.GridPosition).magnitude <= user.Character.RangeShot)
-                {
-                    range.Add(map[i, j]);
-                }
                 if ((tile - user.GridPosition).magnitude <= _selectionRange)
                 {
-                    allyRange.Add(map[i, j]);
+                    range.Add(map[i, j]);
                 }
             }
         }
         CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", range, true);
-        CombatGameManager.Instance.TileDisplay.DisplayTileZone("BonusHealZone", allyRange, false);
     }
 }
