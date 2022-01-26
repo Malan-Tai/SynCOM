@@ -133,7 +133,7 @@ public class ShieldAndStrike : BaseDuoAbility
         }
         else
         {
-            result.Miss = true;
+            result.Cancelled = true;
             Debug.Log("refused to protecc");
         }
 
@@ -148,29 +148,35 @@ public class ShieldAndStrike : BaseDuoAbility
             .BeginEntry()
             .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag();
 
-        if (result.Miss)
+        if (result.Cancelled)
         {
-            HistoryConsole.Instance.OpenColorTag(EntryColors.TEXT_ABILITY).AddText(" refused ").CloseTag();
+            HistoryConsole.Instance.OpenColorTag(EntryColors.TEXT_ABILITY).AddText(" cancelled ").CloseTag()
+                .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
+                .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+                .AddText(" with ")
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_chosenAlly.Character.Name).CloseTag()
+                .AddText(" do do something else...")
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_chosenAlly.Character.Name.Split(' ')[0]).CloseTag()
+                .AddText(" still shot and ");
         }
         else
         {
             HistoryConsole.Instance
                 .AddText(" used ")
                 .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
-                .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag();
+                .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+                .AddText(" to protect ")
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+                .AddText(" who ");
         }
-
-        HistoryConsole.Instance
-            .AddText(" to protect ")
-            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag();
 
         if (result.AllyMiss)
         {
             HistoryConsole.Instance
-                .AddText(" who just ")
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("missed").CloseTag()
-                .AddText(" their shot")
-                .AddText(" on ")
+                .AddText(" their shot on ")
                 .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover").CloseTag()
                 .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag();
         }
@@ -179,7 +185,7 @@ public class ShieldAndStrike : BaseDuoAbility
             string criticalText = result.AllyCritical ? " critical" : "";
 
             HistoryConsole.Instance
-                .AddText(" who did ")
+                .AddText("did ")
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.AllyDamage}{criticalText} damage").CloseTag()
                 .AddText(" to ")
                 .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover").CloseTag()
