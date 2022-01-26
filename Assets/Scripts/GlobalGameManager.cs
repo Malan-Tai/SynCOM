@@ -89,16 +89,44 @@ public class GlobalGameManager : MonoBehaviour
         currentSquad[i] = character;
     }
 
-    public Sprite GetClassSprite(EnumClasses charClass)
+    public Sprite GetClassSprite(EnumClasses charClass, EnumGender gender)
     {
-        int i = (int)charClass;
+        int g;
+        switch (gender)
+        {
+            case EnumGender.Male:
+                g = 0;
+                break;
+            case EnumGender.Female:
+                g = 1;
+                break;
+            default:
+                g = RandomEngine.Instance.Range(0, 2);
+                break;
+        }
+
+        int i = 2 * (int)charClass + g;
         if (i < 0 || i >= _classSprites.Length) return null;
         return _classSprites[i];
     }
 
-    public Sprite GetClassPortrait(EnumClasses charClass)
+    public Sprite GetClassPortrait(EnumClasses charClass, EnumGender gender)
     {
-        int i = (int)charClass;
+        int g;
+        switch (gender)
+        {
+            case EnumGender.Male:
+                g = 0;
+                break;
+            case EnumGender.Female:
+                g = 1;
+                break;
+            default:
+                g = RandomEngine.Instance.Range(0, 2);
+                break;
+        }
+
+        int i = 2 * (int)charClass + g;
         if (i < 0 || i >= _classPortraits.Length) return null;
         return _classPortraits[i];
     }

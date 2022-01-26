@@ -235,11 +235,11 @@ public class AllyCharacter : Character
 
     public override Sprite GetSprite()
     {
-        return GlobalGameManager.Instance.GetClassSprite(_class);
+        return GlobalGameManager.Instance.GetClassSprite(_class, _gender);
     }
 
     public override Sprite GetPortrait()
     {
-        return GlobalGameManager.Instance.GetClassPortrait(_class);
+        return GlobalGameManager.Instance.GetClassPortrait(_class, _gender);
     }
 }
