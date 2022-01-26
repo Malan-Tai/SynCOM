@@ -119,17 +119,16 @@ public class SuppressiveFire : BaseDuoAbility
 
         if (relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Sympathy) < 0 || relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Admiration) < 0 || relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Trust) < 0)
         {
-            Debug.Log("OUI BINJOUR");
             //SoundManager.PlaySound(SoundManager.Sound.RetentlessFoe);
         }
 
         else
         {
-            Debug.Log("NON");
             //SoundManager.PlaySound(SoundManager.Sound.RetentlessNeutral);
         }
         Debug.Log("we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
         AbilityResult result = new AbilityResult();
+        SoundManager.PlaySound(SoundManager.Sound.SuppressiveFire);
         ShootResult selfResult = SelfShoot(target, _selfShotStats);
         ShootResult allyResult = AllyShoot(target, _allyShotStats);
 

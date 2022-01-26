@@ -84,6 +84,7 @@ public class HealingRain : BaseDuoAbility
             result.HealList.Add(heal);
         }
 
+        SoundManager.PlaySound(SoundManager.Sound.HealingRain);
         SendResultToHistoryConsole(result);
         Debug.Log("[Healing Rain] Explosion");
     }

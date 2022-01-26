@@ -152,6 +152,7 @@ public class Devouring : BaseDuoAbility
             result.Cancelled = true;
         }
 
+        SoundManager.PlaySound(SoundManager.Sound.Devouring);
         SendResultToHistoryConsole(result);
     }
 
