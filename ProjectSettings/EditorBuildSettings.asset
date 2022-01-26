@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Erwan_Lobby.unity
+    path: Assets/Scenes/CheatedLobby.unity
     guid: f5918070b89203242ba5e0e4f4b2495e
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
