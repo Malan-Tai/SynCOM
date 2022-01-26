@@ -34,6 +34,7 @@ public class Smuggle : BaseDuoAbility
 
     public override void Execute()
     {
+        SoundManager.PlaySound(SoundManager.Sound.Smuggle);
         _chosenAlly.ChooseAstarPathTo(_tileCoord);
         _freeForDuo = true;
 

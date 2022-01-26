@@ -6,8 +6,12 @@ public static class SoundManager
 {
     public enum Sound
     {
+        //voices
         RetentlessFriends, RetentlessFoe, RetentlessNeutral, 
-        BasicShotGatling, BasicShotSniper, BasicPunch, Devouring, DwarfToss, HealingRain, LongShot, ShieldAndStrike, SuppressiveFire, WildCharge
+        
+        //Sound Effects
+        BasicShotGatling, BasicShotSniper, BasicPunch, Devouring, DwarfToss, FirstAid, GrenadeToss,
+        HealingRain, HunkerDown, LongShot, Mortar, ShieldAndStrike, Smuggle, SuppressiveFire, PepTalk, WildCharge
     }
 
     //private static GameObject oneShotGameObject;

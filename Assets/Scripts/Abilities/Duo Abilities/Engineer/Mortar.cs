@@ -102,7 +102,7 @@ public class Mortar : BaseDuoAbility
     {
         _allyTargets.Remove(_chosenAlly);
         AbilityResult result = new AbilityResult();
-
+        SoundManager.PlaySound(SoundManager.Sound.Mortar);
         // Only the _chosenAlly knows the attack is incomming and (almost) always take cover
         if (RandomEngine.Instance.Range(0, 100) > 90)
         {

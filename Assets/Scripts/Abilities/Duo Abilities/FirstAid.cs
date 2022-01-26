@@ -29,6 +29,7 @@ public class FirstAid : BaseDuoAbility
 
     public override void Execute()
     {
+        SoundManager.PlaySound(SoundManager.Sound.FirstAid);
         AbilityResult result = new AbilityResult();
         result.Heal = Heal(_effector, _chosenAlly, _healStats.GetHeal(), _chosenAlly);
 
