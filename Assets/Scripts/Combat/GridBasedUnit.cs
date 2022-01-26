@@ -404,7 +404,7 @@ public class GridBasedUnit : MonoBehaviour
 
     public void DisplayOutline(bool display)
     {
-        _outlineRenderer.enabled = display;
+        _outlineRenderer.enabled = _character.IsAlive && display;
     }
 
     public void SetOutlineColor(Color color)
