@@ -71,7 +71,7 @@ public class MoveableCamera : MonoBehaviour
         if (mouseDelta != Vector3.zero)
         {
             _followTarget = false;
-            transform.position += new Vector3(mouseDelta.x, 0, mouseDelta.y).normalized * (_camera.orthographicSize / _minCameraSize) * _moveSpeed / 300;
+            transform.position += new Vector3(mouseDelta.x, 0, mouseDelta.y).normalized * (_camera.orthographicSize / _minCameraSize) * _moveSpeed / 30;
         }
     }
 
