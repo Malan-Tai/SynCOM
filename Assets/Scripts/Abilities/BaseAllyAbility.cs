@@ -368,6 +368,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                         {
                             CombatGameManager.Instance.ChangeTileCover(toCover, EnumCover.Half);
                             CombatGameManager.Instance.AddBarricadeAt(toCover.Coords, duo.GridPosition.y != toCover.Coords.y);
+                            duo.UpdateInfoCover();
 
                             HistoryConsole.Instance
                                 .BeginEntry()
