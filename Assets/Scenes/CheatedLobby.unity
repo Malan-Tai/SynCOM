@@ -4483,6 +4483,46 @@ MonoBehaviour:
     trustFill: 0
     sympathyLvl: 2
     sympathyFill: 0
+  - selfIndex: 1
+    allyIndex: 0
+    admirationLvl: 2
+    admirationFill: 0
+    trustLvl: 1
+    trustFill: 0
+    sympathyLvl: 2
+    sympathyFill: 0
+  - selfIndex: 0
+    allyIndex: 2
+    admirationLvl: -2
+    admirationFill: 0
+    trustLvl: -1
+    trustFill: 0
+    sympathyLvl: 2
+    sympathyFill: 0
+  - selfIndex: 2
+    allyIndex: 0
+    admirationLvl: -1
+    admirationFill: 0
+    trustLvl: 0
+    trustFill: 0
+    sympathyLvl: -1
+    sympathyFill: 0
+  - selfIndex: 0
+    allyIndex: 3
+    admirationLvl: 0
+    admirationFill: 0
+    trustLvl: 0
+    trustFill: 0
+    sympathyLvl: 0
+    sympathyFill: 0
+  - selfIndex: 3
+    allyIndex: 0
+    admirationLvl: 2
+    admirationFill: 0
+    trustLvl: 2
+    trustFill: 0
+    sympathyLvl: 2
+    sympathyFill: 0
 --- !u!224 &1208928494 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1975161109962763294, guid: 3eb722397ae20ff4cb62356c2f6859ae, type: 3}
