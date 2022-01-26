@@ -82,6 +82,7 @@ public class HealingRain : BaseDuoAbility
             enemy.Heal(ref heal);
         }
 
+        SoundManager.PlaySound(SoundManager.Sound.HealingRain);
         result.Heal = selfHealStats.GetHeal();
         SendResultToHistoryConsole(result);
         Debug.Log("[Healing Rain] Explosion");

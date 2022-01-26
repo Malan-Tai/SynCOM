@@ -124,6 +124,7 @@ public class ShieldAndStrike : BaseDuoAbility
             // Impact on the sentiments
             // Ally -> Self relationship
             AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, 5);
+            SoundManager.PlaySound(SoundManager.Sound.ShieldAndStrike);
         }
         else
         {

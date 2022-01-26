@@ -109,6 +109,8 @@ public class Devouring : BaseDuoAbility
         _effector.Heal(ref heal);
         AddBuff(_effector, new Buff("Bloodlust", 6, _effector, damageBuff: 2f, critBuff: 0.5f, mitigationBuff: 1.5f));
 
+        SoundManager.PlaySound(SoundManager.Sound.Devouring);
+
         result.Heal = heal;
         result.Critical = shooResult.Critical;
         result.Damage = shooResult.Damage;

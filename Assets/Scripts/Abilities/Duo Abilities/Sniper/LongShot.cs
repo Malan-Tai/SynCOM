@@ -135,16 +135,14 @@ public class LongShot : BaseDuoAbility
 
         if (relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Sympathy) < 0 || relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Admiration) < 0 || relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Trust) < 0)
         {
-            Debug.Log("OUI BINJOUR");
             //SoundManager.PlaySound(SoundManager.Sound.RetentlessFoe);
         }
 
         else
         {
-            Debug.Log("NON");
             //SoundManager.PlaySound(SoundManager.Sound.RetentlessNeutral);
         }
-
+        SoundManager.PlaySound(SoundManager.Sound.LongShot);
         ShootResult selfResults = SelfShoot(target, _selfShotStats);
         //HistoryConsole.AddEntry(EntryBuilder.GetDamageEntry(_effector, target, this, selfResults));
     }

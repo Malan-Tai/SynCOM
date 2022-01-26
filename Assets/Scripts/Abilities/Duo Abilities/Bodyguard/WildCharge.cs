@@ -199,6 +199,7 @@ public class WildCharge : BaseDuoAbility
         _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parametersLaunchAlly));
 
         // Damage enemies
+        SoundManager.PlaySound(SoundManager.Sound.WildCharge);
         foreach (EnemyUnit target in _targets)
         {
             SelfShoot(target, _allyShotStats, alwaysHit: true, canCrit: false);
