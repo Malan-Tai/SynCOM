@@ -37,7 +37,7 @@ public class CheatEngine : RandomEngine
             cheatSquad.Add(character);
             GlobalGameManager.Instance.SetSquadUnit(i, character);
             GlobalGameManager.Instance.AddCharacter(character);
-        }
+        };
 
         foreach (PresetRelationship rel in _relationships)
         {
