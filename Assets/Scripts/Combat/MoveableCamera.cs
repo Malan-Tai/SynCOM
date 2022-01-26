@@ -139,8 +139,13 @@ public class MoveableCamera : MonoBehaviour
         _targetPosition = _startingOffset;
         _followTarget = true;
 
+        _parentViewedUnit.InfoSetSmall(true);
+        _currentlyViewedUnit.InfoSetSmall(true);
+
         _parentViewedUnit = newUnit;
         _currentlyViewedUnit = newUnit;
+
+        _currentlyViewedUnit.InfoSetBig(true);
     }
 
     public void SwitchViewWithoutParenthood(GridBasedUnit unit)
@@ -151,6 +156,9 @@ public class MoveableCamera : MonoBehaviour
         _followTarget = true;
 
         _currentlyViewedUnit = unit;
+
+        _parentViewedUnit.InfoSetSmall(true);
+        _currentlyViewedUnit.InfoSetBig(true);
     }
 
     public void SwitchViewBackToParent()
@@ -159,6 +167,9 @@ public class MoveableCamera : MonoBehaviour
 
         _targetPosition = _startingOffset;
         _followTarget = true;
+
+        _parentViewedUnit.InfoSetBig(true);
+        _currentlyViewedUnit.InfoSetSmall(true);
 
         _currentlyViewedUnit = _parentViewedUnit;
     }

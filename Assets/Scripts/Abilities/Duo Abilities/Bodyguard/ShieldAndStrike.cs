@@ -120,9 +120,7 @@ public class ShieldAndStrike : BaseDuoAbility
 
         AbilityResult result = new AbilityResult();
         ShootResult shootResult = AllyShoot(target, _allyShotStats);
-        result.AllyMiss = !shootResult.Landed;
-        result.AllyCritical = shootResult.Critical;
-        result.AllyDamage = shootResult.Damage;
+        result.CopyAllyShootResult(shootResult);
 
         if (!StartAction(ActionTypes.Protect, _effector, _chosenAlly))
         {
@@ -131,6 +129,7 @@ public class ShieldAndStrike : BaseDuoAbility
             // Impact on the sentiments
             // Ally -> Self relationship
             AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, 5);
+            SoundManager.PlaySound(SoundManager.Sound.ShieldAndStrike);
         }
         else
         {

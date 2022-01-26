@@ -81,7 +81,6 @@ public class GridBasedUnit : MonoBehaviour
         InterruptionQueue = GetComponent<InterruptionQueue>();
 
         _info = transform.Find("Renderer").GetComponentInChildren<InfoCanvas>();
-        _info.SetRatioHP(1);
     }
 
     protected virtual void Update()
@@ -132,6 +131,8 @@ public class GridBasedUnit : MonoBehaviour
         Character = character;
         _movesLeft = character.MovementPoints;
         InitSprite();
+        _info.SetHP(Character.HealthPoints, Character.MaxHealth);
+        _info.SetSmall(true);
     }
 
     public void MarkForDeath()
@@ -174,9 +175,9 @@ public class GridBasedUnit : MonoBehaviour
         }
     }
 
-    public void ChooseAstarPathTo(Vector2Int cell)
+    public bool ChooseAstarPathTo(Vector2Int cell)
     {
-        if (_followingPath) return;
+        if (_followingPath) return false;
 
         _pathToFollow = new List<Vector2Int>(_pathfinder.AstarPath(_gridPosition, cell));
 
@@ -186,7 +187,10 @@ public class GridBasedUnit : MonoBehaviour
             CombatGameManager.Instance.GridMap.UpdateOccupiedTiles(_gridPosition, cell);
 
             if (OnMoveStart != null) OnMoveStart(this, cell);
+
+            return true;
         }
+        return false;
     }
 
     public void NeedsPathfinderUpdate()
@@ -317,7 +321,7 @@ public class GridBasedUnit : MonoBehaviour
     public bool TakeDamage(ref float damage, bool textFeedback = true, bool imgFeedback = true)
     {
         bool died = _character.TakeDamage(ref damage);
-        _info.SetRatioHP(Character.HealthPoints / Character.MaxHealth);
+        _info.SetHP(Character.HealthPoints, Character.MaxHealth);
         if (textFeedback) _feedback.DisplayFeedback("-" + damage.ToString());
         if (imgFeedback) _feedback.DisplayImageFeedback();
 
@@ -327,7 +331,7 @@ public class GridBasedUnit : MonoBehaviour
     public void Heal(ref float healAmount, bool feedback = true)
     {
         _character.Heal(ref healAmount);
-        _info.SetRatioHP(Character.HealthPoints / Character.MaxHealth);
+        _info.SetHP(Character.HealthPoints, Character.MaxHealth);
         if (feedback) _feedback.DisplayFeedback("+" + healAmount.ToString());
     }
 
@@ -365,5 +369,15 @@ public class GridBasedUnit : MonoBehaviour
     public void DontHighlightUnit()
     {
         _unitRenderer.material.SetInt(_highlightPropertyHash, 0);
+    }
+
+    public void InfoSetSmall(bool force)
+    {
+        _info.SetSmall(force);
+    }
+
+    public void InfoSetBig(bool force)
+    {
+        _info.SetBig(force);
     }
 }

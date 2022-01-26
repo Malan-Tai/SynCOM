@@ -42,7 +42,7 @@ public class HealingRain : BaseDuoAbility
         int healingValue = _healingValue;
         AbilityResult result = new AbilityResult();
 
-        if (RandomEngine.Instance.Range(0, 100) < _allyShotStats.GetAccuracy())
+        if (!StartAction(ActionTypes.Attack, _chosenAlly, _effector) && RandomEngine.Instance.Range(0, 100) < _allyShotStats.GetAccuracy())
         {
             explosionRadius = _explosionImprovedRadius;
             healingValue = _healingValueIncreased;
@@ -75,15 +75,16 @@ public class HealingRain : BaseDuoAbility
         // Ne peux rater ni faire un coup critique
         foreach (AllyUnit ally in _allyTargets)
         {
-            Heal(_effector, ally, _selfHealStats.GetHeal(), _chosenAlly);
+            result.HealList.Add(Heal(_effector, ally, _selfHealStats.GetHeal(), _chosenAlly));
         }
         foreach (EnemyUnit enemy in _enemyTargets)
         {
             float heal = _selfHealStats.GetHeal();
             enemy.Heal(ref heal);
+            result.HealList.Add(heal);
         }
 
-        result.Heal = _selfHealStats.GetHeal();
+        SoundManager.PlaySound(SoundManager.Sound.HealingRain);
         SendResultToHistoryConsole(result);
         Debug.Log("[Healing Rain] Explosion");
     }
@@ -103,11 +104,15 @@ public class HealingRain : BaseDuoAbility
             .AddText(":")
             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{criticalText} healed ").CloseTag();
 
-        for (int i = 0; i < _allyTargets.Count; i++)
+        List<GridBasedUnit> everyTarget = new List<GridBasedUnit>();
+        everyTarget.AddRange(_allyTargets);
+        everyTarget.AddRange(_enemyTargets);
+
+        for (int i = 0; i < everyTarget.Count; i++)
         {
             if (i != 0)
             {
-                if (i == _allyTargets.Count - 1)
+                if (i == everyTarget.Count - 1)
                 {
                     HistoryConsole.Instance.AddText(" and ");
                 }
@@ -117,15 +122,20 @@ public class HealingRain : BaseDuoAbility
                 }
             }
 
+            string name = everyTarget[i].Character.Name;
+            if (everyTarget[i].Character.Name == _effector.Character.Name || everyTarget[i].Character.Name == _chosenAlly.Character.Name)
+            {
+                name = name.Split(' ')[0];
+            }
+
             HistoryConsole.Instance
-                .OpenLinkTag(_allyTargets[i].Character.Name, _allyTargets[i], EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
-                .AddText(_allyTargets[i].Character.Name).CloseTag();
+                .OpenLinkTag(everyTarget[i].Character.Name, everyTarget[i], EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(name).CloseTag()
+                .AddText(" for ")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(result.HealList[i].ToString()).CloseTag();
         }
 
-        HistoryConsole.Instance
-            .AddText(" for ")
-            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Heal} health points").CloseTag()
-            .Submit();
+        HistoryConsole.Instance.Submit();
     }
 
     public override string GetAllyDescription()

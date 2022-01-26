@@ -96,21 +96,23 @@ public class RelationshipEventsManager : MonoBehaviour
 
             case RelationshipEventEffectType.RefuseToDuo:
                 result.refusedDuo = RandomEngine.Instance.Range(0f, 1f) < relationshipEvent.chance;
+                actuallyExecuted = result.refusedDuo;
                 break;
 
             case RelationshipEventEffectType.StealDuo:
-                if (RandomEngine.Instance.Range(0f, 1f) < relationshipEvent.chance) result.stolenDuoUnit = currentUnit;
+                actuallyExecuted = RandomEngine.Instance.Range(0f, 1f) < relationshipEvent.chance;
+                if (actuallyExecuted) result.stolenDuoUnit = currentUnit;
                 break;
 
             case RelationshipEventEffectType.FreeAction:
-                bool rolledOk = RandomEngine.Instance.Range(0f, 1f) < relationshipEvent.chance;
-                result.freeActionForSource  = result.freeActionForSource    || (relationshipEvent.freeAction        && rolledOk);
-                result.freeActionForDuo     = result.freeActionForDuo       || (relationshipEvent.freeActionForDuo  && rolledOk);
+                actuallyExecuted = RandomEngine.Instance.Range(0f, 1f) < relationshipEvent.chance;
+                result.freeActionForSource  = result.freeActionForSource    || (relationshipEvent.freeAction        && actuallyExecuted);
+                result.freeActionForDuo     = result.freeActionForDuo       || (relationshipEvent.freeActionForDuo  && actuallyExecuted);
                 break;
 
             case RelationshipEventEffectType.Sacrifice:
                 bool rangeOk = Vector2.Distance(source.GridPosition, currentUnit.GridPosition) <= relationshipEvent.maxRange;
-                rolledOk = RandomEngine.Instance.Range(0f, 1f) < relationshipEvent.chance;
+                bool rolledOk = RandomEngine.Instance.Range(0f, 1f) < relationshipEvent.chance;
                 actuallyExecuted = rangeOk && rolledOk;
                 if (actuallyExecuted) result.sacrificedTarget = currentUnit;
                 break;

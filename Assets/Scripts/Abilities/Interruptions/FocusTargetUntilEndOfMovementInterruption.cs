@@ -24,7 +24,7 @@ public class FocusTargetUntilEndOfMovementInterruption : Interruption
         switch (_pathfinding)
         {
             case PathfindingMoveType.Astar:
-                _target.ChooseAstarPathTo(_movementTarget);
+                _receivedEvent = !_target.ChooseAstarPathTo(_movementTarget);
                 break;
             case PathfindingMoveType.Linear:
                 CombatGameManager.Instance.GridMap.UpdateOccupiedTiles(_target.GridPosition, _movementTarget);
@@ -32,11 +32,9 @@ public class FocusTargetUntilEndOfMovementInterruption : Interruption
                 CombatGameManager.Instance.UpdatePathfinders(_target, _movementTarget);
                 break;
             default:
-                _target.ChooseAstarPathTo(_movementTarget);
+                _receivedEvent = !_target.ChooseAstarPathTo(_movementTarget);
                 break;
         }
-
-        
         
         while (!_receivedEvent)
         {

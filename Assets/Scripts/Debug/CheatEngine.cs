@@ -4,31 +4,68 @@ using UnityEngine;
 
 public class CheatEngine : RandomEngine
 {
+    [System.Serializable]
+    private class PresetRelationship
+    {
+        public int selfIndex;
+        public int allyIndex;
+        public int admirationLvl;
+        public int admirationFill;
+        public int trustLvl;
+        public int trustFill;
+        public int sympathyLvl;
+        public int sympathyFill;
+    }
+
     private enum NextResult { Random, Min, Max };
     private NextResult _next;
 
+    [SerializeField]
+    private EnumClasses[] _classes;
+
+    [SerializeField]
+    private PresetRelationship[] _relationships;
+
     private void Start()
     {
-        AllyCharacter[] cheatSquad = new AllyCharacter[]
+        List<AllyCharacter> cheatSquad = new List<AllyCharacter>();
+
+        GlobalGameManager.Instance.allCharacters.Clear();
+        for (int i = 0; i < _classes.Length; i++)
         {
-            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Sniper),
-            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Sniper),
-            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Sniper),
-            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Sniper)
+            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Engineer),
+            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Engineer),
+            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Engineer),
+            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Engineer)
         };
 
-        for (int i = 0; i < 4; i++)
+        foreach (PresetRelationship rel in _relationships)
         {
-            GlobalGameManager.Instance.SetSquadUnit(i, cheatSquad[i]);
-            GlobalGameManager.Instance.AddCharacter(cheatSquad[i]);
-        }
+            if (rel.selfIndex < 0 || rel.selfIndex >= cheatSquad.Count || rel.allyIndex < 0 || rel.allyIndex >= cheatSquad.Count) continue;
 
-        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Admiration,  50);
-        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Admiration,  50);
-        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Trust,       50);
-        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Trust,       50);
-        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Sympathy,    50);
-        cheatSquad[0].Relationships[cheatSquad[1]].IncreaseSentiment(EnumSentiment.Sympathy,    50);
+            AllyCharacter self = cheatSquad[rel.selfIndex];
+            AllyCharacter ally = cheatSquad[rel.allyIndex];
+            Relationship relationship = self.Relationships[ally];
+
+            if (rel.admirationLvl > 0)
+                for (int i = 0; i < rel.admirationLvl; i++) relationship.IncreaseSentiment(EnumSentiment.Admiration, 50);
+            else
+                for (int i = 0; i > rel.admirationLvl; i--) relationship.IncreaseSentiment(EnumSentiment.Admiration, -50);
+
+            if (rel.trustLvl > 0)
+                for (int i = 0; i < rel.trustLvl; i++) relationship.IncreaseSentiment(EnumSentiment.Trust, 50);
+            else
+                for (int i = 0; i > rel.trustLvl; i--) relationship.IncreaseSentiment(EnumSentiment.Trust, -50);
+
+            if (rel.sympathyLvl > 0)
+                for (int i = 0; i < rel.sympathyLvl; i++) relationship.IncreaseSentiment(EnumSentiment.Sympathy, 50);
+            else
+                for (int i = 0; i > rel.sympathyLvl; i--) relationship.IncreaseSentiment(EnumSentiment.Sympathy, -50);
+
+            relationship.IncreaseSentiment(EnumSentiment.Admiration,    rel.admirationFill);
+            relationship.IncreaseSentiment(EnumSentiment.Trust,         rel.trustFill);
+            relationship.IncreaseSentiment(EnumSentiment.Sympathy,      rel.sympathyFill);
+        }
     }
 
     public override int Range(int minInclusive, int maxExclusive)

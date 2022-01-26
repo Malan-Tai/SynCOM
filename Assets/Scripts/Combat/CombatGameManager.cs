@@ -120,6 +120,8 @@ public class CombatGameManager : MonoBehaviour
 
         InitCharacters();
 
+        CurrentUnit.InfoSetBig(true);
+
         if (OnUnitSelected != null) OnUnitSelected(_currentUnitIndex);
 
         _characterSheet.InitEventsFromCombat();
@@ -293,6 +295,12 @@ public class CombatGameManager : MonoBehaviour
 
     public void UpdateReachableTiles()
     {
+        if (CurrentUnit == null)
+        {
+            _tileDisplay.HideAllTileZones();
+            return;
+        }
+
         List<Tile> newReachable = CurrentUnit.GetReachableTiles();
         if (newReachable.Count == 1)
         {

@@ -6,9 +6,24 @@ public class CombatInputController : MonoBehaviour
 {
     [SerializeField] private LayerMask _groundLayerMask;
 
+    private GridBasedUnit _prevHovered = null;
+    private bool _canInput;
+
+    private void Awake()
+    {
+        _canInput = false;
+        Objective.OnScalingDone += CanMove;
+    }
+
+    private void CanMove()
+    {
+        _canInput = true;
+        Objective.OnScalingDone -= CanMove;
+    }
+
     void Update()
     {
-        if (CombatGameManager.Instance.ControllableUnits.Count <= 0) return;
+        if (!_canInput || CombatGameManager.Instance.ControllableUnits.Count <= 0) return;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitData;
@@ -18,6 +33,15 @@ public class CombatInputController : MonoBehaviour
             Vector2Int tileCoord = CombatGameManager.Instance.GridMap.WorldToGrid(hitData.point);
             CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(tileCoord);
         }
+
+        GridBasedUnit hitUnit = null;
+        if (_prevHovered != null) _prevHovered.InfoSetSmall(false);
+        if (Physics.Raycast(ray, out hitData, 1000))
+        {
+            hitUnit = hitData.transform.GetComponent<GridBasedUnit>();
+            if (hitUnit != null) hitUnit.InfoSetBig(false);
+        }
+        _prevHovered = hitUnit;
 
         if (CombatGameManager.Instance.CurrentAbility != null)
         {
