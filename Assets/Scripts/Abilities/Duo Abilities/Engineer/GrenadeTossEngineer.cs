@@ -205,7 +205,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
         // Premier test : le Sniper touche-t-il la grenade
 
         int explosionRadius = _explosionBaseRadius;
-
+        SoundManager.PlaySound(SoundManager.Sound.GrenadeToss);
         if (RandomEngine.Instance.Range(0, 100) < _allyShotStats.GetAccuracy())
         {
             explosionRadius = _explosionImprovedRadius;

@@ -93,7 +93,9 @@ public class BasicDuoShot : BaseDuoAbility
     {
         GridBasedUnit target = _possibleTargets[_targetIndex];
         Relationship relationshipAllyToSelf = _effector.AllyCharacter.Relationships[this._chosenAlly.AllyCharacter];
-        
+        SoundManager.PlaySound(SoundManager.Sound.BasicShotGatling);
+        SoundManager.PlaySound(SoundManager.Sound.BasicShotSniper);
+
         if (relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Sympathy) < 0 || relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Admiration) < 0 || relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Trust) < 0)
         {
             SoundManager.PlaySound(SoundManager.Sound.RetentlessFoe);
@@ -102,7 +104,7 @@ public class BasicDuoShot : BaseDuoAbility
         {
             SoundManager.PlaySound(SoundManager.Sound.RetentlessNeutral);
         }
-
+        
         ShootResult selfResults = SelfShoot(target, _selfShotStats);
         ShootResult allyResults = AllyShoot(target, _allyShotStats);
 
