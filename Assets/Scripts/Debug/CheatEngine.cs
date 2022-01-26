@@ -33,10 +33,10 @@ public class CheatEngine : RandomEngine
         GlobalGameManager.Instance.allCharacters.Clear();
         for (int i = 0; i < _classes.Length; i++)
         {
-            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Engineer),
-            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Engineer),
-            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Engineer),
-            AllyCharacter.GetRandomAllyCharacter(EnumClasses.Engineer)
+            AllyCharacter character = AllyCharacter.GetRandomAllyCharacter(_classes[i]);
+            cheatSquad.Add(character);
+            GlobalGameManager.Instance.SetSquadUnit(i, character);
+            GlobalGameManager.Instance.AddCharacter(character);
         };
 
         foreach (PresetRelationship rel in _relationships)

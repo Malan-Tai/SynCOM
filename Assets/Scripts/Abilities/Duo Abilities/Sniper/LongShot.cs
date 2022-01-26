@@ -216,7 +216,7 @@ public class LongShot : BaseDuoAbility
                 .BeginEntry()
                 .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
                 .AddText(" indicated the position of ")
-                .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover").CloseTag()
+                .OpenIconTag($"{_chosenAlly.LinesOfSight[target].cover}Cover").CloseTag()
                 .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag()
                 .AddText(" so that ")
                 .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
