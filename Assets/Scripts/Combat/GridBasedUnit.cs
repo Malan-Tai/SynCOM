@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class GridBasedUnit : MonoBehaviour
 {
+    [SerializeField] private MeshRenderer _outlineRenderer;
+    [SerializeField] private Material _outlineMaterial;
+
     private Vector2Int _gridPosition;
     private Vector3 _targetWorldPosition;
 
@@ -57,6 +60,8 @@ public class GridBasedUnit : MonoBehaviour
     protected SpriteRenderer _unitRenderer;
     private int _highlightPropertyHash;
     private int _highlightColorPropertyHash;
+    private int _outlineColorPropertyHash;
+    private int _outlineSizePropertyHash;
 
     protected InfoCanvas _info;
 
@@ -77,6 +82,8 @@ public class GridBasedUnit : MonoBehaviour
         _unitRenderer = transform.Find("Renderer").GetComponent<SpriteRenderer>();
         _highlightPropertyHash = Shader.PropertyToID("_Highlight");
         _highlightColorPropertyHash = Shader.PropertyToID("_HighlightColor");
+        _outlineColorPropertyHash = Shader.PropertyToID("_OutlineColor");
+        _outlineSizePropertyHash = Shader.PropertyToID("_OutlineSize");
 
         InterruptionQueue = GetComponent<InterruptionQueue>();
 
@@ -125,6 +132,30 @@ public class GridBasedUnit : MonoBehaviour
         }
     }
 
+    private void GenerateOutlineTexture()
+    {
+        int outlineSize = _outlineMaterial.GetInt(_outlineSizePropertyHash);
+        RenderTexture outlineTexture = new RenderTexture
+        (
+            4 * outlineSize + _unitRenderer.sprite.texture.width,
+            4 * outlineSize + _unitRenderer.sprite.texture.height,
+            0,
+            RenderTextureFormat.ARGB32
+        );
+        outlineTexture.Create();
+
+        Graphics.Blit(_unitRenderer.sprite.texture, outlineTexture, _outlineMaterial);
+
+        _outlineRenderer.material.mainTexture = outlineTexture;
+        _outlineRenderer.transform.localScale = new Vector3
+        (
+            outlineTexture.width / _unitRenderer.sprite.pixelsPerUnit,
+            outlineTexture.height / _unitRenderer.sprite.pixelsPerUnit,
+            1f
+        );
+        _outlineRenderer.enabled = false;
+    }
+
     public void SetCharacter(Character character)
     {
         Character = character;
@@ -132,6 +163,7 @@ public class GridBasedUnit : MonoBehaviour
         InitSprite();
         _info.SetHP(Character.HealthPoints, Character.MaxHealth);
         _info.SetSmall(true);
+        GenerateOutlineTexture();
     }
 
     public void MarkForDeath()
@@ -368,6 +400,16 @@ public class GridBasedUnit : MonoBehaviour
     public void DontHighlightUnit()
     {
         _unitRenderer.material.SetInt(_highlightPropertyHash, 0);
+    }
+
+    public void DisplayOutline(bool display)
+    {
+        _outlineRenderer.enabled = display;
+    }
+
+    public void SetOutlineColor(Color color)
+    {
+        _outlineRenderer.material.SetColor(_outlineColorPropertyHash, color);
     }
 
     public void InfoSetSmall(bool force)

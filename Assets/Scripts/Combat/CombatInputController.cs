@@ -35,11 +35,20 @@ public class CombatInputController : MonoBehaviour
         }
 
         GridBasedUnit hitUnit = null;
-        if (_prevHovered != null) _prevHovered.InfoSetSmall(false);
+        if (_prevHovered != null)
+        {
+            _prevHovered.DisplayOutline(false);
+            _prevHovered.InfoSetSmall(false);
+        }
         if (!BlockingUIElement.IsUIHovered && Physics.Raycast(ray, out hitData, 1000))
         {
             hitUnit = hitData.transform.GetComponent<GridBasedUnit>();
-            if (hitUnit != null) hitUnit.InfoSetBig(false);
+
+            if (hitUnit != null)
+            {
+                hitUnit.DisplayOutline(true);
+                hitUnit.InfoSetBig(false);
+            }
         }
         _prevHovered = hitUnit;
 
