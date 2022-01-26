@@ -288,7 +288,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("cancelled").CloseTag()
                 .AddText(" his action to do something else... ")
                 .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name.Split(' ')[0]).CloseTag()
-                .AddText("still did ");
+                .AddText(" still did ");
         }
         else
         {
