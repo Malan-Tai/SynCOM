@@ -522,9 +522,9 @@ public class CombatGameManager : MonoBehaviour
 
     public void AddBarricadeAt(Vector2Int pos, bool rotate)
     {
-        var unit = Instantiate(_barricadePrefab).GetComponent<GridBasedUnit>();
-        unit.transform.position = _gridMap.GridToWorld(pos, 0f);
-        if (rotate) unit.transform.eulerAngles += new Vector3(0, 90, 0);
+        var barricade = Instantiate(_barricadePrefab);
+        barricade.transform.position = _gridMap.GridToWorld(pos, 0f);
+        if (rotate) barricade.transform.eulerAngles += new Vector3(0, 90, 0);
     }
 
 #if UNITY_EDITOR
