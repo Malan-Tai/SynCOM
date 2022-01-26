@@ -54,7 +54,7 @@ public class GridBasedUnit : MonoBehaviour
 
     private FeedbackDisplay _feedback;
 
-    private SpriteRenderer _unitRenderer;
+    protected SpriteRenderer _unitRenderer;
     private int _highlightPropertyHash;
     private int _highlightColorPropertyHash;
 
@@ -74,7 +74,7 @@ public class GridBasedUnit : MonoBehaviour
 
         _feedback = GetComponent<FeedbackDisplay>();
 
-        _unitRenderer = GetComponentInChildren<SpriteRenderer>();
+        _unitRenderer = transform.Find("Renderer").GetComponent<SpriteRenderer>();
         _highlightPropertyHash = Shader.PropertyToID("_Highlight");
         _highlightColorPropertyHash = Shader.PropertyToID("_HighlightColor");
 
@@ -119,10 +119,9 @@ public class GridBasedUnit : MonoBehaviour
         if (_markedForDeath && InterruptionQueue.IsEmpty() && transform.Find("CameraTarget") == null)
         {
             _markedForDeath = false;
-            GetComponentInChildren<Renderer>().enabled = false;
+            _unitRenderer.enabled = false;
             _info.gameObject.SetActive(false);
-            //Destroy(this.gameObject);
-            //transform.position += new Vector3(0, -5, 0);
+            transform.Find("DeadRenderer").GetComponent<SpriteRenderer>().enabled = true;
         }
     }
 

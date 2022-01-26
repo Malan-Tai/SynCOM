@@ -115,8 +115,8 @@ public class AllyUnit : GridBasedUnit
 
     public override void InitSprite()
     {
-        SpriteRenderer renderer = GetComponentInChildren<SpriteRenderer>();
-        renderer.sprite = AllyCharacter.GetSprite();
+        _unitRenderer.sprite = AllyCharacter.GetSprite();
+        transform.Find("DeadRenderer").GetComponent<SpriteRenderer>().sprite = GlobalGameManager.Instance.GetDeadAllySprite();
     }
 
     public void DisplayUnitSelectionTile(bool display)

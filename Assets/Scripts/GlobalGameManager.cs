@@ -41,11 +41,15 @@ public class GlobalGameManager : MonoBehaviour
     private Sprite[] _classSprites;
     [SerializeField]
     private Sprite[] _classPortraits;
+    [SerializeField]
+    private Sprite _deadAllySprite;
 
     [SerializeField]
     private Sprite _enemySprite;
     [SerializeField]
     private Sprite _enemyPortrait;
+    [SerializeField]
+    private Sprite _deadEnemySprite;
 
     private void GenerateCharacters()
     {
@@ -99,6 +103,11 @@ public class GlobalGameManager : MonoBehaviour
         return _classPortraits[i];
     }
 
+    public Sprite GetDeadAllySprite()
+    {
+        return _deadAllySprite;
+    }
+
     public Sprite GetEnemySprite()
     {
         return _enemySprite;
@@ -107,6 +116,11 @@ public class GlobalGameManager : MonoBehaviour
     public Sprite GetEnemyPortrait()
     {
         return _enemyPortrait;
+    }
+
+    public Sprite GetDeadEnemySprite()
+    {
+        return _deadEnemySprite;
     }
 
     public void AddCharacter(AllyCharacter character)
