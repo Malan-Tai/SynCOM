@@ -28,7 +28,7 @@ public class CombatInputController : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitData;
 
-        if (Physics.Raycast(ray, out hitData, 1000, _groundLayerMask) && hitData.transform.CompareTag("Ground"))
+        if (!BlockingUIElement.IsUIHovered && Physics.Raycast(ray, out hitData, 1000, _groundLayerMask) && hitData.transform.CompareTag("Ground"))
         {
             Vector2Int tileCoord = CombatGameManager.Instance.GridMap.WorldToGrid(hitData.point);
             CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(tileCoord);
@@ -36,7 +36,7 @@ public class CombatInputController : MonoBehaviour
 
         GridBasedUnit hitUnit = null;
         if (_prevHovered != null) _prevHovered.InfoSetSmall(false);
-        if (Physics.Raycast(ray, out hitData, 1000))
+        if (!BlockingUIElement.IsUIHovered && Physics.Raycast(ray, out hitData, 1000))
         {
             hitUnit = hitData.transform.GetComponent<GridBasedUnit>();
             if (hitUnit != null) hitUnit.InfoSetBig(false);
@@ -99,7 +99,7 @@ public class CombatInputController : MonoBehaviour
         bool clicked = Input.GetMouseButtonUp(0);
 
 
-        if (Physics.Raycast(ray, out hitData, 1000))
+        if (!BlockingUIElement.IsUIHovered && Physics.Raycast(ray, out hitData, 1000))
         {
             var hitUnit = hitData.transform.GetComponent<AllyUnit>();
 
@@ -110,7 +110,7 @@ public class CombatInputController : MonoBehaviour
                 clicked = false;
             }
         }
-        if (Physics.Raycast(ray, out hitData, 1000, _groundLayerMask) && hitData.transform.CompareTag("Ground") && clicked)
+        if (!BlockingUIElement.IsUIHovered && Physics.Raycast(ray, out hitData, 1000, _groundLayerMask) && hitData.transform.CompareTag("Ground") && clicked)
         {
             Vector2Int tileCoord = CombatGameManager.Instance.GridMap.WorldToGrid(hitData.point);
             //CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(tileCoord);
