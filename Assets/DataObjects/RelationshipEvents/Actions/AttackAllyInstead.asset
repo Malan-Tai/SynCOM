@@ -19,7 +19,7 @@ MonoBehaviour:
   onlyCheckTarget: 0
   dontCheckTarget: 0
   requiresEmotions: 1
-  requiredEmotionsTowardsSource: 06000000
+  requiredEmotionsTowardsSource: 0600000000000000
   requiredEmotionsTowardsTarget: 
   targetsAlly: 0
   onMiss: 0
@@ -36,12 +36,13 @@ MonoBehaviour:
   admirationChange: 0
   trustChange: 0
   sympathyChange: 0
-  sourceToTarget: 0
-  admirationChangeSTT: 0
-  trustChangeSTT: 0
-  sympathyChangeSTT: 0
+  sourceToCurrent: 0
+  admirationChangeSTC: 0
+  trustChangeSTC: 0
+  sympathyChangeSTC: 0
   chance: 0.2
-  interruptions: []
+  interruptionsOnCurrent: []
+  interruptionsOnSource: []
   freeAction: 0
   freeActionForDuo: 0
   maxRange: 0

@@ -76,7 +76,7 @@ public class Character
     //constructor 
     public static Character GetRandomCharacter(Character preinstanciated = null)  //random values
     {
-        if (preinstanciated == null) preinstanciated = new Character(6, 2, 65, 10, 15, 20, 0, 60);
+        if (preinstanciated == null) preinstanciated = new Character(15, 10, 65, 10, 15, 20, 0, 60);
 
         // keep range shot and movement points as is
         preinstanciated._maxHealth      += RandomEngine.Instance.Range(-10, 11);

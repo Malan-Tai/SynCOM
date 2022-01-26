@@ -4465,13 +4465,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5090991735a260c4c98058e12e1049b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _classes: 0100000001000000010000000000000000000000
+  _classes: 0100000001000000050000000200000004000000
   _relationships:
   - selfIndex: 0
     allyIndex: 1
-    admirationLvl: 1
-    admirationFill: 50
-    trustLvl: 1
+    admirationLvl: -1
+    admirationFill: -18
+    trustLvl: -2
+    trustFill: 0
+    sympathyLvl: 0
+    sympathyFill: 0
+  - selfIndex: 1
+    allyIndex: 3
+    admirationLvl: 2
+    admirationFill: 0
+    trustLvl: 2
     trustFill: 0
     sympathyLvl: 2
     sympathyFill: 0

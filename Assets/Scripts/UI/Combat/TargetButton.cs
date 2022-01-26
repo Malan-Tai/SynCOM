@@ -13,6 +13,9 @@ public class TargetButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
 
     private bool _skipFrame;
 
+    [SerializeField] private Color _allyColor;
+    [SerializeField] private Color _enemyColor;
+
     private void Awake()
     {
         _skipFrame = true;
@@ -44,8 +47,8 @@ public class TargetButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
         _selectedImage.gameObject.SetActive(isSelected);
         if (_selectedImage)
         {
-            if (selected is AllyUnit) _selectedImage.color = Color.cyan;
-            else _selectedImage.color = Color.yellow;
+            if (selected is AllyUnit) _selectedImage.color = _allyColor;
+            else _selectedImage.color = _enemyColor;
         }
     }
 

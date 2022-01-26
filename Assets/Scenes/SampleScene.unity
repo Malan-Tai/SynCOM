@@ -4289,9 +4289,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _descriptionType: 3
   _emojis:
-  - {fileID: 21300000, guid: d71ac4c3c89a9244d9d3337386842436, type: 3}
-  - {fileID: 21300000, guid: b0ba739edabf67b4099dff099d9b6ec5, type: 3}
-  - {fileID: 21300000, guid: 8bf74cc3af030e243a393cf00b3bd499, type: 3}
+  - {fileID: 21300000, guid: 78af4d69107a1cf48955299e75831ed2, type: 3}
+  - {fileID: 21300000, guid: 9a6989b2d15359e42b438c421d83aeba, type: 3}
+  - {fileID: 21300000, guid: 3493eb6f2f57a5548b65767d0c3f4868, type: 3}
 --- !u!222 &406032874
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5831,6 +5831,10 @@ PrefabInstance:
     - target: {fileID: 6894575270256909282, guid: bb3162191e29e8544b69f451f333c622, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7480604422144570225, guid: bb3162191e29e8544b69f451f333c622, type: 3}
+      propertyPath: m_RootOrder
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 8420081455766675112, guid: bb3162191e29e8544b69f451f333c622, type: 3}
       propertyPath: m_RootOrder
@@ -8698,7 +8702,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3004046929320778309, guid: bb3162191e29e8544b69f451f333c622, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 11.77
+      value: -4.48
       objectReference: {fileID: 0}
     - target: {fileID: 3004046929320778309, guid: bb3162191e29e8544b69f451f333c622, type: 3}
       propertyPath: m_LocalPosition.y
@@ -8706,7 +8710,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3004046929320778309, guid: bb3162191e29e8544b69f451f333c622, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4.54
+      value: 10.25
       objectReference: {fileID: 0}
     - target: {fileID: 3004046929320778309, guid: bb3162191e29e8544b69f451f333c622, type: 3}
       propertyPath: m_LocalRotation.w
@@ -12116,9 +12120,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _descriptionType: 2
   _emojis:
-  - {fileID: 21300000, guid: d71ac4c3c89a9244d9d3337386842436, type: 3}
-  - {fileID: 21300000, guid: b0ba739edabf67b4099dff099d9b6ec5, type: 3}
-  - {fileID: 21300000, guid: 8bf74cc3af030e243a393cf00b3bd499, type: 3}
+  - {fileID: 21300000, guid: 78af4d69107a1cf48955299e75831ed2, type: 3}
+  - {fileID: 21300000, guid: 9a6989b2d15359e42b438c421d83aeba, type: 3}
+  - {fileID: 21300000, guid: 3493eb6f2f57a5548b65767d0c3f4868, type: 3}
 --- !u!222 &1230403658
 CanvasRenderer:
   m_ObjectHideFlags: 0
