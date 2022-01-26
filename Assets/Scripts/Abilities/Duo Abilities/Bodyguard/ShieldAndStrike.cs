@@ -82,7 +82,7 @@ public class ShieldAndStrike : BaseDuoAbility
 
         bool changedUnitThisFrame = false;
 
-        if (Physics.Raycast(ray, out hitData, 1000))
+        if (!BlockingUIElement.IsUIHovered && Physics.Raycast(ray, out hitData, 1000))
         {
             var hitUnit = hitData.transform.GetComponent<EnemyUnit>();
 
