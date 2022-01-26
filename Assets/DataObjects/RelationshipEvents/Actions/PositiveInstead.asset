@@ -40,7 +40,7 @@ MonoBehaviour:
   admirationChangeSTC: 0
   trustChangeSTC: 0
   sympathyChangeSTC: 0
-  chance: 1
+  chance: 0.25
   interruptionsOnCurrent: []
   interruptionsOnSource: []
   freeAction: 0

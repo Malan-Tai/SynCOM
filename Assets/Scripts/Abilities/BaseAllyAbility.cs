@@ -89,7 +89,7 @@ public abstract class BaseAllyAbility : BaseAbility
         HandleRelationshipEventResult(result);
     }
 
-    protected void AttackDamage(AllyUnit source, EnemyUnit target, float damage, bool crit, AllyUnit duo = null)
+    protected float AttackDamage(AllyUnit source, EnemyUnit target, float damage, bool crit, AllyUnit duo = null)
     {
         bool killed = target.TakeDamage(ref damage, false);
 
@@ -105,9 +105,11 @@ public abstract class BaseAllyAbility : BaseAbility
         HandleRelationshipEventResult(result);
 
         if (killed) HandleRelationshipEventResult(RelationshipEventsManager.Instance.KillEnemy(source, target, duo));
+
+        return damage;
     }
 
-    protected void FriendlyFireDamage(AllyUnit source, AllyUnit target, float damage, AllyUnit duo = null)
+    protected float FriendlyFireDamage(AllyUnit source, AllyUnit target, float damage, AllyUnit duo = null)
     {
         bool killed = target.TakeDamage(ref damage, false);
 
@@ -123,9 +125,10 @@ public abstract class BaseAllyAbility : BaseAbility
         HandleRelationshipEventResult(result);
 
         // TODO : kill ally ?
+        return damage;
     }
 
-    protected void Heal(AllyUnit source, AllyUnit target, float healAmount, AllyUnit duo = null)
+    protected float Heal(AllyUnit source, AllyUnit target, float healAmount, AllyUnit duo = null)
     {
         target.Heal(ref healAmount, false);
 
@@ -139,6 +142,8 @@ public abstract class BaseAllyAbility : BaseAbility
         });
 
         HandleRelationshipEventResult(result);
+
+        return healAmount;
     }
     #endregion
 
@@ -146,6 +151,8 @@ public abstract class BaseAllyAbility : BaseAbility
     {
         base.SetEffector(effector);
         _effector = effector as AllyUnit;
+
+        CombatGameManager.Instance.TileDisplay.HideAllTileZones();
     }
 
     public virtual void UISelectUnit(GridBasedUnit unit)
@@ -171,11 +178,7 @@ public abstract class BaseAllyAbility : BaseAbility
         if (OnAbilityEnded != null) OnAbilityEnded(_executed && !_free);
         _free = false;
 
-        CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
-        CombatGameManager.Instance.TileDisplay.HideTileZone("BonusDamageZone");
-        CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
-        CombatGameManager.Instance.TileDisplay.HideTileZone("HealZone");
-        CombatGameManager.Instance.TileDisplay.HideTileZone("BonusHealZone");
+        HideRanges();
 
         foreach (GridBasedUnit unit in CombatGameManager.Instance.DeadUnits)
         {
@@ -241,6 +244,20 @@ public abstract class BaseAllyAbility : BaseAbility
         };
         _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parameters));
     }
+
+    public abstract void ShowRanges(AllyUnit user);
+    //public virtual void ShowRanges(AllyUnit user) { }
+
+    public void HideRanges()
+    {
+        //CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
+        //CombatGameManager.Instance.TileDisplay.HideTileZone("BonusDamageZone");
+        //CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
+        //CombatGameManager.Instance.TileDisplay.HideTileZone("HealZone");
+        //CombatGameManager.Instance.TileDisplay.HideTileZone("BonusHealZone");
+
+        CombatGameManager.Instance.UpdateReachableTiles();
+    }
 }
 
 public abstract class BaseDuoAbility : BaseAllyAbility
@@ -295,7 +312,19 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         switch (result.changedActionTo)
         {
             case ChangeActionTypes.AttackAlly:
-                changedAction = AllyOnAllyShot(source, duo);
+                ShootResult shootResult;
+                changedAction = AllyOnAllyShot(source, duo, out shootResult);
+
+                string criticalText = shootResult.Critical ? " critical" : "";
+                HistoryConsole.Instance
+                    .BeginEntry()
+                    .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.Name).CloseTag()
+                    .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" angrily cancelled ").CloseTag()
+                    .AddText(" their action with ")
+                    .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
+                    .AddText(" to shoot them instead, dealing ")
+                    .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{shootResult.Damage}{criticalText} damage").CloseTag()
+                    .Submit();
                 break;
 
             case ChangeActionTypes.Positive:
@@ -315,7 +344,20 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
                         var heal = new AbilityStats(0, 0, 0, 0, 5, source);
                         heal.UpdateWithEmotionModifiers(duo);
-                        Heal(source, duo, heal.GetHeal(), null);
+                        float berserkerHeal = Heal(source, duo, heal.GetHeal(), null);
+
+                        HistoryConsole.Instance
+                            .BeginEntry()
+                            .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.Name).CloseTag()
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" cancelled ").CloseTag()
+                            .AddText(" their action with ")
+                            .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
+                            .AddText(" to heal them instead for ")
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{berserkerHeal} health").CloseTag()
+                            .AddText(" by hurting themself for ")
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{dmg} damage").CloseTag()
+                            .Submit();
+
                         break;
 
                     case EnumClasses.Engineer:
@@ -326,12 +368,38 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                         {
                             CombatGameManager.Instance.ChangeTileCover(toCover, EnumCover.Half);
                             CombatGameManager.Instance.AddBarricadeAt(toCover.Coords, duo.GridPosition.y != toCover.Coords.y);
+
+                            HistoryConsole.Instance
+                                .BeginEntry()
+                                .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.Name).CloseTag()
+                                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" cancelled ").CloseTag()
+                                .AddText(" their action with ")
+                                .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
+                                .AddText(" to protect them with a barricade")
+                                .Submit();
                         }
 
                         break;
 
                     case EnumClasses.Sniper: // buffs other
                         AddBuff(duo, new Buff("Assisted", 4, duo, 0.2f, 0.5f, 0.5f, 0, 0, 0));
+
+                        HistoryConsole.Instance
+                            .BeginEntry()
+                            .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.Name).CloseTag()
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" cancelled ").CloseTag()
+                            .AddText(" their action with ")
+                            .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
+                            .AddText(" to assist them, giving a buff for ")
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("2").CloseTag()
+                            .AddText(" turns: ")
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("DMG +20%").CloseTag()
+                            .AddText(" | ")
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("CRIT +50%").CloseTag()
+                            .AddText(" | ")
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("ACC +50%").CloseTag()
+                            .Submit();
+
                         break;
 
                     case EnumClasses.Alchemist: // heals other
@@ -343,7 +411,18 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
                         heal = new AbilityStats(0, 0, 0, 0, 5, source);
                         heal.UpdateWithEmotionModifiers(duo);
-                        Heal(source, duo, heal.GetHeal(), null);
+                        float alchemistHeal = Heal(source, duo, heal.GetHeal(), null);
+
+                        HistoryConsole.Instance
+                            .BeginEntry()
+                            .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.Name).CloseTag()
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" cancelled ").CloseTag()
+                            .AddText(" their action with ")
+                            .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
+                            .AddText(" to heal them instead for ")
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{alchemistHeal} health").CloseTag()
+                            .Submit();
+
                         break;
 
                     case EnumClasses.Bodyguard: // gets closer and protects
@@ -359,10 +438,34 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                         var protect = new AbilityStats(0, 0, 0, 0.5f, 0, source);
                         protect.UpdateWithEmotionModifiers(duo);
                         AddBuff(duo, new ProtectedByBuff(2, duo, source, protect.GetProtection()));
+
+                        HistoryConsole.Instance
+                            .BeginEntry()
+                            .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.Name).CloseTag()
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" cancelled ").CloseTag()
+                            .AddText(" their action with ")
+                            .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
+                            .AddText(" to protect them instead: ")
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"+{(int)((1 - protect.GetProtection()) * 100)}%").CloseTag()
+                            .Submit();
+
                         break;
 
                     case EnumClasses.Smuggler: // buffs other
                         AddBuff(duo, new Buff("Sprint", 4, duo, 0, 0, 0, 0, 2, 0.3f));
+
+                        HistoryConsole.Instance
+                            .BeginEntry()
+                            .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.Name).CloseTag()
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" cancelled ").CloseTag()
+                            .AddText(" their action with ")
+                            .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
+                            .AddText(" to improve their speed instead: ")
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("MOV +2").CloseTag()
+                            .AddText(" | ")
+                            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("DODG +30%").CloseTag()
+                            .Submit();
+
                         break;
 
                     default:
@@ -388,7 +491,11 @@ public abstract class BaseDuoAbility : BaseAllyAbility
     {
         if (unit is AllyUnit && _chosenAlly == null)
         {
+            // Hide previous preselected ally
+            _temporaryChosenAlly?.DisplayUnitSelectionTile(false);
+
             _temporaryChosenAlly = unit as AllyUnit;
+            _temporaryChosenAlly.DisplayUnitSelectionTile(true);
             CombatGameManager.Instance.Camera.SwitchParenthood(_temporaryChosenAlly);
             RequestDescriptionUpdate();
             RequestTargetSymbolUpdate(_temporaryChosenAlly);
@@ -414,6 +521,8 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         if (_possibleAllies.Count > 0)
         {
             _temporaryChosenAlly = _possibleAllies[0];
+            _temporaryChosenAlly.DisplayUnitSelectionTile(true);
+
             CombatGameManager.Instance.Camera.SwitchParenthood(_temporaryChosenAlly);
 
             RequestTargetsUpdate(_possibleAllies);
@@ -430,6 +539,9 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         if (_executed) EndExecutedDuo(_effector, _chosenAlly);
 
         if (_chosenAlly != null) _chosenAlly.StopUsingAbilityAsAlly(_executed && !_freeForDuo);
+
+        _temporaryChosenAlly?.DisplayUnitSelectionTile(false);
+        _chosenAlly?.DisplayUnitSelectionTile(false);
 
         _temporaryChosenAlly = null;
         _chosenAlly = null;
@@ -531,6 +643,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
     {
         if (_possibleAllies.Count < 1) return;
 
+        AllyUnit previousAllyUnit = _temporaryChosenAlly;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitData;
 
@@ -560,6 +673,9 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
         if (changedUnitThisFrame)
         {
+            previousAllyUnit?.DisplayUnitSelectionTile(false);
+            _temporaryChosenAlly.DisplayUnitSelectionTile(true);
+
             CombatGameManager.Instance.Camera.SwitchParenthood(_temporaryChosenAlly);
             RequestDescriptionUpdate();
             RequestTargetSymbolUpdate(_temporaryChosenAlly);
@@ -601,7 +717,10 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
     protected virtual ShootResult SelfShoot(GridBasedUnit target, AbilityStats selfShotStats, bool alwaysHit = false, bool canCrit = true)
     {
-        if (StartAction(ActionTypes.Attack, _effector, _chosenAlly)) return new ShootResult(false, 0f, false); // TODO : fix this return
+        if (StartAction(ActionTypes.Attack, _effector, _chosenAlly))
+        {
+            return new ShootResult(true, false, 0f, false);
+        }
 
         int randShot = RandomEngine.Instance.Range(0, 100); // between 0 and 99
         int randCrit = RandomEngine.Instance.Range(0, 100);
@@ -610,27 +729,31 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         {
             AttackHitOrMiss(_effector, target as EnemyUnit, true, _chosenAlly);
 
+            float effectiveDamage;
             if (canCrit && randCrit < selfShotStats.GetCritRate())
             {
-                AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage() * 1.5f, true, _chosenAlly);
-                return new ShootResult(true, selfShotStats.GetDamage() * 1.5f, true);
+                effectiveDamage = AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage() * 1.5f, true, _chosenAlly);
+                return new ShootResult(false, true, effectiveDamage, true);
             }
             else
             {
-                AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage(), false, _chosenAlly);
-                return new ShootResult(true, selfShotStats.GetDamage(), false);
+                effectiveDamage = AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage(), false, _chosenAlly);
+                return new ShootResult(false, true, effectiveDamage, false);
             }
         }
         else
         {
             AttackHitOrMiss(_effector, target as EnemyUnit, false, _chosenAlly);
-            return new ShootResult(false, 0f, false);
+            return new ShootResult(false, false, 0f, false);
         }
     }
 
     protected virtual ShootResult AllyShoot(GridBasedUnit target, AbilityStats allyShotStats, bool alwaysHit = false, bool canCrit = true)
     {
-        if (StartAction(ActionTypes.Attack, _chosenAlly, _effector)) return new ShootResult(false, 0f, false); // TODO : fix this return
+        if (StartAction(ActionTypes.Attack, _chosenAlly, _effector))
+        {
+            return new ShootResult(true, false, 0f, false);
+        }
 
         int randShot = RandomEngine.Instance.Range(0, 100); // between 0 and 99
         int randCrit = RandomEngine.Instance.Range(0, 100);
@@ -639,28 +762,33 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         {
             AttackHitOrMiss(_chosenAlly, target as EnemyUnit, true, _effector);
 
+            float effectiveDamage;
             if (canCrit && randCrit < allyShotStats.GetCritRate())
             {
-                AttackDamage(_chosenAlly, target as EnemyUnit, allyShotStats.GetDamage() * 1.5f, true, _effector);
-                return new ShootResult(true, allyShotStats.GetDamage() * 1.5f, true);
+                effectiveDamage = AttackDamage(_chosenAlly, target as EnemyUnit, allyShotStats.GetDamage() * 1.5f, true, _effector);
+                return new ShootResult(false, true, effectiveDamage, true);
             }
             else
             {
-                AttackDamage(_chosenAlly, target as EnemyUnit, allyShotStats.GetDamage(), false, _effector);
-                return new ShootResult(true, allyShotStats.GetDamage(), false);
+                effectiveDamage = AttackDamage(_chosenAlly, target as EnemyUnit, allyShotStats.GetDamage(), false, _effector);
+                return new ShootResult(false, true, effectiveDamage, false);
             }
         }
         else
         {
             AttackHitOrMiss(_chosenAlly, target as EnemyUnit, false, _effector);
-            return new ShootResult(false, 0f, false);
+            return new ShootResult(false, false, 0f, false);
         }
     }
 
-    protected bool AllyOnAllyShot(AllyUnit shooterUnit, AllyUnit shotUnit)
+    protected bool AllyOnAllyShot(AllyUnit shooterUnit, AllyUnit shotUnit, out ShootResult shootResult)
     {
         Dictionary<GridBasedUnit, LineOfSight> los = shooterUnit.GetLineOfSights(false);
-        if (!los.ContainsKey(shotUnit) || (shooterUnit.GridPosition - shotUnit.GridPosition).magnitude > shooterUnit.Character.RangeShot) return false;
+        if (!los.ContainsKey(shotUnit) || (shooterUnit.GridPosition - shotUnit.GridPosition).magnitude > shooterUnit.Character.RangeShot)
+        {
+            shootResult = new ShootResult(true, false, 0f, false);
+            return false;
+        }
 
         int randShot = RandomEngine.Instance.Range(0, 100); // between 0 and 99
         int randCrit = RandomEngine.Instance.Range(0, 100);
@@ -673,16 +801,19 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
             if (randCrit < shotStats.GetCritRate())
             {
-                FriendlyFireDamage(shooterUnit, shotUnit, shotStats.GetDamage() * 1.5f, shotUnit);
+                float effectiveDamage = FriendlyFireDamage(shooterUnit, shotUnit, shotStats.GetDamage() * 1.5f, shotUnit);
+                shootResult = new ShootResult(false, true, effectiveDamage, true);
             }
             else
             {
-                FriendlyFireDamage(shooterUnit, shotUnit, shotStats.GetDamage(), shotUnit);
+                float effectiveDamage = FriendlyFireDamage(shooterUnit, shotUnit, shotStats.GetDamage(), shotUnit);
+                shootResult = new ShootResult(false, true, effectiveDamage, false);
             }
         }
         else
         {
             AttackOnAllyHitOrMiss(shooterUnit, shotUnit, false, shotUnit);
+            shootResult = new ShootResult(false, false, 0f, false);
         }
 
         return true;

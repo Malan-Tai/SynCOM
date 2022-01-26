@@ -30,17 +30,13 @@ public class BasicEnemyShot : BaseEnemyAbility
 
             if (randCrit < _effector.Character.CritChances)
             {
-                AttackDamage(BestTarget as AllyUnit, 1.5f * _effector.Character.Damage, true);
-
-                result.Damage = _effector.Character.Damage * 1.5f;
+                result.Damage = AttackDamage(BestTarget as AllyUnit, 1.5f * _effector.Character.Damage, true);
                 result.Critical = true;
                 SendResultToHistoryConsole(result);
             }
             else
             {
-                AttackDamage(BestTarget as AllyUnit, _effector.Character.Damage, true);
-
-                result.Damage = _effector.Character.Damage;
+                result.Damage = AttackDamage(BestTarget as AllyUnit, _effector.Character.Damage, true);
                 result.Critical = false;
                 SendResultToHistoryConsole(result);
             }

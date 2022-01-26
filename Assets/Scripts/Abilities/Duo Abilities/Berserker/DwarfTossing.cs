@@ -24,8 +24,6 @@ public class DwarfTossing : BaseDuoAbility
         return _chosenAlly != null;
     }
 
-    
-
     public override string GetAllyDescription()
     {
         string res = "You launch your ally in the air. If you fail your throw, they will take damage.";
@@ -46,15 +44,24 @@ public class DwarfTossing : BaseDuoAbility
         string res = "Your ally launches you in the air to land a devastating blow in the ennemy.";
         if (_chosenAlly != null)
         {
-            res += "\nAcc: ~" + (int)_selfShotStats.GetAccuracy() + "%" +
-                    " | Crit: ~" + (int)_selfShotStats.GetCritRate() + "%" +
-                    " | Dmg: " + (int)_selfShotStats.GetDamage();
+            res += "\nACC:" + (int)_selfShotStats.GetAccuracy() + "%" +
+                    " | CRIT:" + (int)_selfShotStats.GetCritRate() + "%" +
+                    " | DMG:" + (int)_selfShotStats.GetDamage();
+        }
+        else if (_temporaryChosenAlly != null)
+        {
+            var temporarySelfShotStat = new AbilityStats(0, 0, 3f, 0, 0, _effector);
+            temporarySelfShotStat.UpdateWithEmotionModifiers(_temporaryChosenAlly);
+
+            res += "\nACC:" + (int)temporarySelfShotStat.GetAccuracy() + "%" +
+                    " | CRIT:" + (int)temporarySelfShotStat.GetCritRate() + "%" +
+                    " | DMG:" + (int)temporarySelfShotStat.GetDamage();
         }
         else if (_effector != null)
         {
-            res += "\nAcc: ~" +  (int)_effector.AllyCharacter.Accuracy + "%" +
-                    " | Crit: ~" + (int)_effector.AllyCharacter.CritChances + "%" +
-                    " | Dmg: " + (int)_effector.AllyCharacter.Damage * 3;
+            res += "\nACC:" +  (int)_effector.AllyCharacter.Accuracy + "%" +
+                    " | CRIT:" + (int)_effector.AllyCharacter.CritChances + "%" +
+                    " | DMG:" + (int)_effector.AllyCharacter.Damage * 3;
         }
         return res;
     }
@@ -161,18 +168,19 @@ public class DwarfTossing : BaseDuoAbility
 
     public override void Execute()
     {
+        SoundManager.PlaySound(SoundManager.Sound.DwarfToss);
+
         int randLaunch = RandomEngine.Instance.Range(0, 100);
 
         var parametersLaunch = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetUntilEndOfMovement, target = _effector, position = _tileCoord, pathfinding = PathfindingMoveType.Linear };
         _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parametersLaunch));
-
 
         if (randLaunch <= _launchingAccuracy)
         {
             // Launch successful : Damage enemies
             foreach (EnemyUnit target in _targets)
             {
-                SelfShoot(target, _selfShotStats, alwaysHit: true, canCrit: false);
+                AttackDamage(_effector, target, _selfShotStats.GetDamage(), false);
             }
         }
         else
@@ -205,5 +213,24 @@ public class DwarfTossing : BaseDuoAbility
     protected override void SendResultToHistoryConsole(AbilityResult result)
     {
         // TODO
+    }
+
+    public override void ShowRanges(AllyUnit user)
+    {
+        GridMap map = CombatGameManager.Instance.GridMap;
+        List<Tile> range = new List<Tile>();
+
+        for (int i = 0; i < map.GridTileWidth; i++)
+        {
+            for (int j = 0; j < map.GridTileHeight; j++)
+            {
+                Vector2Int tile = new Vector2Int(i, j);
+                if ((tile - user.GridPosition).magnitude < 2)
+                {
+                    range.Add(map[i, j]);
+                }
+            }
+        }
+        CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", range, true);
     }
 }

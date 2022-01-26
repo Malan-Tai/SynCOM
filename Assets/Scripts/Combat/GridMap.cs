@@ -24,6 +24,7 @@ public class GridMap : MonoBehaviour
     {
         get => new Vector3(_gridOrigin.x + GridWorldWidth / 2f, 0f, _gridOrigin.z + GridWorldHeight / 2f);
     }
+    public Vector3 GridOrigin { get => _gridOrigin; }
 
     private Tile[,] _map;
     private List<Vector2Int> _occupiedTiles = new List<Vector2Int>();

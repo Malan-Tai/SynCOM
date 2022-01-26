@@ -10,6 +10,17 @@ public class BasicShot : BaseAllyAbility
 
     private AbilityStats _selfShotStats;
 
+    private List<Tile> _possibleTargetsTiles = new List<Tile>();
+
+    public override string GetName()
+    {
+        return "Basic Attack";
+    }
+    public override string GetShortDescription()
+    {
+        return "A basic attack";
+    }
+
     public override string GetDescription()
     {
         string res = "Shoot at the target.";
@@ -115,25 +126,31 @@ public class BasicShot : BaseAllyAbility
 
         AbilityResult result = new AbilityResult();
 
-        SoundManager.PlaySound(SoundManager.Sound.BasicShot);
-
+        switch (_effector.AllyCharacter.CharacterClass)
+        {
+            case EnumClasses.Berserker:
+                SoundManager.PlaySound(SoundManager.Sound.BasicPunch);
+                break;
+            case EnumClasses.Sniper:
+                SoundManager.PlaySound(SoundManager.Sound.BasicShotSniper);
+                break;
+            default:
+                SoundManager.PlaySound(SoundManager.Sound.BasicShotGatling);
+                break;
+        }
         if (randShot < _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover))
         {
             AttackHitOrMiss(_effector, target as EnemyUnit, true);
 
             if (randCrit < _selfShotStats.GetCritRate())
             {
-                AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage * 1.5f, true);
-
-                result.Damage = _effector.Character.Damage * 1.5f;
+                result.Damage = AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage * 1.5f, true);
                 result.Critical = true;
                 SendResultToHistoryConsole(result);
             }
             else
             {
-                AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage, false);
-
-                result.Damage = _effector.Character.Damage;
+                result.Damage = AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage, false);
                 result.Critical = false;
                 SendResultToHistoryConsole(result);
             }
@@ -188,10 +205,6 @@ public class BasicShot : BaseAllyAbility
         base.EndAbility();
     }
 
-    public override string GetName()
-    {
-        return "Basic Attack";
-    }
 
     public override void UISelectUnit(GridBasedUnit unit)
     {
@@ -201,8 +214,23 @@ public class BasicShot : BaseAllyAbility
         RequestTargetSymbolUpdate(unit);
     }
 
-    public override string GetShortDescription()
+
+    public override void ShowRanges(AllyUnit user)
     {
-        return "A basic attack";
+        GridMap map = CombatGameManager.Instance.GridMap;
+        List<Tile> range = new List<Tile>();
+
+        for (int i = 0; i < map.GridTileWidth; i++)
+        {
+            for (int j = 0; j < map.GridTileHeight; j++)
+            {
+                Vector2Int tile = new Vector2Int(i, j);
+                if ((tile - user.GridPosition).magnitude <= user.Character.RangeShot)
+                {
+                    range.Add(map[i, j]);
+                }
+            }
+        }
+        CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", range, true);
     }
 }

@@ -33,7 +33,7 @@ public abstract class BaseEnemyAbility : BaseAbility
         // TODO : change target ?
     }
 
-    protected void AttackDamage(AllyUnit target, float damage, bool crit)
+    protected float AttackDamage(AllyUnit target, float damage, bool crit)
     {
         RelationshipEventsResult result = RelationshipEventsManager.Instance.EnemyOnAllyAttackDamage(target, damage, crit);
 
@@ -50,6 +50,8 @@ public abstract class BaseEnemyAbility : BaseAbility
         });
 
         HandleRelationshipEventResult(result);
+
+        return damage;
 
         //if (killed)
         //{

@@ -25,11 +25,10 @@ public class Slap : BaseDuoAbility
 
     public override void Execute()
     {
-        float damage = 1f;
-        FriendlyFireDamage(_effector, _chosenAlly, damage, _chosenAlly);
-
         AbilityResult result = new AbilityResult();
-        result.Damage = damage;
+        float damage = 1f;
+        result.Damage = FriendlyFireDamage(_effector, _chosenAlly, damage, _chosenAlly);
+
         SendResultToHistoryConsole(result);
     }
 
@@ -70,5 +69,9 @@ public class Slap : BaseDuoAbility
     public override string GetShortDescription()
     {
         return "A small friendly fire";
+    }
+
+    public override void ShowRanges(AllyUnit user)
+    {
     }
 }

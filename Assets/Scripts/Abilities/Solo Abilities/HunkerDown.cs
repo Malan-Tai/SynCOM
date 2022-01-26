@@ -43,4 +43,8 @@ public class HunkerDown : BaseAllyAbility
             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" hunkered down ").CloseTag()
             .Submit();
     }
+
+    public override void ShowRanges(AllyUnit user)
+    {
+    }
 }

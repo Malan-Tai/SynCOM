@@ -14,27 +14,32 @@ public class Mortar : BaseDuoAbility
 
     public override string GetAllyDescription()
     {
-        return "Send a beacon in the air to indicate your position. You take cover but have a small chance to get hit.";
+        return "Send a beacon in the air to indicate your position. You take cover but have a small chance to get hit." +
+               "\nCHANCE:10%";
     }
+
     public override string GetDescription()
     {
         string res = "Fire a splinter-filled grenade on you ally's position, hoping they’ll take cover in time.";
         if (_chosenAlly != null)
         {
-            res += "\nAcc: 100%" +
-                    " | Crit: 0%" +
-                    " | Dmg: " + _selfShotStats.GetDamage();
+            res += "\nACC:100%" +
+                    " | CRIT:0%" +
+                    " | DMG:" + (int)_selfShotStats.GetDamage();
         }
-        else if (_effector != null)
+        else if (_effector != null & _temporaryChosenAlly != null)
         {
-            res += "\nAcc: 100%" +
-                    " | Crit: 0%" +
-                    " | Dmg: " + _effector.AllyCharacter.Damage * 1.5;
+            var temporarySelfShotStat = new AbilityStats(0, 0, 1.5f, 0, 0, _effector);
+            temporarySelfShotStat.UpdateWithEmotionModifiers(_temporaryChosenAlly);
+
+            res += "\nACC:100%" +
+                    " | CRIT:0%" +
+                    " | DMG:" + (int)temporarySelfShotStat.GetDamage();
         }
         else
         {
-            res += "\nAcc: 100%" +
-                    " | Crit: 0%";
+            res += "\nACC:100%" +
+                    " | CRIT:0%";
         }
         return res;
     }
@@ -107,14 +112,13 @@ public class Mortar : BaseDuoAbility
 
         foreach (EnemyUnit target in _targets)
         {
-            SelfShoot(target, _selfShotStats, alwaysHit: true, canCrit: false);
+            result.DamageList.Add(AttackDamage(_effector, target, _selfShotStats.GetDamage(), false));
         }
         foreach (AllyUnit ally in _allyTargets)
         {
-            FriendlyFireDamage(_effector, ally, _selfShotStats.GetDamage(), ally);
+            result.DamageList.Add(FriendlyFireDamage(_effector, ally, _selfShotStats.GetDamage(), ally));
         }
 
-        result.Damage = _selfShotStats.GetDamage();
         SendResultToHistoryConsole(result);
     }
 
@@ -128,10 +132,7 @@ public class Mortar : BaseDuoAbility
             .AddText(" used ")
             .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
             .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
-            .AddText(":")
-            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($" did ").CloseTag()
-            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage} damage").CloseTag()
-            .AddText(" to ");
+            .AddText(": did ");
 
         List<GridBasedUnit> everyTarget = new List<GridBasedUnit>();
         everyTarget.AddRange(_targets);
@@ -151,9 +152,17 @@ public class Mortar : BaseDuoAbility
                 }
             }
 
+            string name = everyTarget[i].Character.Name;
+            if (everyTarget[i].Character.Name == _effector.Character.Name || everyTarget[i].Character.Name == _chosenAlly.Character.Name)
+            {
+                name = name.Split(' ')[0];
+            }
+
             HistoryConsole.Instance
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(result.DamageList[i].ToString()).CloseTag()
+                .AddText(" to ")
                 .OpenLinkTag(everyTarget[i].Character.Name, everyTarget[i], EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
-                .AddText(everyTarget[i].Character.Name).CloseTag();
+                .AddText(name).CloseTag();
         }
 
         HistoryConsole.Instance.Submit();
@@ -184,5 +193,9 @@ public class Mortar : BaseDuoAbility
         }
 
         CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
+    }
+
+    public override void ShowRanges(AllyUnit user)
+    {
     }
 }
