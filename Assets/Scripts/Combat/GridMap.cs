@@ -274,6 +274,23 @@ public class GridMap : MonoBehaviour
         return positions;
     }
 
+    public Tile GetRandomFreeNeighbor(Vector2Int center)
+    {
+        Tile[] all = CoverNeighbors(center);
+        List<Tile> possibleTiles = new List<Tile>();
+
+        foreach (Tile tile in all)
+        {
+            if (!_occupiedTiles.Contains(tile.Coords) && tile.Cover == EnumCover.None)
+            {
+                possibleTiles.Add(tile);
+            }
+        }
+
+        if (possibleTiles.Count <= 0) return null;
+        return possibleTiles[RandomEngine.Instance.Range(0, possibleTiles.Count)];
+    }
+
     public bool CanMoveFromCellToCell(Vector2Int cellA, Vector2Int cellB)
     {
         if (!CellIsValid(cellA) || !CellIsValid(cellB))
@@ -393,6 +410,70 @@ public class GridMap : MonoBehaviour
         }
 
         return diamond;
+    }
+
+    public List<Tile> GetAreaOfEffectCorridor(Vector2Int start, Vector2Int end, int width)
+    {
+        List<Tile> corridor = new List<Tile>();
+
+        if (start.x == end.x)
+        {
+            int ymin = Mathf.Min(start.y, end.y);
+            int ymax = Mathf.Max(start.y, end.y);
+            for (int j = ymin; j <= ymax; j++)
+            {
+                for (int i = start.x - width; i <= start.x + width; i++)
+                {
+                    Tile tile = this[i, j];
+                    if (tile != null)
+                    {
+                        corridor.Add(tile);
+                    }
+                }
+            }
+        }
+        else if (start.y == end.y)
+        {
+            int xmin = Mathf.Min(start.x, end.x);
+            int xmax = Mathf.Max(start.x, end.x);
+            for (int i = xmin; i <= xmax; i++)
+            {
+                for (int j = start.y - width; j <= start.y + width; j++)
+                {
+                    Tile tile = this[i, j];
+                    if (tile != null)
+                    {
+                        corridor.Add(tile);
+                    }
+                }
+            }
+        }
+        else
+        {
+            Debug.Log("Corridor: start and end arguments must have at least one coordinate in common");
+        }
+
+        return corridor;
+    }
+
+    public List<Tile> GetAreaOfEffectCross(Vector2Int center, int radius)
+    {
+        List<Tile> cross = new List<Tile>();
+
+        for (int n = -radius; n <= radius; n++)
+        {
+            Tile tile1 = this[center.x + n, center.y];
+            if (tile1 != null)
+            {
+                cross.Add(tile1);
+            }
+            Tile tile2 = this[center.x, center.y + n];
+            if (tile2 != null)
+            {
+                cross.Add(tile2);
+            }
+        }
+        return cross;
     }
 
 

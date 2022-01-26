@@ -36,6 +36,22 @@ public class Smuggle : BaseDuoAbility
     {
         _chosenAlly.ChooseAstarPathTo(_tileCoord);
         _freeForDuo = true;
+
+        SendResultToHistoryConsole(null);
+    }
+
+    protected override void SendResultToHistoryConsole(AbilityResult result)
+    {
+        HistoryConsole.Instance
+            .BeginEntry()
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+            .AddText(" used ")
+            .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
+            .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+            .AddText(" to transport ")
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+            .AddText(" next to them")
+            .Submit();
     }
 
     protected override void ChooseAlly()
@@ -46,13 +62,13 @@ public class Smuggle : BaseDuoAbility
         int y = _effector.GridPosition.y;
 
         Tile tileUp = map[x, y - 1];
-        if (tileUp != null) _possibleTargetsTiles.Add(tileUp);
+        if (tileUp != null && tileUp.IsWalkable) _possibleTargetsTiles.Add(tileUp);
         Tile tileDown = map[x, y + 1];
-        if (tileUp != null) _possibleTargetsTiles.Add(tileDown);
+        if (tileDown != null && tileDown.IsWalkable) _possibleTargetsTiles.Add(tileDown);
         Tile tileRight = map[x + 1, y];
-        if (tileUp != null) _possibleTargetsTiles.Add(tileRight);
+        if (tileRight != null && tileRight.IsWalkable) _possibleTargetsTiles.Add(tileRight);
         Tile tileLeft = map[x - 1, y];
-        if (tileUp != null) _possibleTargetsTiles.Add(tileLeft);
+        if (tileLeft != null && tileLeft.IsWalkable) _possibleTargetsTiles.Add(tileLeft);
 
         CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", _possibleTargetsTiles, false);
     }
@@ -74,21 +90,20 @@ public class Smuggle : BaseDuoAbility
             }
             else
             {
-                // La caméra se déplace bien, mais du coup la tile visée se déplace aussi. Voir le TODO plus haut.
-
                 bool clicked = Input.GetMouseButtonUp(0);
+                if (clicked)
+                {
+                    UIConfirm();
+                }
+
                 CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(temporaryTileCoord);
 
-                if ((!clicked) || temporaryTileCoord == _previousTileCoord)
+                if (temporaryTileCoord == _previousTileCoord)
                 {
                     return;
                 }
-                // TODO: la case doit être libre
                 _previousTileCoord = temporaryTileCoord;
                 _tileCoord = temporaryTileCoord;
-
-                //CombatGameManager.Instance.CameraPointer.MoveToCell(_tileCoord);
-                //CombatGameManager.Instance.Camera.SwitchParenthood(CombatGameManager.Instance.CameraPointer);
             }
         }
     }

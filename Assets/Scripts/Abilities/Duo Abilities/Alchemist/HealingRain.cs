@@ -1,4 +1,3 @@
-using EntryParts;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +9,7 @@ public class HealingRain : BaseDuoAbility
     private Vector2Int _previousTileCoord;
     private Vector2Int _tileCoord;
 
+    private List<EnemyUnit> _enemyTargets = new List<EnemyUnit>();
     private List<AllyUnit> _allyTargets = new List<AllyUnit>();
 
     private List<Tile> _areaOfEffectTiles = new List<Tile>();
@@ -39,19 +39,28 @@ public class HealingRain : BaseDuoAbility
 
         int explosionRadius = _explosionBaseRadius;
         int healingValue = _healingValue;
-        bool critical = false;
+        AbilityResult result = new AbilityResult();
 
-        if (UnityEngine.Random.Range(0, 100) < _allyShotStats.GetAccuracy())
+        if (RandomEngine.Instance.Range(0, 100) < _allyShotStats.GetAccuracy())
         {
             explosionRadius = _explosionImprovedRadius;
             healingValue = _healingValueIncreased;
-            critical = true;
+            result.Critical = true;
             Debug.Log("[Healing Rain] Bonus radius");
         }
 
         var selfHealStats = new AbilityStats(0, 0, 0, 0, healingValue, _effector);
         selfHealStats.UpdateWithEmotionModifiers(_chosenAlly);
 
+        _enemyTargets.Clear();
+        foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
+        {
+            //if ((enemy.GridPosition - tileCoord).magnitude <= explosionRadius) //That's a circle not a diamond...
+            if (Mathf.Abs(enemy.GridPosition.x - _tileCoord.x) + Mathf.Abs(enemy.GridPosition.y - _tileCoord.y) <= explosionRadius)
+            {
+                _enemyTargets.Add(enemy);
+            }
+        }
         _allyTargets.Clear();
         foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
         {
@@ -65,46 +74,57 @@ public class HealingRain : BaseDuoAbility
         // Ne peux rater ni faire un coup critique
         foreach (AllyUnit ally in _allyTargets)
         {
-            Heal(_effector, ally, healingValue, _chosenAlly);
+            Heal(_effector, ally, selfHealStats.GetHeal(), _chosenAlly);
+        }
+        foreach (EnemyUnit enemy in _enemyTargets)
+        {
+            float heal = selfHealStats.GetHeal();
+            enemy.Heal(ref heal);
         }
 
-        HistoryConsole.AddEntry(CreateHealingRainEntry(_chosenAlly, healingValue, critical));
+        result.Heal = selfHealStats.GetHeal();
+        SendResultToHistoryConsole(result);
         Debug.Log("[Healing Rain] Explosion");
     }
 
-    public EntryPart[] CreateHealingRainEntry(AllyUnit duo, int healValue, bool critical)
+    protected override void SendResultToHistoryConsole(AbilityResult result)
     {
-        string criticalText = critical ? " critical" : "";
+        string criticalText = result.Critical ? " greatly" : "";
 
-        List<EntryPart> entry = new List<EntryPart>
-        {
-            new LinkUnitEntryPart(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER),
-            new EntryPart("and"),
-            new LinkUnitEntryPart(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER),
-            new EntryPart("used"),
-            new ColorEntryPart(GetName(), EntryColors.TEXT_ABILITY),
-            new EntryPart(":"),
-            new ColorEntryPart("healed", EntryColors.TEXT_IMPORTANT),
-        };
+        HistoryConsole.Instance
+            .BeginEntry()
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+            .AddText(" and ")
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+            .AddText(" used ")
+            .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
+            .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+            .AddText(":")
+            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{criticalText} healed ").CloseTag();
 
         for (int i = 0; i < _allyTargets.Count; i++)
         {
-            if (i == _allyTargets.Count - 1)
+            if (i != 0)
             {
-                entry.Add(new EntryPart("and"));
-            }
-            else
-            {
-                entry.Add(new EntryPart(","));
+                if (i == _allyTargets.Count - 1)
+                {
+                    HistoryConsole.Instance.AddText(" and ");
+                }
+                else
+                {
+                    HistoryConsole.Instance.AddText(", ");
+                }
             }
 
-            entry.Add(new LinkUnitEntryPart(_allyTargets[i].Character.Name, _allyTargets[i], EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER));
+            HistoryConsole.Instance
+                .OpenLinkTag(_allyTargets[i].Character.Name, _allyTargets[i], EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_allyTargets[i].Character.Name).CloseTag();
         }
 
-        entry.Add(new EntryPart("for"));
-        entry.Add(new ColorEntryPart($"{healValue}{criticalText} damage", EntryColors.TEXT_IMPORTANT));
-
-        return entry.ToArray();
+        HistoryConsole.Instance
+            .AddText(" for ")
+            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Heal} health points").CloseTag()
+            .Submit();
     }
 
     public override string GetAllyDescription()
@@ -204,17 +224,36 @@ public class HealingRain : BaseDuoAbility
                 CombatGameManager.Instance.TileDisplay.DisplayTileZone("BonusHealZone", _areaOfEffectBonusTiles, false);
                 CombatGameManager.Instance.TileDisplay.DisplayTileZone("HealZone", _areaOfEffectTiles, false);
 
+                // Je cache le highlight des anciennes targets
+                foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
+                {
+                    enemy.DontHighlightUnit();
+                }
+                foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
+                {
+                    ally.DontHighlightUnit();
+                }
+
                 // Je parcours la liste des alliés pour récupérer les alliés ciblés
                 // Devra être refait de toute façon - le radius réel est déterminé à  l'Execute()
                 // Pour mettre les cibles en surbrillance
-
+                foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
+                {
+                    //if ((enemy.GridPosition - tileCoord).magnitude <= _radius) //That's a circle not a diamond...
+                    if (Mathf.Abs(enemy.GridPosition.x - _tileCoord.x) + Mathf.Abs(enemy.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
+                    {
+                        _enemyTargets.Add(enemy);
+                        enemy.HighlightUnit(Color.green);
+                    }
+                }
                 foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
                 {
                     //if ((ally.GridPosition - tileCoord).magnitude <= _radius) //That's a circle not a diamond...
-                    Debug.Log(Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y));
+                    //Debug.Log(Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y));
                     if (Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
                     {
                         _allyTargets.Add(ally);
+                        ally.HighlightUnit(Color.green);
                     }
                 }
             }
@@ -224,5 +263,20 @@ public class HealingRain : BaseDuoAbility
     protected override bool IsAllyCompatible(AllyUnit unit)
     {
         return (unit.GridPosition - this._effector.GridPosition).magnitude <= _trowingRadius + unit.AllyCharacter.RangeShot;
+    }
+
+    protected override void EndAbility()
+    {
+        base.EndAbility();
+
+        // Je cache le highlight des anciennes targets
+        foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
+        {
+            ally.DontHighlightUnit();
+        }
+        foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
+        {
+            enemy.DontHighlightUnit();
+        }
     }
 }

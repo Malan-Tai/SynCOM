@@ -10,7 +10,7 @@ public class Slap : BaseDuoAbility
 {
     protected override void ChooseAlly()
     {
-
+        _ignoreEnemyTargeting = true;
     }
 
     public override bool CanExecute()
@@ -25,7 +25,25 @@ public class Slap : BaseDuoAbility
 
     public override void Execute()
     {
-        FriendlyFireDamage(_effector, _chosenAlly, 1, _chosenAlly);
+        float damage = 1f;
+        FriendlyFireDamage(_effector, _chosenAlly, damage, _chosenAlly);
+
+        AbilityResult result = new AbilityResult();
+        result.Damage = damage;
+        SendResultToHistoryConsole(result);
+    }
+
+    protected override void SendResultToHistoryConsole(AbilityResult result)
+    {
+        HistoryConsole.Instance
+            .BeginEntry()
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+            .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
+            .AddText(" slapped ")
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" dealing ").CloseTag()
+            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage} damage").CloseTag()
+            .Submit();
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)

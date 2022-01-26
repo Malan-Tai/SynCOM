@@ -67,7 +67,6 @@ public class RelationshipEventsManager : MonoBehaviour
 
     private bool Execute(RelationshipEvent relationshipEvent, AllyUnit source, AllyUnit currentUnit, ref RelationshipEventsResult result)
     {
-        print("executed " + relationshipEvent);
         bool actuallyExecuted = true;
 
         switch (relationshipEvent.effectType)
@@ -85,33 +84,33 @@ public class RelationshipEventsManager : MonoBehaviour
                     sourceToCurrent.IncreaseSentiment(EnumSentiment.Trust, relationshipEvent.trustChange);
                     sourceToCurrent.IncreaseSentiment(EnumSentiment.Sympathy, relationshipEvent.sympathyChange);
                 }
-                else if (relationshipEvent.sourceToTarget)
+                else if (relationshipEvent.sourceToCurrent)
                 {
                     Relationship sourceToCurrent = source.AllyCharacter.Relationships[currentUnit.AllyCharacter];
-                    sourceToCurrent.IncreaseSentiment(EnumSentiment.Admiration, relationshipEvent.admirationChangeSTT);
-                    sourceToCurrent.IncreaseSentiment(EnumSentiment.Trust, relationshipEvent.trustChangeSTT);
-                    sourceToCurrent.IncreaseSentiment(EnumSentiment.Sympathy, relationshipEvent.sympathyChangeSTT);
+                    sourceToCurrent.IncreaseSentiment(EnumSentiment.Admiration, relationshipEvent.admirationChangeSTC);
+                    sourceToCurrent.IncreaseSentiment(EnumSentiment.Trust, relationshipEvent.trustChangeSTC);
+                    sourceToCurrent.IncreaseSentiment(EnumSentiment.Sympathy, relationshipEvent.sympathyChangeSTC);
                 }
 
                 break;
 
             case RelationshipEventEffectType.RefuseToDuo:
-                result.refusedDuo = Random.Range(0f, 1f) < relationshipEvent.chance;
+                result.refusedDuo = RandomEngine.Instance.Range(0f, 1f) < relationshipEvent.chance;
                 break;
 
             case RelationshipEventEffectType.StealDuo:
-                if (Random.Range(0f, 1f) < relationshipEvent.chance) result.stolenDuoUnit = currentUnit;
+                if (RandomEngine.Instance.Range(0f, 1f) < relationshipEvent.chance) result.stolenDuoUnit = currentUnit;
                 break;
 
             case RelationshipEventEffectType.FreeAction:
-                bool rolledOk = Random.Range(0f, 1f) < relationshipEvent.chance;
+                bool rolledOk = RandomEngine.Instance.Range(0f, 1f) < relationshipEvent.chance;
                 result.freeActionForSource  = result.freeActionForSource    || (relationshipEvent.freeAction        && rolledOk);
                 result.freeActionForDuo     = result.freeActionForDuo       || (relationshipEvent.freeActionForDuo  && rolledOk);
                 break;
 
             case RelationshipEventEffectType.Sacrifice:
                 bool rangeOk = Vector2.Distance(source.GridPosition, currentUnit.GridPosition) <= relationshipEvent.maxRange;
-                rolledOk = Random.Range(0f, 1f) < relationshipEvent.chance;
+                rolledOk = RandomEngine.Instance.Range(0f, 1f) < relationshipEvent.chance;
                 actuallyExecuted = rangeOk && rolledOk;
                 if (actuallyExecuted) result.sacrificedTarget = currentUnit;
                 break;
@@ -128,11 +127,20 @@ public class RelationshipEventsManager : MonoBehaviour
                 break;
 
             case RelationshipEventEffectType.ChangeAction:
-                actuallyExecuted = Random.Range(0f, 1f) < relationshipEvent.chance;
+                actuallyExecuted = RandomEngine.Instance.Range(0f, 1f) < relationshipEvent.chance;
                 if (actuallyExecuted)
                     result.changedActionTo = relationshipEvent.changeActionTo;
                 else
                     result.changedActionTo = ChangeActionTypes.DidntChange;
+                break;
+
+            case RelationshipEventEffectType.FreeAttack:
+                actuallyExecuted = RandomEngine.Instance.Range(0f, 1f) < relationshipEvent.chance;
+                if (actuallyExecuted)
+                {
+                    result.freeAttack = true;
+                    result.freeAttacker = currentUnit;
+                }
                 break;
 
             default:
@@ -141,12 +149,17 @@ public class RelationshipEventsManager : MonoBehaviour
 
         if (relationshipEvent.interrupts && actuallyExecuted)
         {
-            foreach (InterruptionScriptableObject interruption in relationshipEvent.interruptions)
+            foreach (InterruptionScriptableObject interruption in relationshipEvent.interruptionsOnCurrent)
             {
                 result.interruptions.Add(interruption.ToParameters(currentUnit, source));
             }
+            foreach (InterruptionScriptableObject interruption in relationshipEvent.interruptionsOnSource)
+            {
+                result.interruptions.Add(interruption.ToParameters(currentUnit, source, false));
+            }
         }
 
+        print("executed " + relationshipEvent + " : " + actuallyExecuted);
         return actuallyExecuted;
     }
 
@@ -259,8 +272,18 @@ public class RelationshipEventsManager : MonoBehaviour
     {
         RelationshipEvent dummyTrigger = ScriptableObject.CreateInstance("RelationshipEvent") as RelationshipEvent;
         dummyTrigger.triggerType = RelationshipEventTriggerType.Kill;
+        dummyTrigger.targetsAlly = false;
 
         return CheckTriggersAndExecute(dummyTrigger, source, duoUnit: duo, enemyTargetUnit: target);
+    }
+
+    public RelationshipEventsResult EnemyKillAlly(AllyUnit target)
+    {
+        RelationshipEvent dummyTrigger = ScriptableObject.CreateInstance("RelationshipEvent") as RelationshipEvent;
+        dummyTrigger.triggerType = RelationshipEventTriggerType.Kill;
+        dummyTrigger.targetsAlly = true;
+
+        return CheckTriggersAndExecute(dummyTrigger, target);
     }
 
     public RelationshipEventsResult BeginDuo(AllyUnit source, AllyUnit duo)

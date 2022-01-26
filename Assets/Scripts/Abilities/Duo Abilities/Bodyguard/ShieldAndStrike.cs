@@ -12,7 +12,16 @@ public class ShieldAndStrike : BaseDuoAbility
 
     public override string GetDescription()
     {
-        return "You cover your ally while they attack, reducing damage received for the following turn.";
+        string res = "You cover your ally while they attack, reducing damage received for the following turn.";
+        if (_chosenAlly != null)
+        {
+            res += "\nPROT: " + (1 - _selfProtStats.GetProtection()) * 100 + "%";
+        }
+        else
+        {
+            res += "\nPROT: ~50%";
+        }
+        return res;
     }
 
     public override string GetName()
@@ -102,28 +111,102 @@ public class ShieldAndStrike : BaseDuoAbility
         // Actual effect of the ability
         GridBasedUnit target = _possibleTargets[_targetIndex];
 
-        AllyShoot(target, _allyShotStats);
+        AbilityResult result = new AbilityResult();
+        ShootResult shootResult = AllyShoot(target, _allyShotStats);
+        result.AllyMiss = !shootResult.Landed;
+        result.AllyCritical = shootResult.Critical;
+        result.AllyDamage = shootResult.Damage;
 
         if (!StartAction(ActionTypes.Protect, _effector, _chosenAlly))
         {
-            _chosenAlly.Character.CurrentBuffs.Add(new ProtectedByBuff(2, _chosenAlly, _effector, _selfProtStats.GetProtection()));
+            AddBuff(_chosenAlly, new ProtectedByBuff(2, _chosenAlly, _effector, _selfProtStats.GetProtection()));
 
             // Impact on the sentiments
             // Ally -> Self relationship
             AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, 5);
         }
         else
+        {
+            result.Miss = true;
             Debug.Log("refused to protecc");
+        }
+
+        SendResultToHistoryConsole(result);
+    }
+
+    protected override void SendResultToHistoryConsole(AbilityResult result)
+    {
+        GridBasedUnit target = _possibleTargets[_targetIndex];
+
+        HistoryConsole.Instance
+            .BeginEntry()
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag();
+
+        if (result.Miss)
+        {
+            HistoryConsole.Instance.OpenColorTag(EntryColors.TEXT_ABILITY).AddText(" refused ").CloseTag();
+        }
+        else
+        {
+            HistoryConsole.Instance
+                .AddText(" used ")
+                .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
+                .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag();
+        }
+
+        HistoryConsole.Instance
+            .AddText(" to protect ")
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag();
+
+        if (result.AllyMiss)
+        {
+            HistoryConsole.Instance
+                .AddText(" who just ")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("missed").CloseTag()
+                .AddText(" their shot")
+                .AddText(" on ")
+                .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover").CloseTag()
+                .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag();
+        }
+        else
+        {
+            string criticalText = result.AllyCritical ? " critical" : "";
+
+            HistoryConsole.Instance
+                .AddText(" who did ")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.AllyDamage}{criticalText} damage").CloseTag()
+                .AddText(" to ")
+                .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover").CloseTag()
+                .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag();
+        }
+
+        HistoryConsole.Instance.Submit();
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)
     {
-        return (unit.GridPosition - this._effector.GridPosition).magnitude <= 2;
+        return (unit.GridPosition - this._effector.GridPosition).magnitude < 2;
     }
 
     public override string GetAllyDescription()
     {
-        return "Thanks to your ally's protection, you can focus solely on your shot.";
+        string res = "Thanks to your ally's protection, you can focus solely on your shot.";
+
+        if (_chosenAlly != null && _hoveredUnit != null)
+        {
+            res += "\nAcc:" + _allyShotStats.GetAccuracy(_hoveredUnit, _chosenAlly.LinesOfSight[_hoveredUnit].cover) +
+                    "% | Crit:" + _allyShotStats.GetCritRate() +
+                    "% | Dmg:" + _allyShotStats.GetDamage();
+        }
+        else if (_targetIndex >= 0 && _chosenAlly != null)
+        {
+            GridBasedUnit target = _possibleTargets[_targetIndex];
+
+            res += "\nAcc:" + _allyShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover) +
+                    "% | Crit:" + _allyShotStats.GetCritRate() +
+                    "% | Dmg:" + _allyShotStats.GetDamage();
+        }
+        return res;
     }
 
     public override void UISelectUnit(GridBasedUnit unit)

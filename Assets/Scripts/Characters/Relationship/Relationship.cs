@@ -283,7 +283,8 @@ public class Relationship
         int total = 0;
         foreach (int i in Enum.GetValues(typeof(EnumSentiment)))
         {
-            total += GetTotalGaugeValue((EnumSentiment)i);
+            //total += GetTotalGaugeValue((EnumSentiment)i);
+            total += GetGaugeLevel((EnumSentiment)i);
         }
         return Mathf.Clamp(total, -1, 1);
     }

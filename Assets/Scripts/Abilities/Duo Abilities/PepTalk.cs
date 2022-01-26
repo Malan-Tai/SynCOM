@@ -7,9 +7,7 @@ public class PepTalk : BaseDuoAbility
     public override string GetDescription()
     {
         return "Your words of encouragement strengthen you both, increasing damage, move and aim for the next 2 turn." +
-               "\nDMG +20%" +
-               "\nACC +50%" +
-               "\nMOVE +3";
+               "\nDMG +20% | ACC +50% | MOVE +3";
     }
 
     public override string GetShortDescription()
@@ -33,6 +31,7 @@ public class PepTalk : BaseDuoAbility
 
     protected override void ChooseAlly()
     {
+        _ignoreEnemyTargeting = true;
     }
 
     protected override void EnemyTargetingInput()
@@ -42,8 +41,13 @@ public class PepTalk : BaseDuoAbility
 
     public override void Execute()
     {
-        _effector.Character.CurrentBuffs.Add(new Buff(duration: 6, _effector, moveBuff: 3, damageBuff: 0.2f, accuracyBuff: 0.5f));
-        _chosenAlly.Character.CurrentBuffs.Add(new Buff(duration: 6, _chosenAlly, moveBuff: 3, damageBuff: 0.2f, accuracyBuff: 0.5f));
+        AddBuff(_effector, new Buff("Pumped", duration: 6, _effector, moveBuff: 3, damageBuff: 0.2f, accuracyBuff: 0.5f));
+        AddBuff(_chosenAlly, new Buff("Pumped", duration: 6, _effector, moveBuff: 3, damageBuff: 0.2f, accuracyBuff: 0.5f));
+    }
+
+    protected override void SendResultToHistoryConsole(AbilityResult result)
+    {
+        /// TODO Fill
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)

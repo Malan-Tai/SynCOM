@@ -60,6 +60,7 @@ public class RelationshipEventEditor : Editor
 
     // interruptions
     private SerializedProperty _interruptions;
+    private SerializedProperty _interruptionsOnSource;
 
     // free action
     private SerializedProperty _freeAction;
@@ -112,14 +113,15 @@ public class RelationshipEventEditor : Editor
         _admChange                      = serializedObject.FindProperty("admirationChange");
         _truChange                      = serializedObject.FindProperty("trustChange");
         _symChange                      = serializedObject.FindProperty("sympathyChange");
-        _sourceToTarget                 = serializedObject.FindProperty("sourceToTarget");
-        _admirationChangeSTT            = serializedObject.FindProperty("admirationChangeSTT");
-        _trustChangeSTT                 = serializedObject.FindProperty("trustChangeSTT");
-        _sympathyChangeSTT              = serializedObject.FindProperty("sympathyChangeSTT");
+        _sourceToTarget                 = serializedObject.FindProperty("sourceToCurrent");
+        _admirationChangeSTT            = serializedObject.FindProperty("admirationChangeSTC");
+        _trustChangeSTT                 = serializedObject.FindProperty("trustChangeSTC");
+        _sympathyChangeSTT              = serializedObject.FindProperty("sympathyChangeSTC");
 
         _chance                         = serializedObject.FindProperty("chance");
 
-        _interruptions                  = serializedObject.FindProperty("interruptions");
+        _interruptions                  = serializedObject.FindProperty("interruptionsOnCurrent");
+        _interruptionsOnSource          = serializedObject.FindProperty("interruptionsOnSource");
 
         _freeAction                     = serializedObject.FindProperty("freeAction");
         _freeActionForDuo               = serializedObject.FindProperty("freeActionForDuo");
@@ -157,7 +159,13 @@ public class RelationshipEventEditor : Editor
             }
             else if (_triggerType.enumValueIndex == (int)RelationshipEventTriggerType.Kill)
             {
-                EditorGUILayout.PropertyField(_killSteal);
+                if (_targetsAlly.boolValue) EditorGUILayout.PropertyField(_targetsAlly);
+                else if (_killSteal.boolValue) EditorGUILayout.PropertyField(_killSteal);
+                else
+                {
+                    EditorGUILayout.PropertyField(_targetsAlly);
+                    EditorGUILayout.PropertyField(_killSteal);
+                }
             }
             else if (_triggerType.enumValueIndex == (int)RelationshipEventTriggerType.FriendlyFire)
             {
@@ -237,7 +245,9 @@ public class RelationshipEventEditor : Editor
                     }
                 }
             }
-            else if (_effectType.enumValueIndex == (int)RelationshipEventEffectType.RefuseToDuo || _effectType.enumValueIndex == (int)RelationshipEventEffectType.StealDuo)
+            else if (_effectType.enumValueIndex == (int)RelationshipEventEffectType.RefuseToDuo ||
+                    _effectType.enumValueIndex == (int)RelationshipEventEffectType.StealDuo ||
+                    _effectType.enumValueIndex == (int)RelationshipEventEffectType.FreeAttack)
             {
                 EditorGUILayout.PropertyField(_chance);
             }
@@ -266,6 +276,7 @@ public class RelationshipEventEditor : Editor
             if (_interrupts.boolValue)
             {
                 EditorGUILayout.PropertyField(_interruptions);
+                EditorGUILayout.PropertyField(_interruptionsOnSource);
             }
         }
 

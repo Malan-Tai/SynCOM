@@ -56,20 +56,32 @@ public class Mortar : BaseDuoAbility
         _areaOfEffectTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(_chosenAlly.GridPosition, _radius);
         CombatGameManager.Instance.TileDisplay.DisplayTileZone("DamageZone", _areaOfEffectTiles, false);
 
+        // Je cache le highlight des anciennes targets
+        foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
+        {
+            enemy.DontHighlightUnit();
+        }
+        foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
+        {
+            ally.DontHighlightUnit();
+        }
+
         _targets.Clear();
         foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
         {
-            if ((enemy.GridPosition - _chosenAlly.GridPosition).magnitude <= _radius) //That's a circle not a diamond
+            if (Mathf.Abs(enemy.GridPosition.x - _chosenAlly.GridPosition.x) + Mathf.Abs(enemy.GridPosition.y - _chosenAlly.GridPosition.y) <= _radius)
             {
                 _targets.Add(enemy);
+                enemy.HighlightUnit(Color.red);
             }
         }
         _allyTargets.Clear();
         foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
         {
-            if ((ally.GridPosition - _chosenAlly.GridPosition).magnitude <= _radius) //That's a circle not a diamond
+            if (Mathf.Abs(ally.GridPosition.x - _chosenAlly.GridPosition.x) + Mathf.Abs(ally.GridPosition.y - _chosenAlly.GridPosition.y) <= _radius)
             {
                 _allyTargets.Add(ally);
+                ally.HighlightUnit(Color.red);
             }
         }
 
@@ -84,12 +96,13 @@ public class Mortar : BaseDuoAbility
     public override void Execute()
     {
         _allyTargets.Remove(_chosenAlly);
+        AbilityResult result = new AbilityResult();
 
         // Only the _chosenAlly knows the attack is incomming and (almost) always take cover
-        if (UnityEngine.Random.Range(0, 100) > 90)
+        if (RandomEngine.Instance.Range(0, 100) > 90)
         {
             Debug.Log("[Mortar] Ally didn't take cover in time");
-            FriendlyFireDamage(_effector, _chosenAlly, _selfShotStats.GetDamage(), _chosenAlly);
+            _allyTargets.Add(_chosenAlly);
         }
 
         foreach (EnemyUnit target in _targets)
@@ -100,6 +113,50 @@ public class Mortar : BaseDuoAbility
         {
             FriendlyFireDamage(_effector, ally, _selfShotStats.GetDamage(), ally);
         }
+
+        result.Damage = _selfShotStats.GetDamage();
+        SendResultToHistoryConsole(result);
+    }
+
+    protected override void SendResultToHistoryConsole(AbilityResult result)
+    {
+        HistoryConsole.Instance
+            .BeginEntry()
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+            .AddText(" and ")
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+            .AddText(" used ")
+            .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
+            .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+            .AddText(":")
+            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($" did ").CloseTag()
+            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage} damage").CloseTag()
+            .AddText(" to ");
+
+        List<GridBasedUnit> everyTarget = new List<GridBasedUnit>();
+        everyTarget.AddRange(_targets);
+        everyTarget.AddRange(_allyTargets);
+
+        for (int i = 0; i < everyTarget.Count; i++)
+        {
+            if (i != 0)
+            {
+                if (i == everyTarget.Count - 1)
+                {
+                    HistoryConsole.Instance.AddText(" and ");
+                }
+                else
+                {
+                    HistoryConsole.Instance.AddText(", ");
+                }
+            }
+
+            HistoryConsole.Instance
+                .OpenLinkTag(everyTarget[i].Character.Name, everyTarget[i], EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(everyTarget[i].Character.Name).CloseTag();
+        }
+
+        HistoryConsole.Instance.Submit();
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)
@@ -115,6 +172,17 @@ public class Mortar : BaseDuoAbility
     protected override void EndAbility()
     {
         base.EndAbility();
+
+        // Je cache le highlight des anciennes targets
+        foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
+        {
+            enemy.DontHighlightUnit();
+        }
+        foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
+        {
+            ally.DontHighlightUnit();
+        }
+
         CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
     }
 }

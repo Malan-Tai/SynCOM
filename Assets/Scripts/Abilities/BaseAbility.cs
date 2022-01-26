@@ -55,4 +55,23 @@ public abstract class BaseAbility
     /// The description for UI list
     /// </summary>
     public abstract string GetShortDescription();
+
+
+    protected class AbilityResult
+    {
+        public bool Miss = false;
+        public float Damage = 0;
+        public float Heal = 0;
+        public bool Critical = false;
+
+        public bool AllyMiss = false;
+        public float AllyDamage = 0;
+        public float AllyHeal = 0;
+        public bool AllyCritical = false;
+    }
+
+    /// <summary>
+    /// Logs the ability result in the history console when the ability is successful
+    /// </summary>
+    protected abstract void SendResultToHistoryConsole(AbilityResult result);
 }
