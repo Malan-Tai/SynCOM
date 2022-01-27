@@ -25,6 +25,6 @@ public class Handsome : Trait
 
     public override string GetDescription()
     {
-        return "Their bueaty makes them strangely easy to trust.";
+        return "Their beauty makes them strangely easy to trust.";
     }
 }
