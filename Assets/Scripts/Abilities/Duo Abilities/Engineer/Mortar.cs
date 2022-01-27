@@ -133,12 +133,20 @@ public class Mortar : BaseDuoAbility
             .AddText(_chosenAlly.Character.FirstName).CloseTag()
             .AddText(" used ")
             .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
-            .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
-            .AddText(": did ");
+            .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag();
 
         List<GridBasedUnit> everyTarget = new List<GridBasedUnit>();
         everyTarget.AddRange(_targets);
         everyTarget.AddRange(_allyTargets);
+
+        if (everyTarget.Count == 0)
+        {
+            HistoryConsole.Instance.AddText(": it damaged no one");
+        }
+        else
+        {
+            HistoryConsole.Instance.AddText(": did ");
+        }
 
         for (int i = 0; i < everyTarget.Count; i++)
         {

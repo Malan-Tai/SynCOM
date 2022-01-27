@@ -117,7 +117,7 @@ public class HealingRain : BaseDuoAbility
                 .AddText(" his action to do something else... ")
                 .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
                 .AddText(_effector.Character.FirstName).CloseTag()
-                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($" still{criticalText} healed ").CloseTag();
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{criticalText} healed ").CloseTag();
         }
         else
         {
@@ -138,6 +138,11 @@ public class HealingRain : BaseDuoAbility
         List<GridBasedUnit> everyTarget = new List<GridBasedUnit>();
         everyTarget.AddRange(_allyTargets);
         everyTarget.AddRange(_enemyTargets);
+
+        if (everyTarget.Count == 0)
+        {
+            HistoryConsole.Instance.AddText("no one");
+        }
 
         for (int i = 0; i < everyTarget.Count; i++)
         {
