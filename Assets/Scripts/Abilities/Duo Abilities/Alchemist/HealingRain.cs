@@ -114,7 +114,7 @@ public class HealingRain : BaseDuoAbility
                 .AddText(_chosenAlly.Character.FirstName).CloseTag()
                 .AddText(" who ")
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("cancelled").CloseTag()
-                .AddText(" his action to do something else... ")
+                .AddText(" their action to do something else... ")
                 .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
                 .AddText(_effector.Character.FirstName).CloseTag()
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{criticalText} healed ").CloseTag();

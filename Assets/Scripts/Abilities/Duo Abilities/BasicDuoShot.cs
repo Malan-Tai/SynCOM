@@ -174,7 +174,7 @@ public class BasicDuoShot : BaseDuoAbility
             {
                 HistoryConsole.Instance
                     .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" missed ").CloseTag()
-                    .AddText(" his shot on ");
+                    .AddText(" their shot on ");
             }
             else
             {
@@ -192,7 +192,7 @@ public class BasicDuoShot : BaseDuoAbility
                 .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
                 .AddText(_chosenAlly.Character.FirstName).CloseTag()
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" cancelled ").CloseTag()
-                .AddText(" his shot to do something else...");
+                .AddText(" their shot to do something else...");
         }
         else
         {
