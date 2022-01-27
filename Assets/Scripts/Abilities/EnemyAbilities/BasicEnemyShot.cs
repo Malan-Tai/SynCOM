@@ -56,12 +56,14 @@ public class BasicEnemyShot : BaseEnemyAbility
         {
             HistoryConsole.Instance
                 .BeginEntry()
-                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_effector.Character.FirstName).CloseTag()
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" missed ").CloseTag()
                 .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
                 .AddText(" on ")
                 .OpenIconTag($"{_effector.LinesOfSight[BestTarget].cover}Cover").CloseTag()
-                .OpenLinkTag(BestTarget.Character.Name, BestTarget, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(BestTarget.Character.Name).CloseTag()
+                .OpenLinkTag(BestTarget.Character.Name, BestTarget, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(BestTarget.Character.FirstName).CloseTag()
                 .CloseAllOpenedTags().Submit();
         }
         else
@@ -70,12 +72,14 @@ public class BasicEnemyShot : BaseEnemyAbility
 
             HistoryConsole.Instance
                 .BeginEntry()
-                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_effector.Character.FirstName).CloseTag()
                 .AddText(" used ")
                 .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
                 .AddText(" on ")
                 .OpenIconTag($"{_effector.LinesOfSight[BestTarget].cover}Cover").CloseTag()
-                .OpenLinkTag(BestTarget.Character.Name, BestTarget, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(BestTarget.Character.Name).CloseTag()
+                .OpenLinkTag(BestTarget.Character.Name, BestTarget, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(BestTarget.Character.FirstName).CloseTag()
                 .AddText(": did ")
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage}{criticalText} damage").CloseTag()
                 .CloseAllOpenedTags().Submit();
