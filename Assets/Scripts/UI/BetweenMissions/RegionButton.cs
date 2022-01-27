@@ -25,7 +25,8 @@ public class RegionButton : MonoBehaviour
 
     private void Start()
     {
-        _nonHoverColor = new Color(_hoverColor.r, _hoverColor.g, _hoverColor.b, 0.5f);
+        _nonHoverColor = _hoverColor; //new Color(_hoverColor.r, _hoverColor.g, _hoverColor.b, 0.5f);
+        _hoverColor = Color.Lerp(_nonHoverColor, Color.black, 0.3f);
 
         _sprite = GetComponent<Image>();
         _sprite.color = _nonHoverColor;

@@ -24,6 +24,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Guillaume_lobby.unity
     guid: dc831d2782a318f46b86cb0931a7cb69
   - enabled: 0
-    path: Assets/Scenes/Guillaume.unity
-    guid: b5a16729c5ef9a44984c3a0b27ae8217
+    path: Assets/Scenes/NotCheatedLobby.unity
+    guid: b3b143f42e9c1d64393c22868392a1f5
   m_configObjects: {}
