@@ -27,8 +27,21 @@ public class GrenadeTossEngineer : BaseDuoAbility
 
     public override string GetAllyDescription()
     {
-        return "You shoot the grenade midair with you expert precision. If you succeed, " +
-                "the grenade benefits from an increased explosion radius.";
+        string res =  "You shoot the grenade midair with you expert precision. If you succeed, " +
+                      "the grenade benefits from an increased explosion radius and damage.";
+        if (_chosenAlly != null)
+        {
+            res += "ACC:" + (int)_allyShotStats.GetAccuracy() + "%";
+        }
+        else if (_temporaryChosenAlly != null)
+        {
+            var temporaryAllyShotStat = new AbilityStats(0, 0, 0, 0, 0, _temporaryChosenAlly);
+            temporaryAllyShotStat.UpdateWithEmotionModifiers(_effector);
+
+            res += "ACC:" + (int)temporaryAllyShotStat.GetAccuracy() + "%";
+        }
+        res += "\nBONUS DMG: +33%";
+        return res;
     }
 
     public override string GetDescription()
@@ -36,20 +49,23 @@ public class GrenadeTossEngineer : BaseDuoAbility
         string res = "You throw a grenade in the air for the Sniper to shoot at.";
         if (_chosenAlly != null)
         {
-            res += "\nAcc: 100%" +
-                    " | Crit: 0%" +
-                    " | Dmg: " + _selfShotStats.GetDamage();
+            res += "\nACC: 100%" +
+                    " | CRIT: 0%" +
+                    " | DMG: " + (int)_selfShotStats.GetDamage();
         }
-        else if (_effector != null)
+        else if (_effector != null & _temporaryChosenAlly != null)
         {
-            res += "\nAcc: 100%" +
-                    " | Crit: 0%" +
-                    " | Dmg: " + _effector.AllyCharacter.Damage * 1.5;
+            var temporarySelfShotStat = new AbilityStats(0, 0, 1.5f, 0, 0, _effector);
+            temporarySelfShotStat.UpdateWithEmotionModifiers(_temporaryChosenAlly);
+
+            res += "\nACC: 100%" +
+                    " | CRIT: 0%" +
+                    " | DMG: " + (int)temporarySelfShotStat.GetDamage();
         }
         else
         {
-            res += "\nAcc: 100%" +
-                    " | Crit: 0%";
+            res += "\nACC: 100%" +
+                    " | CRIT: 0%";
         }
         return res;
     }
@@ -116,7 +132,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitData;
 
-        if (Physics.Raycast(ray, out hitData, 1000, _groundLayerMask) && hitData.transform.CompareTag("Ground"))
+        if (!BlockingUIElement.IsUIHovered && Physics.Raycast(ray, out hitData, 1000, _groundLayerMask) && hitData.transform.CompareTag("Ground"))
         {
             // J'affiche la zone ciblée, en mettant à jour les tiles (ce sont celles situées à portée de la tile ciblée)
 
@@ -205,11 +221,22 @@ public class GrenadeTossEngineer : BaseDuoAbility
         // Premier test : le Sniper touche-t-il la grenade
 
         int explosionRadius = _explosionBaseRadius;
+        AbilityResult result = new AbilityResult();
         SoundManager.PlaySound(SoundManager.Sound.GrenadeToss);
-        if (RandomEngine.Instance.Range(0, 100) < _allyShotStats.GetAccuracy())
+
+        if (!StartAction(ActionTypes.Attack, _chosenAlly, _effector))
         {
-            explosionRadius = _explosionImprovedRadius;
-            Debug.Log("[Grenade Toss] Bonus radius");
+            if (RandomEngine.Instance.Range(0, 100) < _allyShotStats.GetAccuracy())
+            {
+                explosionRadius = _explosionImprovedRadius;
+                Debug.Log("[Grenade Toss] Bonus radius");
+                _selfShotStats = new AbilityStats(0, 0, 2f, 0, 0, _effector);
+                _selfShotStats.UpdateWithEmotionModifiers(_chosenAlly);
+            }
+        }
+        else
+        {
+            result.AllyCancelled = true;
         }
 
         _targets.Clear();
@@ -234,33 +261,47 @@ public class GrenadeTossEngineer : BaseDuoAbility
         // Ne peux rater ni faire un coup critique
         foreach (EnemyUnit target in _targets)
         {
-            SelfShoot(target, _selfShotStats, alwaysHit: true, canCrit : false);
+            result.DamageList.Add(AttackDamage(_effector, target, _selfShotStats.GetDamage(), false));
         }
         foreach (AllyUnit ally in _allyTargets)
         {
-            FriendlyFireDamage(_effector, ally, _selfShotStats.GetDamage(), ally);
+            result.DamageList.Add(FriendlyFireDamage(_effector, ally, _selfShotStats.GetDamage(), ally));
         }
         Debug.Log("[Grenade Toss] Explosion");
 
-        AbilityResult result = new AbilityResult();
-        result.Damage = _selfShotStats.GetDamage();
         SendResultToHistoryConsole(result);
     }
 
     protected override void SendResultToHistoryConsole(AbilityResult result)
     {
-        HistoryConsole.Instance
-            .BeginEntry()
-            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
-            .AddText(" and ")
-            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
-            .AddText(" used ")
-            .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
-            .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
-            .AddText(":")
-            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($" did ").CloseTag()
-            .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage} damage").CloseTag()
-            .AddText(" to ");
+        if (result.AllyCancelled)
+        {
+            HistoryConsole.Instance
+                .BeginEntry()
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+                .AddText(" tried to use ")
+                .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
+                .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+                .AddText(" with ")
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+                .AddText(" who ")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("cancelled").CloseTag()
+                .AddText(" his action to do something else... ")
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name.Split(' ')[0]).CloseTag()
+                .AddText(" still did ");
+        }
+        else
+        {
+            HistoryConsole.Instance
+                .BeginEntry()
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+                .AddText(" and ")
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+                .AddText(" used ")
+                .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
+                .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+                .AddText(": did ");
+        }
 
         List<GridBasedUnit> everyTarget = new List<GridBasedUnit>();
         everyTarget.AddRange(_targets);
@@ -280,9 +321,17 @@ public class GrenadeTossEngineer : BaseDuoAbility
                 }
             }
 
+            string name = everyTarget[i].Character.Name;
+            if (everyTarget[i].Character.Name == _effector.Character.Name || everyTarget[i].Character.Name == _chosenAlly.Character.Name)
+            {
+                name = name.Split(' ')[0];
+            }
+
             HistoryConsole.Instance
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(result.DamageList[i].ToString()).CloseTag()
+                .AddText(" to ")
                 .OpenLinkTag(everyTarget[i].Character.Name, everyTarget[i], EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
-                .AddText(everyTarget[i].Character.Name).CloseTag();
+                .AddText(name).CloseTag();
         }
 
         HistoryConsole.Instance.Submit();
@@ -318,5 +367,24 @@ public class GrenadeTossEngineer : BaseDuoAbility
     public override string GetShortDescription()
     {
         return "Throws a grenade and lets an ally shoot at it for increased efficiency.";
+    }
+
+    public override void ShowRanges(AllyUnit user)
+    {
+        GridMap map = CombatGameManager.Instance.GridMap;
+        List<Tile> range = new List<Tile>();
+
+        for (int i = 0; i < map.GridTileWidth; i++)
+        {
+            for (int j = 0; j < map.GridTileHeight; j++)
+            {
+                Vector2Int tile = new Vector2Int(i, j);
+                if ((tile - user.GridPosition).magnitude <= _throwingRadius)
+                {
+                    range.Add(map[i, j]);
+                }
+            }
+        }
+        CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", range, true);
     }
 }

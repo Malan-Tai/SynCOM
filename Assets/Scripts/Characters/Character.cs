@@ -61,7 +61,7 @@ public class Character
     [SerializeField] protected float _weigth;                  //can be a condition for some actions
     [SerializeField] protected float _critChances;
     [SerializeField] protected float _rangeShot;
-    [SerializeField] private EnumGender _gender;
+    [SerializeField] protected EnumGender _gender;
     [SerializeField] private string _name;
 
     public delegate void DieEvent();
@@ -76,7 +76,7 @@ public class Character
     //constructor 
     public static Character GetRandomCharacter(Character preinstanciated = null)  //random values
     {
-        if (preinstanciated == null) preinstanciated = new Character(6, 2, 65, 10, 15, 20, 0, 60);
+        if (preinstanciated == null) preinstanciated = new Character(15, 10, 65, 10, 15, 20, 0, 60);
 
         // keep range shot and movement points as is
         preinstanciated._maxHealth      += RandomEngine.Instance.Range(-10, 11);
@@ -102,6 +102,8 @@ public class Character
                     preinstanciated._name = _femaleNames[RandomEngine.Instance.Range(0, _femaleNames.Length)];
                 else
                     preinstanciated._name = _maleNames[RandomEngine.Instance.Range(0, _maleNames.Length)];
+                preinstanciated._gender = (EnumGender)RandomEngine.Instance.Range(0, 2);
+                // replace NB with male or female once the name has been chosen, to avoid sprites and portraits not matching up
                 break;
         }
 

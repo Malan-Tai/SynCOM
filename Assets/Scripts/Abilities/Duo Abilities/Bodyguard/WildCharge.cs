@@ -33,14 +33,18 @@ public class WildCharge : BaseDuoAbility
         string res = "You both charge in a direction : you hold a shield, defending both of you for the following turn.";
         if (_chosenAlly != null)
         {
-            res += "\nPROT: " + (1 - _selfProtStats.GetProtection()) * 100 + "%";
+            res += "\nPROT: " + (int)((1 - _selfProtStats.GetProtection()) * 100) + "%";
         }
         else if (_temporaryChosenAlly != null)
         {
             var temporarySelfProtStat = new AbilityStats(0, 0, 0, 0.3f, 0, _effector);
             temporarySelfProtStat.UpdateWithEmotionModifiers(_temporaryChosenAlly);
 
-            res += "\nPROT: " + (1 - temporarySelfProtStat.GetProtection()) * 100 + "%";
+            res += "\nPROT: " + (int)((1 - temporarySelfProtStat.GetProtection()) * 100) + "%";
+        }
+        else
+        {
+            res += "\nPROT:30%";
         }
         return res;
     }
@@ -51,18 +55,18 @@ public class WildCharge : BaseDuoAbility
 
         if (_chosenAlly != null)
         {
-            res += "\nAcc:~" + _allyShotStats.GetAccuracy() +
-                    "% | Crit:" + _allyShotStats.GetCritRate() +
-                    "% | Dmg:" + _allyShotStats.GetDamage();
+            res += "\nACC:" + (int)_allyShotStats.GetAccuracy() +
+                    "% | CRIT:" + (int)_allyShotStats.GetCritRate() +
+                    "% | DMG:" + (int)_allyShotStats.GetDamage();
         }
         else if (_temporaryChosenAlly != null)
         {
-            var temporaryAllyShotStat = new AbilityStats(0, 0, 1, 0, 0, _temporaryChosenAlly);
+            var temporaryAllyShotStat = new AbilityStats(0, 0, 1.5f, 0, 0, _temporaryChosenAlly);
             temporaryAllyShotStat.UpdateWithEmotionModifiers(_effector);
 
-            res += "\nAcc:~" + temporaryAllyShotStat.GetAccuracy() +
-                    "% | Crit:" + temporaryAllyShotStat.GetCritRate() +
-                    "% | Dmg:" + temporaryAllyShotStat.GetDamage();
+            res += "\nACC:" + (int)temporaryAllyShotStat.GetAccuracy() +
+                    "% | CRIT:" + (int)temporaryAllyShotStat.GetCritRate() +
+                    "% | DMG:" + (int)temporaryAllyShotStat.GetDamage();
         }
 
         return res;
@@ -75,7 +79,7 @@ public class WildCharge : BaseDuoAbility
 
     protected override void ChooseAlly()
     {
-        _selfProtStats = new AbilityStats(0, 0, 0, 0.3f, 0, _effector);
+        _selfProtStats = new AbilityStats(0, 0, 0, 0.7f, 0, _effector);
         _selfProtStats.UpdateWithEmotionModifiers(_chosenAlly);
 
         _allyShotStats = new AbilityStats(0, 0, 1.5f, 0, 0, _chosenAlly);
@@ -94,22 +98,22 @@ public class WildCharge : BaseDuoAbility
 
         for (int n = 1; n <= _radius; n++)
         {
-            if (map[x + n, y].IsWalkable) _possibleTargetsTiles.Add(map[x + n, y]);
+            if (map[x + n, y].IsWalkable && !map.OccupiedTiles.Contains(new Vector2Int(x + n, y))) _possibleTargetsTiles.Add(map[x + n, y]);
             else break;
         }
         for (int n = 1; n <= _radius; n++)
         {
-            if (map[x - n, y].IsWalkable) _possibleTargetsTiles.Add(map[x - n, y]);
+            if (map[x - n, y].IsWalkable && !map.OccupiedTiles.Contains(new Vector2Int(x - n, y))) _possibleTargetsTiles.Add(map[x - n, y]);
             else break;
         }
         for (int n = 1; n <= _radius; n++)
         {
-            if (map[x, y + n].IsWalkable) _possibleTargetsTiles.Add(map[x, y + n]);
+            if (map[x, y + n].IsWalkable && !map.OccupiedTiles.Contains(new Vector2Int(x, y + n))) _possibleTargetsTiles.Add(map[x, y + n]);
             else break;
         }
         for (int n = 1; n <= _radius; n++)
         {
-            if (map[x, y - n].IsWalkable) _possibleTargetsTiles.Add(map[x, y - n]);
+            if (map[x, y - n].IsWalkable && !map.OccupiedTiles.Contains(new Vector2Int(x, y - n))) _possibleTargetsTiles.Add(map[x, y - n]);
             else break;
         }
         CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", _possibleTargetsTiles, false);
@@ -120,7 +124,7 @@ public class WildCharge : BaseDuoAbility
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitData;
 
-        if (Physics.Raycast(ray, out hitData, 1000, _groundLayerMask) && hitData.transform.CompareTag("Ground"))
+        if (!BlockingUIElement.IsUIHovered && Physics.Raycast(ray, out hitData, 1000, _groundLayerMask) && hitData.transform.CompareTag("Ground"))
         {
             // J'affiche la zone ciblée, en mettant à jour les tiles (ce sont celles situées à portée de la tile ciblée)
 
@@ -202,7 +206,7 @@ public class WildCharge : BaseDuoAbility
         SoundManager.PlaySound(SoundManager.Sound.WildCharge);
         foreach (EnemyUnit target in _targets)
         {
-            SelfShoot(target, _allyShotStats, alwaysHit: true, canCrit: false);
+            AttackDamage(_effector, target, _allyShotStats.GetDamage(), false);
         }
     }
 
@@ -224,5 +228,24 @@ public class WildCharge : BaseDuoAbility
         {
             enemy.DontHighlightUnit();
         }
+    }
+
+    public override void ShowRanges(AllyUnit user)
+    {
+        GridMap map = CombatGameManager.Instance.GridMap;
+        List<Tile> range = new List<Tile>();
+
+        for (int i = 0; i < map.GridTileWidth; i++)
+        {
+            for (int j = 0; j < map.GridTileHeight; j++)
+            {
+                Vector2Int tile = new Vector2Int(i, j);
+                if ((tile - user.GridPosition).magnitude < 2)
+                {
+                    range.Add(map[i, j]);
+                }
+            }
+        }
+        CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", range, true);
     }
 }

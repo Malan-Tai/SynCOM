@@ -6,18 +6,51 @@ public class CombatInputController : MonoBehaviour
 {
     [SerializeField] private LayerMask _groundLayerMask;
 
+    private GridBasedUnit _prevHovered = null;
+    private bool _canInput;
+
+    private void Awake()
+    {
+        _canInput = false;
+        Objective.OnScalingDone += CanMove;
+    }
+
+    private void CanMove()
+    {
+        _canInput = true;
+        Objective.OnScalingDone -= CanMove;
+    }
+
     void Update()
     {
-        if (CombatGameManager.Instance.ControllableUnits.Count <= 0) return;
+        if (!_canInput || CombatGameManager.Instance.ControllableUnits.Count <= 0) return;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitData;
 
-        if (Physics.Raycast(ray, out hitData, 1000, _groundLayerMask) && hitData.transform.CompareTag("Ground"))
+        if (!BlockingUIElement.IsUIHovered && Physics.Raycast(ray, out hitData, 1000, _groundLayerMask) && hitData.transform.CompareTag("Ground"))
         {
             Vector2Int tileCoord = CombatGameManager.Instance.GridMap.WorldToGrid(hitData.point);
             CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(tileCoord);
         }
+
+        GridBasedUnit hitUnit = null;
+        if (_prevHovered != null)
+        {
+            _prevHovered.DisplayOutline(false);
+            _prevHovered.InfoSetSmall(false);
+        }
+        if (!BlockingUIElement.IsUIHovered && Physics.Raycast(ray, out hitData, 1000))
+        {
+            hitUnit = hitData.transform.GetComponent<GridBasedUnit>();
+
+            if (hitUnit != null)
+            {
+                hitUnit.DisplayOutline(true);
+                hitUnit.InfoSetBig(false);
+            }
+        }
+        _prevHovered = hitUnit;
 
         if (CombatGameManager.Instance.CurrentAbility != null)
         {
@@ -43,6 +76,27 @@ public class CombatInputController : MonoBehaviour
         {
             CombatGameManager.Instance.Camera.ZoomCamera(- scrollY);
         }
+
+        float x = 0f;
+        float y = 0f;
+
+        if (Input.mousePosition.x <= 0 || Input.GetKey(KeyCode.Q))
+        {
+            x = -1f;
+        }
+        else if (Input.mousePosition.x >= Screen.width - 1 || Input.GetKey(KeyCode.D))
+        {
+            x = 1f;
+        }
+        if (Input.mousePosition.y <= 0 || Input.GetKey(KeyCode.S))
+        {
+            y = -1f;
+        }
+        else if (Input.mousePosition.y >= Screen.height - 1 || Input.GetKey(KeyCode.Z))
+        {
+            y = 1f;
+        }
+        CombatGameManager.Instance.Camera.EdgeMove(x, y);
     }
 
     private void BaseInputControl()
@@ -54,7 +108,7 @@ public class CombatInputController : MonoBehaviour
         bool clicked = Input.GetMouseButtonUp(0);
 
 
-        if (Physics.Raycast(ray, out hitData, 1000))
+        if (!BlockingUIElement.IsUIHovered && Physics.Raycast(ray, out hitData, 1000))
         {
             var hitUnit = hitData.transform.GetComponent<AllyUnit>();
 
@@ -65,7 +119,7 @@ public class CombatInputController : MonoBehaviour
                 clicked = false;
             }
         }
-        if (Physics.Raycast(ray, out hitData, 1000, _groundLayerMask) && hitData.transform.CompareTag("Ground") && clicked)
+        if (!BlockingUIElement.IsUIHovered && Physics.Raycast(ray, out hitData, 1000, _groundLayerMask) && hitData.transform.CompareTag("Ground") && clicked)
         {
             Vector2Int tileCoord = CombatGameManager.Instance.GridMap.WorldToGrid(hitData.point);
             //CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(tileCoord);

@@ -41,11 +41,15 @@ public class GlobalGameManager : MonoBehaviour
     private Sprite[] _classSprites;
     [SerializeField]
     private Sprite[] _classPortraits;
+    [SerializeField]
+    private Sprite _deadAllySprite;
 
     [SerializeField]
     private Sprite _enemySprite;
     [SerializeField]
     private Sprite _enemyPortrait;
+    [SerializeField]
+    private Sprite _deadEnemySprite;
 
     private void GenerateCharacters()
     {
@@ -85,18 +89,51 @@ public class GlobalGameManager : MonoBehaviour
         currentSquad[i] = character;
     }
 
-    public Sprite GetClassSprite(EnumClasses charClass)
+    public Sprite GetClassSprite(EnumClasses charClass, EnumGender gender)
     {
-        int i = (int)charClass;
+        int g;
+        switch (gender)
+        {
+            case EnumGender.Male:
+                g = 0;
+                break;
+            case EnumGender.Female:
+                g = 1;
+                break;
+            default:
+                g = RandomEngine.Instance.Range(0, 2);
+                break;
+        }
+
+        int i = 2 * (int)charClass + g;
         if (i < 0 || i >= _classSprites.Length) return null;
         return _classSprites[i];
     }
 
-    public Sprite GetClassPortrait(EnumClasses charClass)
+    public Sprite GetClassPortrait(EnumClasses charClass, EnumGender gender)
     {
-        int i = (int)charClass;
+        int g;
+        switch (gender)
+        {
+            case EnumGender.Male:
+                g = 0;
+                break;
+            case EnumGender.Female:
+                g = 1;
+                break;
+            default:
+                g = RandomEngine.Instance.Range(0, 2);
+                break;
+        }
+
+        int i = 2 * (int)charClass + g;
         if (i < 0 || i >= _classPortraits.Length) return null;
         return _classPortraits[i];
+    }
+
+    public Sprite GetDeadAllySprite()
+    {
+        return _deadAllySprite;
     }
 
     public Sprite GetEnemySprite()
@@ -107,6 +144,11 @@ public class GlobalGameManager : MonoBehaviour
     public Sprite GetEnemyPortrait()
     {
         return _enemyPortrait;
+    }
+
+    public Sprite GetDeadEnemySprite()
+    {
+        return _deadEnemySprite;
     }
 
     public void AddCharacter(AllyCharacter character)

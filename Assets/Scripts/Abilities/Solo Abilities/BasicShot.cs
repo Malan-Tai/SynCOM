@@ -10,23 +10,34 @@ public class BasicShot : BaseAllyAbility
 
     private AbilityStats _selfShotStats;
 
+    private List<Tile> _possibleTargetsTiles = new List<Tile>();
+
+    public override string GetName()
+    {
+        return "Basic Attack";
+    }
+    public override string GetShortDescription()
+    {
+        return "A basic attack";
+    }
+
     public override string GetDescription()
     {
         string res = "Shoot at the target.";
         if (_hoveredUnit != null)
         {
-            res += "\nAcc:" + _selfShotStats.GetAccuracy(_hoveredUnit, _effector.LinesOfSight[_hoveredUnit].cover) + // (_effector.Character.Accuracy - _hoveredUnit.Character.GetDodge(_effector.LinesOfSight[_hoveredUnit].cover)) +
-                    "% | Crit:" + _selfShotStats.GetCritRate() + // + _effector.Character.CritChances +
-                    "% | Dmg:" + _selfShotStats.GetDamage();// _effector.Character.Damage;
+            res += "\nACC:" + (int)_selfShotStats.GetAccuracy(_hoveredUnit, _effector.LinesOfSight[_hoveredUnit].cover) + // (_effector.Character.Accuracy - _hoveredUnit.Character.GetDodge(_effector.LinesOfSight[_hoveredUnit].cover)) +
+                    "% | CRIT:" + (int)_selfShotStats.GetCritRate() + // + _effector.Character.CritChances +
+                    "% | DMG:" + (int)_selfShotStats.GetDamage();// _effector.Character.Damage;
         }
         else if (_targetIndex >= 0)
         {
             GridBasedUnit target = _possibleTargets[_targetIndex];
             if (target == null) Debug.Log("BLIP BLOUP");
 
-            res += "\nAcc:" + _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover) + //(_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover)) +
-                    "% | Crit:" + _selfShotStats.GetCritRate() + // + _effector.Character.CritChances +
-                    "% | Dmg:" + _selfShotStats.GetDamage();// _effector.Character.Damage;
+            res += "\nACC:" + (int)_selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover) + //(_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover)) +
+                    "% | CRIT:" + (int)_selfShotStats.GetCritRate() + // + _effector.Character.CritChances +
+                    "% | DMG:" + (int)_selfShotStats.GetDamage();// _effector.Character.Damage;
         }
 
         return res;
@@ -74,7 +85,7 @@ public class BasicShot : BaseAllyAbility
 
         bool changedUnitThisFrame = false;
 
-        if (Physics.Raycast(ray, out hitData, 1000))
+        if (!BlockingUIElement.IsUIHovered && Physics.Raycast(ray, out hitData, 1000))
         {
             var hitUnit = hitData.transform.GetComponent<EnemyUnit>();
 
@@ -133,17 +144,13 @@ public class BasicShot : BaseAllyAbility
 
             if (randCrit < _selfShotStats.GetCritRate())
             {
-                AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage * 1.5f, true);
-
-                result.Damage = _effector.Character.Damage * 1.5f;
+                result.Damage = AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage * 1.5f, true);
                 result.Critical = true;
                 SendResultToHistoryConsole(result);
             }
             else
             {
-                AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage, false);
-
-                result.Damage = _effector.Character.Damage;
+                result.Damage = AttackDamage(_effector, target as EnemyUnit, _effector.Character.Damage, false);
                 result.Critical = false;
                 SendResultToHistoryConsole(result);
             }
@@ -198,10 +205,6 @@ public class BasicShot : BaseAllyAbility
         base.EndAbility();
     }
 
-    public override string GetName()
-    {
-        return "Basic Attack";
-    }
 
     public override void UISelectUnit(GridBasedUnit unit)
     {
@@ -211,8 +214,23 @@ public class BasicShot : BaseAllyAbility
         RequestTargetSymbolUpdate(unit);
     }
 
-    public override string GetShortDescription()
+
+    public override void ShowRanges(AllyUnit user)
     {
-        return "A basic attack";
+        GridMap map = CombatGameManager.Instance.GridMap;
+        List<Tile> range = new List<Tile>();
+
+        for (int i = 0; i < map.GridTileWidth; i++)
+        {
+            for (int j = 0; j < map.GridTileHeight; j++)
+            {
+                Vector2Int tile = new Vector2Int(i, j);
+                if ((tile - user.GridPosition).magnitude <= user.Character.RangeShot)
+                {
+                    range.Add(map[i, j]);
+                }
+            }
+        }
+        CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", range, true);
     }
 }

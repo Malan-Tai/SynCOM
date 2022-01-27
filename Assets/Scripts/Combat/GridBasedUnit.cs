@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class GridBasedUnit : MonoBehaviour
 {
+    [SerializeField] private MeshRenderer _outlineRenderer;
+    [SerializeField] private Material _outlineMaterial;
+
     private Vector2Int _gridPosition;
     private Vector3 _targetWorldPosition;
 
@@ -54,9 +57,11 @@ public class GridBasedUnit : MonoBehaviour
 
     private FeedbackDisplay _feedback;
 
-    private SpriteRenderer _unitRenderer;
+    protected SpriteRenderer _unitRenderer;
     private int _highlightPropertyHash;
     private int _highlightColorPropertyHash;
+    private int _outlineColorPropertyHash;
+    private int _outlineSizePropertyHash;
 
     protected InfoCanvas _info;
 
@@ -74,14 +79,15 @@ public class GridBasedUnit : MonoBehaviour
 
         _feedback = GetComponent<FeedbackDisplay>();
 
-        _unitRenderer = GetComponentInChildren<SpriteRenderer>();
+        _unitRenderer = transform.Find("Renderer").GetComponent<SpriteRenderer>();
         _highlightPropertyHash = Shader.PropertyToID("_Highlight");
         _highlightColorPropertyHash = Shader.PropertyToID("_HighlightColor");
+        _outlineColorPropertyHash = Shader.PropertyToID("_OutlineColor");
+        _outlineSizePropertyHash = Shader.PropertyToID("_OutlineSize");
 
         InterruptionQueue = GetComponent<InterruptionQueue>();
 
         _info = transform.Find("Renderer").GetComponentInChildren<InfoCanvas>();
-        _info.SetRatioHP(1);
     }
 
     protected virtual void Update()
@@ -112,16 +118,42 @@ public class GridBasedUnit : MonoBehaviour
             _updatePathfinder = true;
             UpdateLineOfSights(!IsEnemy());
             if (OnMoveFinish != null) OnMoveFinish(this);
+
+            // Properly center the unit on the tile
+            transform.position = CombatGameManager.Instance.GridMap.GridToWorld(GridPosition, transform.position.y);
         }
 
         if (_markedForDeath && InterruptionQueue.IsEmpty() && transform.Find("CameraTarget") == null)
         {
             _markedForDeath = false;
-            GetComponentInChildren<Renderer>().enabled = false;
+            _unitRenderer.enabled = false;
             _info.gameObject.SetActive(false);
-            //Destroy(this.gameObject);
-            //transform.position += new Vector3(0, -5, 0);
+            transform.Find("DeadRenderer").GetComponent<SpriteRenderer>().enabled = true;
         }
+    }
+
+    private void GenerateOutlineTexture()
+    {
+        int outlineSize = _outlineMaterial.GetInt(_outlineSizePropertyHash);
+        RenderTexture outlineTexture = new RenderTexture
+        (
+            4 * outlineSize + _unitRenderer.sprite.texture.width,
+            4 * outlineSize + _unitRenderer.sprite.texture.height,
+            0,
+            RenderTextureFormat.ARGB32
+        );
+        outlineTexture.Create();
+
+        Graphics.Blit(_unitRenderer.sprite.texture, outlineTexture, _outlineMaterial);
+
+        _outlineRenderer.material.mainTexture = outlineTexture;
+        _outlineRenderer.transform.localScale = new Vector3
+        (
+            _unitRenderer.sprite.texture.width / _unitRenderer.sprite.pixelsPerUnit,
+            _unitRenderer.sprite.texture.height / _unitRenderer.sprite.pixelsPerUnit,
+            1f
+        );
+        _outlineRenderer.enabled = false;
     }
 
     public void SetCharacter(Character character)
@@ -129,6 +161,9 @@ public class GridBasedUnit : MonoBehaviour
         Character = character;
         _movesLeft = character.MovementPoints;
         InitSprite();
+        _info.SetHP(Character.HealthPoints, Character.MaxHealth);
+        _info.SetSmall(true);
+        GenerateOutlineTexture();
     }
 
     public void MarkForDeath()
@@ -171,9 +206,9 @@ public class GridBasedUnit : MonoBehaviour
         }
     }
 
-    public void ChooseAstarPathTo(Vector2Int cell)
+    public bool ChooseAstarPathTo(Vector2Int cell)
     {
-        if (_followingPath) return;
+        if (_followingPath) return false;
 
         _pathToFollow = new List<Vector2Int>(_pathfinder.AstarPath(_gridPosition, cell));
 
@@ -183,7 +218,10 @@ public class GridBasedUnit : MonoBehaviour
             CombatGameManager.Instance.GridMap.UpdateOccupiedTiles(_gridPosition, cell);
 
             if (OnMoveStart != null) OnMoveStart(this, cell);
+
+            return true;
         }
+        return false;
     }
 
     public void NeedsPathfinderUpdate()
@@ -314,7 +352,7 @@ public class GridBasedUnit : MonoBehaviour
     public bool TakeDamage(ref float damage, bool textFeedback = true, bool imgFeedback = true)
     {
         bool died = _character.TakeDamage(ref damage);
-        _info.SetRatioHP(Character.HealthPoints / Character.MaxHealth);
+        _info.SetHP(Character.HealthPoints, Character.MaxHealth);
         if (textFeedback) _feedback.DisplayFeedback("-" + damage.ToString());
         if (imgFeedback) _feedback.DisplayImageFeedback();
 
@@ -324,7 +362,7 @@ public class GridBasedUnit : MonoBehaviour
     public void Heal(ref float healAmount, bool feedback = true)
     {
         _character.Heal(ref healAmount);
-        _info.SetRatioHP(Character.HealthPoints / Character.MaxHealth);
+        _info.SetHP(Character.HealthPoints, Character.MaxHealth);
         if (feedback) _feedback.DisplayFeedback("+" + healAmount.ToString());
     }
 
@@ -362,5 +400,25 @@ public class GridBasedUnit : MonoBehaviour
     public void DontHighlightUnit()
     {
         _unitRenderer.material.SetInt(_highlightPropertyHash, 0);
+    }
+
+    public void DisplayOutline(bool display)
+    {
+        _outlineRenderer.enabled = _character.IsAlive && display;
+    }
+
+    public void SetOutlineColor(Color color)
+    {
+        _outlineRenderer.material.SetColor(_outlineColorPropertyHash, color);
+    }
+
+    public void InfoSetSmall(bool force)
+    {
+        _info.SetSmall(force);
+    }
+
+    public void InfoSetBig(bool force)
+    {
+        _info.SetBig(force);
     }
 }

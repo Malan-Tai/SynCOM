@@ -7,7 +7,7 @@ public class LongShot : BaseDuoAbility
     private AbilityStats _selfShotStats;
     private List<GridBasedUnit> _possibleTargets;
     private int _targetIndex = -1;
-    private int _selectionRange = 8;
+    private int _selectionRange = 20;
     public override string GetName()
     {
         return "Long Shot";
@@ -25,17 +25,26 @@ public class LongShot : BaseDuoAbility
         // The enemy cover used is the one of the _chosenAlly (don't worry there's a scientific explanation)
         if (_chosenAlly != null && _hoveredUnit != null)
         {
-            res += "\nAcc:" + _selfShotStats.GetAccuracy(_hoveredUnit, _chosenAlly.LinesOfSight[_hoveredUnit].cover) +
-                    "% | Crit:" + _selfShotStats.GetCritRate() +
-                    "% | Dmg:" + _selfShotStats.GetDamage();
+            res += "\nACC:" + (int)_selfShotStats.GetAccuracy(_hoveredUnit, _chosenAlly.LinesOfSight[_hoveredUnit].cover) +
+                    "% | CRIT:" + (int)_selfShotStats.GetCritRate() +
+                    "% | DMG:" + (int)_selfShotStats.GetDamage();
         }
         else if (_targetIndex >= 0 && _chosenAlly != null)
         {
             GridBasedUnit target = _possibleTargets[_targetIndex];
 
-            res += "\nAcc:" + _selfShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover) +
-                    "% | Crit:" + _selfShotStats.GetCritRate() +
-                    "% | Dmg:" + _selfShotStats.GetDamage();
+            res += "\nACC:" + (int)_selfShotStats.GetAccuracy(target, _chosenAlly.LinesOfSight[target].cover) +
+                    "% | CRIT:" + (int)_selfShotStats.GetCritRate() +
+                    "% | DMG:" + (int)_selfShotStats.GetDamage();
+        }
+        else if (_temporaryChosenAlly != null)
+        {
+            var temporarySelfShotStat = new AbilityStats(0, 0, 2f, 0, 0, _effector);
+            temporarySelfShotStat.UpdateWithEmotionModifiers(_temporaryChosenAlly);
+
+            res += "\nACC:" + (int)temporarySelfShotStat.GetAccuracy() +
+                    "% | CRIT:" + (int)temporarySelfShotStat.GetCritRate() +
+                    "% | DMG:" + (int)temporarySelfShotStat.GetDamage();
         }
 
         return res;
@@ -43,7 +52,7 @@ public class LongShot : BaseDuoAbility
 
     public override string GetAllyDescription()
     {
-        return "Indicate the position of an enemy to the Sniper, allowing them to shoot it even if they're out of range.";
+        return "Indicate the position of an enemy to the Sniper, allowing them to shoot the enemy as if from your point of view.";
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)
@@ -54,14 +63,13 @@ public class LongShot : BaseDuoAbility
     protected override void ChooseAlly()
     {
         _possibleTargets = new List<GridBasedUnit>();
-        var tempTargets = new GridBasedUnit[_effector.LinesOfSight.Count];
-        _effector.LinesOfSight.Keys.CopyTo(tempTargets, 0);
+        var tempTargets = new GridBasedUnit[_chosenAlly.LinesOfSight.Count];
+        _chosenAlly.LinesOfSight.Keys.CopyTo(tempTargets, 0);
 
         foreach (GridBasedUnit unit in tempTargets)
         {
-            float distanceToSelf = Vector2.Distance(unit.GridPosition, _effector.GridPosition);
             float distanceToAlly = Vector2.Distance(unit.GridPosition, _chosenAlly.GridPosition);
-            if (distanceToSelf <= _effector.Character.RangeShot && distanceToAlly <= _effector.Character.RangeShot && _chosenAlly.LinesOfSight.ContainsKey(unit))
+            if (distanceToAlly <= _chosenAlly.Character.RangeShot)
             {
                 _possibleTargets.Add(unit);
             }
@@ -91,7 +99,7 @@ public class LongShot : BaseDuoAbility
 
         bool changedUnitThisFrame = false;
 
-        if (Physics.Raycast(ray, out hitData, 1000))
+        if (!BlockingUIElement.IsUIHovered && Physics.Raycast(ray, out hitData, 1000))
         {
             var hitUnit = hitData.transform.GetComponent<EnemyUnit>();
 
@@ -142,9 +150,12 @@ public class LongShot : BaseDuoAbility
         {
             //SoundManager.PlaySound(SoundManager.Sound.RetentlessNeutral);
         }
+
         SoundManager.PlaySound(SoundManager.Sound.LongShot);
+        AbilityResult result = new AbilityResult();
         ShootResult selfResults = SelfShoot(target, _selfShotStats);
-        //HistoryConsole.AddEntry(EntryBuilder.GetDamageEntry(_effector, target, this, selfResults));
+        result.CopyShootResult(selfResults);
+        SendResultToHistoryConsole(result);
     }
 
     /// <summary>
@@ -152,7 +163,10 @@ public class LongShot : BaseDuoAbility
     /// </summary>
     protected override ShootResult SelfShoot(GridBasedUnit target, AbilityStats selfShotStats, bool alwaysHit = false, bool canCrit = true)
     {
-        if (StartAction(ActionTypes.Attack, _effector, _chosenAlly)) return new ShootResult(false, 0f, false); // TODO : fix this return
+        if (StartAction(ActionTypes.Attack, _effector, _chosenAlly))
+        {
+            return new ShootResult(true, false, 0f, false);
+        }
 
         int randShot = RandomEngine.Instance.Range(0, 100); // between 0 and 99
         int randCrit = RandomEngine.Instance.Range(0, 100);
@@ -164,23 +178,87 @@ public class LongShot : BaseDuoAbility
             if (canCrit && randCrit < selfShotStats.GetCritRate())
             {
                 AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage() * 1.5f, true, _chosenAlly);
-                return new ShootResult(true, selfShotStats.GetDamage() * 1.5f, true);
+                return new ShootResult(false, true, selfShotStats.GetDamage() * 1.5f, true);
             }
             else
             {
                 AttackDamage(_effector, target as EnemyUnit, selfShotStats.GetDamage(), false, _chosenAlly);
-                return new ShootResult(true, selfShotStats.GetDamage(), false);
+                return new ShootResult(false, true, selfShotStats.GetDamage(), false);
             }
         }
         else
         {
             AttackHitOrMiss(_effector, target as EnemyUnit, false, _chosenAlly);
-            return new ShootResult(false, 0f, false);
+            return new ShootResult(false, false, 0f, false);
         }
     }
 
     protected override void SendResultToHistoryConsole(AbilityResult result)
     {
-        // TODO
+        GridBasedUnit target = _possibleTargets[_targetIndex];
+
+        if (result.Cancelled)
+        {
+
+            HistoryConsole.Instance
+                .BeginEntry()
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+                .AddText(" cancelled ")
+                .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
+                .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+                .AddText(" with ")
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+                .AddText(" to do something else...");
+        }
+        else
+        {
+            HistoryConsole.Instance
+                .BeginEntry()
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+                .AddText(" indicated the position of ")
+                .OpenIconTag($"{_chosenAlly.LinesOfSight[target].cover}Cover").CloseTag()
+                .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag()
+                .AddText(" so that ")
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+                .AddText(" can use ")
+                .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
+                .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag();
+
+            if (result.Miss)
+            {
+                HistoryConsole.Instance
+                    .AddText(": he ")
+                    .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("missed").CloseTag();
+            }
+            else
+            {
+                string criticalText = result.Critical ? " critical" : "";
+
+                HistoryConsole.Instance
+                    .AddText(": he did ")
+                    .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage}{criticalText} damage").CloseTag();
+            }
+        }
+
+        HistoryConsole.Instance.Submit();
+    }
+
+    public override void ShowRanges(AllyUnit user)
+    {
+        GridMap map = CombatGameManager.Instance.GridMap;
+        List<Tile> range = new List<Tile>();
+
+        for (int i = 0; i < map.GridTileWidth; i++)
+        {
+            for (int j = 0; j < map.GridTileHeight; j++)
+            {
+                Vector2Int tile = new Vector2Int(i, j);
+                if ((tile - user.GridPosition).magnitude <= _selectionRange)
+                {
+                    range.Add(map[i, j]);
+                }
+            }
+        }
+        CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", range, true);
     }
 }

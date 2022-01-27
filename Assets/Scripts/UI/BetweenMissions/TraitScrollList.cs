@@ -30,7 +30,7 @@ public class TraitScrollList : MonoBehaviour
                 elem.gameObject.SetActive(true);
                 elem.Init();
                 float height = elem.SetTrait(traits[i]) + _offset;
-                elem.transform.localPosition = new Vector3(0, -currentHeight, 0);
+                elem.transform.localPosition = new Vector3(15, -currentHeight - 15, 0);
                 currentHeight += height;
             }
             i++;
@@ -41,13 +41,13 @@ public class TraitScrollList : MonoBehaviour
             TraitListElement newElem = Instantiate(_listElementPrefab, transform).GetComponent<TraitListElement>();
             newElem.Init();
             float height = newElem.SetTrait(traits[i]) + _offset;
-            newElem.transform.localPosition = new Vector3(0, -currentHeight, 0);
+            newElem.transform.localPosition = new Vector3(15, -currentHeight - 15, 0);
             currentHeight += height;
 
             i++;
         }
 
         RectTransform rect = GetComponent<RectTransform>();
-        rect.sizeDelta = new Vector2(rect.sizeDelta.x, currentHeight);
+        rect.sizeDelta = new Vector2(_listElementPrefab.sizeDelta.x - 7, currentHeight);
     }
 }

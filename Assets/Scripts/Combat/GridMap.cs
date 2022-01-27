@@ -24,9 +24,11 @@ public class GridMap : MonoBehaviour
     {
         get => new Vector3(_gridOrigin.x + GridWorldWidth / 2f, 0f, _gridOrigin.z + GridWorldHeight / 2f);
     }
+    public Vector3 GridOrigin { get => _gridOrigin; }
 
     private Tile[,] _map;
     private List<Vector2Int> _occupiedTiles = new List<Vector2Int>();
+    public List<Vector2Int> OccupiedTiles { get => _occupiedTiles; }
     private Vector3 _gridOrigin;
 
     public Tile this[Vector2Int u]
@@ -431,6 +433,22 @@ public class GridMap : MonoBehaviour
                     }
                 }
             }
+            if (end.y < start.y)
+            {
+                Tile tile = this[end.x, end.y - 1];
+                if (tile != null)
+                {
+                    corridor.Add(tile);
+                }
+            }
+            else
+            {
+                Tile tile = this[end.x, end.y + 1];
+                if (tile != null)
+                {
+                    corridor.Add(tile);
+                }
+            }
         }
         else if (start.y == end.y)
         {
@@ -445,6 +463,22 @@ public class GridMap : MonoBehaviour
                     {
                         corridor.Add(tile);
                     }
+                }
+            }
+            if (end.x < start.x)
+            {
+                Tile tile = this[end.x - 1, end.y];
+                if (tile != null)
+                {
+                    corridor.Add(tile);
+                }
+            }
+            else
+            {
+                Tile tile = this[end.x + 1, end.y];
+                if (tile != null)
+                {
+                    corridor.Add(tile);
                 }
             }
         }

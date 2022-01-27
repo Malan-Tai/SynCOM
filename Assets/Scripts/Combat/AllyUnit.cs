@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class AllyUnit : GridBasedUnit
 {
+    //[SerializeField]
+    private GameObject _selectUnitSpriteGO;
+
     private BaseAllyAbility _currentAbility = null;
     public BaseAllyAbility CurrentAbility { get { return _currentAbility; } }
 
@@ -15,6 +18,11 @@ public class AllyUnit : GridBasedUnit
     public delegate void EventStopUsingAbility();
     public static event EventStopUsingAbility OnStoppedUsingAbility;
 
+    private void Awake()
+    {
+        _selectUnitSpriteGO = transform.Find("SelectionSprite").gameObject;
+    }
+
     private new void Start()
     {
         base.Start();
@@ -24,6 +32,18 @@ public class AllyUnit : GridBasedUnit
     protected override bool IsEnemy()
     {
         return false;
+    }
+
+    private void OnEnable()
+    {
+        OnMoveStart += OnMoveStartFunc;
+        OnMoveFinish += OnMoveFinishFunc;
+    }
+
+    private void OnDisable()
+    {
+        OnMoveStart -= OnMoveStartFunc;
+        OnMoveFinish -= OnMoveFinishFunc;
     }
 
     public void UpdateEnemyVisibilities()
@@ -95,13 +115,39 @@ public class AllyUnit : GridBasedUnit
 
     public override void InitSprite()
     {
-        SpriteRenderer renderer = GetComponentInChildren<SpriteRenderer>();
-        renderer.sprite = AllyCharacter.GetSprite();
+        _unitRenderer.sprite = AllyCharacter.GetSprite();
+        transform.Find("DeadRenderer").GetComponent<SpriteRenderer>().sprite = GlobalGameManager.Instance.GetDeadAllySprite();
+    }
+
+    public void DisplayUnitSelectionTile(bool display)
+    {
+        _selectUnitSpriteGO.SetActive(display);
+    }
+
+    protected void OnMoveStartFunc(GridBasedUnit unit, Vector2Int finalPos)
+    {
+        if (unit == this && CombatGameManager.Instance.CurrentUnit == this)
+        {
+            DisplayUnitSelectionTile(false);
+        }
+    }
+
+    protected void OnMoveFinishFunc(GridBasedUnit unit)
+    {
+        if (unit == this && CombatGameManager.Instance.CurrentUnit == this)
+        {
+            DisplayUnitSelectionTile(true);
+        }
     }
 
     public override void MoveToCell(Vector2Int cell, bool eventOnEnd = false)
     {
-        base.MoveToCell(cell);
+        base.MoveToCell(cell, eventOnEnd);
         _info.SetCover(CombatGameManager.Instance.GridMap.GetBestCoverAt(cell));
+    }
+
+    public void UpdateInfoCover()
+    {
+        _info.SetCover(CombatGameManager.Instance.GridMap.GetBestCoverAt(GridPosition));
     }
 }

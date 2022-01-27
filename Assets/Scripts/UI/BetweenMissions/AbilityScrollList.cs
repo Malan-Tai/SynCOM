@@ -30,7 +30,7 @@ public class AbilityScrollList : MonoBehaviour
                 elem.gameObject.SetActive(true);
                 elem.Init();
                 float height = elem.SetAbility(abilities[i]) + _offset;
-                elem.transform.localPosition = new Vector3(0, -currentHeight, 0);
+                elem.transform.localPosition = new Vector3(15, -currentHeight - 15, 0);
                 currentHeight += height;
             }
             i++;
@@ -41,13 +41,13 @@ public class AbilityScrollList : MonoBehaviour
             AbilityListElement newElem = Instantiate(_listElementPrefab, transform).GetComponent<AbilityListElement>();
             newElem.Init();
             float height = newElem.SetAbility(abilities[i]) + _offset;
-            newElem.transform.localPosition = new Vector3(0, -currentHeight, 0);
+            newElem.transform.localPosition = new Vector3(15, -currentHeight - 15, 0);
             currentHeight += height;
 
             i++;
         }
 
         RectTransform rect = GetComponent<RectTransform>();
-        rect.sizeDelta = new Vector2(rect.sizeDelta.x, currentHeight);
+        rect.sizeDelta = new Vector2(_listElementPrefab.sizeDelta.x - 7, currentHeight);
     }
 }

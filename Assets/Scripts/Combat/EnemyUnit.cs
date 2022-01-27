@@ -81,8 +81,9 @@ public class EnemyUnit : GridBasedUnit
 
     public override void InitSprite()
     {
-        SpriteRenderer renderer = GetComponentInChildren<SpriteRenderer>();
-        renderer.sprite = GlobalGameManager.Instance.GetEnemySprite();
+        _unitRenderer.sprite = GlobalGameManager.Instance.GetEnemySprite();
+        _info.SetEnemy();
+        transform.Find("DeadRenderer").GetComponent<SpriteRenderer>().sprite = GlobalGameManager.Instance.GetDeadEnemySprite();
     }
 
     public override void NewTurn()

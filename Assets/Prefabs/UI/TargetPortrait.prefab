@@ -192,6 +192,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dc4b74386294ed42a968fa07aa04d3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _allyColor: {r: 1, g: 0.89411765, b: 0.7294118, a: 1}
+  _enemyColor: {r: 0.4669811, g: 0.47641507, b: 0.6226415, a: 1}
 --- !u!114 &4059697259955068773
 MonoBehaviour:
   m_ObjectHideFlags: 0
