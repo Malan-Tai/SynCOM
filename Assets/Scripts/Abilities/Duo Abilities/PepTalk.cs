@@ -52,12 +52,14 @@ public class PepTalk : BaseDuoAbility
     {
         HistoryConsole.Instance
             .BeginEntry()
-            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+            .AddText(_effector.Character.FirstName).CloseTag()
             .AddText(" used ")
             .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
             .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
             .AddText(" to strengthen ")
-            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+            .AddText(_chosenAlly.Character.FirstName).CloseTag()
             .AddText(" and himself for the next ")
             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("2 turns").CloseTag()
             .AddText(": gave ")

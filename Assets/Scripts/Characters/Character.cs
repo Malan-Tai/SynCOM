@@ -227,6 +227,11 @@ public class Character
         set { this._name = value; }
     }
 
+    public string FirstName
+    {
+        get { return _name.Split(' ')[0]; }  
+    }
+
     public bool TakeDamage(ref float damage)
     {
         foreach (Buff buff in _currentBuffs)

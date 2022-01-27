@@ -185,24 +185,28 @@ public class Devouring : BaseDuoAbility
         {
             HistoryConsole.Instance
                 .BeginEntry()
-                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_effector.Character.FirstName).CloseTag()
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" cancelled ").CloseTag()
                 .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
                 .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
                 .AddText(" with ")
-                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_chosenAlly.Character.FirstName).CloseTag()
                 .AddText(" to perform something else instead");
         }
         else
         {
             HistoryConsole.Instance
                 .BeginEntry()
-                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_effector.Character.FirstName).CloseTag()
                 .AddText(" performed ")
                 .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
                 .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
                 .AddText(" in front of ")
-                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_chosenAlly.Character.FirstName).CloseTag()
                 .AddText(":")
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{healCriticalText} healed").CloseTag()
                 .AddText(" themselves for ")
@@ -211,7 +215,8 @@ public class Devouring : BaseDuoAbility
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage}{damageCriticalText} damage").CloseTag()
                 .AddText(" to ")
                 .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover").CloseTag()
-                .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag();
+                .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(target.Character.FirstName).CloseTag();
         }
 
         HistoryConsole.Instance.Submit();

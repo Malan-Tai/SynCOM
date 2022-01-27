@@ -104,25 +104,30 @@ public class HealingRain : BaseDuoAbility
         {
             HistoryConsole.Instance
                 .BeginEntry()
-                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_effector.Character.FirstName).CloseTag()
                 .AddText(" tried to use ")
                 .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
                 .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
                 .AddText(" with ")
-                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_chosenAlly.Character.FirstName).CloseTag()
                 .AddText(" who ")
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("cancelled").CloseTag()
                 .AddText(" his action to do something else... ")
-                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name.Split(' ')[0]).CloseTag()
-                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($" still{criticalText} healed ").CloseTag();
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_effector.Character.FirstName).CloseTag()
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{criticalText} healed ").CloseTag();
         }
         else
         {
             HistoryConsole.Instance
                 .BeginEntry()
-                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_effector.Character.FirstName).CloseTag()
                 .AddText(" and ")
-                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_chosenAlly.Character.FirstName).CloseTag()
                 .AddText(" used ")
                 .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
                 .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
@@ -133,6 +138,11 @@ public class HealingRain : BaseDuoAbility
         List<GridBasedUnit> everyTarget = new List<GridBasedUnit>();
         everyTarget.AddRange(_allyTargets);
         everyTarget.AddRange(_enemyTargets);
+
+        if (everyTarget.Count == 0)
+        {
+            HistoryConsole.Instance.AddText("no one");
+        }
 
         for (int i = 0; i < everyTarget.Count; i++)
         {
@@ -148,15 +158,9 @@ public class HealingRain : BaseDuoAbility
                 }
             }
 
-            string name = everyTarget[i].Character.Name;
-            if (everyTarget[i].Character.Name == _effector.Character.Name || everyTarget[i].Character.Name == _chosenAlly.Character.Name)
-            {
-                name = name.Split(' ')[0];
-            }
-
             HistoryConsole.Instance
                 .OpenLinkTag(everyTarget[i].Character.Name, everyTarget[i], EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
-                .AddText(name).CloseTag()
+                .AddText(everyTarget[i].Character.FirstName).CloseTag()
                 .AddText(" for ")
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(result.HealList[i].ToString()).CloseTag();
         }
