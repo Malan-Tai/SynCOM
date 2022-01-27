@@ -146,7 +146,8 @@ public class ShieldAndStrike : BaseDuoAbility
 
         HistoryConsole.Instance
             .BeginEntry()
-            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag();
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+            .AddText(_effector.Character.FirstName).CloseTag();
 
         if (result.Cancelled)
         {
@@ -155,10 +156,10 @@ public class ShieldAndStrike : BaseDuoAbility
                 .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
                 .AddText(" with ")
                 .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
-                .AddText(_chosenAlly.Character.Name).CloseTag()
+                .AddText(_chosenAlly.Character.FirstName).CloseTag()
                 .AddText(" do do something else...")
                 .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
-                .AddText(_chosenAlly.Character.Name.Split(' ')[0]).CloseTag()
+                .AddText(_chosenAlly.Character.FirstName).CloseTag()
                 .AddText(" still shot and ");
         }
         else
@@ -168,7 +169,8 @@ public class ShieldAndStrike : BaseDuoAbility
                 .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
                 .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
                 .AddText(" to protect ")
-                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_chosenAlly.Character.FirstName).CloseTag()
                 .AddText(" who ");
         }
 
@@ -178,7 +180,8 @@ public class ShieldAndStrike : BaseDuoAbility
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("missed").CloseTag()
                 .AddText(" their shot on ")
                 .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover").CloseTag()
-                .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag();
+                .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(target.Character.FirstName).CloseTag();
         }
         else
         {
@@ -189,7 +192,8 @@ public class ShieldAndStrike : BaseDuoAbility
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.AllyDamage}{criticalText} damage").CloseTag()
                 .AddText(" to ")
                 .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover").CloseTag()
-                .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag();
+                .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(target.Character.FirstName).CloseTag();
         }
 
         HistoryConsole.Instance.Submit();

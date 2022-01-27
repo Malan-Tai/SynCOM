@@ -39,7 +39,8 @@ public class HunkerDown : BaseAllyAbility
     {
         HistoryConsole.Instance
             .BeginEntry()
-            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+            .AddText(_effector.Character.FirstName).CloseTag()
             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" hunkered down ").CloseTag()
             .Submit();
     }

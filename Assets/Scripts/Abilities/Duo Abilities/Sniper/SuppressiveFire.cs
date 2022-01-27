@@ -149,19 +149,20 @@ public class SuppressiveFire : BaseDuoAbility
             HistoryConsole.Instance
                 .BeginEntry()
                 .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
-                .AddText(_effector.Character.Name).CloseTag()
+                .AddText(_effector.Character.FirstName).CloseTag()
                 .AddText(" started to use ")
                 .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
                 .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
                 .AddText(" with ")
                 .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
-                .AddText(_chosenAlly.Character.Name).CloseTag()
+                .AddText(_chosenAlly.Character.FirstName).CloseTag()
                 .AddText(" but changed their mind and cancelled their action... ")
                 .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
-                .AddText(_chosenAlly.Character.Name.Split(' ')[0]).CloseTag()
+                .AddText(_chosenAlly.Character.FirstName).CloseTag()
                 .AddText(" still shot ")
                 .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover").CloseTag()
-                .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag();
+                .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(target.Character.FirstName).CloseTag();
 
             if (result.Miss)
             {
@@ -180,15 +181,17 @@ public class SuppressiveFire : BaseDuoAbility
         {
             HistoryConsole.Instance
                 .BeginEntry()
-                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_effector.Character.FirstName).CloseTag()
                 .AddText(" tried to use ")
                 .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
                 .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
                 .AddText(" with ")
-                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_chosenAlly.Character.FirstName).CloseTag()
                 .AddText(", ")
                 .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
-                .AddText(_effector.Character.Name.Split(' ')[0]).CloseTag();
+                .AddText(_effector.Character.FirstName).CloseTag();
 
             if (result.Miss)
             {
@@ -206,10 +209,11 @@ public class SuppressiveFire : BaseDuoAbility
 
             HistoryConsole.Instance
                 .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover").CloseTag()
-                .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag()
+                .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(target.Character.FirstName).CloseTag()
                 .AddText(" but ")
                 .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
-                .AddText(_chosenAlly.Character.Name.Split(' ')[0]).CloseTag()
+                .AddText(_chosenAlly.Character.FirstName).CloseTag()
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" cancelled ").CloseTag()
                 .AddText(" his shot to do something else...");
         }
@@ -217,17 +221,21 @@ public class SuppressiveFire : BaseDuoAbility
         {
             HistoryConsole.Instance
                .BeginEntry()
-               .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+               .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+               .AddText(_effector.Character.FirstName).CloseTag()
                .AddText(" and ")
-               .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+               .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+               .AddText(_chosenAlly.Character.FirstName).CloseTag()
                .AddText(" used ")
                .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
                .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
                .AddText(" on ")
                .OpenIconTag($"{_effector.LinesOfSight[target].cover}Cover").CloseTag()
-               .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(target.Character.Name).CloseTag()
+               .OpenLinkTag(target.Character.Name, target, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+               .AddText(target.Character.FirstName).CloseTag()
                .AddText(": ")
-               .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name.Split(' ')[0]).CloseTag();
+               .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+               .AddText(_effector.Character.FirstName).CloseTag();
 
             if (result.Miss)
             {
@@ -242,7 +250,8 @@ public class SuppressiveFire : BaseDuoAbility
 
             HistoryConsole.Instance
                 .AddText(" and ")
-                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name.Split(' ')[0]).CloseTag();
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_chosenAlly.Character.FirstName).CloseTag();
 
             if (result.AllyMiss)
             {
