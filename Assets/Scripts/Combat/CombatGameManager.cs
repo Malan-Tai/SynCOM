@@ -192,7 +192,7 @@ public class CombatGameManager : MonoBehaviour
         int enemyIndex = 1;
         foreach (EnemyUnit enemy in _enemyUnits)
         {
-            enemy.SetCharacter(new EnemyCharacter(6, 2, 65, 10, 15, 20, 4, 60));
+            enemy.SetCharacter(new EnemyCharacter(15, 10, 65, 10, 15, 20, 4, 60));
             enemy.Character.Name = $"Enemy {enemyIndex++}";
         }
 
@@ -522,9 +522,9 @@ public class CombatGameManager : MonoBehaviour
 
     public void AddBarricadeAt(Vector2Int pos, bool rotate)
     {
-        var unit = Instantiate(_barricadePrefab).GetComponent<GridBasedUnit>();
-        unit.transform.position = _gridMap.GridToWorld(pos, 0f);
-        if (rotate) unit.transform.eulerAngles += new Vector3(0, 90, 0);
+        var barricade = Instantiate(_barricadePrefab);
+        barricade.transform.position = _gridMap.GridToWorld(pos, 0f);
+        if (rotate) barricade.transform.eulerAngles += new Vector3(0, 90, 0);
     }
 
 #if UNITY_EDITOR

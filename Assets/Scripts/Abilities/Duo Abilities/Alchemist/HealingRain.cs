@@ -166,7 +166,7 @@ public class HealingRain : BaseDuoAbility
     public override string GetAllyDescription()
     {
         string res = "You shoot the vial midair with you expert precision. If you succeed, " +
-                     "the grenade benefits from an increased explosion radius and efficiency.";
+                     "the vial benefits from an increased healing radius and efficiency.";
         if (_chosenAlly != null)
         {
             res += "\nACC: " + (int)_allyShotStats.GetAccuracy() + "%";

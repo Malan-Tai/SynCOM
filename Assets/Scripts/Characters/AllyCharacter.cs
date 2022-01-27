@@ -162,6 +162,9 @@ public class AllyCharacter : Character
         instance.AddMandatoryTraits(characterClass);
         instance.AddRandomTrait(characterClass);
 
+        instance._maxHealth = Mathf.Max(instance._maxHealth, 1);
+        instance._healthPoints = instance._maxHealth;
+
         return instance;
     }
 

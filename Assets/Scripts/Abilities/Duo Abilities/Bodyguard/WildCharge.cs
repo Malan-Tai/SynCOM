@@ -98,22 +98,22 @@ public class WildCharge : BaseDuoAbility
 
         for (int n = 1; n <= _radius; n++)
         {
-            if (map[x + n, y].IsWalkable) _possibleTargetsTiles.Add(map[x + n, y]);
+            if (map[x + n, y].IsWalkable && !map.OccupiedTiles.Contains(new Vector2Int(x + n, y))) _possibleTargetsTiles.Add(map[x + n, y]);
             else break;
         }
         for (int n = 1; n <= _radius; n++)
         {
-            if (map[x - n, y].IsWalkable) _possibleTargetsTiles.Add(map[x - n, y]);
+            if (map[x - n, y].IsWalkable && !map.OccupiedTiles.Contains(new Vector2Int(x - n, y))) _possibleTargetsTiles.Add(map[x - n, y]);
             else break;
         }
         for (int n = 1; n <= _radius; n++)
         {
-            if (map[x, y + n].IsWalkable) _possibleTargetsTiles.Add(map[x, y + n]);
+            if (map[x, y + n].IsWalkable && !map.OccupiedTiles.Contains(new Vector2Int(x, y + n))) _possibleTargetsTiles.Add(map[x, y + n]);
             else break;
         }
         for (int n = 1; n <= _radius; n++)
         {
-            if (map[x, y - n].IsWalkable) _possibleTargetsTiles.Add(map[x, y - n]);
+            if (map[x, y - n].IsWalkable && !map.OccupiedTiles.Contains(new Vector2Int(x, y - n))) _possibleTargetsTiles.Add(map[x, y - n]);
             else break;
         }
         CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", _possibleTargetsTiles, false);

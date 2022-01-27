@@ -96,6 +96,7 @@ public class DwarfTossing : BaseDuoAbility
             {
                 Vector2Int tile = new Vector2Int(i, j);
                 if (map[tile].IsWalkable &&
+                    !map.OccupiedTiles.Contains(tile) &&
                     (tile - _effector.GridPosition).magnitude <= _throwingRadius &&
                     (tile - _chosenAlly.GridPosition).magnitude <= _chosenAlly.AllyCharacter.RangeShot)
                 {

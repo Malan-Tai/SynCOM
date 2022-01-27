@@ -26,18 +26,18 @@ public class BasicShot : BaseAllyAbility
         string res = "Shoot at the target.";
         if (_hoveredUnit != null)
         {
-            res += "\nAcc:" + _selfShotStats.GetAccuracy(_hoveredUnit, _effector.LinesOfSight[_hoveredUnit].cover) + // (_effector.Character.Accuracy - _hoveredUnit.Character.GetDodge(_effector.LinesOfSight[_hoveredUnit].cover)) +
-                    "% | Crit:" + _selfShotStats.GetCritRate() + // + _effector.Character.CritChances +
-                    "% | Dmg:" + _selfShotStats.GetDamage();// _effector.Character.Damage;
+            res += "\nACC:" + (int)_selfShotStats.GetAccuracy(_hoveredUnit, _effector.LinesOfSight[_hoveredUnit].cover) + // (_effector.Character.Accuracy - _hoveredUnit.Character.GetDodge(_effector.LinesOfSight[_hoveredUnit].cover)) +
+                    "% | CRIT:" + (int)_selfShotStats.GetCritRate() + // + _effector.Character.CritChances +
+                    "% | DMG:" + (int)_selfShotStats.GetDamage();// _effector.Character.Damage;
         }
         else if (_targetIndex >= 0)
         {
             GridBasedUnit target = _possibleTargets[_targetIndex];
             if (target == null) Debug.Log("BLIP BLOUP");
 
-            res += "\nAcc:" + _selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover) + //(_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover)) +
-                    "% | Crit:" + _selfShotStats.GetCritRate() + // + _effector.Character.CritChances +
-                    "% | Dmg:" + _selfShotStats.GetDamage();// _effector.Character.Damage;
+            res += "\nACC:" + (int)_selfShotStats.GetAccuracy(target, _effector.LinesOfSight[target].cover) + //(_effector.Character.Accuracy - target.Character.GetDodge(_effector.LinesOfSight[target].cover)) +
+                    "% | CRIT:" + (int)_selfShotStats.GetCritRate() + // + _effector.Character.CritChances +
+                    "% | DMG:" + (int)_selfShotStats.GetDamage();// _effector.Character.Damage;
         }
 
         return res;

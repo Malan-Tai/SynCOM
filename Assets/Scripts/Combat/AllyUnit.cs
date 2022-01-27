@@ -145,4 +145,9 @@ public class AllyUnit : GridBasedUnit
         base.MoveToCell(cell, eventOnEnd);
         _info.SetCover(CombatGameManager.Instance.GridMap.GetBestCoverAt(cell));
     }
+
+    public void UpdateInfoCover()
+    {
+        _info.SetCover(CombatGameManager.Instance.GridMap.GetBestCoverAt(GridPosition));
+    }
 }
