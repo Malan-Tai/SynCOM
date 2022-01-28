@@ -7,9 +7,6 @@ using UnityEngine.UI;
 public class DisplayHistoryConsoleButton : MonoBehaviour
 {
     [SerializeField] private bool _startHidden = true;
-    [SerializeField] private Image _iconImage;
-    [SerializeField] private Sprite _shownIconSprite;
-    [SerializeField] private Sprite _hiddenIconSprite;
 
 
     private void Start()
