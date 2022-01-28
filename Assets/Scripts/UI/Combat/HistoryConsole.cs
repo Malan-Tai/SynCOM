@@ -22,6 +22,8 @@ public class HistoryConsole : MonoBehaviour
     private readonly Stack<ConsoleTag> _tagStack = new Stack<ConsoleTag>();
     private readonly Dictionary<string, LinkTagInfo> _newLinksInfo = new Dictionary<string, LinkTagInfo>();
 
+    private Animator _consoleAnimator;
+
     protected enum ConsoleTag
     {
         Color,
@@ -38,13 +40,15 @@ public class HistoryConsole : MonoBehaviour
     {
         if (_instance == null) _instance = this;
         else Destroy(this);
+
+        _consoleAnimator = GetComponent<Animator>();
     }
     #endregion
 
 
     public static void Display(bool display)
     {
-        _instance._consoleRootGO.SetActive(display);
+        _instance._consoleAnimator.SetTrigger(display ? "Show" : "Hide");
 
         if (display)
         {
