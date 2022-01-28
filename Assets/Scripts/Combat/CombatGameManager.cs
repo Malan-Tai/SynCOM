@@ -127,6 +127,8 @@ public class CombatGameManager : MonoBehaviour
         _characterSheet.InitEventsFromCombat();
 
         IsAllyTurn = true;
+
+        CurrentUnit.DisplayUnitSelectionTile(true);
     }
 
     private void InitCharacters()
@@ -389,6 +391,8 @@ public class CombatGameManager : MonoBehaviour
 
         _currentUnitIndex = 0;
         SelectControllableUnit(0);
+
+        CurrentUnit.DisplayUnitSelectionTile(true);
     }
 
     public void UIConfirmAbility()
