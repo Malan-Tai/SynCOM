@@ -531,6 +531,19 @@ public class CombatGameManager : MonoBehaviour
         if (rotate) barricade.transform.eulerAngles += new Vector3(0, 90, 0);
     }
 
+    public GridBasedUnit GetUnitFromCharacter(Character character)
+    {
+        foreach (GridBasedUnit unit in _allAllyUnits)
+        {
+            if (unit.Character == character) return unit;
+        }
+        foreach (GridBasedUnit unit in _enemyUnits)
+        {
+            if (unit.Character == character) return unit;
+        }
+        return null;
+    }
+
 #if UNITY_EDITOR
     public void TestKillAllAllies()
     {

@@ -121,7 +121,6 @@ public class Character
         _movementPoints = movementPoints;
         _weigth = weight;
         _rangeShot = rangeShot;
-
     }
 
 

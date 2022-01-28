@@ -18,6 +18,8 @@ public class GlobalGameManager : MonoBehaviour
 
             currentSquad = new AllyCharacter[] { null, null, null, null };
             GenerateCharacters();
+
+            InCombat = false;
         }
         else
         {
@@ -50,6 +52,8 @@ public class GlobalGameManager : MonoBehaviour
     private Sprite _enemyPortrait;
     [SerializeField]
     private Sprite _deadEnemySprite;
+
+    public bool InCombat { get; set; }
 
     private void GenerateCharacters()
     {
@@ -159,11 +163,13 @@ public class GlobalGameManager : MonoBehaviour
 
     public void StartCurrentMission()
     {
+        InCombat = true;
         CombatGameManager.OnMissionEnd += OnCurrentMissionEnd;
     }
 
     private void OnCurrentMissionEnd(CombatGameManager.MissionEndEventArgs missionEndEventArgs)
     {
+        InCombat = false;
         if (missionEndEventArgs.Success)
         {
             Debug.Log(CurrentMission.moneyReward);
