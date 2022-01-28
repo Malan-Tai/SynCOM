@@ -246,16 +246,9 @@ public abstract class BaseAllyAbility : BaseAbility
     }
 
     public abstract void ShowRanges(AllyUnit user);
-    //public virtual void ShowRanges(AllyUnit user) { }
 
     public void HideRanges()
     {
-        //CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
-        //CombatGameManager.Instance.TileDisplay.HideTileZone("BonusDamageZone");
-        //CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
-        //CombatGameManager.Instance.TileDisplay.HideTileZone("HealZone");
-        //CombatGameManager.Instance.TileDisplay.HideTileZone("BonusHealZone");
-
         CombatGameManager.Instance.UpdateReachableTiles();
     }
 }
@@ -324,7 +317,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                     .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
                     .AddText(" to shoot them instead, dealing ")
                     .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{shootResult.Damage}{criticalText} damage").CloseTag()
-                    .Submit();
+                    .Submit(1);
                 break;
 
             case ChangeActionTypes.Positive:
@@ -356,7 +349,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{berserkerHeal} health").CloseTag()
                             .AddText(" by hurting themself for ")
                             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{dmg} damage").CloseTag()
-                            .Submit();
+                            .Submit(1);
 
                         break;
 
@@ -377,7 +370,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                                 .AddText(" their action with ")
                                 .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
                                 .AddText(" to protect them with a barricade")
-                                .Submit();
+                                .Submit(1);
                         }
 
                         break;
@@ -399,7 +392,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("CRIT +50%").CloseTag()
                             .AddText(" | ")
                             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("ACC +50%").CloseTag()
-                            .Submit();
+                            .Submit(1);
 
                         break;
 
@@ -422,7 +415,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                             .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
                             .AddText(" to heal them instead for ")
                             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{alchemistHeal} health").CloseTag()
-                            .Submit();
+                            .Submit(1);
 
                         break;
 
@@ -448,7 +441,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                             .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
                             .AddText(" to protect them instead: ")
                             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"+{(int)((1 - protect.GetProtection()) * 100)}%").CloseTag()
-                            .Submit();
+                            .Submit(1);
 
                         break;
 
@@ -465,7 +458,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("MOV +2").CloseTag()
                             .AddText(" | ")
                             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("DODG +30%").CloseTag()
-                            .Submit();
+                            .Submit(1);
 
                         break;
 
