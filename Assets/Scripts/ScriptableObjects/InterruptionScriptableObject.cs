@@ -10,6 +10,7 @@ public class InterruptionScriptableObject : ScriptableObject
     public float time;
     public string text;
     public Sprite sprite;
+    public SoundManager.Sound sound;
 
     public InterruptionParameters ToParameters(GridBasedUnit currentUnit, GridBasedUnit sourceUnit, bool onCurrent = true)
     {
@@ -19,6 +20,7 @@ public class InterruptionScriptableObject : ScriptableObject
             time = time,
             text = text,
             sprite = sprite,
+            sound = sound,
             target = onCurrent ? currentUnit : sourceUnit,
             position = onCurrent ? sourceUnit.GridPosition : currentUnit.GridPosition
         };

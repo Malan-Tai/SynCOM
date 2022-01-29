@@ -31,6 +31,10 @@ public abstract class Interruption
                 interruption = new FocusTargetForGivenTimeAndFireImageFeedback();
                 break;
 
+            case InterruptionType.FocusTargetAndPlaySound:
+                interruption = new FocusTargetAndPlaySound();
+                break;
+
             default:
                 return null;
         }

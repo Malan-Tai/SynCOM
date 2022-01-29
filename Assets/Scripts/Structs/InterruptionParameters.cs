@@ -14,6 +14,7 @@ public struct InterruptionParameters
 
     public string text;
     public Sprite sprite;
+    public SoundManager.Sound sound;
 }
 
 public enum PathfindingMoveType

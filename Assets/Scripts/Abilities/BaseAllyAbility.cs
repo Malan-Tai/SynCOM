@@ -162,7 +162,7 @@ public abstract class BaseAllyAbility : BaseAbility
 
     protected abstract void EnemyTargetingInput();
 
-    protected void FinalizeAbility(bool executed)
+    protected virtual void FinalizeAbility(bool executed)
     {
         _needsFinalization = true;
         _executed = executed;
@@ -262,6 +262,9 @@ public abstract class BaseDuoAbility : BaseAllyAbility
     private List<AllyUnit> _possibleAllies = new List<AllyUnit>();
 
     protected bool _freeForDuo = false;
+
+    protected SoundManager.Sound _effectorSound = SoundManager.Sound.None;
+    protected SoundManager.Sound _allySound = SoundManager.Sound.None;
 
     #region Relationship events
     protected override void HandleRelationshipEventResult(RelationshipEventsResult result)
@@ -550,16 +553,26 @@ public abstract class BaseDuoAbility : BaseAllyAbility
             RequestTargetsUpdate(_possibleAllies);
             RequestTargetSymbolUpdate(_temporaryChosenAlly);
         }
-        /*else Caused some cursed nullpointer exception because it wasn't updating UI
+    }
+
+    protected override void FinalizeAbility(bool executed)
+    {
+        base.FinalizeAbility(executed);
+
+        if (_executed)
         {
-            FinalizeAbility(false);
-        }*/
+            EndExecutedDuo(_effector, _chosenAlly);
+
+            var param = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetAndPlaySound, target = _effector, time = Interruption.FOCUS_TARGET_TIME, sound = _effectorSound };
+            _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(param));
+
+            param = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetAndPlaySound, target = _chosenAlly, time = Interruption.FOCUS_TARGET_TIME, sound = _allySound };
+            _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(param));
+        }
     }
 
     protected override void EndAbility()
     {
-        if (_executed) EndExecutedDuo(_effector, _chosenAlly);
-
         if (_chosenAlly != null) _chosenAlly.StopUsingAbilityAsAlly(_executed && !_freeForDuo);
 
         _temporaryChosenAlly?.DisplayUnitSelectionTile(false);
