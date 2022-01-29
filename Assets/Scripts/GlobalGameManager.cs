@@ -73,7 +73,7 @@ public class GlobalGameManager : MonoBehaviour
 
         for (int i = 0; i < allCharacters.Count; i++)
         {
-            int j = RandomEngine.Instance.Range(0, allCharacters.Count);
+            int j = RandomEngine.Instance.Range(0, allCharacters.Count - 1);
             j = j >= i ? j + 1 : j;
             RandomizeRelationship(i, j, 2);
 

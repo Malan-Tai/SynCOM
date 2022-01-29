@@ -5,10 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/CheatedLobby.unity
     guid: f5918070b89203242ba5e0e4f4b2495e
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/NotCheatedLobby.unity
     guid: b3b143f42e9c1d64393c22868392a1f5
   - enabled: 1
