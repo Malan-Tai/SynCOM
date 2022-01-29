@@ -22,7 +22,7 @@ public class HistoryConsole : MonoBehaviour
     private readonly StringBuilder _entryBuilder = new StringBuilder();
     private readonly Stack<ConsoleTag> _tagStack = new Stack<ConsoleTag>();
     private readonly Dictionary<string, LinkTagInfo> _newLinksInfo = new Dictionary<string, LinkTagInfo>();
-    private readonly FastPriorityQueue<SavedEntry> _savedEntries = new FastPriorityQueue<SavedEntry>(10);
+    private readonly FastPriorityQueue<SavedEntry> _savedEntries = new FastPriorityQueue<SavedEntry>(20);
 
     private Animator _consoleAnimator;
 

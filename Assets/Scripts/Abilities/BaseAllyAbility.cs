@@ -48,11 +48,11 @@ public abstract class BaseAllyAbility : BaseAbility
     }
 
     #region RelationshipEvents
-    protected override void HandleRelationshipEventResult(RelationshipEventsResult result)
-    {
-        base.HandleRelationshipEventResult(result);
-        _free = result.freeActionForSource;
-    }
+    //protected override void HandleRelationshipEventResult(RelationshipEventsResult result)
+    //{
+    //    base.HandleRelationshipEventResult(result);
+    //    _free = result.freeActionForSource;
+    //}
 
     protected void AttackHitOrMiss(AllyUnit source, EnemyUnit target, bool hit, AllyUnit duo = null)
     {
@@ -268,7 +268,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
     {
         base.HandleRelationshipEventResult(result);
 
-        _freeForDuo = _freeForDuo || result.freeActionForDuo;
+        //_freeForDuo = _freeForDuo || result.freeActionForDuo;
 
         if (_possibleAllies.Contains(result.stolenDuoUnit)) _chosenAlly = result.stolenDuoUnit;
     }
@@ -279,6 +279,7 @@ public abstract class BaseDuoAbility : BaseAllyAbility
         RelationshipEventsResult invertedEventResult = RelationshipEventsManager.Instance.BeginDuo(duo, source);
 
         HandleRelationshipEventResult(eventResult); // TODO : what happens if both interrupt ?
+        HandleRelationshipEventResult(invertedEventResult);
 
         return eventResult.refusedDuo || invertedEventResult.refusedDuo;
     }
@@ -290,7 +291,14 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
     protected void EndExecutedDuo(AllyUnit source, AllyUnit duo)
     {
-        HandleRelationshipEventResult(RelationshipEventsManager.Instance.EndExecutedDuo(source, duo));
+        RelationshipEventsResult eventResult = RelationshipEventsManager.Instance.EndExecutedDuo(source, duo);
+        RelationshipEventsResult invertedEventResult = RelationshipEventsManager.Instance.EndExecutedDuo(duo, source);
+
+        _free       = _free         || eventResult.freeActionForSource || invertedEventResult.freeActionForDuo;
+        _freeForDuo = _freeForDuo   || eventResult.freeActionForDuo || invertedEventResult.freeActionForSource;
+
+        HandleRelationshipEventResult(eventResult); // TODO : what happens if both interrupt ?
+        HandleRelationshipEventResult(invertedEventResult);
     }
 
     /// <summary>
@@ -308,16 +316,22 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                 ShootResult shootResult;
                 changedAction = AllyOnAllyShot(source, duo, out shootResult);
 
-                string criticalText = shootResult.Critical ? " critical" : "";
-                HistoryConsole.Instance
-                    .BeginEntry()
-                    .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.Name).CloseTag()
-                    .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" angrily cancelled ").CloseTag()
-                    .AddText(" their action with ")
-                    .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
-                    .AddText(" to shoot them instead, dealing ")
-                    .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{shootResult.Damage}{criticalText} damage").CloseTag()
-                    .Submit(1);
+                if (changedAction)
+                {
+                    var param = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback, target = source, time = Interruption.FOCUS_TARGET_TIME, text = "Attack Ally" };
+                    _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(param));
+
+                    string criticalText = shootResult.Critical ? " critical" : "";
+                    HistoryConsole.Instance
+                        .BeginEntry()
+                        .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.Name).CloseTag()
+                        .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" angrily cancelled ").CloseTag()
+                        .AddText(" their action with ")
+                        .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
+                        .AddText(" to shoot them instead, dealing ")
+                        .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{shootResult.Damage}{criticalText} damage").CloseTag()
+                        .Submit(1);
+                }
                 break;
 
             case ChangeActionTypes.Positive:
@@ -331,6 +345,9 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                             changedAction = false;
                             break;
                         }
+
+                        var param = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback, target = source, time = Interruption.FOCUS_TARGET_TIME, text = "Cancel Attack" };
+                        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(param));
 
                         float dmg = 10;
                         source.TakeDamage(ref dmg);
@@ -359,6 +376,9 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
                         if (changedAction)
                         {
+                            param = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback, target = source, time = Interruption.FOCUS_TARGET_TIME, text = "Cancel Attack" };
+                            _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(param));
+
                             CombatGameManager.Instance.ChangeTileCover(toCover, EnumCover.Half);
                             CombatGameManager.Instance.AddBarricadeAt(toCover.Coords, duo.GridPosition.y != toCover.Coords.y);
                             duo.UpdateInfoCover();
@@ -376,6 +396,9 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                         break;
 
                     case EnumClasses.Sniper: // buffs other
+
+                        param = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback, target = source, time = Interruption.FOCUS_TARGET_TIME, text = "Cancel Attack" };
+                        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(param));
                         AddBuff(duo, new Buff("Assisted", 4, duo, 0.2f, 0.5f, 0.5f, 0, 0, 0));
 
                         HistoryConsole.Instance
@@ -403,6 +426,9 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                             break;
                         }
 
+                        param = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback, target = source, time = Interruption.FOCUS_TARGET_TIME, text = "Cancel Attack" };
+                        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(param));
+
                         heal = new AbilityStats(0, 0, 0, 0, 5, source);
                         heal.UpdateWithEmotionModifiers(duo);
                         float alchemistHeal = Heal(source, duo, heal.GetHeal(), null);
@@ -426,7 +452,9 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                             break;
                         }
 
-                        var param = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetUntilEndOfMovement, target = source, position = duo.GridPosition };
+                        param = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback, target = source, time = Interruption.FOCUS_TARGET_TIME, text = "Cancel Attack" };
+                        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(param));
+                        param = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetUntilEndOfMovement, target = source, position = duo.GridPosition };
                         _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(param));
 
                         var protect = new AbilityStats(0, 0, 0, 0.5f, 0, source);
@@ -446,6 +474,9 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                         break;
 
                     case EnumClasses.Smuggler: // buffs other
+
+                        param = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback, target = source, time = Interruption.FOCUS_TARGET_TIME, text = "Cancel Attack" };
+                        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(param));
                         AddBuff(duo, new Buff("Sprint", 4, duo, 0, 0, 0, 0, 2, 0.3f));
 
                         HistoryConsole.Instance
