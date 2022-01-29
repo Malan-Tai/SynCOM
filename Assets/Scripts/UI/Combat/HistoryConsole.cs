@@ -24,6 +24,8 @@ public class HistoryConsole : MonoBehaviour
     private readonly Dictionary<string, LinkTagInfo> _newLinksInfo = new Dictionary<string, LinkTagInfo>();
     private readonly FastPriorityQueue<SavedEntry> _savedEntries = new FastPriorityQueue<SavedEntry>(10);
 
+    private Animator _consoleAnimator;
+
     protected enum ConsoleTag
     {
         Color,
@@ -45,13 +47,15 @@ public class HistoryConsole : MonoBehaviour
     {
         if (_instance == null) _instance = this;
         else Destroy(this);
+
+        _consoleAnimator = GetComponent<Animator>();
     }
     #endregion
 
 
     public static void Display(bool display)
     {
-        _instance._consoleRootGO.SetActive(display);
+        _instance._consoleAnimator.SetTrigger(display ? "Show" : "Hide");
 
         if (display)
         {
