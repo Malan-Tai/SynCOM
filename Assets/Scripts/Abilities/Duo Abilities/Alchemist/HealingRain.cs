@@ -257,8 +257,9 @@ public class HealingRain : BaseDuoAbility
         {
             // J'affiche la zone ciblée, en mettant à jour les tiles (ce sont celles situées à portée de la tile ciblée)
 
-            var temporaryTileCoord = CombatGameManager.Instance.GridMap.WorldToGrid(hitData.point);
-            if (!_possibleTargetsTiles.Contains(CombatGameManager.Instance.GridMap[temporaryTileCoord]))
+            var map = CombatGameManager.Instance.GridMap;
+            var temporaryTileCoord = map.WorldToGrid(hitData.point);
+            if (!_possibleTargetsTiles.Contains(map[temporaryTileCoord]))
             {
                 //Debug.Log("Taget out of range");
                 return;
@@ -290,9 +291,9 @@ public class HealingRain : BaseDuoAbility
                 //        + " + | Effector : " + _effector.GridPosition);
 
                 _areaOfEffectTiles.Clear();
-                _areaOfEffectTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(_tileCoord, _explosionBaseRadius);
+                _areaOfEffectTiles = map.GetAreaOfEffectDiamond(_tileCoord, _explosionBaseRadius);
                 _areaOfEffectBonusTiles.Clear();
-                _areaOfEffectBonusTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(_tileCoord, _explosionImprovedRadius);
+                _areaOfEffectBonusTiles = map.GetAreaOfEffectDiamond(_tileCoord, _explosionImprovedRadius);
 
                 CombatGameManager.Instance.TileDisplay.DisplayTileZone("BonusHealZone", _areaOfEffectBonusTiles, false);
                 CombatGameManager.Instance.TileDisplay.DisplayTileZone("HealZone", _areaOfEffectTiles, false);
@@ -313,20 +314,30 @@ public class HealingRain : BaseDuoAbility
                 foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
                 {
                     //if ((enemy.GridPosition - tileCoord).magnitude <= _radius) //That's a circle not a diamond...
-                    if (Mathf.Abs(enemy.GridPosition.x - _tileCoord.x) + Mathf.Abs(enemy.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
+                    //if (Mathf.Abs(enemy.GridPosition.x - _tileCoord.x) + Mathf.Abs(enemy.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
+                    if (_areaOfEffectTiles.Contains(map[enemy.GridPosition]))
                     {
                         _enemyTargets.Add(enemy);
                         enemy.HighlightUnit(Color.green);
+                    }
+                    else if (_areaOfEffectBonusTiles.Contains(map[enemy.GridPosition]))
+                    {
+                        enemy.HighlightUnit(new Color(0.75f, 1, 0));
                     }
                 }
                 foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
                 {
                     //if ((ally.GridPosition - tileCoord).magnitude <= _radius) //That's a circle not a diamond...
                     //Debug.Log(Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y));
-                    if (Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
+                    //if (Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
+                    if (_areaOfEffectTiles.Contains(map[ally.GridPosition]))
                     {
                         _allyTargets.Add(ally);
                         ally.HighlightUnit(Color.green);
+                    }
+                    else if (_areaOfEffectBonusTiles.Contains(map[ally.GridPosition]))
+                    {
+                        ally.HighlightUnit(new Color(0.75f, 1, 0));
                     }
                 }
             }
