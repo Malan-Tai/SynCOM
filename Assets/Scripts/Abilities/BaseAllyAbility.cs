@@ -318,9 +318,6 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
                 if (changedAction)
                 {
-                    var param = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback, target = source, time = Interruption.FOCUS_TARGET_TIME, text = "Attack Ally" };
-                    _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(param));
-
                     string criticalText = shootResult.Critical ? " critical" : "";
                     HistoryConsole.Instance
                         .BeginEntry()
@@ -814,6 +811,9 @@ public abstract class BaseDuoAbility : BaseAllyAbility
             shootResult = new ShootResult(true, false, 0f, false);
             return false;
         }
+
+        var param = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetForGivenTimeAndFireTextFeedback, target = shooterUnit, time = Interruption.FOCUS_TARGET_TIME, text = "Attack Ally" };
+        _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(param));
 
         int randShot = RandomEngine.Instance.Range(0, 100); // between 0 and 99
         int randCrit = RandomEngine.Instance.Range(0, 100);

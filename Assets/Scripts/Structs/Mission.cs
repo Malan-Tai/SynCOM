@@ -17,7 +17,7 @@ public struct Mission
         /// TODO : change formulas for actually balanced formulas
         Mission mission;
         mission.difficulty = RandomEngine.Instance.Range(minDiff, maxDiff + 1);
-        mission.moneyReward = RandomEngine.Instance.Range(mission.difficulty * 10, mission.difficulty * 15);
+        mission.moneyReward = 0; //RandomEngine.Instance.Range(mission.difficulty * 10, mission.difficulty * 15);
         if (mission.difficulty >= 4 && RandomEngine.Instance.Range(0, 10) < mission.difficulty)
         {
             /// TODO : random character with some levels
