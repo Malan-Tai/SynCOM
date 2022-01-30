@@ -5,6 +5,17 @@ using UnityEngine.UI;
 
 public class GridBasedUnit : MonoBehaviour
 {
+    protected static readonly string[] _deathTexts = new string[]
+    {
+        "died",
+        "succumbed",
+        "left this world",
+        "lost their life",
+        "perished",
+        "didn't make it",
+        "passed away",
+    };
+
     [SerializeField] private MeshRenderer _outlineRenderer;
     [SerializeField] private Material _outlineMaterial;
 
@@ -384,6 +395,11 @@ public class GridBasedUnit : MonoBehaviour
 
     private void Die()
     {
+        HistoryConsole.Instance
+            .BeginEntry()
+            .OpenLinkTag(Character.Name, this, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+            .AddText($" {_deathTexts[RandomEngine.Instance.Range(0, _deathTexts.Length)]}");
+
         if (OnDeath != null) OnDeath(this);
     }
 
