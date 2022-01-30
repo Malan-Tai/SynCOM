@@ -183,6 +183,7 @@ public class BetweenMissionsGameManager : MonoBehaviour
     private void SetSelectedSquadUnitAndUpdateFrozenUnitsInList(int squadIndex)
     {
         _selectedSquadUnit = squadIndex;
+        ChooseSquadUnit(null);
         _missionUnitList.FreezeCharacters(GlobalGameManager.Instance.currentSquad);
     }
 

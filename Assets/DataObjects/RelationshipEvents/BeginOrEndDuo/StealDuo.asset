@@ -31,7 +31,7 @@ MonoBehaviour:
   killSteal: 0
   startedAction: 0
   effectType: 5
-  interrupts: 1
+  interrupts: 0
   reciprocal: 0
   admirationChange: 0
   trustChange: 0
@@ -42,7 +42,7 @@ MonoBehaviour:
   sympathyChangeSTC: 0
   chance: 0.25
   interruptionsOnCurrent:
-  - {fileID: 11400000, guid: 4766f0301e0289f4f903d7335ea3c389, type: 2}
+  - {fileID: 11400000, guid: cef8496786380a142a20722249d571d9, type: 2}
   interruptionsOnSource: []
   freeAction: 0
   freeActionForDuo: 0

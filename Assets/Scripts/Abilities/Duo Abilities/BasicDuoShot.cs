@@ -96,14 +96,14 @@ public class BasicDuoShot : BaseDuoAbility
         SoundManager.PlaySound(SoundManager.Sound.BasicShotGatling);
         SoundManager.PlaySound(SoundManager.Sound.BasicShotSniper);
 
-        if (relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Sympathy) < 0 || relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Admiration) < 0 || relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Trust) < 0)
-        {
-            SoundManager.PlaySound(SoundManager.Sound.RetentlessFoe);
-        }
-        else
-        {
-            SoundManager.PlaySound(SoundManager.Sound.RetentlessNeutral);
-        }
+        //if (relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Sympathy) < 0 || relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Admiration) < 0 || relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Trust) < 0)
+        //{
+        //    SoundManager.PlaySound(SoundManager.Sound.RetentlessFoe);
+        //}
+        //else
+        //{
+        //    SoundManager.PlaySound(SoundManager.Sound.RetentlessNeutral);
+        //}
         
         ShootResult selfResults = SelfShoot(target, _selfShotStats);
         ShootResult allyResults = AllyShoot(target, _allyShotStats);
@@ -174,7 +174,7 @@ public class BasicDuoShot : BaseDuoAbility
             {
                 HistoryConsole.Instance
                     .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" missed ").CloseTag()
-                    .AddText(" his shot on ");
+                    .AddText(" their shot on ");
             }
             else
             {
@@ -192,7 +192,7 @@ public class BasicDuoShot : BaseDuoAbility
                 .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
                 .AddText(_chosenAlly.Character.FirstName).CloseTag()
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" cancelled ").CloseTag()
-                .AddText(" his shot to do something else...");
+                .AddText(" their shot to do something else...");
         }
         else
         {

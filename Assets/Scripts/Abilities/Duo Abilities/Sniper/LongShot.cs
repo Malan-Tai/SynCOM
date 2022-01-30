@@ -232,7 +232,7 @@ public class LongShot : BaseDuoAbility
             if (result.Miss)
             {
                 HistoryConsole.Instance
-                    .AddText(": he ")
+                    .AddText(": they ")
                     .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("missed").CloseTag();
             }
             else
@@ -240,7 +240,7 @@ public class LongShot : BaseDuoAbility
                 string criticalText = result.Critical ? " critical" : "";
 
                 HistoryConsole.Instance
-                    .AddText(": he did ")
+                    .AddText(": they did ")
                     .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage}{criticalText} damage").CloseTag();
             }
         }

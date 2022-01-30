@@ -64,6 +64,12 @@ public class GridBasedUnit : MonoBehaviour
     private int _outlineSizePropertyHash;
 
     protected InfoCanvas _info;
+    protected SelectionSprite _selectUnitSprite;
+
+    protected void Awake()
+    {
+        _selectUnitSprite = transform.Find("SelectionSprite").GetComponent<SelectionSprite>();
+    }
 
     protected void Start()
     {

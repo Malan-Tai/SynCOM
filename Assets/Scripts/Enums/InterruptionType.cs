@@ -4,5 +4,6 @@ public enum InterruptionType
     FocusTargetForGivenTime,
     FocusTargetUntilEndOfMovement,
     FocusTargetForGivenTimeAndFireTextFeedback,
-    FocusTargetForGivenTimeAndFireImageFeedback
+    FocusTargetForGivenTimeAndFireImageFeedback,
+    FocusTargetAndPlaySound
 }

@@ -127,6 +127,8 @@ public class CombatGameManager : MonoBehaviour
         _characterSheet.InitEventsFromCombat();
 
         IsAllyTurn = true;
+
+        CurrentUnit.DisplayUnitSelectionTile(true);
     }
 
     private void InitCharacters()
@@ -192,7 +194,7 @@ public class CombatGameManager : MonoBehaviour
         int enemyIndex = 1;
         foreach (EnemyUnit enemy in _enemyUnits)
         {
-            enemy.SetCharacter(new EnemyCharacter(15, 10, 65, 10, 15, 20, 4, 60));
+            enemy.SetCharacter(new EnemyCharacter(15, 11, 65, 10, 15, 20, 4, 60));
             enemy.Character.Name = $"Enemy{enemyIndex++}";
         }
 
@@ -290,6 +292,10 @@ public class CombatGameManager : MonoBehaviour
             UpdateVisibilities();
 
             if (OnUnitSelected != null) OnUnitSelected(_currentUnitIndex);
+        }
+        else
+        {
+            _currentUnitIndex = -1;
         }
     }
 
@@ -389,6 +395,8 @@ public class CombatGameManager : MonoBehaviour
 
         _currentUnitIndex = 0;
         SelectControllableUnit(0);
+
+        if (_currentUnitIndex > -1) CurrentUnit.DisplayUnitSelectionTile(true);
     }
 
     public void UIConfirmAbility()
@@ -525,6 +533,19 @@ public class CombatGameManager : MonoBehaviour
         var barricade = Instantiate(_barricadePrefab);
         barricade.transform.position = _gridMap.GridToWorld(pos, 0f);
         if (rotate) barricade.transform.eulerAngles += new Vector3(0, 90, 0);
+    }
+
+    public GridBasedUnit GetUnitFromCharacter(Character character)
+    {
+        foreach (GridBasedUnit unit in _allAllyUnits)
+        {
+            if (unit.Character == character) return unit;
+        }
+        foreach (GridBasedUnit unit in _enemyUnits)
+        {
+            if (unit.Character == character) return unit;
+        }
+        return null;
     }
 
 #if UNITY_EDITOR
