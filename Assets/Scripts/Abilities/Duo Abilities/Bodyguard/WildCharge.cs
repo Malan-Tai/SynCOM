@@ -183,6 +183,7 @@ public class WildCharge : BaseDuoAbility
     {
         var parametersLaunchSelf = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetUntilEndOfMovement, target = _effector, position = _tileCoord, pathfinding = PathfindingMoveType.Linear };
         _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parametersLaunchSelf));
+        AbilityResult result = new AbilityResult();
 
         // Calculate arrival coordinates of ally
         Vector2Int allyArrival = _tileCoord;
@@ -206,8 +207,10 @@ public class WildCharge : BaseDuoAbility
         SoundManager.PlaySound(SoundManager.Sound.WildCharge);
         foreach (EnemyUnit target in _targets)
         {
-            AttackDamage(_effector, target, _allyShotStats.GetDamage(), false);
+            result.DamageList.Add(AttackDamage(_effector, target, _allyShotStats.GetDamage(), false));
         }
+
+        SendResultToHistoryConsole(result);
     }
 
     public override bool CanExecute()
@@ -217,7 +220,47 @@ public class WildCharge : BaseDuoAbility
 
     protected override void SendResultToHistoryConsole(AbilityResult result)
     {
-        // TODO
+        HistoryConsole.Instance
+                   .BeginEntry()
+                   .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                   .AddText(_effector.Character.FirstName).CloseTag()
+                   .AddText(" and ")
+                   .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                   .AddText(_chosenAlly.Character.FirstName).CloseTag()
+                   .AddText(" used ")
+                   .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
+                   .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+                   .AddText(" protecting them for ")
+                   .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"PROT: {(int)((1 - _selfProtStats.GetProtection()) * 100)}%").CloseTag()
+                   .AddText(" and dealing ");
+
+        if (_targets.Count == 0)
+        {
+            HistoryConsole.Instance.AddText("damage to no one");
+        }
+
+        for (int i = 0; i < _targets.Count; i++)
+        {
+            if (i != 0)
+            {
+                if (i == _targets.Count - 1)
+                {
+                    HistoryConsole.Instance.AddText(" and ");
+                }
+                else
+                {
+                    HistoryConsole.Instance.AddText(", ");
+                }
+            }
+
+            HistoryConsole.Instance
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(result.DamageList[i].ToString()).CloseTag()
+                .AddText(" to ")
+                .OpenLinkTag(_targets[i].Character.Name, _targets[i], EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_targets[i].Character.FirstName).CloseTag();
+        }
+
+        HistoryConsole.Instance.Submit();
     }
 
     protected override void EndAbility()
