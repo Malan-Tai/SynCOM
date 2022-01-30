@@ -1350,8 +1350,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4213d026070513f4f9afa4dd17a91ff1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveSpeed: {x: 10, y: 19.7}
-  _scaleSpeed: 0.94
+  _targetPosition: {x: -10, y: -10}
+  _targetScale: 0.27
+  _time: 1
 --- !u!114 &63783552
 MonoBehaviour:
   m_ObjectHideFlags: 0

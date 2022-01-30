@@ -6,8 +6,9 @@ public class Objective : MonoBehaviour
 {
     private RectTransform _rect;
 
-    [SerializeField] private Vector2 _moveSpeed;
-    [SerializeField] private float _scaleSpeed;
+    [SerializeField] private Vector2 _targetPosition = new Vector2(-25, -25);
+    [SerializeField] private float _targetScale = 0.25f;
+    [SerializeField, Range(0.1f, 5f)] private float _time = 1f;
 
     public delegate void DoneScalingEvent();
     public static event DoneScalingEvent OnScalingDone;
@@ -25,14 +26,23 @@ public class Objective : MonoBehaviour
     private IEnumerator ReduceCoroutine()
     {
         yield return new WaitForSeconds(1.5f);
+        WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
 
-        while (_rect.anchoredPosition.x < -25 && _rect.anchoredPosition.y < -25)
+        float progress = 0f;
+        Vector2 startPosition = _rect.anchoredPosition;
+        Vector3 startScale = _rect.localScale;
+        Vector3 targetScale = new Vector3(_targetScale, _targetScale, 1f);
+        while (progress < 1f)
         {
-            _rect.anchoredPosition += _moveSpeed;
-            _rect.localScale *= _scaleSpeed;
+            _rect.anchoredPosition = Vector2.Lerp(startPosition, _targetPosition, progress);
+            _rect.localScale = Vector3.Lerp(startScale, targetScale, progress);
 
-            yield return new WaitForSeconds(0.05f);
+            progress += Time.fixedDeltaTime / _time;
+            yield return _waitForFixedUpdate;
         }
+
+        _rect.anchoredPosition = _targetPosition;
+        _rect.localScale = targetScale;
 
         if (OnScalingDone != null) OnScalingDone();
     }
