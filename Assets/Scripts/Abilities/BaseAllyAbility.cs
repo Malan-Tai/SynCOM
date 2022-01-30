@@ -641,6 +641,15 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                 invertedRelationship.CheckedDuoRefusal = true;
                 invertedRelationship.AcceptedDuo = false;
 
+                HistoryConsole.Instance
+                    .BeginEntry()
+                    .OpenLinkTag(_temporaryChosenAlly.Character.Name, _temporaryChosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                    .AddText(" refused to perform ")
+                    .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
+                    .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+                    .AddText(" with ")
+                    .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER);
+
                 if (_possibleAllies.Count <= 1) FinalizeAbility(false);
                 else
                 {
