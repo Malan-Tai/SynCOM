@@ -10,6 +10,8 @@ public class CombatInputController : MonoBehaviour
     private bool _canInitInput;
     private bool _canInput;
 
+    [SerializeField] private GameObject _pauseMenu;
+
     private void Awake()
     {
         _canInitInput = false;
@@ -30,6 +32,12 @@ public class CombatInputController : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape) && CombatGameManager.Instance.CurrentAbility == null)
+        {
+            _canInput = _pauseMenu.activeSelf;
+            _pauseMenu.SetActive(!_pauseMenu.activeSelf);
+        }
+
         if (!_canInput || !_canInitInput || CombatGameManager.Instance.ControllableUnits.Count <= 0) return;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -176,10 +184,6 @@ public class CombatInputController : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Alpha9))
         {
             CombatGameManager.Instance.CurrentUnit.UseAbility(8);
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha0))
-        {
-            CombatGameManager.Instance.CurrentUnit.UseAbility(new WildCharge());
         }
     }
 }
