@@ -6,8 +6,8 @@ public class Objective : MonoBehaviour
 {
     private RectTransform _rect;
 
-    [SerializeField] private Vector2 _targetPosition = new Vector2(-25, -25);
-    [SerializeField] private float _targetScale = 0.25f;
+    [SerializeField] private Vector2 _targetPosition = new Vector2(-10f, -10f);
+    [SerializeField] private float _targetScale = 0.27f;
     [SerializeField, Range(0.1f, 5f)] private float _time = 1f;
 
     public delegate void DoneScalingEvent();
