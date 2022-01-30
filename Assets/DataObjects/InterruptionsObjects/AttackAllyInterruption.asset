@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: AttackAllyInterruption
   m_EditorClassIdentifier: 
   interruptionType: 3
-  time: 1
+  time: 1.5
   text: Attack Duo
   sprite: {fileID: 0}
+  sound: 0

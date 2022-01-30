@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: RefuseDuoInterruption
   m_EditorClassIdentifier: 
   interruptionType: 3
-  time: 1
+  time: 1.5
   text: Refuse Duo
   sprite: {fileID: 0}
+  sound: 0
