@@ -18,6 +18,8 @@ public class GlobalGameManager : MonoBehaviour
 
             currentSquad = new AllyCharacter[] { null, null, null, null };
             GenerateCharacters();
+
+            InCombat = false;
         }
         else
         {
@@ -51,6 +53,8 @@ public class GlobalGameManager : MonoBehaviour
     [SerializeField]
     private Sprite _deadEnemySprite;
 
+    public bool InCombat { get; set; }
+
     private void GenerateCharacters()
     {
         allCharacters = new List<AllyCharacter>
@@ -66,6 +70,29 @@ public class GlobalGameManager : MonoBehaviour
         {
             character.InitializeRelationships(allCharacters);
         }
+
+        for (int i = 0; i < allCharacters.Count; i++)
+        {
+            int j = RandomEngine.Instance.Range(0, allCharacters.Count - 1);
+            j = j >= i ? j + 1 : j;
+            RandomizeRelationship(i, j, 2);
+
+            for (int k = 0; k < allCharacters.Count; k++)
+            {
+                if (k == i || k == j) continue;
+                RandomizeRelationship(i, k);
+            }
+        }
+    }
+
+    private void RandomizeRelationship(int self, int ally, int level = 1)
+    {
+        Relationship relationship = allCharacters[self].Relationships[allCharacters[ally]];
+        EnumSentiment sentiment = (EnumSentiment)RandomEngine.Instance.Range(0, 3);
+        int sign = RandomEngine.Instance.Range(0, 2) == 0 ? -1 : 1;
+
+        for (int i = 0; i < level; i++)
+            relationship.IncreaseSentiment(sentiment, 100 * sign);
     }
 
     public void SetDefaultSquad()
@@ -159,11 +186,13 @@ public class GlobalGameManager : MonoBehaviour
 
     public void StartCurrentMission()
     {
+        InCombat = true;
         CombatGameManager.OnMissionEnd += OnCurrentMissionEnd;
     }
 
     private void OnCurrentMissionEnd(CombatGameManager.MissionEndEventArgs missionEndEventArgs)
     {
+        InCombat = false;
         if (missionEndEventArgs.Success)
         {
             Debug.Log(CurrentMission.moneyReward);

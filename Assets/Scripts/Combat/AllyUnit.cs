@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class AllyUnit : GridBasedUnit
 {
-    //[SerializeField]
-    private GameObject _selectUnitSpriteGO;
-
     private BaseAllyAbility _currentAbility = null;
     public BaseAllyAbility CurrentAbility { get { return _currentAbility; } }
 
@@ -18,9 +15,11 @@ public class AllyUnit : GridBasedUnit
     public delegate void EventStopUsingAbility();
     public static event EventStopUsingAbility OnStoppedUsingAbility;
 
-    private void Awake()
+    private new void Awake()
     {
-        _selectUnitSpriteGO = transform.Find("SelectionSprite").gameObject;
+        base.Awake();
+        _selectUnitSprite.SetEnabled(true);
+        _selectUnitSprite.SetAlly();
     }
 
     private new void Start()
@@ -34,17 +33,17 @@ public class AllyUnit : GridBasedUnit
         return false;
     }
 
-    private void OnEnable()
-    {
-        OnMoveStart += OnMoveStartFunc;
-        OnMoveFinish += OnMoveFinishFunc;
-    }
+    //private void OnEnable()
+    //{
+    //    OnMoveStart += OnMoveStartFunc;
+    //    OnMoveFinish += OnMoveFinishFunc;
+    //}
 
-    private void OnDisable()
-    {
-        OnMoveStart -= OnMoveStartFunc;
-        OnMoveFinish -= OnMoveFinishFunc;
-    }
+    //private void OnDisable()
+    //{
+    //    OnMoveStart -= OnMoveStartFunc;
+    //    OnMoveFinish -= OnMoveFinishFunc;
+    //}
 
     public void UpdateEnemyVisibilities()
     {
@@ -85,6 +84,8 @@ public class AllyUnit : GridBasedUnit
         if (executed)
         {
             CombatGameManager.Instance.FinishAllyUnitTurn(this);
+            _info.SetGreyedBar();
+            _selectUnitSprite.SetEnabled(false);
         }
 
         if (OnStoppedUsingAbility != null) OnStoppedUsingAbility();
@@ -98,12 +99,17 @@ public class AllyUnit : GridBasedUnit
         if (executed)
         {
             CombatGameManager.Instance.FinishAllyUnitTurn(this, true);
+            _info.SetGreyedBar();
+            _selectUnitSprite.SetEnabled(false);
         }
     }
 
     public override void NewTurn()
     {
         _movesLeft = AllyCharacter.MovementPoints;
+        _info.SetColoredBar();
+        _selectUnitSprite.SetAlly();
+        _selectUnitSprite.SetEnabled(true);
         NeedsPathfinderUpdate();
         UpdateLineOfSights(!IsEnemy());
 
@@ -119,26 +125,27 @@ public class AllyUnit : GridBasedUnit
         transform.Find("DeadRenderer").GetComponent<SpriteRenderer>().sprite = GlobalGameManager.Instance.GetDeadAllySprite();
     }
 
-    public void DisplayUnitSelectionTile(bool display)
+    public void DisplayUnitSelectionTile(bool selected)
     {
-        _selectUnitSpriteGO.SetActive(display);
+        if (selected) _selectUnitSprite.SetAllySelected();
+        else _selectUnitSprite.SetAlly();
     }
 
-    protected void OnMoveStartFunc(GridBasedUnit unit, Vector2Int finalPos)
-    {
-        if (unit == this && CombatGameManager.Instance.CurrentUnit == this)
-        {
-            DisplayUnitSelectionTile(false);
-        }
-    }
+    //protected void OnMoveStartFunc(GridBasedUnit unit, Vector2Int finalPos)
+    //{
+    //    if (unit == this && CombatGameManager.Instance.CurrentUnit == this)
+    //    {
+    //        DisplayUnitSelectionTile(false);
+    //    }
+    //}
 
-    protected void OnMoveFinishFunc(GridBasedUnit unit)
-    {
-        if (unit == this && CombatGameManager.Instance.CurrentUnit == this)
-        {
-            DisplayUnitSelectionTile(true);
-        }
-    }
+    //protected void OnMoveFinishFunc(GridBasedUnit unit)
+    //{
+    //    if (unit == this && CombatGameManager.Instance.CurrentUnit == this)
+    //    {
+    //        DisplayUnitSelectionTile(true);
+    //    }
+    //}
 
     public override void MoveToCell(Vector2Int cell, bool eventOnEnd = false)
     {

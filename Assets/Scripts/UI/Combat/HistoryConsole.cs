@@ -4,6 +4,7 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Priority_Queue;
 
 public class HistoryConsole : MonoBehaviour
 {
@@ -21,6 +22,9 @@ public class HistoryConsole : MonoBehaviour
     private readonly StringBuilder _entryBuilder = new StringBuilder();
     private readonly Stack<ConsoleTag> _tagStack = new Stack<ConsoleTag>();
     private readonly Dictionary<string, LinkTagInfo> _newLinksInfo = new Dictionary<string, LinkTagInfo>();
+    private readonly FastPriorityQueue<SavedEntry> _savedEntries = new FastPriorityQueue<SavedEntry>(20);
+
+    private Animator _consoleAnimator;
 
     protected enum ConsoleTag
     {
@@ -29,6 +33,11 @@ public class HistoryConsole : MonoBehaviour
         Icon
     }
 
+    private class SavedEntry : FastPriorityQueueNode
+    {
+        public string text;
+        public Dictionary<string, LinkTagInfo> linksInfo;
+    }
 
     #region Singleton
     public static HistoryConsole Instance { get => _instance; }
@@ -38,13 +47,15 @@ public class HistoryConsole : MonoBehaviour
     {
         if (_instance == null) _instance = this;
         else Destroy(this);
+
+        _consoleAnimator = GetComponent<Animator>();
     }
     #endregion
 
 
     public static void Display(bool display)
     {
-        _instance._consoleRootGO.SetActive(display);
+        _instance._consoleAnimator.SetTrigger(display ? "Show" : "Hide");
 
         if (display)
         {
@@ -253,7 +264,8 @@ public class HistoryConsole : MonoBehaviour
     /// <summary>
     /// Send the started entry to the console
     /// </summary>
-    public void Submit()
+    /// <param name="priority">The priority of the entry. The smaller the priority, the sooner it will be dispalyed. If zero, displays all saved entries afterward.</param>
+    public void Submit(int priority = 0)
     {
         if (!_editingEntry)
         {
@@ -268,31 +280,56 @@ public class HistoryConsole : MonoBehaviour
             CloseAllOpenedTags();
         }
 
-        TMP_Text textObject = Instantiate(_entryTemplate, _entriesParent);
-        if (_newLinksInfo.Count != 0)
+        // create the entry
+        var newEntry = new SavedEntry();
+        newEntry.text = _entryBuilder.ToString();
+        newEntry.linksInfo = new Dictionary<string, LinkTagInfo>();
+        foreach (KeyValuePair<string, LinkTagInfo> linkInfoKVP in _newLinksInfo)
         {
-            HistoryLinkedLine line = textObject.gameObject.AddComponent<HistoryLinkedLine>();
-
-            foreach (KeyValuePair<string, LinkTagInfo> linkInfoKVP in _newLinksInfo)
-            {
-                line.LinksInfo.Add(linkInfoKVP.Key, linkInfoKVP.Value);
-
-                if (!_linkActions.ContainsKey(linkInfoKVP.Key))
-                {
-                    _linkActions.Add(linkInfoKVP.Key, () => {
-                        CombatGameManager.Instance.Camera.SwitchParenthood(linkInfoKVP.Value.Unit);
-                    });
-                }
-            }
+            newEntry.linksInfo.Add(linkInfoKVP.Key, linkInfoKVP.Value);
         }
 
-        textObject.text = _entryBuilder.ToString();
-        Canvas.ForceUpdateCanvases();
-        _consoleScrollRect.verticalNormalizedPosition = 0f;
+        // save the entry
+        _savedEntries.Enqueue(newEntry, priority);
+        if (priority == 0)
+        {
+            // if it has priority 0, display it and all saved entries;
+            SubmitSavedEntries();
+        }
 
         _entryBuilder.Clear();
         _tagStack.Clear();
         _newLinksInfo.Clear();
         _editingEntry = false;
+    }
+
+    private void SubmitSavedEntries()
+    {
+        while (_savedEntries.Count > 0)
+        {
+            SavedEntry entry = _savedEntries.Dequeue();
+
+            TMP_Text textObject = Instantiate(_entryTemplate, _entriesParent);
+            if (entry.linksInfo.Count != 0)
+            {
+                HistoryLinkedLine line = textObject.gameObject.AddComponent<HistoryLinkedLine>();
+
+                foreach (KeyValuePair<string, LinkTagInfo> linkInfoKVP in entry.linksInfo)
+                {
+                    line.LinksInfo.Add(linkInfoKVP.Key, linkInfoKVP.Value);
+
+                    if (!_linkActions.ContainsKey(linkInfoKVP.Key))
+                    {
+                        _linkActions.Add(linkInfoKVP.Key, () => {
+                            CombatGameManager.Instance.Camera.SwitchParenthood(linkInfoKVP.Value.Unit);
+                        });
+                    }
+                }
+            }
+
+            textObject.text = entry.text;
+        }
+        Canvas.ForceUpdateCanvases();
+        _consoleScrollRect.verticalNormalizedPosition = 0f;
     }
 }

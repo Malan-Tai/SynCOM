@@ -24,7 +24,6 @@ public class SoundAssets : MonoBehaviour
             return;
         }
         instance = this;
-        DontDestroyOnLoad(this.gameObject);
     }
  
 }

@@ -136,8 +136,9 @@ public class GrenadeTossEngineer : BaseDuoAbility
         {
             // J'affiche la zone ciblée, en mettant à jour les tiles (ce sont celles situées à portée de la tile ciblée)
 
-            var temporaryTileCoord = CombatGameManager.Instance.GridMap.WorldToGrid(hitData.point);
-            if (!_possibleTargetsTiles.Contains(CombatGameManager.Instance.GridMap[temporaryTileCoord]))
+            var map = CombatGameManager.Instance.GridMap;
+            var temporaryTileCoord = map.WorldToGrid(hitData.point);
+            if (!_possibleTargetsTiles.Contains(map[temporaryTileCoord]))
             {
                 //Debug.Log("Taget out of range");
                 return;
@@ -169,9 +170,9 @@ public class GrenadeTossEngineer : BaseDuoAbility
                 //        + " + | Effector : " + _effector.GridPosition);
 
                 _areaOfEffectTiles.Clear();
-                _areaOfEffectTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(_tileCoord, _explosionBaseRadius);
+                _areaOfEffectTiles = map.GetAreaOfEffectDiamond(_tileCoord, _explosionBaseRadius);
                 _areaOfEffectBonusTiles.Clear();
-                _areaOfEffectBonusTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(_tileCoord, _explosionImprovedRadius);
+                _areaOfEffectBonusTiles = map.GetAreaOfEffectDiamond(_tileCoord, _explosionImprovedRadius);
 
                 CombatGameManager.Instance.TileDisplay.DisplayTileZone("BonusDamageZone", _areaOfEffectBonusTiles, false);
                 CombatGameManager.Instance.TileDisplay.DisplayTileZone("DamageZone", _areaOfEffectTiles, false);
@@ -194,20 +195,31 @@ public class GrenadeTossEngineer : BaseDuoAbility
                 foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
                 {
                     //if ((enemy.GridPosition - tileCoord).magnitude <= _radius) //That's a circle not a diamond...
-                    if (Mathf.Abs(enemy.GridPosition.x - _tileCoord.x) + Mathf.Abs(enemy.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
+                    //if (Mathf.Abs(enemy.GridPosition.x - _tileCoord.x) + Mathf.Abs(enemy.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
+                    if (_areaOfEffectTiles.Contains(map[enemy.GridPosition]))
                     {
                         _targets.Add(enemy);
                         enemy.HighlightUnit(Color.red);
+                    }
+
+                    else if (_areaOfEffectBonusTiles.Contains(map[enemy.GridPosition]))
+                    {
+                        enemy.HighlightUnit(new Color(1, 0.5f, 0));
                     }
                 }
                 foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
                 {
                     //if ((ally.GridPosition - tileCoord).magnitude <= _radius) //That's a circle not a diamond...
                     //Debug.Log(Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y));
-                    if ( Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
+                    //if ( Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
+                    if (_areaOfEffectTiles.Contains(map[ally.GridPosition]))
                     {
                         _allyTargets.Add(ally);
                         ally.HighlightUnit(Color.red);
+                    }
+                    else if (_areaOfEffectBonusTiles.Contains(map[ally.GridPosition]))
+                    {
+                        ally.HighlightUnit(new Color(1, 0.5f, 0));
                     }
                 }
 
@@ -278,34 +290,47 @@ public class GrenadeTossEngineer : BaseDuoAbility
         {
             HistoryConsole.Instance
                 .BeginEntry()
-                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_effector.Character.FirstName).CloseTag()
                 .AddText(" tried to use ")
                 .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
                 .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
                 .AddText(" with ")
-                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_chosenAlly.Character.FirstName).CloseTag()
                 .AddText(" who ")
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("cancelled").CloseTag()
-                .AddText(" his action to do something else... ")
-                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name.Split(' ')[0]).CloseTag()
-                .AddText(" still did ");
+                .AddText(" their action to do something else... ")
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_effector.Character.FirstName).CloseTag();
         }
         else
         {
             HistoryConsole.Instance
                 .BeginEntry()
-                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_effector.Character.FirstName).CloseTag()
                 .AddText(" and ")
-                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_chosenAlly.Character.FirstName).CloseTag()
                 .AddText(" used ")
                 .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
                 .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
-                .AddText(": did ");
+                .AddText(": ");
         }
 
         List<GridBasedUnit> everyTarget = new List<GridBasedUnit>();
         everyTarget.AddRange(_targets);
         everyTarget.AddRange(_allyTargets);
+
+        if (everyTarget.Count == 0)
+        {
+            HistoryConsole.Instance.AddText("damaged no one");
+        }
+        else
+        {
+            HistoryConsole.Instance.AddText("did ");
+        }
 
         for (int i = 0; i < everyTarget.Count; i++)
         {
@@ -321,17 +346,11 @@ public class GrenadeTossEngineer : BaseDuoAbility
                 }
             }
 
-            string name = everyTarget[i].Character.Name;
-            if (everyTarget[i].Character.Name == _effector.Character.Name || everyTarget[i].Character.Name == _chosenAlly.Character.Name)
-            {
-                name = name.Split(' ')[0];
-            }
-
             HistoryConsole.Instance
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(result.DamageList[i].ToString()).CloseTag()
                 .AddText(" to ")
                 .OpenLinkTag(everyTarget[i].Character.Name, everyTarget[i], EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
-                .AddText(name).CloseTag();
+                .AddText(everyTarget[i].Character.FirstName).CloseTag();
         }
 
         HistoryConsole.Instance.Submit();

@@ -36,10 +36,12 @@ public class Slap : BaseDuoAbility
     {
         HistoryConsole.Instance
             .BeginEntry()
-            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+            .AddText(_effector.Character.FirstName).CloseTag()
             .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
             .AddText(" slapped ")
-            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+            .AddText(_chosenAlly.Character.FirstName).CloseTag()
             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" dealing ").CloseTag()
             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{result.Damage} damage").CloseTag()
             .Submit();

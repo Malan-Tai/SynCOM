@@ -41,7 +41,8 @@ MonoBehaviour:
   trustChangeSTC: 0
   sympathyChangeSTC: 0
   chance: 0.2
-  interruptionsOnCurrent: []
+  interruptionsOnCurrent:
+  - {fileID: 11400000, guid: 5053264df7f72fc47b9bffe87d2d5fab, type: 2}
   interruptionsOnSource: []
   freeAction: 0
   freeActionForDuo: 0

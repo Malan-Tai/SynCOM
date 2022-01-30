@@ -104,25 +104,30 @@ public class HealingRain : BaseDuoAbility
         {
             HistoryConsole.Instance
                 .BeginEntry()
-                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_effector.Character.FirstName).CloseTag()
                 .AddText(" tried to use ")
                 .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
                 .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
                 .AddText(" with ")
-                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_chosenAlly.Character.FirstName).CloseTag()
                 .AddText(" who ")
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("cancelled").CloseTag()
-                .AddText(" his action to do something else... ")
-                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name.Split(' ')[0]).CloseTag()
-                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($" still{criticalText} healed ").CloseTag();
+                .AddText(" their action to do something else... ")
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_effector.Character.FirstName).CloseTag()
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{criticalText} healed ").CloseTag();
         }
         else
         {
             HistoryConsole.Instance
                 .BeginEntry()
-                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.Name).CloseTag()
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_effector.Character.FirstName).CloseTag()
                 .AddText(" and ")
-                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.Name).CloseTag()
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_chosenAlly.Character.FirstName).CloseTag()
                 .AddText(" used ")
                 .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
                 .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
@@ -133,6 +138,11 @@ public class HealingRain : BaseDuoAbility
         List<GridBasedUnit> everyTarget = new List<GridBasedUnit>();
         everyTarget.AddRange(_allyTargets);
         everyTarget.AddRange(_enemyTargets);
+
+        if (everyTarget.Count == 0)
+        {
+            HistoryConsole.Instance.AddText("no one");
+        }
 
         for (int i = 0; i < everyTarget.Count; i++)
         {
@@ -148,15 +158,9 @@ public class HealingRain : BaseDuoAbility
                 }
             }
 
-            string name = everyTarget[i].Character.Name;
-            if (everyTarget[i].Character.Name == _effector.Character.Name || everyTarget[i].Character.Name == _chosenAlly.Character.Name)
-            {
-                name = name.Split(' ')[0];
-            }
-
             HistoryConsole.Instance
                 .OpenLinkTag(everyTarget[i].Character.Name, everyTarget[i], EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
-                .AddText(name).CloseTag()
+                .AddText(everyTarget[i].Character.FirstName).CloseTag()
                 .AddText(" for ")
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(result.HealList[i].ToString()).CloseTag();
         }
@@ -253,8 +257,9 @@ public class HealingRain : BaseDuoAbility
         {
             // J'affiche la zone ciblée, en mettant à jour les tiles (ce sont celles situées à portée de la tile ciblée)
 
-            var temporaryTileCoord = CombatGameManager.Instance.GridMap.WorldToGrid(hitData.point);
-            if (!_possibleTargetsTiles.Contains(CombatGameManager.Instance.GridMap[temporaryTileCoord]))
+            var map = CombatGameManager.Instance.GridMap;
+            var temporaryTileCoord = map.WorldToGrid(hitData.point);
+            if (!_possibleTargetsTiles.Contains(map[temporaryTileCoord]))
             {
                 //Debug.Log("Taget out of range");
                 return;
@@ -286,9 +291,9 @@ public class HealingRain : BaseDuoAbility
                 //        + " + | Effector : " + _effector.GridPosition);
 
                 _areaOfEffectTiles.Clear();
-                _areaOfEffectTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(_tileCoord, _explosionBaseRadius);
+                _areaOfEffectTiles = map.GetAreaOfEffectDiamond(_tileCoord, _explosionBaseRadius);
                 _areaOfEffectBonusTiles.Clear();
-                _areaOfEffectBonusTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(_tileCoord, _explosionImprovedRadius);
+                _areaOfEffectBonusTiles = map.GetAreaOfEffectDiamond(_tileCoord, _explosionImprovedRadius);
 
                 CombatGameManager.Instance.TileDisplay.DisplayTileZone("BonusHealZone", _areaOfEffectBonusTiles, false);
                 CombatGameManager.Instance.TileDisplay.DisplayTileZone("HealZone", _areaOfEffectTiles, false);
@@ -309,20 +314,30 @@ public class HealingRain : BaseDuoAbility
                 foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
                 {
                     //if ((enemy.GridPosition - tileCoord).magnitude <= _radius) //That's a circle not a diamond...
-                    if (Mathf.Abs(enemy.GridPosition.x - _tileCoord.x) + Mathf.Abs(enemy.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
+                    //if (Mathf.Abs(enemy.GridPosition.x - _tileCoord.x) + Mathf.Abs(enemy.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
+                    if (_areaOfEffectTiles.Contains(map[enemy.GridPosition]))
                     {
                         _enemyTargets.Add(enemy);
                         enemy.HighlightUnit(Color.green);
+                    }
+                    else if (_areaOfEffectBonusTiles.Contains(map[enemy.GridPosition]))
+                    {
+                        enemy.HighlightUnit(new Color(0.75f, 1, 0));
                     }
                 }
                 foreach (AllyUnit ally in CombatGameManager.Instance.AllAllyUnits)
                 {
                     //if ((ally.GridPosition - tileCoord).magnitude <= _radius) //That's a circle not a diamond...
                     //Debug.Log(Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y));
-                    if (Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
+                    //if (Mathf.Abs(ally.GridPosition.x - _tileCoord.x) + Mathf.Abs(ally.GridPosition.y - _tileCoord.y) <= _explosionBaseRadius)
+                    if (_areaOfEffectTiles.Contains(map[ally.GridPosition]))
                     {
                         _allyTargets.Add(ally);
                         ally.HighlightUnit(Color.green);
+                    }
+                    else if (_areaOfEffectBonusTiles.Contains(map[ally.GridPosition]))
+                    {
+                        ally.HighlightUnit(new Color(0.75f, 1, 0));
                     }
                 }
             }

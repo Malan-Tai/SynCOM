@@ -7,48 +7,91 @@ public class Character
 {
     protected const float _fullCoverDodgeBonus = 40f;
     protected const float _halfCoverDodgeBonus = 20f;
-    private static string[] _maleNames = new string[] { "Carlo 'Roulette' Palagi",
-                        "Jamel 'The Beast' Musacchio",
-                        "Geronzio 'The Hulk' Puzzo",
-                        "Igino 'The Duke' Cunico",
-                        "Ruben 'The Boot' Capurro",
-                        "Albert 'The Duke' Wear",
-                        "Speranzio 'The Undertaker' Shackley",
-                        "Clifton 'Crazy Eyes' Carville",
-                        "Gaven 'The Beast' Esmond",
-                        "Paolo 'The Rat' Cocklin",
-                        "Cornelio 'The Saint' Crea",
-                        "Santos 'The Saint' Mora",
-                        "Geminiano 'Deaf' Accetta",
-                        "Vladimiro 'The Humpback' Antonini",
-                        "Quinn 'Bullettooth' Nigrelli",
-                        "Vilfredo 'Smokes' Smiles",
-                        "Alamanno 'One Armed' Lunt",
-                        "Caio 'Action Jackson' Parcel",
-                        "Jeremy 'The Owl' Jan",
-                        "Emilio 'The Shadow' Brining"
+    private static string[] _maleNames = new string[] {
+        "Carlo",
+        "Jamel",
+        "Geronzio",
+        "Igino",
+        "Ruben",
+        "Albert",
+        "Speranzio",
+        "Clifton",
+        "Gaven",
+        "Paolo",
+        "Cornelio",
+        "Santos",
+        "Geminiano",
+        "Vladimiro",
+        "Quinn",
+        "Vilfredo",
+        "Alamanno",
+        "Caio",
+        "Jeremy",
+        "Emilio"
     };
     private static string[] _femaleNames = new string[] {
-            "Estrella 'The Dapper' Cambio",
-            "Lorena 'Queen Bee' Martorelli",
-            "Zelinda 'Machine Gun' Cicco",
-            "Loretta 'Coughing' Guglielmetti",
-            "Madyson 'The Fat' Mastrandrea",
-            "Adrienne 'Toughness' Gorton",
-            "Caitlyn 'The Wild' Jordison",
-            "Kaitlyn 'Poison' Popple",
-            "Lola 'The Brain' Swepston",
-            "Kayleigh 'Iceman' Riches",
-            "Allyson 'The Quiet' Bassano",
-            "Pelagia 'Razor' Patruno",
-            "Tristan 'The Dwarf' Zummo",
-            "Tori 'The Trigger' Picardi",
-            "Monica 'Iron' Meglio",
-            "Eliana 'Angel Wings' Dudgeon",
-            "Lyric 'One Eye' Sheriff",
-            "Tessa 'Crazy' Colver",
-            "Lillie 'The Bull' Paternoster",
-            "Kasandra 'The Clown' Bolter",
+        "Estrella",
+        "Lorena",
+        "Zelinda",
+        "Loretta",
+        "Madyson",
+        "Adrienne",
+        "Caitlyn",
+        "Kaitlyn",
+        "Lola",
+        "Kayleigh",
+        "Allyson",
+        "Pelagia",
+        "Tristan",
+        "Tori",
+        "Monica",
+        "Eliana",
+        "Lyric",
+        "Tessa",
+        "Lillie",
+        "Kasandra",
+    };
+    private static string[] _surnames = new string[] {
+        "'Roulette'",
+        "'The Beast'",
+        "'The Hulk'",
+        "'The Duke'",
+        "'The Boot'",
+        "'The Duke'",
+        "'The Undertaker'",
+        "'Crazy Eyes'",
+        "'The Beast'",
+        "'The Rat'",
+        "'The Saint'",
+        "'The Saint'",
+        "'Deaf'",
+        "'The Humpback'",
+        "'Bullettooth'",
+        "'Smokes'",
+        "'One Armed'",
+        "'Action Jackson'",
+        "'The Owl'",
+        "'The Shadow'",
+        "'The Dapper'",
+        "'Queen Bee'",
+        "'Machine Gun'",
+        "'Coughing'",
+        "'The Fat'",
+        "'Toughness'",
+        "'The Wild'",
+        "'Poison'",
+        "'The Brain'",
+        "'Iceman'",
+        "'The Quiet'",
+        "'Razor'",
+        "'The Dwarf'",
+        "'The Trigger'",
+        "'Iron'",
+        "'Angel Wings'",
+        "'One Eye'",
+        "'Crazy'",
+        "'The Bull'",
+        "'The Clown'",
     };
 
     //Character's statistics
@@ -106,6 +149,7 @@ public class Character
                 // replace NB with male or female once the name has been chosen, to avoid sprites and portraits not matching up
                 break;
         }
+        preinstanciated._name += " " + _surnames[RandomEngine.Instance.Range(0, _surnames.Length)];
 
         return preinstanciated;
     }
@@ -121,7 +165,6 @@ public class Character
         _movementPoints = movementPoints;
         _weigth = weight;
         _rangeShot = rangeShot;
-
     }
 
 
@@ -225,6 +268,11 @@ public class Character
     {
         get { return this._name; }  
         set { this._name = value; }
+    }
+
+    public string FirstName
+    {
+        get { return _name.Split(' ')[0]; }  
     }
 
     public bool TakeDamage(ref float damage)
