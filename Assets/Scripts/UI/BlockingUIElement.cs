@@ -17,4 +17,9 @@ public class BlockingUIElement : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         _hoveredElementNumber--;
     }
+
+    private void OnDisable()
+    {
+        _hoveredElementNumber--;
+    }
 }
