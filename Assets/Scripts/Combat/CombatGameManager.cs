@@ -293,6 +293,10 @@ public class CombatGameManager : MonoBehaviour
 
             if (OnUnitSelected != null) OnUnitSelected(_currentUnitIndex);
         }
+        else
+        {
+            _currentUnitIndex = -1;
+        }
     }
 
     public void UpdateReachableTiles()
@@ -392,7 +396,7 @@ public class CombatGameManager : MonoBehaviour
         _currentUnitIndex = 0;
         SelectControllableUnit(0);
 
-        CurrentUnit.DisplayUnitSelectionTile(true);
+        if (_currentUnitIndex > -1) CurrentUnit.DisplayUnitSelectionTile(true);
     }
 
     public void UIConfirmAbility()

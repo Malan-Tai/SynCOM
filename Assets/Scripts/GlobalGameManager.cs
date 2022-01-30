@@ -23,7 +23,7 @@ public class GlobalGameManager : MonoBehaviour
         }
         else
         {
-            Destroy(this);
+            Destroy(gameObject);
         }
     }
     #endregion
