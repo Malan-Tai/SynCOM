@@ -22,6 +22,7 @@ public class HunkerDown : BaseAllyAbility
     public override void Execute()
     {
         AddBuff(_effector, new Buff("Hunkered Down", 2, _effector, 0, 0, 0, 0, 0, 2f));
+        SoundManager.PlaySound(SoundManager.Sound.HunkerDown);
         SendResultToHistoryConsole(null);
     }
 

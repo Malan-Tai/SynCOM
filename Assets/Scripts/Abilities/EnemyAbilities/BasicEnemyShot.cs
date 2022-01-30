@@ -48,6 +48,8 @@ public class BasicEnemyShot : BaseEnemyAbility
             result.Miss = true;
             SendResultToHistoryConsole(result);
         }
+
+        SoundManager.PlaySound(SoundManager.Sound.BasicEnemyShot);
     }
 
     protected override void SendResultToHistoryConsole(AbilityResult result)

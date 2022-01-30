@@ -10,7 +10,7 @@ public static class SoundManager
         RetentlessFriends, RetentlessFoe, RetentlessNeutral, 
         
         //Sound Effects
-        BasicShotGatling, BasicShotSniper, BasicPunch, Devouring, DwarfToss, FirstAid, GrenadeToss,
+        BasicShotGatling, BasicShotSniper, BasicPunch, BasicEnemyShot, Devouring, DwarfToss, FirstAid, GrenadeToss,
         HealingRain, HunkerDown, LongShot, Mortar, ShieldAndStrike, Smuggle, SuppressiveFire, PepTalk, WildCharge
     }
 
