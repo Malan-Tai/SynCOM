@@ -5970,8 +5970,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4213d026070513f4f9afa4dd17a91ff1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveSpeed: {x: 10, y: 19.7}
-  _scaleSpeed: 0.94
+  _targetPosition: {x: -10, y: -10}
+  _targetScale: 0.27
+  _time: 1
 --- !u!114 &429774380
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10777,31 +10778,31 @@ MonoBehaviour:
     audioClip: {fileID: 8300000, guid: a0cd3767c848a6544a6aa35101bc1af3, type: 3}
   - sound: 5
     audioClip: {fileID: 8300000, guid: d9e16b5003b74c7449674057aa74afe1, type: 3}
-  - sound: 6
-    audioClip: {fileID: 8300000, guid: 0b2667f604c0605458ef2a8ba22ab6da, type: 3}
   - sound: 7
-    audioClip: {fileID: 8300000, guid: 0909adc85c9c28040b704db3cee926b5, type: 3}
+    audioClip: {fileID: 8300000, guid: 0b2667f604c0605458ef2a8ba22ab6da, type: 3}
   - sound: 8
-    audioClip: {fileID: 8300000, guid: 02e8db63154e16c4caf3e79e51de725b, type: 3}
+    audioClip: {fileID: 8300000, guid: 0909adc85c9c28040b704db3cee926b5, type: 3}
   - sound: 9
-    audioClip: {fileID: 8300000, guid: 9a040d8486fe547469cbda00c948c189, type: 3}
+    audioClip: {fileID: 8300000, guid: 02e8db63154e16c4caf3e79e51de725b, type: 3}
   - sound: 10
-    audioClip: {fileID: 8300000, guid: 89ac5ca94172c4d4797105af4f52bcc2, type: 3}
+    audioClip: {fileID: 8300000, guid: 9a040d8486fe547469cbda00c948c189, type: 3}
   - sound: 11
-    audioClip: {fileID: 8300000, guid: dcef62370caf3fc48b1b8cd53cc1beb9, type: 3}
-  - sound: 12
-    audioClip: {fileID: 8300000, guid: a4d7f4812e220344d91cbfdf1e40b56d, type: 3}
-  - sound: 13
-    audioClip: {fileID: 8300000, guid: 8c9378e1b406e3340beb527981f48d2d, type: 3}
-  - sound: 14
-    audioClip: {fileID: 8300000, guid: 4cc26fdb6e947904cab08e9347800b33, type: 3}
-  - sound: 15
-    audioClip: {fileID: 8300000, guid: 2cc6d33fb422ee449b6ee409c04f454e, type: 3}
-  - sound: 16
-    audioClip: {fileID: 8300000, guid: 5f75b114472e0284987a5257bf61916f, type: 3}
-  - sound: 17
     audioClip: {fileID: 8300000, guid: 89ac5ca94172c4d4797105af4f52bcc2, type: 3}
+  - sound: 12
+    audioClip: {fileID: 8300000, guid: dcef62370caf3fc48b1b8cd53cc1beb9, type: 3}
+  - sound: 13
+    audioClip: {fileID: 8300000, guid: a4d7f4812e220344d91cbfdf1e40b56d, type: 3}
+  - sound: 14
+    audioClip: {fileID: 8300000, guid: 8c9378e1b406e3340beb527981f48d2d, type: 3}
+  - sound: 15
+    audioClip: {fileID: 8300000, guid: 4cc26fdb6e947904cab08e9347800b33, type: 3}
+  - sound: 16
+    audioClip: {fileID: 8300000, guid: 2cc6d33fb422ee449b6ee409c04f454e, type: 3}
+  - sound: 17
+    audioClip: {fileID: 8300000, guid: 5f75b114472e0284987a5257bf61916f, type: 3}
   - sound: 18
+    audioClip: {fileID: 8300000, guid: 89ac5ca94172c4d4797105af4f52bcc2, type: 3}
+  - sound: 19
     audioClip: {fileID: 8300000, guid: d9ac38aa3e95ef1408eba299eba18267, type: 3}
 --- !u!1 &792280377
 GameObject:
@@ -24905,7 +24906,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 761936826}
   m_HandleRect: {fileID: 761936825}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
