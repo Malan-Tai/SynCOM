@@ -7182,7 +7182,6 @@ GameObject:
   - component: {fileID: 669862628}
   - component: {fileID: 669862627}
   - component: {fileID: 669862629}
-  - component: {fileID: 669862631}
   - component: {fileID: 669862630}
   m_Layer: 0
   m_Name: GlobalGameManager
@@ -7266,7 +7265,7 @@ AudioSource:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 669862626}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 8a69e693d2637e84c9266505192ea647, type: 3}
@@ -7355,14 +7354,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!81 &669862631
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 669862626}
-  m_Enabled: 1
 --- !u!1 &674690315
 GameObject:
   m_ObjectHideFlags: 0
