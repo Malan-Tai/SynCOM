@@ -145,7 +145,104 @@ public class LongShot : BaseDuoAbility
         AbilityResult result = new AbilityResult();
         ShootResult selfResults = SelfShoot(target, _selfShotStats);
         result.CopyShootResult(selfResults);
-        SendResultToHistoryConsole(result);
+
+        if (!selfResults.Cancelled && selfResults.Landed)
+        {
+            if (_effector.AllyCharacter.Gender == EnumGender.Male || _effector.AllyCharacter.Gender == EnumGender.Other)
+            {
+                if (GetRelationshipStatus(true) == -1)
+                {
+                    _effectorSound = SoundManager.Sound.EWLongShotMale;
+                }
+                else if (GetRelationshipStatus(true) == 1)
+                {
+                    _effectorSound = SoundManager.Sound.FWLongShotMale;
+                }
+                else
+                {
+                    if (RandomEngine.Instance.Range(0, 2) == 0)
+                    {
+                        _effectorSound = SoundManager.Sound.FWLongShotMale;
+                    }
+                    else
+                    {
+                        _effectorSound = SoundManager.Sound.EWLongShotMale;
+                    }
+                }
+            }
+            else
+            {
+                if (GetRelationshipStatus(true) == -1)
+                {
+                    _effectorSound = SoundManager.Sound.EWLongShotFemale;
+                }
+                else if (GetRelationshipStatus(true) == 1)
+                {
+                    _effectorSound = SoundManager.Sound.FWLongShotFemale;
+                }
+                else
+                {
+                    if (RandomEngine.Instance.Range(0, 2) == 0)
+                    {
+                        _effectorSound = SoundManager.Sound.FWLongShotFemale;
+                    }
+                    else
+                    {
+                        _effectorSound = SoundManager.Sound.EWLongShotFemale;
+                    }
+                }
+            }
+        }
+
+        if (!selfResults.Cancelled && !selfResults.Landed)
+        {
+                if (_effector.AllyCharacter.Gender == EnumGender.Male || _effector.AllyCharacter.Gender == EnumGender.Other)
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.ELLongShotMale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FLLongShotMale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FLLongShotMale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.ELLongShotMale;
+                        }
+                    }
+                }
+                else
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.ELLongShotFemale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FLLongShotFemale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FLLongShotFemale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.ELLongShotFemale;
+                        }
+                    }
+                }
+            }
+
+            SendResultToHistoryConsole(result);
     }
 
     /// <summary>

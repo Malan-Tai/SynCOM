@@ -275,6 +275,11 @@ public class Character
         get { return _name.Split(' ')[0]; }  
     }
 
+    public EnumGender Gender
+    {
+        get { return _gender; }
+    }
+
     public bool TakeDamage(ref float damage)
     {
         foreach (Buff buff in _currentBuffs)
