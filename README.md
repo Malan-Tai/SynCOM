@@ -9,7 +9,7 @@ Each unit is unique thanks to a batch of traits that influence their stats in co
 Beware of your units' relationships : two friends will work better together, but rivals might refuse to cooperate.
 Use your tacticam skills to complet the mission and get one step closer to taking the control of the city !
 
-#Controls
+# Controls
 
 To play SunCOM, you need a keyboard and mouse.
 
@@ -31,7 +31,7 @@ Mouse controls :
 - \[Log window] Left click on a unit name : focus the camera on the unit
 - \[Area of Effect ability targeting] Left click : launch ability
 
-#Credits
+# Credits
 
 BARAN Lucas 
 BRANCHE Guillaume
@@ -41,7 +41,7 @@ SANTORO Romain
 
 https://github.com/BlueRaja/High-Speed-Priority-Queue-for-C-Sharp
 
-#License
+# License
 
 The MIT License (MIT)
 
