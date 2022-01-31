@@ -82,7 +82,7 @@ public class AllyCharacter : Character
             case EnumClasses.Berserker:
                 instance._maxHealth = 30;
                 instance._damage = 7;
-                instance._accuracy = 75;
+                instance._accuracy = 85;
                 instance._dodge = 10;
                 instance._critChances = 15;
                 instance._rangeShot = 3;
@@ -94,8 +94,8 @@ public class AllyCharacter : Character
                 break;
             case EnumClasses.Engineer:
                 instance._maxHealth = 25;
-                instance._damage = 3;
-                instance._accuracy = 60;
+                instance._damage = 4;
+                instance._accuracy = 80;
                 instance._dodge = 10;
                 instance._critChances = 5;
                 instance._rangeShot = 20;
@@ -107,8 +107,8 @@ public class AllyCharacter : Character
                 break;
             case EnumClasses.Sniper:
                 instance._maxHealth = 10;
-                instance._damage = 5;
-                instance._accuracy = 85;
+                instance._damage = 7;
+                instance._accuracy = 90;
                 instance._dodge = 10;
                 instance._critChances = 20;
                 instance._rangeShot = 30;
@@ -121,7 +121,7 @@ public class AllyCharacter : Character
             case EnumClasses.Alchemist:
                 instance._maxHealth = 15;
                 instance._damage = 3;
-                instance._accuracy = 60;
+                instance._accuracy = 70;
                 instance._dodge = 20;
                 instance._critChances = 5;
                 instance._rangeShot = 20;
@@ -133,7 +133,7 @@ public class AllyCharacter : Character
             case EnumClasses.Bodyguard:
                 instance._maxHealth = 40;
                 instance._damage = 4;
-                instance._accuracy = 55;
+                instance._accuracy = 65;
                 instance._dodge = 5;
                 instance._critChances = 5;
                 instance._rangeShot = 15;
@@ -145,8 +145,8 @@ public class AllyCharacter : Character
                 break;
             case EnumClasses.Smuggler:
                 instance._maxHealth = 35;
-                instance._damage = 5;
-                instance._accuracy = 65;
+                instance._damage = 6;
+                instance._accuracy = 75;
                 instance._dodge = 5;
                 instance._critChances = 10;
                 instance._rangeShot = 20;
