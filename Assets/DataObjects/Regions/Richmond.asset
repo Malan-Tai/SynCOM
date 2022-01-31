@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: Richmond
   m_EditorClassIdentifier: 
   regionName: 4
-  description: Richmond, c'est autrement bon.
+  description: 'The most rural borough of New York City. It is mostly farmlands and
+    fields. '

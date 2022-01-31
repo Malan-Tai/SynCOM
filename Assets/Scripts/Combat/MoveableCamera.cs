@@ -125,6 +125,8 @@ public class MoveableCamera : MonoBehaviour
 
     public void SwitchParenthood(GridBasedUnit newUnit)
     {
+        if (newUnit == null) return;
+
         if (_currentlyViewedUnit == newUnit)
         {
             this.transform.SetParent(newUnit.transform, true);
@@ -141,11 +143,14 @@ public class MoveableCamera : MonoBehaviour
 
         _parentViewedUnit.InfoSetSmall(true);
         _currentlyViewedUnit.InfoSetSmall(true);
+        if (_parentViewedUnit is EnemyUnit) (_parentViewedUnit as EnemyUnit).DisplayUnitSelectionTile(false);
+        if (_currentlyViewedUnit is EnemyUnit) (_currentlyViewedUnit as EnemyUnit).DisplayUnitSelectionTile(false);
 
         _parentViewedUnit = newUnit;
         _currentlyViewedUnit = newUnit;
 
         _currentlyViewedUnit.InfoSetBig(true);
+        if (_currentlyViewedUnit is EnemyUnit) (_currentlyViewedUnit as EnemyUnit).DisplayUnitSelectionTile(true);
     }
 
     public void SwitchViewWithoutParenthood(GridBasedUnit unit)

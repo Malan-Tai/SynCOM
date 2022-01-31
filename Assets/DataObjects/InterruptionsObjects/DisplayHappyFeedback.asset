@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: DisplayHappyFeedback
   m_EditorClassIdentifier: 
   interruptionType: 4
-  time: 1
+  time: 1.5
   text: :D
   sprite: {fileID: 21300000, guid: 3493eb6f2f57a5548b65767d0c3f4868, type: 3}
+  sound: 0

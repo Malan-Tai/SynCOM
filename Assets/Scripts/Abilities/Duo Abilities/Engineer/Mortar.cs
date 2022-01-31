@@ -89,8 +89,6 @@ public class Mortar : BaseDuoAbility
                 ally.HighlightUnit(Color.red);
             }
         }
-
-        //CombatGameManager.Instance.Camera.SwitchParenthood(_chosenAlly);
     }
 
     protected override void EnemyTargetingInput()
@@ -109,10 +107,16 @@ public class Mortar : BaseDuoAbility
             Debug.Log("[Mortar] Ally didn't take cover in time");
             _allyTargets.Add(_chosenAlly);
         }
+        else if (_targets.Count > 0)
+        {
+            AttackHitOrMiss(_effector, null, true, _chosenAlly);
+        }
+        else
+            AttackHitOrMiss(_effector, null, false, _chosenAlly);
 
         foreach (EnemyUnit target in _targets)
         {
-            result.DamageList.Add(AttackDamage(_effector, target, _selfShotStats.GetDamage(), false));
+            result.DamageList.Add(AttackDamage(_effector, target, _selfShotStats.GetDamage(), false, _chosenAlly));
         }
         foreach (AllyUnit ally in _allyTargets)
         {
@@ -133,12 +137,20 @@ public class Mortar : BaseDuoAbility
             .AddText(_chosenAlly.Character.FirstName).CloseTag()
             .AddText(" used ")
             .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
-            .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
-            .AddText(": did ");
+            .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag();
 
         List<GridBasedUnit> everyTarget = new List<GridBasedUnit>();
         everyTarget.AddRange(_targets);
         everyTarget.AddRange(_allyTargets);
+
+        if (everyTarget.Count == 0)
+        {
+            HistoryConsole.Instance.AddText(": it damaged no one");
+        }
+        else
+        {
+            HistoryConsole.Instance.AddText(": did ");
+        }
 
         for (int i = 0; i < everyTarget.Count; i++)
         {

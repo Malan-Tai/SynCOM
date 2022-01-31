@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: Queens
   m_EditorClassIdentifier: 
   regionName: 2
-  description: You dropped this, Queens.
+  description: This borough is notably where all the industrial waste gets dumped,
+    and is therefore nicknamed the "Valley of Ash".

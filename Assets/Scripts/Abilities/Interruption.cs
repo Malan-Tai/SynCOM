@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class Interruption
 {
-    public const float FOCUS_TARGET_TIME = 1f;
+    public const float FOCUS_TARGET_TIME = 1.5f;
 
     public bool HasStarted { get; private set; }
     public bool IsDone { get; protected set; }
@@ -29,6 +29,10 @@ public abstract class Interruption
 
             case InterruptionType.FocusTargetForGivenTimeAndFireImageFeedback:
                 interruption = new FocusTargetForGivenTimeAndFireImageFeedback();
+                break;
+
+            case InterruptionType.FocusTargetAndPlaySound:
+                interruption = new FocusTargetAndPlaySound();
                 break;
 
             default:

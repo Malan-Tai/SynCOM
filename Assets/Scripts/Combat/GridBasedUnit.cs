@@ -5,6 +5,17 @@ using UnityEngine.UI;
 
 public class GridBasedUnit : MonoBehaviour
 {
+    protected static readonly string[] _deathTexts = new string[]
+    {
+        "died",
+        "succumbed",
+        "left this world",
+        "lost their life",
+        "perished",
+        "didn't make it",
+        "passed away",
+    };
+
     [SerializeField] private MeshRenderer _outlineRenderer;
     [SerializeField] private Material _outlineMaterial;
 
@@ -64,6 +75,12 @@ public class GridBasedUnit : MonoBehaviour
     private int _outlineSizePropertyHash;
 
     protected InfoCanvas _info;
+    protected SelectionSprite _selectUnitSprite;
+
+    protected void Awake()
+    {
+        _selectUnitSprite = transform.Find("SelectionSprite").GetComponent<SelectionSprite>();
+    }
 
     protected void Start()
     {
@@ -137,8 +154,8 @@ public class GridBasedUnit : MonoBehaviour
         int outlineSize = _outlineMaterial.GetInt(_outlineSizePropertyHash);
         RenderTexture outlineTexture = new RenderTexture
         (
-            4 * outlineSize + _unitRenderer.sprite.texture.width,
-            4 * outlineSize + _unitRenderer.sprite.texture.height,
+            2 * outlineSize + _unitRenderer.sprite.texture.width,
+            2 * outlineSize + _unitRenderer.sprite.texture.height,
             0,
             RenderTextureFormat.ARGB32
         );
@@ -149,8 +166,8 @@ public class GridBasedUnit : MonoBehaviour
         _outlineRenderer.material.mainTexture = outlineTexture;
         _outlineRenderer.transform.localScale = new Vector3
         (
-            _unitRenderer.sprite.texture.width / _unitRenderer.sprite.pixelsPerUnit,
-            _unitRenderer.sprite.texture.height / _unitRenderer.sprite.pixelsPerUnit,
+            outlineTexture.width / _unitRenderer.sprite.pixelsPerUnit,
+            outlineTexture.height / _unitRenderer.sprite.pixelsPerUnit,
             1f
         );
         _outlineRenderer.enabled = false;
@@ -378,6 +395,11 @@ public class GridBasedUnit : MonoBehaviour
 
     private void Die()
     {
+        HistoryConsole.Instance
+            .BeginEntry()
+            .OpenLinkTag(Character.Name, this, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+            .AddText($" {_deathTexts[RandomEngine.Instance.Range(0, _deathTexts.Length)]}");
+
         if (OnDeath != null) OnDeath(this);
     }
 

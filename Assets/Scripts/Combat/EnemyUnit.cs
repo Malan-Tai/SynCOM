@@ -12,12 +12,15 @@ public class EnemyUnit : GridBasedUnit
 
     private BasicEnemyShot _basicEnemyShot;
 
-    private void Awake()
+    private new void Awake()
     {
+        base.Awake();
         InterruptionQueue = GetComponent<InterruptionQueue>();
         _renderer = GetComponentInChildren<GeneralRenderer>();
         _basicEnemyShot = new BasicEnemyShot();
         _basicEnemyShot.SetEffector(this);
+
+        _selectUnitSprite.SetEnemy();
     }
 
     protected override void Update()
@@ -84,6 +87,11 @@ public class EnemyUnit : GridBasedUnit
         _unitRenderer.sprite = GlobalGameManager.Instance.GetEnemySprite();
         _info.SetEnemy();
         transform.Find("DeadRenderer").GetComponent<SpriteRenderer>().sprite = GlobalGameManager.Instance.GetDeadEnemySprite();
+    }
+
+    public void DisplayUnitSelectionTile(bool display)
+    {
+        _selectUnitSprite.SetEnabled(display);
     }
 
     public override void NewTurn()

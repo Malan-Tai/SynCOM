@@ -5,14 +5,14 @@ using UnityEngine;
 public class RandomEngine : MonoBehaviour
 {
     #region Singleton
-    private static RandomEngine instance;
-    public static RandomEngine Instance { get { return instance; } }
+    private static RandomEngine _instance;
+    public static RandomEngine Instance { get { return _instance; } }
 
     private void Awake()
     {
-        if (instance == null)
+        if (_instance == null)
         {
-            instance = this;
+            _instance = this;
         }
         else
         {

@@ -7,19 +7,26 @@ using UnityEngine.SceneManagement;
 public class BetweenMissionsGameManager : MonoBehaviour
 {
     #region Singleton
-    private static BetweenMissionsGameManager instance;
-    public static BetweenMissionsGameManager Instance { get { return instance; } }
+    private static BetweenMissionsGameManager _instance;
+    public static BetweenMissionsGameManager Instance { get { return _instance; } }
+    private bool _toNullify = true;
 
     private void Awake()
     {
-        if (instance == null)
+        if (_instance == null)
         {
-            instance = this;
+            _instance = this;
         }
         else
         {
+            _toNullify = false;
             Destroy(this);
         }
+    }
+
+    private void OnDestroy()
+    {
+        if (_toNullify) _instance = null;
     }
     #endregion
 
@@ -183,6 +190,7 @@ public class BetweenMissionsGameManager : MonoBehaviour
     private void SetSelectedSquadUnitAndUpdateFrozenUnitsInList(int squadIndex)
     {
         _selectedSquadUnit = squadIndex;
+        ChooseSquadUnit(null);
         _missionUnitList.FreezeCharacters(GlobalGameManager.Instance.currentSquad);
     }
 

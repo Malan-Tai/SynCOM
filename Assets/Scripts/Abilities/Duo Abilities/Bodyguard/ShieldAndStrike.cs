@@ -134,6 +134,7 @@ public class ShieldAndStrike : BaseDuoAbility
         else
         {
             result.Cancelled = true;
+            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, -5);
             Debug.Log("refused to protecc");
         }
 
@@ -147,17 +148,20 @@ public class ShieldAndStrike : BaseDuoAbility
         HistoryConsole.Instance
             .BeginEntry()
             .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
-            .AddText(_effector.Character.FirstName).CloseTag();
+            .AddText(_effector.Character.FirstName).CloseTag()
+            .AddText(" used ")
+            .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
+            .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+            .AddText(" with ")
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+            .AddText(_chosenAlly.Character.FirstName).CloseTag();
 
         if (result.Cancelled)
         {
-            HistoryConsole.Instance.OpenColorTag(EntryColors.TEXT_ABILITY).AddText(" cancelled ").CloseTag()
-                .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
-                .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
-                .AddText(" with ")
-                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
-                .AddText(_chosenAlly.Character.FirstName).CloseTag()
-                .AddText(" do do something else...")
+            HistoryConsole.Instance
+                .AddText(" but")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" refused to protect").CloseTag()
+                .AddText(" them. ")
                 .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
                 .AddText(_chosenAlly.Character.FirstName).CloseTag()
                 .AddText(" still shot and ");
@@ -165,13 +169,12 @@ public class ShieldAndStrike : BaseDuoAbility
         else
         {
             HistoryConsole.Instance
-                .AddText(" used ")
-                .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
-                .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
-                .AddText(" to protect ")
+                .AddText(" to protect them for ")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{(int)((1 - _selfProtStats.GetProtection()) * 100)}%")
+                .AddText(" while ")
                 .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
                 .AddText(_chosenAlly.Character.FirstName).CloseTag()
-                .AddText(" who ");
+                .AddText(" shot and ");
         }
 
         if (result.AllyMiss)

@@ -115,18 +115,7 @@ public class SuppressiveFire : BaseDuoAbility
     public override void Execute()
     {
         GridBasedUnit target = _possibleTargets[_targetIndex];
-        Relationship relationshipAllyToSelf = _effector.AllyCharacter.Relationships[this._chosenAlly.AllyCharacter];
 
-        if (relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Sympathy) < 0 || relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Admiration) < 0 || relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Trust) < 0)
-        {
-            //SoundManager.PlaySound(SoundManager.Sound.RetentlessFoe);
-        }
-
-        else
-        {
-            //SoundManager.PlaySound(SoundManager.Sound.RetentlessNeutral);
-        }
-        Debug.Log("we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
         AbilityResult result = new AbilityResult();
         SoundManager.PlaySound(SoundManager.Sound.SuppressiveFire);
         ShootResult selfResult = SelfShoot(target, _selfShotStats);
@@ -197,7 +186,7 @@ public class SuppressiveFire : BaseDuoAbility
             {
                 HistoryConsole.Instance
                     .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" missed ").CloseTag()
-                    .AddText(" his shot on ");
+                    .AddText(" their shot on ");
             }
             else
             {
@@ -215,7 +204,7 @@ public class SuppressiveFire : BaseDuoAbility
                 .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
                 .AddText(_chosenAlly.Character.FirstName).CloseTag()
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" cancelled ").CloseTag()
-                .AddText(" his shot to do something else...");
+                .AddText(" their shot to do something else...");
         }
         else
         {

@@ -50,7 +50,11 @@ public class HealingRain : BaseDuoAbility
                 healingValue = _healingValueIncreased;
                 result.Critical = true;
                 Debug.Log("[Healing Rain] Bonus radius");
+
+                AttackHitOrMiss(_chosenAlly, null, true, _effector);
             }
+            else
+                AttackHitOrMiss(_chosenAlly, null, false, _effector);
         }
         else
         {
@@ -78,6 +82,8 @@ public class HealingRain : BaseDuoAbility
                 _allyTargets.Add(ally);
             }
         }
+
+        AttackHitOrMiss(_effector, null, _allyTargets.Count > 0, _chosenAlly);
 
         // Ne peux rater ni faire un coup critique
         foreach (AllyUnit ally in _allyTargets)
@@ -114,10 +120,10 @@ public class HealingRain : BaseDuoAbility
                 .AddText(_chosenAlly.Character.FirstName).CloseTag()
                 .AddText(" who ")
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("cancelled").CloseTag()
-                .AddText(" his action to do something else... ")
+                .AddText(" their action to do something else... ")
                 .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
                 .AddText(_effector.Character.FirstName).CloseTag()
-                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($" still{criticalText} healed ").CloseTag();
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{criticalText} healed ").CloseTag();
         }
         else
         {
@@ -138,6 +144,11 @@ public class HealingRain : BaseDuoAbility
         List<GridBasedUnit> everyTarget = new List<GridBasedUnit>();
         everyTarget.AddRange(_allyTargets);
         everyTarget.AddRange(_enemyTargets);
+
+        if (everyTarget.Count == 0)
+        {
+            HistoryConsole.Instance.AddText("no one");
+        }
 
         for (int i = 0; i < everyTarget.Count; i++)
         {

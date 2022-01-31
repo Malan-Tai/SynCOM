@@ -38,6 +38,8 @@ public class Smuggle : BaseDuoAbility
         _chosenAlly.ChooseAstarPathTo(_tileCoord);
         _freeForDuo = true;
 
+        AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, 5);
+
         SendResultToHistoryConsole(null);
     }
 

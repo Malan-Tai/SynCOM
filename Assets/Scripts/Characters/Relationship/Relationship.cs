@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
+
 [Serializable]
 public class Relationship
 {
@@ -55,18 +57,6 @@ public class Relationship
     public int GetGaugeValue(EnumSentiment sentiment)
     {
         return _gauges[sentiment].value;
-    }
-
-    private int GetTotalGaugeValue(EnumSentiment sentiment)
-    {
-        int value = GetGaugeValue(sentiment);
-        int signedLevel = GetGaugeLevel(sentiment);
-        int sign = signedLevel >= 0 ? 1 : -1;
-        for (int lvl = Mathf.Abs(signedLevel) - 1; lvl >= 0; lvl--)
-        {
-            value += sign * GetGaugeLimit(lvl);
-        }
-        return value;
     }
 
     /// <summary>
@@ -223,6 +213,7 @@ public class Relationship
     /// </summary>
     public void UpdateEmotions()
     {
+        List<EnumEmotions> old = new List<EnumEmotions>(_listEmotions);
         _listEmotions.Clear();
 
         // Combination of level 2 emotions
@@ -272,6 +263,63 @@ public class Relationship
         if (_trustGauge.level == -1) _listEmotions.Add(EnumEmotions.Fear);
         if (_sympathyGauge.level == 1) _listEmotions.Add(EnumEmotions.Sympathy);
         if (_sympathyGauge.level == -1) _listEmotions.Add(EnumEmotions.Antipathy);
+
+        var lost = old.Except(_listEmotions).ToList();
+        var gained = _listEmotions.Except(old).ToList();
+
+        if ((lost.Count == 0 && gained.Count == 0) || !GlobalGameManager.Instance.InCombat) return;
+
+        HistoryConsole.Instance
+            .BeginEntry()
+            .OpenLinkTag(_source.Name, CombatGameManager.Instance.GetUnitFromCharacter(_source), EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_source.FirstName).CloseTag()
+            .AddText(" now ");
+
+        if (lost.Count > 0)
+        {
+            HistoryConsole.Instance.AddText("no longer feels ");
+            for (int i = 0; i < lost.Count - 1; i++)
+            {
+                EnumEmotions emotion = lost[i];
+                HistoryConsole.Instance
+                    .OpenColorTag(EmotionColor(emotion))
+                    .AddText(emotion.ToString())
+                    .CloseTag()
+                    .AddText(", ");
+            }
+            if (lost.Count > 1) HistoryConsole.Instance.AddText("nor ");
+
+            HistoryConsole.Instance
+                .OpenColorTag(EmotionColor(lost[lost.Count - 1]))
+                .AddText(lost[lost.Count - 1].ToString())
+                .CloseTag();
+        }
+
+        if (gained.Count > 0)
+        {
+            if (lost.Count > 0) HistoryConsole.Instance.AddText(", but instead ");
+
+            HistoryConsole.Instance.AddText("feels ");
+            for (int i = 0; i < gained.Count - 1; i++)
+            {
+                EnumEmotions emotion = gained[i];
+                HistoryConsole.Instance
+                    .OpenColorTag(EmotionColor(emotion))
+                    .AddText(emotion.ToString())
+                    .CloseTag()
+                    .AddText(", ");
+            }
+            if (gained.Count > 1) HistoryConsole.Instance.AddText("and ");
+
+            HistoryConsole.Instance
+                .OpenColorTag(EmotionColor(gained[gained.Count - 1]))
+                .AddText(gained[gained.Count - 1].ToString())
+                .CloseTag();
+        }
+
+        HistoryConsole.Instance
+            .AddText(" towards ")
+            .OpenLinkTag(_target.Name, CombatGameManager.Instance.GetUnitFromCharacter(_target), EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_target.FirstName).CloseTag()
+            .Submit(2);
     }
 
     /// <summary>
@@ -287,5 +335,50 @@ public class Relationship
             total += GetGaugeLevel((EnumSentiment)i);
         }
         return Mathf.Clamp(total, -1, 1);
+    }
+
+    private int EmotionStatus(EnumEmotions emotion)
+    {
+        switch (emotion)
+        {
+            case EnumEmotions.Disdain:
+            case EnumEmotions.Scorn:
+            case EnumEmotions.Fear:
+            case EnumEmotions.Terror:
+            case EnumEmotions.Antipathy:
+            case EnumEmotions.Hostility:
+            case EnumEmotions.Prejudice:
+            case EnumEmotions.Condescension:
+            case EnumEmotions.Hate:
+                return -1;
+
+            case EnumEmotions.Admiration:
+            case EnumEmotions.Esteem:
+            case EnumEmotions.Trust:
+            case EnumEmotions.Respect:
+            case EnumEmotions.Sympathy:
+            case EnumEmotions.Empathy:
+            case EnumEmotions.Faith:
+            case EnumEmotions.Devotion:
+            case EnumEmotions.Friendship:
+                return 1;
+
+            default:
+                return 0;
+        }
+    }
+
+    private Color EmotionColor(EnumEmotions emotion)
+    {
+        int status = EmotionStatus(emotion);
+        switch (status)
+        {
+            case -1:
+                return EntryColors.TEXT_NEGATIVE_EMOTION;
+            case 1:
+                return EntryColors.TEXT_POSITIVE_EMOTION;
+            default:
+                return EntryColors.TEXT_NEUTRAL_EMOTION;
+        }
     }
 }

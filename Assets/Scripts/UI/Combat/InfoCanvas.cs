@@ -10,11 +10,14 @@ public class InfoCanvas : MonoBehaviour
     [SerializeField] private Sprite _halfShield;
     [SerializeField] private Sprite _emptyShield;
 
+    private Color _originalColor;
     [SerializeField] private Color _enemyBarColor;
+    [SerializeField] private Color _greyBarColor;
 
     private Slider _hp;
     private TMP_Text _hpText;
     private Image _cover;
+    private Image _hpImage;
 
     private bool _forced;
 
@@ -23,6 +26,9 @@ public class InfoCanvas : MonoBehaviour
         _hp = GetComponentInChildren<Slider>();
         _hpText = _hp.transform.GetComponentInChildren<TMP_Text>();
         _cover = transform.Find("Cover").GetComponent<Image>();
+        _hpImage = _hp.transform.Find("Fill Area").GetChild(0).GetComponent<Image>();
+
+        _originalColor = _hpImage.color;
 
         _hpText.enabled = false;
 
@@ -82,6 +88,17 @@ public class InfoCanvas : MonoBehaviour
 
     public void SetEnemy()
     {
-        _hp.transform.Find("Fill Area").GetChild(0).GetComponent<Image>().color = _enemyBarColor;
+        _hpImage.color = _enemyBarColor;
+        _originalColor = _enemyBarColor;
+    }
+
+    public void SetGreyedBar()
+    {
+        _hpImage.color = _greyBarColor;
+    }
+
+    public void SetColoredBar()
+    {
+        _hpImage.color = _originalColor;
     }
 }

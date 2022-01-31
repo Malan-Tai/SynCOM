@@ -13,4 +13,7 @@ MonoBehaviour:
   m_Name: FocusTargetForOneSecond
   m_EditorClassIdentifier: 
   interruptionType: 1
-  time: 1
+  time: 1.5
+  text: 
+  sprite: {fileID: 0}
+  sound: 0

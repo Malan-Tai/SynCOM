@@ -145,7 +145,7 @@ public class DwarfTossing : BaseDuoAbility
                 RequestDescriptionUpdate();
 
                 _areaOfEffectTiles.Clear();
-                _areaOfEffectTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(_tileCoord, 1);
+                _areaOfEffectTiles = CombatGameManager.Instance.GridMap.GetAreaOfEffectDiamond(_tileCoord, 2);
 
                 CombatGameManager.Instance.TileDisplay.DisplayTileZone("DamageZone", _areaOfEffectTiles, false);
 
@@ -157,7 +157,7 @@ public class DwarfTossing : BaseDuoAbility
                 _targets.Clear();
                 foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
                 {
-                    if (Mathf.Abs(enemy.GridPosition.x - _tileCoord.x) + Mathf.Abs(enemy.GridPosition.y - _tileCoord.y) <= 1)
+                    if (Mathf.Abs(enemy.GridPosition.x - _tileCoord.x) + Mathf.Abs(enemy.GridPosition.y - _tileCoord.y) <= 2)
                     {
                         _targets.Add(enemy);
                         enemy.HighlightUnit(Color.red);
@@ -172,25 +172,34 @@ public class DwarfTossing : BaseDuoAbility
         SoundManager.PlaySound(SoundManager.Sound.DwarfToss);
 
         int randLaunch = RandomEngine.Instance.Range(0, 100);
+        AbilityResult result = new AbilityResult();
 
         var parametersLaunch = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetUntilEndOfMovement, target = _effector, position = _tileCoord, pathfinding = PathfindingMoveType.Linear };
         _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parametersLaunch));
 
         if (randLaunch <= _launchingAccuracy)
         {
+            result.AllyMiss = false;
+            AttackHitOrMiss(_chosenAlly, null, true, _effector);
+
             // Launch successful : Damage enemies
             foreach (EnemyUnit target in _targets)
             {
-                AttackDamage(_effector, target, _selfShotStats.GetDamage(), false);
+                if (RandomEngine.Instance.Range(0, 100) < _selfShotStats.GetCritRate())
+                    result.DamageList.Add(AttackDamage(_effector, target, _selfShotStats.GetDamage() * 1.5f, true, _chosenAlly));
+                else
+                    result.DamageList.Add(AttackDamage(_effector, target, _selfShotStats.GetDamage(), false, _chosenAlly));
             }
         }
         else
         {
+            result.AllyMiss = true;
+
             // Launch failed : Damage dwarf
-            SelfToAllyModifySentiment(_chosenAlly, EnumSentiment.Trust, -10);
-            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Admiration, -5);
-            FriendlyFireDamage(_chosenAlly, _effector, _chosenAlly.AllyCharacter.Damage * 1f, _effector);
+            result.AllyDamage = FriendlyFireDamage(_chosenAlly, _effector, _chosenAlly.AllyCharacter.Damage * 1f, _effector);
         }
+
+        SendResultToHistoryConsole(result);
     }
 
     protected override bool IsAllyCompatible(AllyUnit unit)
@@ -202,8 +211,6 @@ public class DwarfTossing : BaseDuoAbility
     protected override void EndAbility()
     {
         base.EndAbility();
-        //CombatGameManager.Instance.TileDisplay.HideTileZone("DamageZone");
-        //CombatGameManager.Instance.TileDisplay.HideTileZone("AttackZone");
 
         foreach (EnemyUnit enemy in CombatGameManager.Instance.EnemyUnits)
         {
@@ -213,7 +220,63 @@ public class DwarfTossing : BaseDuoAbility
 
     protected override void SendResultToHistoryConsole(AbilityResult result)
     {
-        // TODO
+        HistoryConsole.Instance
+            .BeginEntry()
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+            .AddText(_effector.Character.FirstName).CloseTag()
+            .AddText(" and ")
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+            .AddText(_chosenAlly.Character.FirstName).CloseTag()
+            .AddText(" used ")
+            .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
+            .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+            .AddText(": ");
+
+        if (result.AllyMiss)
+        {
+            HistoryConsole.Instance
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.FirstName).CloseTag()
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" missed").CloseTag()
+                .AddText(", damaging ")
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_effector.Character.FirstName).CloseTag()
+                .AddText(" for ")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(result.AllyDamage.ToString()).CloseTag();
+        }
+        else
+        {
+            if (_targets.Count == 0)
+            {
+                HistoryConsole.Instance.AddText("damaged no one");
+            }
+            else
+            {
+                HistoryConsole.Instance.AddText("did ");
+            }
+
+            for (int i = 0; i < _targets.Count; i++)
+            {
+                if (i != 0)
+                {
+                    if (i == _targets.Count - 1)
+                    {
+                        HistoryConsole.Instance.AddText(" and ");
+                    }
+                    else
+                    {
+                        HistoryConsole.Instance.AddText(", ");
+                    }
+                }
+
+                HistoryConsole.Instance
+                    .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(result.DamageList[i].ToString()).CloseTag()
+                    .AddText(" to ")
+                    .OpenLinkTag(_targets[i].Character.Name, _targets[i], EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                    .AddText(_targets[i].Character.FirstName).CloseTag();
+            }
+        }
+
+        HistoryConsole.Instance.Submit();
     }
 
     public override void ShowRanges(AllyUnit user)

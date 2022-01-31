@@ -31,9 +31,9 @@ public class Devouring : BaseDuoAbility
                     "\nBloodlust: CRIT+50%, ATK+50%," +
                     "\nDMG TKN+50%, 3TRN";
         }
-        else if (_effector != null & _temporaryChosenAlly != null)
+        else if (_effector != null && _temporaryChosenAlly != null)
         {
-            var temporarySelfShotStat = new AbilityStats(999, 0, 1.5f, 0, 6, _effector);
+            var temporarySelfShotStat = new AbilityStats(999, 0, 1.5f, 0, 6, _temporaryChosenAlly);
             temporarySelfShotStat.UpdateWithEmotionModifiers(_effector);
 
             res += "\nACC:" + (int)temporarySelfShotStat.GetAccuracy() + "%" +

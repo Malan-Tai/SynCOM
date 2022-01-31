@@ -5,19 +5,26 @@ using UnityEngine;
 public class RelationshipEventsManager : MonoBehaviour
 {
     #region Singleton
-    private static RelationshipEventsManager instance;
-    public static RelationshipEventsManager Instance { get { return instance; } }
+    private static RelationshipEventsManager _instance;
+    public static RelationshipEventsManager Instance { get { return _instance; } }
+    private bool _toNullify = true;
 
     private void Awake()
     {
-        if (instance == null)
+        if (_instance == null)
         {
-            instance = this;
+            _instance = this;
         }
         else
         {
+            _toNullify = false;
             Destroy(this);
         }
+    }
+
+    private void OnDestroy()
+    {
+        if (_toNullify) _instance = null;
     }
     #endregion
 
