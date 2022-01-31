@@ -324,10 +324,10 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                     string criticalText = shootResult.Critical ? " critical" : "";
                     HistoryConsole.Instance
                         .BeginEntry()
-                        .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.Name).CloseTag()
+                        .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.FirstName).CloseTag()
                         .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" angrily cancelled ").CloseTag()
                         .AddText(" their action with ")
-                        .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
+                        .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.FirstName).CloseTag()
                         .AddText(" to shoot them instead, dealing ")
                         .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{shootResult.Damage}{criticalText} damage").CloseTag()
                         .Submit(1);
@@ -358,10 +358,10 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
                         HistoryConsole.Instance
                             .BeginEntry()
-                            .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.Name).CloseTag()
+                            .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.FirstName).CloseTag()
                             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" cancelled ").CloseTag()
                             .AddText(" their action with ")
-                            .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
+                            .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.FirstName).CloseTag()
                             .AddText(" to heal them instead for ")
                             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{berserkerHeal} health").CloseTag()
                             .AddText(" by hurting themself for ")
@@ -385,10 +385,10 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
                             HistoryConsole.Instance
                                 .BeginEntry()
-                                .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.Name).CloseTag()
+                                .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.FirstName).CloseTag()
                                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" cancelled ").CloseTag()
                                 .AddText(" their action with ")
-                                .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
+                                .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.FirstName).CloseTag()
                                 .AddText(" to protect them with a barricade")
                                 .Submit(1);
                         }
@@ -403,10 +403,10 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
                         HistoryConsole.Instance
                             .BeginEntry()
-                            .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.Name).CloseTag()
+                            .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.FirstName).CloseTag()
                             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" cancelled ").CloseTag()
                             .AddText(" their action with ")
-                            .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
+                            .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.FirstName).CloseTag()
                             .AddText(" to assist them, giving a buff for ")
                             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("2").CloseTag()
                             .AddText(" turns: ")
@@ -435,10 +435,10 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
                         HistoryConsole.Instance
                             .BeginEntry()
-                            .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.Name).CloseTag()
+                            .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.FirstName).CloseTag()
                             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" cancelled ").CloseTag()
                             .AddText(" their action with ")
-                            .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
+                            .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.FirstName).CloseTag()
                             .AddText(" to heal them instead for ")
                             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{alchemistHeal} health").CloseTag()
                             .Submit(1);
@@ -463,10 +463,10 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
                         HistoryConsole.Instance
                             .BeginEntry()
-                            .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.Name).CloseTag()
+                            .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.FirstName).CloseTag()
                             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" cancelled ").CloseTag()
                             .AddText(" their action with ")
-                            .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
+                            .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.FirstName).CloseTag()
                             .AddText(" to protect them instead: ")
                             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"+{(int)((1 - protect.GetProtection()) * 100)}%").CloseTag()
                             .Submit(1);
@@ -481,10 +481,10 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
                         HistoryConsole.Instance
                             .BeginEntry()
-                            .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.Name).CloseTag()
+                            .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.FirstName).CloseTag()
                             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" cancelled ").CloseTag()
                             .AddText(" their action with ")
-                            .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.Name).CloseTag()
+                            .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.FirstName).CloseTag()
                             .AddText(" to improve their speed instead: ")
                             .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText("MOV +2").CloseTag()
                             .AddText(" | ")
