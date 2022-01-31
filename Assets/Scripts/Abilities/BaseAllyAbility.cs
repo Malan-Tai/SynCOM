@@ -48,12 +48,6 @@ public abstract class BaseAllyAbility : BaseAbility
     }
 
     #region RelationshipEvents
-    //protected override void HandleRelationshipEventResult(RelationshipEventsResult result)
-    //{
-    //    base.HandleRelationshipEventResult(result);
-    //    _free = result.freeActionForSource;
-    //}
-
     protected void AttackHitOrMiss(AllyUnit source, EnemyUnit target, bool hit, AllyUnit duo = null)
     {
         RelationshipEventsResult result = RelationshipEventsManager.Instance.AllyOnEnemyAttackHitOrMiss(source, hit, duo);
@@ -267,15 +261,6 @@ public abstract class BaseDuoAbility : BaseAllyAbility
     protected SoundManager.Sound _allySound = SoundManager.Sound.None;
 
     #region Relationship events
-    protected override void HandleRelationshipEventResult(RelationshipEventsResult result)
-    {
-        base.HandleRelationshipEventResult(result);
-
-        //_freeForDuo = _freeForDuo || result.freeActionForDuo;
-
-        if (_possibleAllies.Contains(result.stolenDuoUnit)) _chosenAlly = result.stolenDuoUnit;
-    }
-
     protected bool TryBeginDuo(AllyUnit source, AllyUnit duo)
     {
         RelationshipEventsResult eventResult = RelationshipEventsManager.Instance.BeginDuo(source, duo);
@@ -289,7 +274,24 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
     protected void ConfirmDuoExecution(AllyUnit source, AllyUnit duo)
     {
-        HandleRelationshipEventResult(RelationshipEventsManager.Instance.ConfirmDuoExecution(source, duo));
+        RelationshipEventsResult result = RelationshipEventsManager.Instance.ConfirmDuoExecution(source, duo);
+        HandleRelationshipEventResult(result);
+
+        if (_possibleAllies.Contains(result.stolenDuoUnit))
+        {
+            GridBasedUnit oldAlly = _chosenAlly;
+            _chosenAlly = result.stolenDuoUnit;
+
+            HistoryConsole.Instance
+                .BeginEntry()
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_chosenAlly.Character.FirstName).CloseTag()
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" stole the duo").CloseTag()
+                .AddText(" with ")
+                .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(_effector.Character.FirstName).CloseTag()
+                .AddText(" from ")
+                .OpenLinkTag(oldAlly.Character.Name, oldAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(oldAlly.Character.FirstName).CloseTag()
+                .Submit();
+        }
     }
 
     protected void EndExecutedDuo(AllyUnit source, AllyUnit duo)
@@ -299,6 +301,27 @@ public abstract class BaseDuoAbility : BaseAllyAbility
 
         _free       = _free         || eventResult.freeActionForSource || invertedEventResult.freeActionForDuo;
         _freeForDuo = _freeForDuo   || eventResult.freeActionForDuo || invertedEventResult.freeActionForSource;
+
+        if (_free)
+        {
+            HistoryConsole.Instance
+                .BeginEntry()
+                .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.FirstName).CloseTag()
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" got a free action").CloseTag()
+                .AddText(" thanks to ")
+                .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.FirstName).CloseTag()
+                .Submit();
+        }
+        if (_freeForDuo)
+        {
+            HistoryConsole.Instance
+                .BeginEntry()
+                .OpenLinkTag(duo.Character.Name, duo, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(duo.Character.FirstName).CloseTag()
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" got a free action").CloseTag()
+                .AddText(" thanks to ")
+                .OpenLinkTag(source.Character.Name, source, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER).AddText(source.Character.FirstName).CloseTag()
+                .Submit();
+        }
 
         HandleRelationshipEventResult(eventResult); // TODO : what happens if both interrupt ?
         HandleRelationshipEventResult(invertedEventResult);
