@@ -231,7 +231,7 @@ public class WildCharge : BaseDuoAbility
                    .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
                    .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
                    .AddText(" protecting them for ")
-                   .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"PROT: {(int)((1 - _selfProtStats.GetProtection()) * 100)}%").CloseTag()
+                   .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{(int)((1 - _selfProtStats.GetProtection()) * 100)}%").CloseTag()
                    .AddText(" and dealing ");
 
         if (_targets.Count == 0)

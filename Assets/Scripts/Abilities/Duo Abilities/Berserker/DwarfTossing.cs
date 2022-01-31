@@ -239,6 +239,7 @@ public class DwarfTossing : BaseDuoAbility
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" missed").CloseTag()
                 .AddText(", damaging ")
                 .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_effector.Character.FirstName).CloseTag()
                 .AddText(" for ")
                 .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(result.AllyDamage.ToString()).CloseTag();
         }

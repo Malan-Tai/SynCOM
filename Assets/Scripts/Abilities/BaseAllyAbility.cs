@@ -644,11 +644,14 @@ public abstract class BaseDuoAbility : BaseAllyAbility
                 HistoryConsole.Instance
                     .BeginEntry()
                     .OpenLinkTag(_temporaryChosenAlly.Character.Name, _temporaryChosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                    .AddText(_temporaryChosenAlly.Character.FirstName).CloseTag()
                     .AddText(" refused to perform ")
                     .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
                     .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
                     .AddText(" with ")
-                    .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER);
+                    .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                    .AddText(_effector.Character.FirstName)
+                    .Submit();
 
                 if (_possibleAllies.Count <= 1) FinalizeAbility(false);
                 else
