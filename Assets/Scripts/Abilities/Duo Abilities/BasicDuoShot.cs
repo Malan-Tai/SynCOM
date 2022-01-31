@@ -108,6 +108,8 @@ public class BasicDuoShot : BaseDuoAbility
         ShootResult selfResults = SelfShoot(target, _selfShotStats);
         ShootResult allyResults = AllyShoot(target, _allyShotStats);
 
+        GetLine(selfResults, allyResults);
+
         AbilityResult result = new AbilityResult();
         result.CopyShootResult(selfResults);
         result.CopyAllyShootResult(allyResults);
@@ -349,5 +351,591 @@ public class BasicDuoShot : BaseDuoAbility
             }
         }
         CombatGameManager.Instance.TileDisplay.DisplayTileZone("AttackZone", range, true);
+    }
+
+    private void GetLine(ShootResult selfResults, ShootResult AllyResults)
+    {
+        if (!selfResults.Cancelled && selfResults.Landed)
+        {
+            if (_effector.AllyCharacter.CharacterClass == EnumClasses.Engineer)
+            {
+                if (_effector.AllyCharacter.Gender == EnumGender.Male || _effector.AllyCharacter.Gender == EnumGender.Other)
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.EWRelentlessAssaultEngineerMale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FWRelentlessAssaultEngineerMale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FWRelentlessAssaultEngineerMale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.EWRelentlessAssaultEngineerMale;
+                        }
+                    }
+                }
+                else
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.EWRelentlessAssaultEngineerFemale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FWRelentlessAssaultEngineerFemale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FWRelentlessAssaultEngineerFemale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.EWRelentlessAssaultEngineerFemale;
+                        }
+                    }
+                }
+
+
+            }
+            if (_effector.AllyCharacter.CharacterClass == EnumClasses.Berserker)
+            {
+                if (_effector.AllyCharacter.Gender == EnumGender.Male || _effector.AllyCharacter.Gender == EnumGender.Other)
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.EWRelentlessAssaultBerserkerMale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FWRelentlessAssaultBerserkerMale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FWRelentlessAssaultBerserkerMale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.EWRelentlessAssaultBerserkerMale;
+                        }
+                    }
+                }
+                else
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.EWRelentlessAssaultBerserkerFeMale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FWRelentlessAssaultBerserkerFeMale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FWRelentlessAssaultBerserkerFeMale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.EWRelentlessAssaultBerserkerFeMale;
+                        }
+                    }
+                }
+
+
+            }
+            if (_effector.AllyCharacter.CharacterClass == EnumClasses.Alchemist)
+            {
+                if (_effector.AllyCharacter.Gender == EnumGender.Male || _effector.AllyCharacter.Gender == EnumGender.Other)
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.EWRelentlessAssaultAlchemistMale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FWRelentlessAssaultAlchemistMale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FWRelentlessAssaultAlchemistMale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.EWRelentlessAssaultAlchemistMale;
+                        }
+                    }
+                }
+                else
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.EWRelentlessAssaultAlchemistFemale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FWRelentlessAssaultAlchemistFemale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FWRelentlessAssaultAlchemistFemale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.EWRelentlessAssaultAlchemistFemale;
+                        }
+                    }
+                }
+
+
+            }
+            if (_effector.AllyCharacter.CharacterClass == EnumClasses.Sniper)
+            {
+                if (_effector.AllyCharacter.Gender == EnumGender.Male || _effector.AllyCharacter.Gender == EnumGender.Other)
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.EWRelentlessAssaultSniperMale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FWRelentlessAssaultSniperMale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FWRelentlessAssaultSniperMale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.EWRelentlessAssaultSniperMale;
+                        }
+                    }
+                }
+                else
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.EWRelentlessAssaultSniperFemale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FWRelentlessAssaultSniperFemale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FWRelentlessAssaultSniperFemale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.EWRelentlessAssaultSniperFemale;
+                        }
+                    }
+                }
+
+
+            }
+            if (_effector.AllyCharacter.CharacterClass == EnumClasses.Bodyguard)
+            {
+                if (_effector.AllyCharacter.Gender == EnumGender.Male || _effector.AllyCharacter.Gender == EnumGender.Other)
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.EWRelentlessAssaultBodyguardMale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FWRelentlessAssaultBodyguardMale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FWRelentlessAssaultBodyguardMale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.EWRelentlessAssaultBodyguardMale;
+                        }
+                    }
+                }
+                else
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.EWRelentlessAssaultBodyguardFemale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FWRelentlessAssaultBodyguardFemale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FWRelentlessAssaultBodyguardFemale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.EWRelentlessAssaultBodyguardFemale;
+                        }
+                    }
+                }
+
+
+            }
+            if (_effector.AllyCharacter.CharacterClass == EnumClasses.Smuggler)
+            {
+                if (_effector.AllyCharacter.Gender == EnumGender.Male || _effector.AllyCharacter.Gender == EnumGender.Other)
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.EWRelentlessAssaultSmugglerMale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FWRelentlessAssaultSmugglerMale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FWRelentlessAssaultSmugglerMale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.EWRelentlessAssaultSmugglerMale;
+                        }
+                    }
+                }
+                else
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.EWRelentlessAssaultSmugglerFemale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FWRelentlessAssaultSmugglerFemale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FWRelentlessAssaultSmugglerFemale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.EWRelentlessAssaultSmugglerFemale;
+                        }
+                    }
+                }
+
+
+            }
+        }
+        if (!selfResults.Cancelled && !selfResults.Landed)
+        {
+            if (_effector.AllyCharacter.CharacterClass == EnumClasses.Engineer)
+            {
+                if (_effector.AllyCharacter.Gender == EnumGender.Male || _effector.AllyCharacter.Gender == EnumGender.Other)
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.ELRelentlessAssaultEngineerMale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FLRelentlessAssaultEngineerMale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FLRelentlessAssaultEngineerMale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.ELRelentlessAssaultEngineerMale;
+                        }
+                    }
+                }
+                else
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.ELRelentlessAssaultEngineerFemale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FLRelentlessAssaultEngineerFemale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FLRelentlessAssaultEngineerFemale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.ELRelentlessAssaultEngineerFemale;
+                        }
+                    }
+                }
+            }
+            if (_effector.AllyCharacter.CharacterClass == EnumClasses.Berserker)
+            {
+                if (_effector.AllyCharacter.Gender == EnumGender.Male || _effector.AllyCharacter.Gender == EnumGender.Other)
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.ELRelentlessAssaultBerserkerMale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FLRelentlessAssaultBerserkerMale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FLRelentlessAssaultBerserkerMale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.ELRelentlessAssaultBerserkerMale;
+                        }
+                    }
+                }
+                else
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.ELRelentlessAssaultBerserkerFeMale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FLRelentlessAssaultBerserkerFeMale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FLRelentlessAssaultBerserkerFeMale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.ELRelentlessAssaultBerserkerFeMale;
+                        }
+                    }
+                }
+            }
+            if (_effector.AllyCharacter.CharacterClass == EnumClasses.Alchemist)
+            {
+                if (_effector.AllyCharacter.Gender == EnumGender.Male || _effector.AllyCharacter.Gender == EnumGender.Other)
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.ELRelentlessAssaultAlchemistMale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FLRelentlessAssaultAlchemistMale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FLRelentlessAssaultAlchemistMale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.ELRelentlessAssaultAlchemistMale;
+                        }
+                    }
+                }
+                else
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.ELRelentlessAssaultAlchemistFemale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FLRelentlessAssaultAlchemistFemale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FLRelentlessAssaultAlchemistFemale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.ELRelentlessAssaultAlchemistFemale;
+                        }
+                    }
+                }
+            }
+            if (_effector.AllyCharacter.CharacterClass == EnumClasses.Sniper)
+            {
+                if (_effector.AllyCharacter.Gender == EnumGender.Male || _effector.AllyCharacter.Gender == EnumGender.Other)
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.ELRelentlessAssaultSniperMale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FLRelentlessAssaultSniperMale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FLRelentlessAssaultSniperMale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.ELRelentlessAssaultSniperMale;
+                        }
+                    }
+                }
+                else
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.ELRelentlessAssaultSniperFemale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FLRelentlessAssaultSniperFemale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FLRelentlessAssaultSniperFemale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.ELRelentlessAssaultSniperFemale;
+                        }
+                    }
+                }
+            }
+            if (_effector.AllyCharacter.CharacterClass == EnumClasses.Bodyguard)
+            {
+                if (_effector.AllyCharacter.Gender == EnumGender.Male || _effector.AllyCharacter.Gender == EnumGender.Other)
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.ELRelentlessAssaultBodyguardMale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FLRelentlessAssaultBodyguardMale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FLRelentlessAssaultBodyguardMale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.ELRelentlessAssaultBodyguardMale;
+                        }
+                    }
+                }
+                else
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.ELRelentlessAssaultBodyguardFemale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FLRelentlessAssaultBodyguardFemale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FLRelentlessAssaultBodyguardFemale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.ELRelentlessAssaultBodyguardFemale;
+                        }
+                    }
+                }
+            }
+            if (_effector.AllyCharacter.CharacterClass == EnumClasses.Smuggler)
+            {
+                if (_effector.AllyCharacter.Gender == EnumGender.Male || _effector.AllyCharacter.Gender == EnumGender.Other)
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.ELRelentlessAssaultSmugglerMale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FLRelentlessAssaultSmugglerMale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FLRelentlessAssaultSmugglerMale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.ELRelentlessAssaultSmugglerMale;
+                        }
+                    }
+                }
+                else
+                {
+                    if (GetRelationshipStatus(true) == -1)
+                    {
+                        _effectorSound = SoundManager.Sound.ELRelentlessAssaultSmugglerFemale;
+                    }
+                    else if (GetRelationshipStatus(true) == 1)
+                    {
+                        _effectorSound = SoundManager.Sound.FLRelentlessAssaultSmugglerFemale;
+                    }
+                    else
+                    {
+                        if (RandomEngine.Instance.Range(0, 2) == 0)
+                        {
+                            _effectorSound = SoundManager.Sound.FLRelentlessAssaultSmugglerFemale;
+                        }
+                        else
+                        {
+                            _effectorSound = SoundManager.Sound.ELRelentlessAssaultSmugglerFemale;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

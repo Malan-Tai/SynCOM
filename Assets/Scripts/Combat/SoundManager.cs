@@ -7,11 +7,42 @@ public static class SoundManager
     public enum Sound
     {
         //voices
-        RetentlessFriends, RetentlessFoe, RetentlessNeutral, 
-        
+        FWRelentlessAssaultEngineerMale, FLRelentlessAssaultEngineerMale, EWRelentlessAssaultEngineerMale, ELRelentlessAssaultEngineerMale,
+        FWRelentlessAssaultEngineerFemale, FLRelentlessAssaultEngineerFemale, EWRelentlessAssaultEngineerFemale, ELRelentlessAssaultEngineerFemale,
+        FWRelentlessAssaultSmugglerMale, FLRelentlessAssaultSmugglerMale, EWRelentlessAssaultSmugglerMale, ELRelentlessAssaultSmugglerMale,
+        FWRelentlessAssaultSmugglerFemale, FLRelentlessAssaultSmugglerFemale, EWRelentlessAssaultSmugglerFemale, ELRelentlessAssaultSmugglerFemale,
+        FWRelentlessAssaultBerserkerMale, FLRelentlessAssaultBerserkerMale, EWRelentlessAssaultBerserkerMale,ELRelentlessAssaultBerserkerMale,
+        FWRelentlessAssaultBerserkerFeMale, FLRelentlessAssaultBerserkerFeMale, EWRelentlessAssaultBerserkerFeMale, ELRelentlessAssaultBerserkerFeMale,
+        FWRelentlessAssaultBodyguardMale, FLRelentlessAssaultBodyguardMale, EWRelentlessAssaultBodyguardMale, ELRelentlessAssaultBodyguardMale,
+        FWRelentlessAssaultBodyguardFemale, FLRelentlessAssaultBodyguardFemale, EWRelentlessAssaultBodyguardFemale, ELRelentlessAssaultBodyguardFemale,
+        FWRelentlessAssaultSniperMale, FLRelentlessAssaultSniperMale, EWRelentlessAssaultSniperMale, ELRelentlessAssaultSniperMale,
+        FWRelentlessAssaultSniperFemale, FLRelentlessAssaultSniperFemale, EWRelentlessAssaultSniperFemale, ELRelentlessAssaultSniperFemale,
+        FWRelentlessAssaultAlchemistMale, FLRelentlessAssaultAlchemistMale, EWRelentlessAssaultAlchemistMale, ELRelentlessAssaultAlchemistMale,
+        FWRelentlessAssaultAlchemistFemale, FLRelentlessAssaultAlchemistFemale, EWRelentlessAssaultAlchemistFemale, ELRelentlessAssaultAlchemistFemale,
+
+        FWGrenadeTossMale, FLGrenadeTossMale, EWGrenadeTossMale, ELGrenadeTossMale,
+        FWGrenadeTossFemale, FLGrenadeTossFemale, EWGrenadeTossFemale, ELGrenadeTossFemale,
+        FWMortarMale, FLMortarMale, EWMortarMale, ELMortarMale,
+        FWMortarFemale, FLMortarFemale, EWMortarFemale, ELMortarFemale,
+        FWDevouringMale, FLDevouringMale, EWDevouringMale, ELDevouringMale,
+        FWDevrouingFemale, FLDevrouingFemale, EWDevrouingFemale, ELDevrouingFemale,
+        FWDwarfTossMale, FLDwarfTossMale, EWDwarfTossMale, ELDwarfTossMale, 
+        FWDwarfTossFemale, FLDwarfTossFemale, EWDwarfTossFemale, ELDwarfTossFemale,
+        FWLongShotMale, FLLongShotMale, EWLongShotMale, ELLongShotMale, 
+        FWLongShotFemale, FLLongShotFemale, EWLongShotFemale, ELLongShotFemale, 
+        FWSuppressiveFireMale, FLSuppressiveFireMale, EWSuppressiveFireMale, ELSuppressiveFireMale, 
+        FWSuppressiveFireFemale, FLSuppressiveFireFemale, EWSuppressiveFireFemale, ELSuppressiveFireFemale,
+        FWShieldMale, FLShieldMale, EWShieldMale, ELShieldMale,
+        FWShieldFemale, FLShieldFemale, EWShieldFemale, ELShieldFemale,
+        FWChargeMale, FLChargeMale, EWChargeMale, ELChargeMale,
+        FWChargeFemale, FLChargeFemale, EWChargeFemale, ELChargeFemale,
+        FSmugglerMale, ESmugglerMale,
+        FSmugglerFemale, ESmugglerFemale,
+
+
         //Sound Effects
         BasicShotGatling, BasicShotSniper, BasicPunch, BasicEnemyShot, Devouring, DwarfToss, FirstAid, GrenadeToss,
-        HealingRain, HunkerDown, LongShot, Mortar, ShieldAndStrike, Smuggle, SuppressiveFire, PepTalk, WildCharge
+        HealingRain, HunkerDown, LongShot, Mortar, ShieldAndStrike, Smuggle, SuppressiveFire, PepTalk, WildCharge,
         None
     }
 

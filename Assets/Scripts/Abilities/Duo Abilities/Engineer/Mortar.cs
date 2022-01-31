@@ -114,11 +114,80 @@ public class Mortar : BaseDuoAbility
         {
             result.DamageList.Add(AttackDamage(_effector, target, _selfShotStats.GetDamage(), false));
         }
+        bool touchAlly = false;
         foreach (AllyUnit ally in _allyTargets)
         {
             result.DamageList.Add(FriendlyFireDamage(_effector, ally, _selfShotStats.GetDamage(), ally));
+            touchAlly = true;
         }
-
+        if (touchAlly)
+        {
+            if (GetRelationshipStatus(true) == -1)
+            {
+                if (_effector.AllyCharacter.Gender == EnumGender.Female)
+                    _effectorSound = SoundManager.Sound.ELMortarFemale;
+                else
+                    _effectorSound = SoundManager.Sound.ELMortarFemale;
+            }
+            else if (GetRelationshipStatus(true) == 1)
+            {
+                if (_effector.AllyCharacter.Gender == EnumGender.Female)
+                    _effectorSound = SoundManager.Sound.FLMortarFemale;
+                else
+                    _effectorSound = SoundManager.Sound.FLMortarFemale;
+            }
+            else
+            {
+                if (RandomEngine.Instance.Range(0, 2) == 0)
+                {
+                    if (_effector.AllyCharacter.Gender == EnumGender.Female)
+                        _effectorSound = SoundManager.Sound.FLMortarFemale;
+                    else
+                        _effectorSound = SoundManager.Sound.FLMortarMale;
+                }
+                else
+                {
+                    if (_effector.AllyCharacter.Gender == EnumGender.Female)
+                        _effectorSound = SoundManager.Sound.ELMortarFemale;
+                    else
+                        _effectorSound = SoundManager.Sound.ELMortarMale;
+                }
+            }
+        }
+        else
+        {
+            if (GetRelationshipStatus(true) == -1)
+            {
+                if (_effector.AllyCharacter.Gender == EnumGender.Female)
+                    _effectorSound = SoundManager.Sound.EWMortarFemale;
+                else
+                    _effectorSound = SoundManager.Sound.EWMortarFemale;
+            }
+            else if (GetRelationshipStatus(true) == 1)
+            {
+                if (_effector.AllyCharacter.Gender == EnumGender.Female)
+                    _effectorSound = SoundManager.Sound.FWMortarFemale;
+                else
+                    _effectorSound = SoundManager.Sound.FWMortarFemale;
+            }
+            else
+            {
+                if (RandomEngine.Instance.Range(0, 2) == 0)
+                {
+                    if (_effector.AllyCharacter.Gender == EnumGender.Female)
+                        _effectorSound = SoundManager.Sound.FWMortarFemale;
+                    else
+                        _effectorSound = SoundManager.Sound.FWMortarMale;
+                }
+                else
+                {
+                    if (_effector.AllyCharacter.Gender == EnumGender.Female)
+                        _effectorSound = SoundManager.Sound.EWMortarFemale;
+                    else
+                        _effectorSound = SoundManager.Sound.EWMortarMale;
+                }
+            }
+        }
         SendResultToHistoryConsole(result);
     }
 

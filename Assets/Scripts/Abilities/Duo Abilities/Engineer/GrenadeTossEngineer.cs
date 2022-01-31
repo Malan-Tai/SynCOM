@@ -5,13 +5,13 @@ using UnityEngine;
 public class GrenadeTossEngineer : BaseDuoAbility
 {
     private LayerMask _groundLayerMask = LayerMask.GetMask("Ground");
-    
+
     private Vector2Int _previousTileCoord;
     private Vector2Int _tileCoord;
 
     private List<EnemyUnit> _targets = new List<EnemyUnit>();
     private List<AllyUnit> _allyTargets = new List<AllyUnit>();
-    
+
     private List<Tile> _areaOfEffectTiles = new List<Tile>();
     private List<Tile> _areaOfEffectBonusTiles = new List<Tile>();
     private List<Tile> _possibleTargetsTiles = new List<Tile>();
@@ -27,7 +27,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
 
     public override string GetAllyDescription()
     {
-        string res =  "You shoot the grenade midair with you expert precision. If you succeed, " +
+        string res = "You shoot the grenade midair with you expert precision. If you succeed, " +
                       "the grenade benefits from an increased explosion radius and damage.";
         if (_chosenAlly != null)
         {
@@ -154,7 +154,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
                 }
 
                 CombatGameManager.Instance.TileDisplay.DisplayMouseHoverTileAt(temporaryTileCoord);
-                
+
                 if (temporaryTileCoord == _previousTileCoord)
                 {
                     return;
@@ -223,7 +223,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
                     }
                 }
 
-                
+
             }
         }
     }
@@ -257,7 +257,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
             //if ((enemy.GridPosition - tileCoord).magnitude <= explosionRadius) //That's a circle not a diamond...
             if (Mathf.Abs(enemy.GridPosition.x - _tileCoord.x) + Mathf.Abs(enemy.GridPosition.y - _tileCoord.y) <= explosionRadius)
             {
-                _targets.Add(enemy); 
+                _targets.Add(enemy);
             }
         }
         _allyTargets.Clear();
@@ -269,7 +269,7 @@ public class GrenadeTossEngineer : BaseDuoAbility
                 _allyTargets.Add(ally);
             }
         }
-
+        bool touchAlly = false;
         // Ne peux rater ni faire un coup critique
         foreach (EnemyUnit target in _targets)
         {
@@ -278,10 +278,79 @@ public class GrenadeTossEngineer : BaseDuoAbility
         foreach (AllyUnit ally in _allyTargets)
         {
             result.DamageList.Add(FriendlyFireDamage(_effector, ally, _selfShotStats.GetDamage(), ally));
+            touchAlly = true;
         }
         Debug.Log("[Grenade Toss] Explosion");
+        if (touchAlly)
+        {
+            if (GetRelationshipStatus(true) == -1)
+            {
+                if (_effector.AllyCharacter.Gender == EnumGender.Female)
+                    _effectorSound = SoundManager.Sound.ELGrenadeTossFemale;
+                else
+                    _effectorSound = SoundManager.Sound.ELGrenadeTossFemale;
+            }
+            else if (GetRelationshipStatus(true) == 1)
+            {
+                if (_effector.AllyCharacter.Gender == EnumGender.Female)
+                    _effectorSound = SoundManager.Sound.FLGrenadeTossFemale;
+                else
+                    _effectorSound = SoundManager.Sound.FLGrenadeTossFemale;
+            }
+            else
+            {
+                if (RandomEngine.Instance.Range(0, 2) == 0)
+                {
+                    if (_effector.AllyCharacter.Gender == EnumGender.Female)
+                        _effectorSound = SoundManager.Sound.FLGrenadeTossFemale;
+                    else
+                        _effectorSound = SoundManager.Sound.FLGrenadeTossMale;
+                }
+                else
+                {
+                    if (_effector.AllyCharacter.Gender == EnumGender.Female)
+                        _effectorSound = SoundManager.Sound.ELGrenadeTossFemale;
+                    else
+                        _effectorSound = SoundManager.Sound.ELGrenadeTossMale;
+                }
+            }
+        }
+        else
+        {
+            if (GetRelationshipStatus(true) == -1)
+            {
+                if (_effector.AllyCharacter.Gender == EnumGender.Female)
+                    _effectorSound = SoundManager.Sound.EWGrenadeTossFemale;
+                else
+                    _effectorSound = SoundManager.Sound.EWGrenadeTossFemale;
+            }
+            else if (GetRelationshipStatus(true) == 1)
+            {
+                if (_effector.AllyCharacter.Gender == EnumGender.Female)
+                    _effectorSound = SoundManager.Sound.FWGrenadeTossFemale;
+                else
+                    _effectorSound = SoundManager.Sound.FWGrenadeTossFemale;
+            }
+            else
+            {
+                if (RandomEngine.Instance.Range(0, 2) == 0)
+                {
+                    if (_effector.AllyCharacter.Gender == EnumGender.Female)
+                        _effectorSound = SoundManager.Sound.FWGrenadeTossFemale;
+                    else
+                        _effectorSound = SoundManager.Sound.FWGrenadeTossMale;
+                }
+                else
+                {
+                    if (_effector.AllyCharacter.Gender == EnumGender.Female)
+                        _effectorSound = SoundManager.Sound.EWGrenadeTossFemale;
+                    else
+                        _effectorSound = SoundManager.Sound.EWGrenadeTossMale;
+                }
+            }
+        }
 
-        SendResultToHistoryConsole(result);
+    SendResultToHistoryConsole(result);
     }
 
     protected override void SendResultToHistoryConsole(AbilityResult result)

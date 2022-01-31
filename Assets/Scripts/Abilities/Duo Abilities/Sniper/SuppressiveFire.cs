@@ -117,23 +117,112 @@ public class SuppressiveFire : BaseDuoAbility
         GridBasedUnit target = _possibleTargets[_targetIndex];
         Relationship relationshipAllyToSelf = _effector.AllyCharacter.Relationships[this._chosenAlly.AllyCharacter];
 
-        if (relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Sympathy) < 0 || relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Admiration) < 0 || relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Trust) < 0)
-        {
-            //SoundManager.PlaySound(SoundManager.Sound.RetentlessFoe);
-        }
-
-        else
-        {
-            //SoundManager.PlaySound(SoundManager.Sound.RetentlessNeutral);
-        }
+       
         Debug.Log("we are shooting at " + target.GridPosition + " with cover " + (int)_effector.LinesOfSight[target].cover);
         AbilityResult result = new AbilityResult();
         SoundManager.PlaySound(SoundManager.Sound.SuppressiveFire);
-        ShootResult selfResult = SelfShoot(target, _selfShotStats);
+        ShootResult selfResults = SelfShoot(target, _selfShotStats);
         ShootResult allyResult = AllyShoot(target, _allyShotStats);
 
-        result.CopyShootResult(selfResult);
+        result.CopyShootResult(selfResults);
         result.CopyAllyShootResult(allyResult);
+
+        if (!selfResults.Cancelled && selfResults.Landed)
+        {
+            if (_effector.AllyCharacter.Gender == EnumGender.Male || _effector.AllyCharacter.Gender == EnumGender.Other)
+            {
+                if (GetRelationshipStatus(true) == -1)
+                {
+                    _effectorSound = SoundManager.Sound.EWSuppressiveFireMale;
+                }
+                else if (GetRelationshipStatus(true) == 1)
+                {
+                    _effectorSound = SoundManager.Sound.FWSuppressiveFireMale;
+                }
+                else
+                {
+                    if (RandomEngine.Instance.Range(0, 2) == 0)
+                    {
+                        _effectorSound = SoundManager.Sound.FWSuppressiveFireMale;
+                    }
+                    else
+                    {
+                        _effectorSound = SoundManager.Sound.EWSuppressiveFireMale;
+                    }
+                }
+            }
+            else
+            {
+                if (GetRelationshipStatus(true) == -1)
+                {
+                    _effectorSound = SoundManager.Sound.EWSuppressiveFireFemale;
+                }
+                else if (GetRelationshipStatus(true) == 1)
+                {
+                    _effectorSound = SoundManager.Sound.FWSuppressiveFireFemale;
+                }
+                else
+                {
+                    if (RandomEngine.Instance.Range(0, 2) == 0)
+                    {
+                        _effectorSound = SoundManager.Sound.FWSuppressiveFireFemale;
+                    }
+                    else
+                    {
+                        _effectorSound = SoundManager.Sound.EWSuppressiveFireFemale;
+                    }
+                }
+            }
+        }
+
+        if (!selfResults.Cancelled && !selfResults.Landed)
+        {
+            if (_effector.AllyCharacter.Gender == EnumGender.Male || _effector.AllyCharacter.Gender == EnumGender.Other)
+            {
+                if (GetRelationshipStatus(true) == -1)
+                {
+                    _effectorSound = SoundManager.Sound.ELSuppressiveFireMale;
+                }
+                else if (GetRelationshipStatus(true) == 1)
+                {
+                    _effectorSound = SoundManager.Sound.FLSuppressiveFireMale;
+                }
+                else
+                {
+                    if (RandomEngine.Instance.Range(0, 2) == 0)
+                    {
+                        _effectorSound = SoundManager.Sound.FLSuppressiveFireMale;
+                    }
+                    else
+                    {
+                        _effectorSound = SoundManager.Sound.ELSuppressiveFireMale;
+                    }
+                }
+            }
+            else
+            {
+                if (GetRelationshipStatus(true) == -1)
+                {
+                    _effectorSound = SoundManager.Sound.ELSuppressiveFireFemale;
+                }
+                else if (GetRelationshipStatus(true) == 1)
+                {
+                    _effectorSound = SoundManager.Sound.FLSuppressiveFireFemale;
+                }
+                else
+                {
+                    if (RandomEngine.Instance.Range(0, 2) == 0)
+                    {
+                        _effectorSound = SoundManager.Sound.FLSuppressiveFireFemale;
+                    }
+                    else
+                    {
+                        _effectorSound = SoundManager.Sound.ELSuppressiveFireFemale;
+                    }
+                }
+            }
+        }
+
         SendResultToHistoryConsole(result);
     }
 
