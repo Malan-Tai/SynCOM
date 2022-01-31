@@ -12,6 +12,8 @@ public class RegionButton : MonoBehaviour
     private Color _hoverColor;
     private Color _nonHoverColor;
 
+    private Image _star;
+
     private Image _sprite;
 
     public delegate void EventMouseEnter(RegionScriptableObject data);
@@ -30,6 +32,19 @@ public class RegionButton : MonoBehaviour
 
         _sprite = GetComponent<Image>();
         _sprite.color = _nonHoverColor;
+
+        _star = transform.Find("Image").GetComponent<Image>();
+        _star.enabled = false;
+    }
+
+    private void OnEnable()
+    {
+        BetweenMissionsGameManager.OnMissionGenerated += UpdateMissionSymbol;
+    }
+
+    private void OnDisable()
+    {
+        BetweenMissionsGameManager.OnMissionGenerated -= UpdateMissionSymbol;
     }
 
     private void OnMouseEnter()
@@ -50,5 +65,10 @@ public class RegionButton : MonoBehaviour
 
         print("clicked " + _regionData.regionName);
         if (OnMouseClickEvent != null) OnMouseClickEvent(_regionData);
+    }
+
+    private void UpdateMissionSymbol(RegionName region)
+    {
+        if (region == _regionData.regionName) _star.enabled = true;
     }
 }
