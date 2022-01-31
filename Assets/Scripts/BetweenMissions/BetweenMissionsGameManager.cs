@@ -62,6 +62,9 @@ public class BetweenMissionsGameManager : MonoBehaviour
     public delegate void NotifyCanvasChange(int x, int y);
     public static event NotifyCanvasChange OnNotifyCanvasChange;
 
+    public delegate void GenerateMission(RegionName region);
+    public static event GenerateMission OnMissionGenerated;
+
     private void Start()
     {
         _selectedRegion = RegionName.None;
@@ -145,6 +148,8 @@ public class BetweenMissionsGameManager : MonoBehaviour
 
             _availableMissions[region] = Mission.GenerateMission(progress - 2, progress + 3);
             addedRegions.Add(region);
+
+            if (OnMissionGenerated != null) OnMissionGenerated(region);
         }
     }
 
