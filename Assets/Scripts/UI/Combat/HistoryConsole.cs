@@ -42,13 +42,23 @@ public class HistoryConsole : MonoBehaviour
     #region Singleton
     public static HistoryConsole Instance { get => _instance; }
     private static HistoryConsole _instance;
+    private bool _toNullify = true;
 
     private void Awake()
     {
         if (_instance == null) _instance = this;
-        else Destroy(this);
+        else
+        {
+            _toNullify = false;
+            Destroy(this);
+        }
 
         _consoleAnimator = GetComponent<Animator>();
+    }
+
+    private void OnDestroy()
+    {
+        if (_toNullify) _instance = null;
     }
     #endregion
 

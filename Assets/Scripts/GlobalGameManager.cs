@@ -6,14 +6,15 @@ using UnityEngine;
 public class GlobalGameManager : MonoBehaviour
 {
     #region Singleton
-    private static GlobalGameManager instance;
-    public static GlobalGameManager Instance { get { return instance; } }
+    private static GlobalGameManager _instance;
+    public static GlobalGameManager Instance { get { return _instance; } }
+    private bool _toNullify = true;
 
     private void Awake()
     {
-        if (instance == null)
+        if (_instance == null)
         {
-            instance = this;
+            _instance = this;
             DontDestroyOnLoad(gameObject);
 
             currentSquad = new AllyCharacter[] { null, null, null, null };
@@ -23,8 +24,14 @@ public class GlobalGameManager : MonoBehaviour
         }
         else
         {
+            _toNullify = false;
             Destroy(gameObject);
         }
+    }
+
+    private void OnDestroy()
+    {
+        if (_toNullify) _instance = null;
     }
     #endregion
 
@@ -107,6 +114,7 @@ public class GlobalGameManager : MonoBehaviour
         while (i < currentSquad.Length)
         {
             currentSquad[i] = null;
+            i++;
         }
     }
 
