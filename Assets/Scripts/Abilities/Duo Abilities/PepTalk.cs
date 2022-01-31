@@ -42,6 +42,8 @@ public class PepTalk : BaseDuoAbility
 
     public override void Execute()
     {
+        SoundManager.PlaySound(SoundManager.Sound.PepTalk);
+
         AddBuff(_effector, new Buff("Pumped", duration: 6, _effector, moveBuff: 3, damageBuff: 0.2f, accuracyBuff: 0.5f));
         AddBuff(_chosenAlly, new Buff("Pumped", duration: 6, _effector, moveBuff: 3, damageBuff: 0.2f, accuracyBuff: 0.5f));
 
