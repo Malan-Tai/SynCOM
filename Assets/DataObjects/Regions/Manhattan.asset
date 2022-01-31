@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: Manhattan
   m_EditorClassIdentifier: 
   regionName: 1
-  description: I am a man with a hat. Before I had this hat, I had a very nice tan.
+  description: Manhattan is very densely populated and is where Ellis Island is,
+    which implies an infinite source of workforce - and thus, new recruits.

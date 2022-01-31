@@ -8,7 +8,6 @@ public class GlobalGameManager : MonoBehaviour
     #region Singleton
     private static GlobalGameManager _instance;
     public static GlobalGameManager Instance { get { return _instance; } }
-    private bool _toNullify = true;
 
     private void Awake()
     {
@@ -24,14 +23,8 @@ public class GlobalGameManager : MonoBehaviour
         }
         else
         {
-            _toNullify = false;
             Destroy(gameObject);
         }
-    }
-
-    private void OnDestroy()
-    {
-        if (_toNullify) _instance = null;
     }
     #endregion
 
