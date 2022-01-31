@@ -51,7 +51,7 @@ public class WildCharge : BaseDuoAbility
 
     public override string GetAllyDescription()
     {
-        string res = "Thanks to your ally's protection, you can focus solely on your shot.";
+        string res = "Thanks to your ally's protection, you can focus solely on your shots.";
 
         if (_chosenAlly != null)
         {
@@ -64,7 +64,7 @@ public class WildCharge : BaseDuoAbility
             var temporaryAllyShotStat = new AbilityStats(0, 0, 1.5f, 0, 0, _temporaryChosenAlly);
             temporaryAllyShotStat.UpdateWithEmotionModifiers(_effector);
 
-            res += "\nACC:" + (int)temporaryAllyShotStat.GetAccuracy() +
+            res += "\nACC:100" + // + (int)temporaryAllyShotStat.GetAccuracy() +
                     "% | CRIT:" + (int)temporaryAllyShotStat.GetCritRate() +
                     "% | DMG:" + (int)temporaryAllyShotStat.GetDamage();
         }
@@ -203,12 +203,32 @@ public class WildCharge : BaseDuoAbility
         var parametersLaunchAlly = new InterruptionParameters { interruptionType = InterruptionType.FocusTargetUntilEndOfMovement, target = _chosenAlly, position = allyArrival, pathfinding = PathfindingMoveType.Linear };
         _interruptionQueue.Enqueue(Interruption.GetInitializedInterruption(parametersLaunchAlly));
 
+        if (!StartAction(ActionTypes.Protect, _effector, _chosenAlly))
+        {
+            AddBuff(_chosenAlly, new ProtectedByBuff(2, _chosenAlly, _effector, _selfProtStats.GetProtection()));
+
+            // Impact on the sentiments
+            // Ally -> Self relationship
+            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, 5);
+        }
+        else
+        {
+            result.Cancelled = true;
+            AllyToSelfModifySentiment(_chosenAlly, EnumSentiment.Trust, -5);
+            Debug.Log("refused to protecc");
+        }
+
         // Damage enemies
         SoundManager.PlaySound(SoundManager.Sound.WildCharge);
         foreach (EnemyUnit target in _targets)
         {
-            result.DamageList.Add(AttackDamage(_effector, target, _allyShotStats.GetDamage(), false));
+            if (RandomEngine.Instance.Range(0, 100) < _allyShotStats.GetCritRate())
+                result.DamageList.Add(AttackDamage(_chosenAlly, target, _allyShotStats.GetDamage() * 1.5f, true, _effector));
+            else
+                result.DamageList.Add(AttackDamage(_chosenAlly, target, _allyShotStats.GetDamage(), false, _effector));
         }
+
+        AttackHitOrMiss(_chosenAlly, null, _targets.Count > 0, _effector);
 
         SendResultToHistoryConsole(result);
     }
@@ -221,18 +241,36 @@ public class WildCharge : BaseDuoAbility
     protected override void SendResultToHistoryConsole(AbilityResult result)
     {
         HistoryConsole.Instance
-                   .BeginEntry()
-                   .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
-                   .AddText(_effector.Character.FirstName).CloseTag()
-                   .AddText(" and ")
-                   .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
-                   .AddText(_chosenAlly.Character.FirstName).CloseTag()
-                   .AddText(" used ")
-                   .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
-                   .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
-                   .AddText(" protecting them for ")
-                   .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{(int)((1 - _selfProtStats.GetProtection()) * 100)}%").CloseTag()
-                   .AddText(" and dealing ");
+            .BeginEntry()
+            .OpenLinkTag(_effector.Character.Name, _effector, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+            .AddText(_effector.Character.FirstName).CloseTag()
+            .AddText(" used ")
+            .OpenIconTag("Duo", EntryColors.ICON_DUO_ABILITY).CloseTag()
+            .OpenColorTag(EntryColors.TEXT_ABILITY).AddText(GetName()).CloseTag()
+            .AddText(" with ")
+            .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+            .AddText(_chosenAlly.Character.FirstName).CloseTag();
+
+        if (result.Cancelled)
+        {
+            HistoryConsole.Instance
+                .AddText(" but")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText(" refused to protect").CloseTag()
+                .AddText(" them. ")
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_chosenAlly.Character.FirstName).CloseTag()
+                .AddText(" still attacked, dealing ");
+        }
+        else
+        {
+            HistoryConsole.Instance
+                .AddText(" to protect them for ")
+                .OpenColorTag(EntryColors.TEXT_IMPORTANT).AddText($"{(int)((1 - _selfProtStats.GetProtection()) * 100)}%").CloseTag()
+                .AddText(" while ")
+                .OpenLinkTag(_chosenAlly.Character.Name, _chosenAlly, EntryColors.LINK_UNIT, EntryColors.LINK_UNIT_HOVER)
+                .AddText(_chosenAlly.Character.FirstName).CloseTag()
+                .AddText(" dealt ");
+        }
 
         if (_targets.Count == 0)
         {

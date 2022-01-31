@@ -51,7 +51,7 @@ public abstract class BaseAllyAbility : BaseAbility
     protected void AttackHitOrMiss(AllyUnit source, EnemyUnit target, bool hit, AllyUnit duo = null)
     {
         RelationshipEventsResult result = RelationshipEventsManager.Instance.AllyOnEnemyAttackHitOrMiss(source, hit, duo);
-        if (!hit)
+        if (!hit && target != null)
         {
             AddInterruptionBeforeResult(ref result, new InterruptionParameters
             {

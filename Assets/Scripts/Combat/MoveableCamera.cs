@@ -125,6 +125,8 @@ public class MoveableCamera : MonoBehaviour
 
     public void SwitchParenthood(GridBasedUnit newUnit)
     {
+        if (newUnit == null) return;
+
         if (_currentlyViewedUnit == newUnit)
         {
             this.transform.SetParent(newUnit.transform, true);

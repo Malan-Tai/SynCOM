@@ -89,8 +89,6 @@ public class Mortar : BaseDuoAbility
                 ally.HighlightUnit(Color.red);
             }
         }
-
-        //CombatGameManager.Instance.Camera.SwitchParenthood(_chosenAlly);
     }
 
     protected override void EnemyTargetingInput()
@@ -109,10 +107,16 @@ public class Mortar : BaseDuoAbility
             Debug.Log("[Mortar] Ally didn't take cover in time");
             _allyTargets.Add(_chosenAlly);
         }
+        else if (_targets.Count > 0)
+        {
+            AttackHitOrMiss(_effector, null, true, _chosenAlly);
+        }
+        else
+            AttackHitOrMiss(_effector, null, false, _chosenAlly);
 
         foreach (EnemyUnit target in _targets)
         {
-            result.DamageList.Add(AttackDamage(_effector, target, _selfShotStats.GetDamage(), false));
+            result.DamageList.Add(AttackDamage(_effector, target, _selfShotStats.GetDamage(), false, _chosenAlly));
         }
         foreach (AllyUnit ally in _allyTargets)
         {

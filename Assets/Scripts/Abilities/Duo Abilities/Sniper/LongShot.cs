@@ -8,6 +8,7 @@ public class LongShot : BaseDuoAbility
     private List<GridBasedUnit> _possibleTargets;
     private int _targetIndex = -1;
     private int _selectionRange = 20;
+
     public override string GetName()
     {
         return "Long Shot";
@@ -139,17 +140,6 @@ public class LongShot : BaseDuoAbility
     public override void Execute()
     {
         GridBasedUnit target = _possibleTargets[_targetIndex];
-        Relationship relationshipAllyToSelf = _effector.AllyCharacter.Relationships[this._chosenAlly.AllyCharacter];
-
-        if (relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Sympathy) < 0 || relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Admiration) < 0 || relationshipAllyToSelf.GetGaugeLevel(EnumSentiment.Trust) < 0)
-        {
-            //SoundManager.PlaySound(SoundManager.Sound.RetentlessFoe);
-        }
-
-        else
-        {
-            //SoundManager.PlaySound(SoundManager.Sound.RetentlessNeutral);
-        }
 
         SoundManager.PlaySound(SoundManager.Sound.LongShot);
         AbilityResult result = new AbilityResult();
