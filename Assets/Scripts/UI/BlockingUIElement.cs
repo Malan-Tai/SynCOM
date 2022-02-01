@@ -38,4 +38,9 @@ public class BlockingUIElement : MonoBehaviour, IPointerEnterHandler, IPointerEx
         _hoveredElementNumber--;
         if (_hoveredElementNumber < 0) _hoveredElementNumber = 0;
     }
+    
+    public static void ResetCount()
+    {
+        _hoveredElementNumber = 0;
+    }
 }

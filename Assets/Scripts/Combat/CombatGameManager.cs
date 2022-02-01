@@ -16,6 +16,7 @@ public class CombatGameManager : MonoBehaviour
         if (_instance == null)
         {
             _instance = this;
+            BlockingUIElement.ResetCount();
         }
         else
         {
